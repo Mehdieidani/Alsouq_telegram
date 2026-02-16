@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>آگهی‌های السوق المفتوح</title>
+    <title>السوق المفتوح | پلتفرم هوشمند آگهی</title>
     
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -152,7 +152,7 @@
             transform: scale(1.1);
         }
 
-        /* ===== زبان و تم (پاپ‌آپ) ===== */
+        /* ===== مودال انتخاب زبان/تم ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -399,7 +399,35 @@
             display: none;
         }
 
-        /* ===== شبکه آگهی‌ها (طراحی مدرن) ===== */
+        /* ===== محدودیت کاربر ===== */
+        .user-limit {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+
+        .limit-progress {
+            flex: 1;
+            height: 6px;
+            background: var(--glass);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .limit-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 3px;
+            width: 0%;
+        }
+
+        /* ===== شبکه آگهی‌ها ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -535,6 +563,49 @@
             background: var(--primary);
         }
 
+        /* ===== کارت‌های قیمت ===== */
+        .pricing-section {
+            margin-top: 30px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .pricing-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        .pricing-card .month {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .pricing-card .price {
+            font-size: 1.1rem;
+            font-weight: 900;
+            margin: 10px 0;
+        }
+
+        .pricing-card .currency {
+            color: var(--text-dim);
+            font-size: 0.7rem;
+        }
+
         /* ===== ناوبری پایین ===== */
         .bottom-nav {
             position: fixed;
@@ -626,59 +697,42 @@
             font-size: 0.9rem;
         }
 
-        .translate-result {
-            margin-top: 10px;
-            padding: 10px;
-            background: var(--glass);
-            border-radius: 15px;
-            display: none;
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .loader {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-dim);
-        }
-
-        /* ===== محدودیت کاربر ===== */
-        .user-limit {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
+        .detail-btn {
+            flex: 1;
+            padding: 12px;
             border-radius: 20px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
+            border: none;
+            background: var(--glass);
+            color: var(--text);
+            font-weight: bold;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .limit-progress {
-            flex: 1;
-            height: 6px;
-            background: var(--glass);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .limit-fill {
-            height: 100%;
-            background: var(--gold);
-            border-radius: 3px;
-            width: 0%;
+        .detail-btn.primary {
+            background: var(--primary);
         }
 
         /* ===== پنل مدیریت ===== */
         .admin-panel {
+            margin-top: 30px;
+        }
+
+        .admin-card {
             background: var(--card);
             border: 2px solid var(--gold);
             border-radius: 30px;
             padding: 20px;
-            margin-top: 20px;
-        }
-
-        .admin-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .admin-title {
@@ -746,11 +800,17 @@
             padding: 5px 15px;
             cursor: pointer;
         }
+
+        .loader {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+        }
     </style>
 </head>
 <body data-theme="dark">
 
-    <!-- ===== هدر مدرن ===== -->
+    <!-- ===== HEADER ===== -->
     <div class="header">
         <div class="logo">
             <i class="fas fa-store-alt"></i>
@@ -800,7 +860,7 @@
         </div>
     </div>
 
-    <!-- ===== بخش ویژه (کاروسل) ===== -->
+    <!-- ===== بخش آگهی‌های ویژه (کاروسل) ===== -->
     <div class="special-section">
         <div class="section-header">
             <i class="fas fa-crown"></i>
@@ -858,6 +918,18 @@
     <!-- ===== شبکه آگهی‌ها ===== -->
     <div id="ads-container" class="ads-grid"></div>
 
+    <!-- ===== بخش اشتراک ویژه (قیمت‌ها) ===== -->
+    <div class="pricing-section" id="pricing-section">
+        <div class="section-header">
+            <i class="fas fa-gem"></i>
+            <span id="pricing-title">👑 اشتراک ویژه</span>
+        </div>
+        <div class="pricing-grid" id="pricing-grid"></div>
+    </div>
+
+    <!-- ===== پنل مدیریت (فقط برای ادمین) ===== -->
+    <div id="admin-panel" class="admin-panel" style="display: none;"></div>
+
     <!-- ===== ناوبری پایین ===== -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="showTab('home')">
@@ -878,7 +950,7 @@
         </div>
     </div>
 
-    <!-- ===== مودال جزئیات ===== -->
+    <!-- ===== مودال جزئیات آگهی ===== -->
     <div id="detail-modal" class="detail-modal">
         <div class="detail-header">
             <div class="back-button" onclick="closeDetailModal()">
@@ -889,15 +961,17 @@
         <div id="detail-content"></div>
     </div>
 
-    <!-- ===== پنل مدیریت (پنهان) ===== -->
-    <div id="admin-panel" style="display: none;">
-        <!-- محتوای پنل مدیریت توسط جاوااسکریپت پر می‌شود -->
-    </div>
-
     <script>
+        // ===== تنظیمات اولیه =====
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
+
+        // ===== اطلاعات ثابت =====
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
+        const SUPPORT_USERNAME = 'Mehdi_E_admin';
+        const ADMIN_ID = 6522877528;
 
         // ===== متغیرهای سراسری =====
         let currentUser = null;
@@ -908,12 +982,20 @@
         let userAdsCount = 0;
         let currentLang = 'fa';
         let currentTheme = 'dark';
+        let prices = {
+            special1: '۱۰,۰۰۰',
+            special3: '۲۵,۰۰۰',
+            vip1: '۵۰,۰۰۰',
+            vip3: '۱۳۰,۰۰۰',
+            vip6: '۲۴۰,۰۰۰'
+        };
 
         // ===== ترجمه‌ها =====
         const translations = {
             fa: {
                 logo: 'السوق المفتوح',
                 special: '✨ آگهی‌های ویژه',
+                pricing: '👑 اشتراک ویژه',
                 cat_all: 'همه',
                 cat_car: 'خودرو',
                 cat_real: 'املاک',
@@ -931,11 +1013,14 @@
                 detail_title: 'جزئیات آگهی',
                 modal_lang: 'انتخاب زبان',
                 modal_theme: 'انتخاب تم',
-                close: 'بستن'
+                close: 'بستن',
+                buy: 'خرید اشتراک',
+                contact: 'ارتباط با فروشنده'
             },
             ar: {
                 logo: 'السوق المفتوح',
                 special: '✨ إعلانات مميزة',
+                pricing: '👑 اشتراك VIP',
                 cat_all: 'الكل',
                 cat_car: 'سيارات',
                 cat_real: 'عقارات',
@@ -953,11 +1038,14 @@
                 detail_title: 'تفاصيل الإعلان',
                 modal_lang: 'اختر اللغة',
                 modal_theme: 'اختر المظهر',
-                close: 'إغلاق'
+                close: 'إغلاق',
+                buy: 'اشتراك',
+                contact: 'اتصل بالبائع'
             },
             en: {
                 logo: 'Open Souq',
                 special: '✨ Special Ads',
+                pricing: '👑 VIP Subscription',
                 cat_all: 'All',
                 cat_car: 'Cars',
                 cat_real: 'Real Estate',
@@ -975,7 +1063,9 @@
                 detail_title: 'Ad Details',
                 modal_lang: 'Select Language',
                 modal_theme: 'Select Theme',
-                close: 'Close'
+                close: 'Close',
+                buy: 'Subscribe',
+                contact: 'Contact Seller'
             }
         };
 
@@ -983,40 +1073,62 @@
         function setLang(lang) {
             currentLang = lang;
             document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+            
+            // بروزرسانی کلاس فعال
             document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // بروزرسانی متن‌ها
             updateUIText();
+            
+            // بستن مودال
             closeModal();
+            
+            // ذخیره در localStorage
+            localStorage.setItem('preferred_lang', lang);
         }
 
         function updateUIText() {
             const t = translations[currentLang];
+            
+            // هدر
             document.getElementById('logo-text').innerText = t.logo;
+            
+            // بخش‌ها
             document.getElementById('special-title').innerText = t.special;
+            document.getElementById('pricing-title').innerText = t.pricing;
+            
+            // دسته‌بندی
             document.getElementById('cat-all').innerText = t.cat_all;
             document.getElementById('cat-car').innerText = t.cat_car;
             document.getElementById('cat-real').innerText = t.cat_real;
             document.getElementById('cat-phone').innerText = t.cat_phone;
             document.getElementById('cat-laptop').innerText = t.cat_laptop;
             document.getElementById('cat-service').innerText = t.cat_service;
+            
+            // جستجو
             document.getElementById('search-input').placeholder = t.search;
+            
+            // ناوبری
             document.getElementById('nav-home').innerText = t.nav_home;
             document.getElementById('nav-add').innerText = t.nav_add;
             document.getElementById('nav-support').innerText = t.nav_support;
             document.getElementById('nav-admin').innerText = t.nav_admin;
+            
+            // مودال‌ها
             document.getElementById('modal-lang-title').innerText = t.modal_lang;
             document.getElementById('modal-theme-title').innerText = t.modal_theme;
             document.getElementById('modal-close').innerText = t.close;
             document.getElementById('modal-close-theme').innerText = t.close;
             document.getElementById('detail-title').innerText = t.detail_title;
             
+            // محدودیت کاربر
             updateUserLimitText();
         }
 
         function updateUserLimitText() {
             const t = translations[currentLang];
-            const text = t.limit.replace('{count}', userAdsCount);
-            document.getElementById('limit-text').innerText = text;
+            document.getElementById('limit-text').innerText = t.limit.replace('{count}', userAdsCount);
             document.getElementById('limit-progress').style.width = `${(userAdsCount / 2) * 100}%`;
         }
 
@@ -1024,12 +1136,19 @@
         function setTheme(theme) {
             currentTheme = theme;
             document.documentElement.setAttribute('data-theme', theme);
+            
+            // بروزرسانی کلاس فعال
             document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // بستن مودال
             closeModal();
+            
+            // ذخیره در localStorage
+            localStorage.setItem('preferred_theme', theme);
         }
 
-        // ===== مودال‌ها =====
+        // ===== مدیریت مودال‌ها =====
         function openModal(type) {
             document.getElementById(`${type}-modal`).style.display = 'flex';
         }
@@ -1038,96 +1157,162 @@
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
         }
 
-        // ===== دریافت داده‌ها =====
+        // ===== دریافت داده‌ها از سرور =====
         async function init() {
+            // دریافت اطلاعات کاربر از تلگرام
             const user = tg.initDataUnsafe?.user;
             if (user) {
                 currentUser = user;
-                isAdmin = (user.id === 6522877528);
+                isAdmin = (user.id === ADMIN_ID);
                 
                 // دریافت تعداد آگهی‌های کاربر
                 await getUserAdsCount(user.id);
                 
-                // اگر ادمین است، پنل مدیریت را بارگذاری کن
+                // اگر ادمین است، پنل مدیریت را نمایش بده
                 if (isAdmin) {
                     loadAdminPanel();
                 }
             }
 
+            // بارگذاری تنظیمات ذخیره شده
+            loadSavedSettings();
+            
             // دریافت آگهی‌ها
             await fetchAds();
             
-            // به‌روزرسانی رابط کاربری
+            // دریافت قیمت‌ها
+            await fetchPrices();
+            
+            // بروزرسانی رابط کاربری
             updateUIText();
+            renderPricingCards();
+        }
+
+        function loadSavedSettings() {
+            const savedLang = localStorage.getItem('preferred_lang');
+            if (savedLang) {
+                currentLang = savedLang;
+                document.documentElement.dir = savedLang === 'en' ? 'ltr' : 'rtl';
+                // کلاس فعال زبان باید تنظیم شود
+            }
+            
+            const savedTheme = localStorage.getItem('preferred_theme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
         }
 
         async function getUserAdsCount(userId) {
             try {
-                // اینجا باید از Worker خود تعداد آگهی‌های کاربر را بگیری
-                // فعلاً شبیه‌سازی می‌کنیم
-                userAdsCount = 1; // مثال
+                const response = await fetch(`${API_BASE}/user-stats?user_id=${userId}`);
+                const data = await response.json();
+                userAdsCount = data.ads_this_month || 0;
                 updateUserLimitText();
             } catch (e) {
-                console.log(e);
+                console.log('خطا در دریافت آمار کاربر:', e);
+                // در صورت خطا، مقدار پیش‌فرض
+                userAdsCount = 0;
             }
         }
 
         async function fetchAds() {
             try {
-                // شبیه‌سازی داده‌ها
-                allAds = [
-                    {
-                        id: 1,
-                        title: 'آیفون ۱۳ پرو',
-                        description: 'آیفون ۱۳ پرو مکس ۲۵۶ گیگابایت',
-                        price: '۵۵,۰۰۰,۰۰۰',
-                        currency: 'تومان',
-                        cat: 'موبایل',
-                        city: 'تهران',
-                        country: 'ایران',
-                        image_ids: '["photo1"]',
-                        ad_type: 'special',
-                        plan_days: 1,
-                        created_at: Math.floor(Date.now() / 1000),
-                        user_id: 'user123'
-                    },
-                    {
-                        id: 2,
-                        title: 'آپارتمان ۸۰ متری',
-                        description: 'آپارتمان ۸۰ متری در تهرانپارس',
-                        price: '۲,۵۰۰,۰۰۰,۰۰۰',
-                        currency: 'تومان',
-                        cat: 'املاک',
-                        city: 'تهران',
-                        country: 'ایران',
-                        image_ids: '["photo2"]',
-                        ad_type: 'normal',
-                        created_at: Math.floor(Date.now() / 1000),
-                        user_id: 'user456'
-                    }
-                ];
+                const response = await fetch(`${API_BASE}/ads`);
+                const data = await response.json();
+                allAds = data.ads || [];
                 
+                // نمایش آگهی‌ها
                 renderSpecialCarousel();
                 renderAds();
             } catch (e) {
-                console.log(e);
+                console.log('خطا در دریافت آگهی‌ها:', e);
+                // داده‌های نمونه برای تست
+                allAds = generateSampleAds();
+                renderSpecialCarousel();
+                renderAds();
             }
         }
 
-        // ===== کاروسل ویژه =====
+        async function fetchPrices() {
+            try {
+                const response = await fetch(`${API_BASE}/prices`);
+                const data = await response.json();
+                if (data) {
+                    prices = data;
+                }
+            } catch (e) {
+                console.log('خطا در دریافت قیمت‌ها:', e);
+            }
+        }
+
+        // داده‌های نمونه برای تست
+        function generateSampleAds() {
+            return [
+                {
+                    id: 1,
+                    title: 'آیفون ۱۳ پرو',
+                    description: 'آیفون ۱۳ پرو مکس ۲۵۶ گیگابایت - نو',
+                    price: '۵۵,۰۰۰,۰۰۰',
+                    currency: 'تومان',
+                    cat: 'موبایل',
+                    city: 'تهران',
+                    country: 'ایران',
+                    image_ids: '["photo1"]',
+                    ad_type: 'special',
+                    plan_days: 1,
+                    created_at: Math.floor(Date.now() / 1000),
+                    user_id: 'user123',
+                    user_name: '@ali'
+                },
+                {
+                    id: 2,
+                    title: 'آپارتمان ۸۰ متری',
+                    description: 'آپارتمان ۸۰ متری در تهرانپارس، نزدیک مترو',
+                    price: '۲,۵۰۰,۰۰۰,۰۰۰',
+                    currency: 'تومان',
+                    cat: 'املاک',
+                    city: 'تهران',
+                    country: 'ایران',
+                    image_ids: '["photo2"]',
+                    ad_type: 'normal',
+                    created_at: Math.floor(Date.now() / 1000),
+                    user_id: 'user456',
+                    user_name: '@reza'
+                },
+                {
+                    id: 3,
+                    title: 'دوربین سونی',
+                    description: 'دوربین سونی A7III با لنز ۲۴-۷۰',
+                    price: '۳۵,۰۰۰,۰۰۰',
+                    currency: 'تومان',
+                    cat: 'دیجیتال',
+                    city: 'اصفهان',
+                    country: 'ایران',
+                    image_ids: '["photo3"]',
+                    ad_type: 'special',
+                    plan_days: 3,
+                    created_at: Math.floor(Date.now() / 1000),
+                    user_id: 'user789',
+                    user_name: '@sara'
+                }
+            ];
+        }
+
+        // ===== کاروسل آگهی‌های ویژه =====
         function renderSpecialCarousel() {
             const specialAds = allAds.filter(ad => ad.ad_type === 'special');
             const track = document.getElementById('special-track');
             
             if (specialAds.length === 0) {
-                track.innerHTML = '<div class="special-card">آگهی ویژه‌ای وجود ندارد</div>';
+                track.innerHTML = '<div class="special-card" style="min-width:100%; text-align:center; padding:20px;">آگهی ویژه‌ای وجود ندارد</div>';
                 return;
             }
 
             track.innerHTML = specialAds.map(ad => `
                 <div class="special-card" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
                     <div class="special-image">
-                        <img src="https://via.placeholder.com/300x150" alt="${ad.title}">
+                        <img src="${getImageUrl(ad)}" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/300x150?text=No+Image'">
                         <span class="special-badge">✨ ویژه ${ad.plan_days || 1} روزه</span>
                     </div>
                     <div class="special-info">
@@ -1143,14 +1328,17 @@
         function renderAds() {
             let filteredAds = allAds;
 
+            // اعمال فیلتر دسته
             if (currentCategory !== 'all') {
                 filteredAds = filteredAds.filter(ad => ad.cat === currentCategory);
             }
 
+            // اعمال فیلتر جستجو
             if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
                 filteredAds = filteredAds.filter(ad => 
-                    ad.title.includes(currentSearch) || 
-                    ad.description.includes(currentSearch)
+                    ad.title.toLowerCase().includes(searchLower) || 
+                    ad.description.toLowerCase().includes(searchLower)
                 );
             }
 
@@ -1163,14 +1351,14 @@
             container.innerHTML = filteredAds.map(ad => `
                 <div class="ad-card ${ad.ad_type === 'special' ? 'special' : ''}" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
                     <div class="ad-image-container">
-                        <img src="https://via.placeholder.com/300x140" class="ad-image" alt="${ad.title}">
+                        <img src="${getImageUrl(ad)}" class="ad-image" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/300x140?text=No+Image'">
                         ${ad.ad_type === 'special' ? '<span class="ad-badge">✨ ویژه</span>' : ''}
                         <span class="ad-price-badge">💰 ${ad.price}</span>
                     </div>
                     <div class="ad-info">
                         <div class="ad-title">
-                            ${ad.title}
-                            <i class="fas fa-copy ad-copy" onclick="copyText('${ad.title} - ${ad.description}', event)"></i>
+                            ${truncate(ad.title, 20)}
+                            <i class="fas fa-copy ad-copy" onclick="copyText('${ad.title} - ${ad.description} - قیمت: ${ad.price}', event)"></i>
                         </div>
                         <div class="ad-location">
                             <i class="fas fa-map-marker-alt"></i>
@@ -1179,10 +1367,44 @@
                         <div class="ad-actions">
                             <button class="ad-btn" onclick="translateText('${ad.description}', event)">
                                 <i class="fas fa-language"></i>
-                                <span>ترجمه</span>
+                                <span>${translations[currentLang].translate}</span>
                             </button>
                         </div>
                     </div>
+                </div>
+            `).join('');
+        }
+
+        function getImageUrl(ad) {
+            if (ad.image_ids && ad.image_ids !== '[]') {
+                try {
+                    const images = JSON.parse(ad.image_ids);
+                    if (images && images.length > 0) {
+                        return `https://api.telegram.org/file/bot8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c/${images[0]}`;
+                    }
+                } catch (e) {}
+            }
+            return 'https://via.placeholder.com/300x140?text=No+Image';
+        }
+
+        function truncate(str, length) {
+            return str.length > length ? str.substring(0, length) + '...' : str;
+        }
+
+        // ===== کارت‌های قیمت اشتراک =====
+        function renderPricingCards() {
+            const plans = [
+                { months: 1, price: prices.vip1 },
+                { months: 3, price: prices.vip3 },
+                { months: 6, price: prices.vip6 }
+            ];
+
+            const grid = document.getElementById('pricing-grid');
+            grid.innerHTML = plans.map(plan => `
+                <div class="pricing-card" onclick="buySubscription(${plan.months})">
+                    <div class="month">${plan.months} ${translations[currentLang].months || 'ماهه'}</div>
+                    <div class="price">${plan.price}</div>
+                    <div class="currency">تومان</div>
                 </div>
             `).join('');
         }
@@ -1226,7 +1448,7 @@
                 const translated = data.responseData.translatedText;
                 
                 tg.showPopup({ 
-                    title: 'ترجمه',
+                    title: translations[currentLang].translate,
                     message: translated,
                     buttons: [{ type: 'close' }]
                 });
@@ -1237,27 +1459,36 @@
             btn.innerHTML = originalText;
         }
 
-        // ===== نمایش جزئیات =====
+        // ===== نمایش جزئیات آگهی =====
         function showAdDetail(ad) {
             const modal = document.getElementById('detail-modal');
             const content = document.getElementById('detail-content');
             
+            // محاسبه قیمت به دلار و تتر (نرخ فرضی 60,000 تومان)
+            const priceInToman = parseInt(ad.price.replace(/,/g, ''));
+            const priceInUSD = Math.floor(priceInToman / 60000);
+            
             content.innerHTML = `
-                <img src="https://via.placeholder.com/600x250" class="detail-image" alt="${ad.title}">
+                <img src="${getImageUrl(ad)}" class="detail-image" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/600x250?text=No+Image'">
                 <h2>${ad.title}</h2>
                 <div class="detail-price-row">
                     <span class="price-tag">💰 ${ad.price} تومان</span>
-                    <span class="price-tag">💵 ${Math.floor(ad.price.replace(/,/g,'') / 60000)}$ دلار</span>
-                    <span class="price-tag">💎 ${Math.floor(ad.price.replace(/,/g,'') / 60000)} USDT</span>
+                    <span class="price-tag">💵 ${priceInUSD}$ دلار</span>
+                    <span class="price-tag">💎 ${priceInUSD} USDT</span>
                 </div>
-                <p style="margin: 20px 0;">${ad.description}</p>
+                <p style="margin: 20px 0; line-height:1.8;">${ad.description}</p>
                 <div style="background: var(--glass); padding: 15px; border-radius: 15px;">
                     <p><i class="fas fa-map-marker-alt"></i> ${ad.city}، ${ad.country}</p>
                     <p><i class="fas fa-calendar"></i> ${new Date(ad.created_at * 1000).toLocaleDateString('fa-IR')}</p>
+                    <p><i class="fas fa-user"></i> فروشنده: ${ad.user_name || 'کاربر'}</p>
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="ad-btn" style="flex: 1;" onclick="copyText('${ad.title} - ${ad.description}', event)">📋 کپی متن</button>
-                    <button class="ad-btn" style="flex: 1;" onclick="translateText('${ad.description}', event)">🌐 ترجمه</button>
+                <div class="detail-actions">
+                    <button class="detail-btn" onclick="copyText('${ad.title} - ${ad.description} - قیمت: ${ad.price} تومان', event)">
+                        <i class="fas fa-copy"></i> ${translations[currentLang].copy}
+                    </button>
+                    <button class="detail-btn primary" onclick="contactSeller('${ad.user_id}')">
+                        <i class="fas fa-comment"></i> ${translations[currentLang].contact}
+                    </button>
                 </div>
             `;
             
@@ -1270,33 +1501,91 @@
             tg.BackButton.hide();
         }
 
-        // ===== ناوبری =====
+        // ===== ارتباط با فروشنده =====
+        function contactSeller(userId) {
+            tg.openTelegramLink(`https://t.me/${userId}`);
+        }
+
+        // ===== خرید اشتراک =====
+        function buySubscription(months) {
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}?start=subscribe_${months}`);
+        }
+
+        // ===== باز کردن ربات =====
+        function openBot() {
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+        }
+
+        function openSupport() {
+            tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
+        }
+
+        // ===== نمایش تب‌ها =====
         function showTab(tab) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             event.target.closest('.nav-item').classList.add('active');
             
-            if (tab === 'admin' && isAdmin) {
-                // نمایش پنل مدیریت
-            }
-        }
-
-        function openBot() {
-            tg.openTelegramLink('https://t.me/AlsouqAlmaftuhiran_bot');
-        }
-
-        function openSupport() {
-            tg.openTelegramLink('https://t.me/Mehdi_E_admin');
+            // اینجا می‌توانید محتوای تب‌ها را مدیریت کنید
         }
 
         // ===== پنل مدیریت =====
         function loadAdminPanel() {
-            // اینجا پنل مدیریت را می‌سازی
+            const panel = document.getElementById('admin-panel');
+            panel.innerHTML = `
+                <div class="admin-card">
+                    <div class="admin-title">
+                        <i class="fas fa-coins"></i>
+                        <h3>تنظیم قیمت‌ها</h3>
+                    </div>
+                    
+                    <h4>آگهی ویژه (تومان)</h4>
+                    <div class="price-input-group">
+                        <input type="text" class="price-input" id="price-special-1" value="${prices.special1}" placeholder="۱ روزه">
+                        <input type="text" class="price-input" id="price-special-3" value="${prices.special3}" placeholder="۳ روزه">
+                    </div>
+
+                    <h4>اشتراک ویژه</h4>
+                    <div class="price-input-group">
+                        <input type="text" class="price-input" id="price-vip-1" value="${prices.vip1}" placeholder="۱ ماهه">
+                        <input type="text" class="price-input" id="price-vip-3" value="${prices.vip3}" placeholder="۳ ماهه">
+                        <input type="text" class="price-input" id="price-vip-6" value="${prices.vip6}" placeholder="۶ ماهه">
+                    </div>
+
+                    <button class="save-btn" onclick="savePrices()">💾 ذخیره قیمت‌ها</button>
+                </div>
+            `;
+            panel.style.display = 'block';
+        }
+
+        async function savePrices() {
+            prices = {
+                special1: document.getElementById('price-special-1').value,
+                special3: document.getElementById('price-special-3').value,
+                vip1: document.getElementById('price-vip-1').value,
+                vip3: document.getElementById('price-vip-3').value,
+                vip6: document.getElementById('price-vip-6').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/prices`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(prices)
+                });
+                
+                if (response.ok) {
+                    tg.showPopup({ message: '✅ قیمت‌ها با موفقیت ذخیره شدند' });
+                    renderPricingCards();
+                }
+            } catch (e) {
+                tg.showPopup({ message: '❌ خطا در ذخیره قیمت‌ها' });
+            }
         }
 
         // ===== مقداردهی اولیه =====
         init();
 
-        // ===== دکمه بازگشت =====
+        // ===== دکمه بازگشت تلگرام =====
         tg.BackButton.onClick(() => {
             if (document.getElementById('detail-modal').style.display === 'block') {
                 closeDetailModal();
@@ -1304,4 +1593,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
