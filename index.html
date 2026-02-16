@@ -6,9 +6,9 @@
     <title>السوق المفتوح | سوپر اپلیکیشن</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --primary: #1e3a8a;
@@ -32,6 +32,7 @@
         }
 
         body {
+            font-family: 'Vazirmatn', 'Tajawal', sans-serif;
             background: var(--bg);
             color: var(--text);
             padding: 16px;
@@ -52,7 +53,12 @@
             color: var(--primary);
         }
 
-        .theme-toggle {
+        .header-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
             width: 40px;
             height: 40px;
             border-radius: 12px;
@@ -62,6 +68,30 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+        }
+
+        .language-menu {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--card);
+            padding: 8px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .lang-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .lang-option.active {
+            background: var(--primary);
+            color: white;
         }
 
         .search-box {
@@ -142,6 +172,80 @@
 
         .bookmark-btn.active {
             color: var(--gold);
+        }
+
+        /* ===== استایل مودال راهنما ===== */
+        .info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .info-content {
+            background: var(--card);
+            border-radius: 30px;
+            max-width: 320px;
+            width: 100%;
+            padding: 30px 20px;
+            text-align: center;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .info-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .info-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .info-text {
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .info-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .info-button.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
         }
 
         .modal {
@@ -286,10 +390,18 @@
 <body data-theme="light">
 
     <div class="header">
-        <div class="logo">السوق المفتوح</div>
-        <div class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
+        <div class="logo" id="logo-text">السوق المفتوح</div>
+        <div class="header-controls">
+            <div class="icon-btn" onclick="toggleTheme()">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </div>
         </div>
+    </div>
+
+    <div class="language-menu" id="language-menu">
+        <div class="lang-option active" onclick="setLanguage('fa')">🇮🇷 فارسی</div>
+        <div class="lang-option" onclick="setLanguage('ar')">🇸🇦 العربية</div>
+        <div class="lang-option" onclick="setLanguage('en')">🇬🇧 English</div>
     </div>
 
     <input type="text" class="search-box" id="searchInput" placeholder="جستجو..." oninput="searchAds()">
@@ -307,19 +419,35 @@
     <div class="bottom-nav">
         <div class="nav-item active" onclick="loadHome()">
             <i class="fas fa-home"></i>
-            <span>خانه</span>
+            <span id="nav-home">خانه</span>
         </div>
         <div class="nav-item" onclick="loadBookmarks()">
             <i class="fas fa-bookmark"></i>
-            <span>نشان‌ها</span>
+            <span id="nav-bookmark">نشان‌ها</span>
         </div>
-        <div class="nav-item" onclick="openBot()">
+        <div class="nav-item" onclick="showAdInfo()">
             <i class="fas fa-plus-circle"></i>
-            <span>ثبت آگهی</span>
+            <span id="nav-add">ثبت آگهی</span>
         </div>
         <div class="nav-item" onclick="loadAdmin()">
             <i class="fas fa-cog"></i>
-            <span>مدیریت</span>
+            <span id="nav-admin">مدیریت</span>
+        </div>
+    </div>
+
+    <!-- ===== مودال راهنمای ثبت آگهی ===== -->
+    <div id="infoModal" class="info-modal">
+        <div class="info-content">
+            <div class="info-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="info-title" id="infoTitle">📢 ثبت آگهی</div>
+            <div class="info-text" id="infoText">
+                برای ثبت آگهی باید به ربات تلگرام مراجعه کنید.<br><br>
+                روی دکمه زیر کلیک کنید تا ربات باز شود.
+            </div>
+            <button class="info-button" onclick="openBot()" id="infoBtn">🚀 باز کردن ربات</button>
+            <button class="info-button secondary" onclick="closeInfoModal()" id="infoClose">بستن</button>
         </div>
     </div>
 
@@ -327,7 +455,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <i class="fas fa-arrow-right" onclick="closeModal()" style="cursor:pointer;"></i>
-                <span>جزئیات آگهی</span>
+                <span id="modal-title">جزئیات آگهی</span>
             </div>
             <div class="modal-body" id="modalBody"></div>
         </div>
@@ -335,6 +463,7 @@
 
     <script>
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
         const tg = Telegram.WebApp;
         tg.expand();
 
@@ -343,6 +472,112 @@
         let currentFilter = 'all';
         let currentSearch = '';
         let userId = tg.initDataUnsafe?.user?.id;
+        let currentLang = localStorage.getItem('mini_app_lang') || 'fa';
+
+        const translations = {
+            fa: {
+                logo: 'السوق المفتوح',
+                search: 'جستجو...',
+                home: 'خانه',
+                bookmark: 'نشان‌ها',
+                add: 'ثبت آگهی',
+                admin: 'مدیریت',
+                modalTitle: 'جزئیات آگهی',
+                infoTitle: '📢 ثبت آگهی',
+                infoText: 'برای ثبت آگهی باید به ربات تلگرام مراجعه کنید.\n\nروی دکمه زیر کلیک کنید تا ربات باز شود.',
+                infoBtn: '🚀 باز کردن ربات',
+                infoClose: 'بستن',
+                categories: {
+                    all: 'همه',
+                    car: '🚗 خودرو',
+                    real: '🏠 املاک',
+                    phone: '📱 موبایل',
+                    laptop: '💻 لپ‌تاپ'
+                }
+            },
+            ar: {
+                logo: 'السوق المفتوح',
+                search: 'بحث...',
+                home: 'الرئيسية',
+                bookmark: 'المفضلة',
+                add: 'إضافة إعلان',
+                admin: 'إدارة',
+                modalTitle: 'تفاصيل الإعلان',
+                infoTitle: '📢 إضافة إعلان',
+                infoText: 'لإضافة إعلان، يجب عليك الذهاب إلى بوت التليجرام.\n\nانقر على الزر أدناه لفتح البوت.',
+                infoBtn: '🚀 فتح البوت',
+                infoClose: 'إغلاق',
+                categories: {
+                    all: 'الكل',
+                    car: '🚗 سيارات',
+                    real: '🏠 عقارات',
+                    phone: '📱 جوال',
+                    laptop: '💻 لابتوب'
+                }
+            },
+            en: {
+                logo: 'Al-Souq',
+                search: 'Search...',
+                home: 'Home',
+                bookmark: 'Bookmarks',
+                add: 'Post Ad',
+                admin: 'Admin',
+                modalTitle: 'Ad Details',
+                infoTitle: '📢 Post Ad',
+                infoText: 'To post an ad, you need to go to the Telegram bot.\n\nClick the button below to open the bot.',
+                infoBtn: '🚀 Open Bot',
+                infoClose: 'Close',
+                categories: {
+                    all: 'All',
+                    car: '🚗 Cars',
+                    real: '🏠 Real Estate',
+                    phone: '📱 Phones',
+                    laptop: '💻 Laptops'
+                }
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('mini_app_lang', lang);
+            document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+            
+            document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.lang-option[onclick="setLanguage('${lang}')"]`).classList.add('active');
+            
+            updateUIText();
+            renderAds();
+        }
+
+        function updateUIText() {
+            const t = translations[currentLang];
+            document.getElementById('logo-text').innerText = t.logo;
+            document.getElementById('searchInput').placeholder = t.search;
+            document.getElementById('nav-home').innerText = t.home;
+            document.getElementById('nav-bookmark').innerText = t.bookmark;
+            document.getElementById('nav-add').innerText = t.add;
+            document.getElementById('nav-admin').innerText = t.admin;
+            document.getElementById('modal-title').innerText = t.modalTitle;
+            document.getElementById('infoTitle').innerText = t.infoTitle;
+            document.getElementById('infoText').innerText = t.infoText;
+            document.getElementById('infoBtn').innerText = t.infoBtn;
+            document.getElementById('infoClose').innerText = t.infoClose;
+
+            const chips = document.querySelectorAll('.category-chip');
+            chips[0].innerHTML = t.categories.all;
+            chips[1].innerHTML = t.categories.car;
+            chips[2].innerHTML = t.categories.real;
+            chips[3].innerHTML = t.categories.phone;
+            chips[4].innerHTML = t.categories.laptop;
+        }
+
+        function showAdInfo() {
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
 
         async function fetchAds() {
             try {
@@ -450,7 +685,7 @@
             const res = await fetch(`${API_BASE}/api/translate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, targetLang: 'en' })
+                body: JSON.stringify({ text, targetLang: currentLang === 'fa' ? 'en' : currentLang === 'ar' ? 'en' : 'fa' })
             });
             const data = await res.json();
             tg.showPopup({ message: data.translated });
@@ -475,7 +710,7 @@
         function toggleTheme() {
             const isDark = document.body.getAttribute('data-theme') === 'dark';
             document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.querySelector('.theme-toggle i').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
         }
 
         async function loadAdmin() {
@@ -543,15 +778,17 @@
         }
 
         function openBot() {
-            tg.openTelegramLink('https://t.me/AlsouqAlmaftuhiran_bot');
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+            closeInfoModal();
         }
 
         function closeModal() {
             document.getElementById('adModal').style.display = 'none';
         }
 
+        setLanguage(currentLang);
         fetchAds();
         fetchUserData();
     </script>
 </body>
-</html>
+    </html>
