@@ -3,368 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>السوق المفتوح | پلتفرم هوشمند آگهی</title>
-    
-    <!-- Telegram WebApp SDK -->
+    <title>السوق المفتوح | سوپر اپلیکیشن</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Vazirmatn', sans-serif;
-        }
-
-        /* ===== تم رسمی و حرفه‌ای ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        
         :root {
             --primary: #1e3a8a;
             --primary-light: #3b82f6;
             --accent: #f97316;
             --gold: #fbbf24;
             --bg: #f8fafc;
-            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             --card: #ffffff;
-            --card-border: #e2e8f0;
+            --border: #e2e8f0;
             --text: #0f172a;
             --text-dim: #64748b;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] {
             --primary: #3b82f6;
-            --primary-light: #60a5fa;
-            --accent: #f97316;
-            --gold: #fbbf24;
             --bg: #0f172a;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             --card: #1e293b;
-            --card-border: #334155;
+            --border: #334155;
             --text: #f1f5f9;
             --text-dim: #94a3b8;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            background: var(--bg-gradient);
+            background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
             padding: 16px;
             padding-bottom: 80px;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
-        /* ===== هدر رسمی ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding: 16px 20px;
-            background: var(--card);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
+            margin-bottom: 20px;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 1.3rem;
             font-weight: 900;
             color: var(--primary);
         }
 
-        .logo i {
-            color: var(--accent);
-        }
-
-        .header-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .header-btn {
+        .theme-toggle {
             width: 40px;
             height: 40px;
             border-radius: 12px;
-            background: var(--bg);
-            border: 1px solid var(--card-border);
+            background: var(--card);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 45px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
             color: var(--text);
+            margin-bottom: 20px;
         }
 
-        .header-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* ===== بخش ویژه ===== */
-        .special-section {
-            margin-bottom: 24px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .special-carousel {
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 8px;
-        }
-
-        .special-carousel::-webkit-scrollbar {
-            display: none;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 12px;
-        }
-
-        .special-card {
-            min-width: 260px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 20px;
-            padding: 16px;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .special-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .special-badge {
-            background: var(--gold);
-            color: #000;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-
-        /* ===== دسته‌بندی‌ها ===== */
         .categories {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             margin-bottom: 20px;
-            padding: 4px 0;
         }
 
         .category-chip {
             background: var(--card);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border);
             border-radius: 30px;
             padding: 8px 16px;
             white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
             cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
         }
 
         .category-chip.active {
             background: var(--primary);
             color: white;
-            border-color: var(--primary);
         }
 
-        /* ===== جستجو ===== */
-        .search-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 14px 45px;
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 30px;
-            color: var(--text);
-            font-size: 0.95rem;
-            box-shadow: var(--shadow);
-        }
-
-        .search-input:focus {
-            outline: 2px solid var(--primary-light);
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-dim);
-        }
-
-        /* ===== شبکه آگهی‌ها ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
+            gap: 12px;
         }
 
         .ad-card {
             background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: var(--shadow);
-        }
-
-        .ad-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
         }
 
         .ad-card.special {
             border: 2px solid var(--gold);
         }
 
-        .ad-image-container {
-            position: relative;
-            width: 100%;
-            height: 140px;
-            overflow: hidden;
-            background: var(--bg);
-        }
-
         .ad-image {
             width: 100%;
-            height: 100%;
+            height: 120px;
             object-fit: cover;
         }
 
-        .ad-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--gold);
-            color: black;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: bold;
-            z-index: 2;
-        }
-
-        .ad-price-badge {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
         .ad-info {
-            padding: 12px;
+            padding: 10px;
         }
 
         .ad-title {
             font-weight: 700;
             font-size: 0.9rem;
             margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .ad-price {
             color: var(--accent);
             font-weight: 900;
             font-size: 0.95rem;
-            margin: 4px 0;
         }
 
-        .ad-location {
+        .bookmark-btn {
             color: var(--text-dim);
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            cursor: pointer;
         }
 
-        /* ===== مودال جزئیات (تمیز و محدود) ===== */
-        .modal-overlay {
+        .bookmark-btn.active {
+            color: var(--gold);
+        }
+
+        .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(5px);
             z-index: 1000;
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 20px;
         }
 
         .modal-content {
             background: var(--card);
-            border-radius: 24px;
+            border-radius: 20px;
             max-width: 400px;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--card-border);
         }
 
         .modal-header {
-            position: sticky;
-            top: 0;
-            background: var(--card);
             padding: 16px;
-            border-bottom: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             gap: 12px;
-            z-index: 10;
-        }
-
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid var(--card-border);
         }
 
         .modal-body {
@@ -373,58 +179,37 @@
 
         .modal-image {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: 12px;
             margin-bottom: 16px;
-        }
-
-        .modal-price-row {
-            display: flex;
-            gap: 8px;
-            margin: 12px 0;
-            flex-wrap: wrap;
-        }
-
-        .price-tag {
-            background: var(--bg);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            border: 1px solid var(--card-border);
         }
 
         .modal-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        .modal-btn {
+        .btn {
             flex: 1;
             padding: 12px;
-            border-radius: 30px;
+            border-radius: 12px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
         }
 
-        .modal-btn.primary {
+        .btn-primary {
             background: var(--primary);
             color: white;
         }
 
-        .modal-btn.secondary {
+        .btn-secondary {
             background: var(--bg);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border);
         }
 
-        /* ===== ناوبری پایین ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -432,11 +217,9 @@
             right: 0;
             display: flex;
             justify-content: space-around;
-            padding: 12px 20px;
+            padding: 12px;
             background: var(--card);
-            border-top: 1px solid var(--card-border);
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            z-index: 100;
+            border-top: 1px solid var(--border);
         }
 
         .nav-item {
@@ -457,349 +240,318 @@
             font-size: 1.3rem;
         }
 
-        /* ===== محدودیت کاربر ===== */
-        .user-limit {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.8rem;
-        }
-
-        .limit-progress {
-            flex: 1;
-            height: 6px;
-            background: var(--bg);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .limit-fill {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 3px;
-            width: 0%;
-        }
-
         .loader {
             text-align: center;
             padding: 40px;
             color: var(--text-dim);
         }
+
+        .admin-panel {
+            margin-top: 20px;
+        }
+
+        .pending-ad {
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .approve-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .reject-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- ===== HEADER ===== -->
     <div class="header">
-        <div class="logo">
-            <i class="fas fa-store-alt"></i>
-            <span>السوق المفتوح</span>
-        </div>
-        <div class="header-controls">
-            <div class="header-btn" onclick="toggleTheme()">
-                <i class="fas fa-moon"></i>
-            </div>
-            <div class="header-btn" onclick="openBot()">
-                <i class="fas fa-plus"></i>
-            </div>
+        <div class="logo">السوق المفتوح</div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
         </div>
     </div>
 
-    <!-- ===== کاروسل آگهی‌های ویژه ===== -->
-    <div class="special-section">
-        <div class="section-header">
-            <i class="fas fa-crown" style="color: var(--gold);"></i>
-            <span>✨ آگهی‌های ویژه</span>
-        </div>
-        <div class="special-carousel">
-            <div class="carousel-track" id="special-track"></div>
-        </div>
-    </div>
+    <input type="text" class="search-box" id="searchInput" placeholder="جستجو..." oninput="searchAds()">
 
-    <!-- ===== دسته‌بندی‌ها ===== -->
     <div class="categories" id="categories">
         <div class="category-chip active" onclick="filterCategory('all', this)">همه</div>
         <div class="category-chip" onclick="filterCategory('خودرو', this)">🚗 خودرو</div>
         <div class="category-chip" onclick="filterCategory('املاک', this)">🏠 املاک</div>
         <div class="category-chip" onclick="filterCategory('موبایل', this)">📱 موبایل</div>
         <div class="category-chip" onclick="filterCategory('لپ‌تاپ', this)">💻 لپ‌تاپ</div>
-        <div class="category-chip" onclick="filterCategory('خدمات', this)">🛠 خدمات</div>
     </div>
 
-    <!-- ===== جستجو ===== -->
-    <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" class="search-input" id="search-input" placeholder="جستجو در آگهی‌ها..." oninput="searchAds()">
-    </div>
+    <div id="adsContainer" class="ads-grid"></div>
 
-    <!-- ===== محدودیت کاربر ===== -->
-    <div class="user-limit" id="user-limit">
-        <i class="fas fa-info-circle" style="color: var(--accent);"></i>
-        <span id="limit-text">شما ۰ از ۲ آگهی این ماه را ثبت کرده‌اید</span>
-        <div class="limit-progress">
-            <div class="limit-fill" id="limit-progress" style="width: 0%"></div>
-        </div>
-    </div>
-
-    <!-- ===== شبکه آگهی‌ها ===== -->
-    <div id="ads-container" class="ads-grid"></div>
-
-    <!-- ===== ناوبری پایین ===== -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="window.location.reload()">
+        <div class="nav-item active" onclick="loadHome()">
             <i class="fas fa-home"></i>
             <span>خانه</span>
+        </div>
+        <div class="nav-item" onclick="loadBookmarks()">
+            <i class="fas fa-bookmark"></i>
+            <span>نشان‌ها</span>
         </div>
         <div class="nav-item" onclick="openBot()">
             <i class="fas fa-plus-circle"></i>
             <span>ثبت آگهی</span>
         </div>
-        <div class="nav-item" onclick="openSupport()">
-            <i class="fas fa-headset"></i>
-            <span>پشتیبانی</span>
+        <div class="nav-item" onclick="loadAdmin()">
+            <i class="fas fa-cog"></i>
+            <span>مدیریت</span>
         </div>
     </div>
 
-    <!-- ===== مودال جزئیات آگهی ===== -->
-    <div id="ad-modal" class="modal-overlay">
+    <div id="adModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </div>
-                <span style="font-weight: 700;">جزئیات آگهی</span>
+                <i class="fas fa-arrow-right" onclick="closeModal()" style="cursor:pointer;"></i>
+                <span>جزئیات آگهی</span>
             </div>
-            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
     <script>
-        // ===== تنظیمات اولیه =====
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
-        const SUPPORT_USERNAME = 'Mehdi_E_admin';
+        const tg = Telegram.WebApp;
+        tg.expand();
 
-        // ===== متغیرهای سراسری =====
         let allAds = [];
-        let currentCategory = 'all';
+        let userBookmarks = [];
+        let currentFilter = 'all';
         let currentSearch = '';
-        let userAdsCount = 0;
-        let currentTheme = 'light';
+        let userId = tg.initDataUnsafe?.user?.id;
 
-        // ===== دریافت آگهی‌ها از Worker =====
         async function fetchAds() {
             try {
-                const response = await fetch(`${API_BASE}/api/ads`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    allAds = data.ads || [];
-                } else {
-                    allAds = [];
-                }
-                
-                renderSpecialCarousel();
+                const res = await fetch(`${API_BASE}/api/ads`);
+                const data = await res.json();
+                allAds = data.ads || [];
                 renderAds();
             } catch (e) {
-                console.error('خطا در دریافت آگهی‌ها:', e);
-                document.getElementById('ads-container').innerHTML = 
-                    '<div class="loader">خطا در دریافت آگهی‌ها</div>';
+                console.error(e);
             }
         }
 
-        // ===== دریافت آمار کاربر =====
-        async function fetchUserStats() {
-            const user = tg.initDataUnsafe?.user;
-            if (!user) return;
-
+        async function fetchUserData() {
+            if (!userId) return;
             try {
-                const response = await fetch(`${API_BASE}/api/user-stats?user_id=${user.id}`);
-                const data = await response.json();
-                
+                const res = await fetch(`${API_BASE}/api/user-stats?user_id=${userId}`);
+                const data = await res.json();
                 if (data.success) {
-                    userAdsCount = data.ads_this_month || 0;
-                    document.getElementById('limit-text').innerText = 
-                        `شما ${userAdsCount} از ۲ آگهی این ماه را ثبت کرده‌اید`;
-                    document.getElementById('limit-progress').style.width = 
-                        `${(userAdsCount / 2) * 100}%`;
+                    userBookmarks = data.bookmarks || [];
                 }
-            } catch (e) {
-                console.error('خطا در دریافت آمار کاربر:', e);
-            }
+            } catch (e) {}
         }
 
-        // ===== کاروسل آگهی‌های ویژه =====
-        function renderSpecialCarousel() {
-            const specialAds = allAds.filter(ad => ad.ad_type === 'special');
-            const track = document.getElementById('special-track');
-            
-            if (specialAds.length === 0) {
-                track.innerHTML = '<div class="special-card">آگهی ویژه‌ای وجود ندارد</div>';
-                return;
-            }
-
-            track.innerHTML = specialAds.map(ad => `
-                <div class="special-card" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
-                    <span class="special-badge">✨ ویژه ${ad.plan_days || 1} روزه</span>
-                    <h3 style="margin: 8px 0;">${ad.title}</h3>
-                    <div style="font-size: 1.2rem; font-weight: 900; margin: 8px 0;">${ad.price}</div>
-                    <div style="font-size: 0.8rem; opacity: 0.9;">${ad.city || ''}</div>
-                </div>
-            `).join('');
-        }
-
-        // ===== نمایش آگهی‌ها =====
         function renderAds() {
-            let filteredAds = allAds;
+            let filtered = allAds.filter(ad => ad.status === 'approved');
 
-            if (currentCategory !== 'all') {
-                filteredAds = filteredAds.filter(ad => ad.category === currentCategory);
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(ad => ad.category === currentFilter);
             }
 
             if (currentSearch) {
-                const searchLower = currentSearch.toLowerCase();
-                filteredAds = filteredAds.filter(ad => 
-                    (ad.title?.toLowerCase().includes(searchLower) || 
-                     ad.description?.toLowerCase().includes(searchLower))
+                filtered = filtered.filter(ad => 
+                    ad.title?.includes(currentSearch) || 
+                    ad.description?.includes(currentSearch)
                 );
             }
 
-            const container = document.getElementById('ads-container');
-            
-            if (filteredAds.length === 0) {
-                container.innerHTML = '<div class="loader">آگهی‌ای یافت نشد</div>';
-                return;
-            }
-
-            container.innerHTML = filteredAds.map(ad => `
-                <div class="ad-card ${ad.ad_type === 'special' ? 'special' : ''}" 
-                     onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
-                    <div class="ad-image-container">
-                        <img src="${getImageUrl(ad)}" class="ad-image" alt="${ad.title}">
-                        ${ad.ad_type === 'special' ? '<span class="ad-badge">✨ ویژه</span>' : ''}
-                        <span class="ad-price-badge">💰 ${ad.price}</span>
-                    </div>
+            const container = document.getElementById('adsContainer');
+            container.innerHTML = filtered.map(ad => `
+                <div class="ad-card ${ad.ad_type === 'special' ? 'special' : ''}" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
+                    <img src="${getImageUrl(ad)}" class="ad-image">
                     <div class="ad-info">
-                        <div class="ad-title">${truncate(ad.title, 20)}</div>
-                        <div class="ad-price">${ad.price}</div>
-                        <div class="ad-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            ${ad.city || 'نامشخص'}
+                        <div style="display:flex; justify-content:space-between;">
+                            <span class="ad-title">${ad.title}</span>
+                            <i class="fa${userBookmarks.includes(ad.id) ? 's' : 'r'} fa-bookmark bookmark-btn" 
+                               onclick="toggleBookmark('${ad.id}', event)"></i>
                         </div>
+                        <div class="ad-price">${ad.price} ${ad.currency}</div>
+                        <div style="font-size:0.7rem; color:var(--text-dim);">${ad.city}</div>
                     </div>
                 </div>
             `).join('');
         }
 
         function getImageUrl(ad) {
-            if (ad.image_ids && ad.image_ids !== '[]') {
-                try {
-                    const images = JSON.parse(ad.image_ids);
-                    if (images && images.length > 0) {
-                        return `https://api.telegram.org/file/bot8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c/${images[0]}`;
-                    }
-                } catch (e) {}
+            try {
+                const images = JSON.parse(ad.image_ids || '[]');
+                return images[0] ? `https://api.telegram.org/file/bot8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c/${images[0]}` : 
+                       'https://via.placeholder.com/300';
+            } catch {
+                return 'https://via.placeholder.com/300';
             }
-            return 'https://via.placeholder.com/300x140?text=No+Image';
         }
 
-        function truncate(str, length) {
-            return str?.length > length ? str.substring(0, length) + '...' : str || '';
-        }
-
-        // ===== نمایش جزئیات آگهی (تمیز و محدود) =====
         function showAdDetail(ad) {
-            const modal = document.getElementById('ad-modal');
-            const body = document.getElementById('modal-body');
-            
-            const priceInToman = parseInt(ad.price?.replace(/,/g, '') || '0');
-            const priceInUSD = Math.floor(priceInToman / 60000);
-            
-            body.innerHTML = `
-                <img src="${getImageUrl(ad)}" class="modal-image" alt="${ad.title}">
-                <h2 style="margin-bottom: 8px;">${ad.title}</h2>
-                <div class="modal-price-row">
-                    <span class="price-tag">💰 ${ad.price} تومان</span>
-                    <span class="price-tag">💵 ${priceInUSD}$ دلار</span>
-                    <span class="price-tag">💎 ${priceInUSD} USDT</span>
-                </div>
-                <p style="margin: 16px 0; line-height: 1.6; color: var(--text-dim);">
-                    ${ad.description || 'توضیحاتی ثبت نشده'}
-                </p>
-                <div style="background: var(--bg); padding: 12px; border-radius: 12px; margin: 16px 0;">
-                    <p><i class="fas fa-map-marker-alt" style="color: var(--accent);"></i> ${ad.city || 'نامشخص'}، ${ad.country || 'ایران'}</p>
-                    <p><i class="fas fa-calendar" style="color: var(--accent);"></i> ${new Date(ad.created_at * 1000).toLocaleDateString('fa-IR')}</p>
+            const images = JSON.parse(ad.image_ids || '[]');
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <img src="${getImageUrl(ad)}" class="modal-image">
+                <h3>${ad.title}</h3>
+                <div style="color:var(--accent); font-size:1.3rem; margin:10px 0;">${ad.price} ${ad.currency}</div>
+                <p style="margin:10px 0;">${ad.description}</p>
+                <div style="background:var(--bg); padding:10px; border-radius:8px;">
+                    <p>📍 ${ad.city}</p>
+                    <p>📅 ${new Date(ad.created_at * 1000).toLocaleDateString('fa-IR')}</p>
                 </div>
                 <div class="modal-actions">
-                    <button class="modal-btn secondary" onclick="copyText('${ad.title} - ${ad.description}')">
-                        <i class="fas fa-copy"></i> کپی
+                    <button class="btn btn-secondary" onclick="translateText('${ad.description}')">
+                        <i class="fas fa-language"></i> ترجمه
                     </button>
-                    <button class="modal-btn primary" onclick="contactSeller('${ad.user_id}')">
+                    <button class="btn btn-primary" onclick="contactSeller('${ad.user_id}')">
                         <i class="fas fa-comment"></i> تماس
                     </button>
                 </div>
             `;
-            
-            modal.style.display = 'flex';
-            tg.BackButton.show();
+            document.getElementById('adModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('ad-modal').style.display = 'none';
-            tg.BackButton.hide();
+        async function toggleBookmark(adId, event) {
+            event.stopPropagation();
+            if (userBookmarks.includes(adId)) {
+                userBookmarks = userBookmarks.filter(id => id !== adId);
+            } else {
+                userBookmarks.push(adId);
+            }
+            await fetch(`${API_BASE}/api/bookmarks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, bookmarks: userBookmarks })
+            });
+            renderAds();
         }
 
-        // ===== توابع کمکی =====
-        function copyText(text) {
-            navigator.clipboard.writeText(text);
-            tg.showPopup({ message: '✅ متن کپی شد' });
+        async function translateText(text) {
+            const res = await fetch(`${API_BASE}/api/translate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text, targetLang: 'en' })
+            });
+            const data = await res.json();
+            tg.showPopup({ message: data.translated });
         }
 
-        function contactSeller(userId) {
-            tg.openTelegramLink(`https://t.me/${userId}`);
+        function contactSeller(sellerId) {
+            tg.openTelegramLink(`https://t.me/${sellerId}`);
         }
 
-        function filterCategory(cat, element) {
-            currentCategory = cat;
-            document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
+        function filterCategory(cat, el) {
+            currentFilter = cat;
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
             renderAds();
         }
 
         function searchAds() {
-            currentSearch = document.getElementById('search-input').value;
+            currentSearch = document.getElementById('searchInput').value;
             renderAds();
         }
 
         function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', currentTheme);
-            document.querySelector('.header-btn i').className = 
-                currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.querySelector('.theme-toggle i').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        async function loadAdmin() {
+            if (userId !== '6522877528') {
+                tg.showPopup({ message: '⛔ فقط ادمین دسترسی دارد' });
+                return;
+            }
+
+            const res = await fetch(`${API_BASE}/api/pending-ads?admin_id=${userId}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                let html = '<h3>📋 آگهی‌های در انتظار تایید</h3>';
+                data.ads.forEach(ad => {
+                    html += `
+                        <div class="pending-ad">
+                            <h4>${ad.title}</h4>
+                            <p>👤 ${ad.user_id}</p>
+                            <p>💰 ${ad.price} ${ad.currency}</p>
+                            <p>📍 ${ad.city}</p>
+                            <div class="admin-actions">
+                                <button class="approve-btn" onclick="processAd(${ad.id}, 'approve')">✅ تایید</button>
+                                <button class="reject-btn" onclick="processAd(${ad.id}, 'reject')">❌ رد</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('adsContainer').innerHTML = html || '<p>هیچ آگهی در انتظار نیست</p>';
+            }
+        }
+
+        async function processAd(adId, action) {
+            await fetch(`${API_BASE}/api/process-ad`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminId: userId, adId, action })
+            });
+            loadAdmin();
+        }
+
+        function loadHome() {
+            fetchAds();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        async function loadBookmarks() {
+            if (!userId) return;
+            const res = await fetch(`${API_BASE}/api/user-stats?user_id=${userId}`);
+            const data = await res.json();
+            userBookmarks = data.bookmarks || [];
+            const bookmarkedAds = allAds.filter(ad => userBookmarks.includes(ad.id));
+            
+            document.getElementById('adsContainer').innerHTML = bookmarkedAds.map(ad => `
+                <div class="ad-card" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
+                    <img src="${getImageUrl(ad)}" class="ad-image">
+                    <div class="ad-info">
+                        <div class="ad-title">${ad.title}</div>
+                        <div class="ad-price">${ad.price}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
         function openBot() {
-            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+            tg.openTelegramLink('https://t.me/AlsouqAlmaftuhiran_bot');
         }
 
-        function openSupport() {
-            tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
+        function closeModal() {
+            document.getElementById('adModal').style.display = 'none';
         }
 
-        // ===== مقداردهی اولیه =====
         fetchAds();
-        fetchUserStats();
-
-        tg.BackButton.onClick(closeModal);
+        fetchUserData();
     </script>
 </body>
 </html>
