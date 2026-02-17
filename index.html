@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>السوق المفتوح | نسل آینده</title>
     
-    <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
     
     <style>
+        /* ===== نسخه اصلی - شاهکار طراحی ===== */
         * {
             margin: 0;
             padding: 0;
@@ -315,6 +311,7 @@
             width: 100%;
             height: 120px;
             object-fit: cover;
+            background: linear-gradient(45deg, #667eea, #764ba2);
         }
 
         .ad-info {
@@ -411,6 +408,7 @@
             object-fit: cover;
             border-radius: 30px;
             margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
         }
 
         .modal-actions {
@@ -452,8 +450,8 @@
     <!-- ===== هدر شیشه‌ای ===== -->
     <div class="glass-header">
         <div class="logo">السوق المفتوح</div>
-        <div class="theme-btn" onclick="toggleTheme()">
-            <i class="fas fa-moon" id="theme-icon"></i>
+        <div class="theme-btn" id="themeToggle">
+            <i class="fas fa-moon" id="themeIcon"></i>
         </div>
     </div>
 
@@ -463,14 +461,14 @@
             <i class="fas fa-crown"></i>
             <span>آگهی‌های ویژه</span>
         </div>
-        <div class="carousel-track" id="special-track"></div>
+        <div class="carousel-track" id="specialTrack"></div>
     </div>
 
     <!-- ===== جستجو ===== -->
     <div class="search-box">
         <i class="fas fa-search search-icon"></i>
-        <input type="text" id="search-input" placeholder="جستجو در آگهی‌ها..." oninput="searchAds()">
-        <i class="fas fa-times search-clear" id="search-clear" onclick="clearSearch()"></i>
+        <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." oninput="searchAds()">
+        <i class="fas fa-times search-clear" id="searchClear" onclick="clearSearch()"></i>
     </div>
 
     <!-- ===== دسته‌بندی‌ها ===== -->
@@ -484,7 +482,7 @@
     </div>
 
     <!-- ===== شبکه آگهی‌ها ===== -->
-    <div id="ads-container" class="ads-grid"></div>
+    <div id="adsContainer" class="ads-grid"></div>
 
     <!-- ===== ناوبری پایین ثابت ===== -->
     <div class="bottom-nav">
@@ -507,61 +505,51 @@
     </div>
 
     <!-- ===== مودال جزئیات ===== -->
-    <div id="ad-modal" class="modal">
+    <div id="adModal" class="modal">
         <div class="modal-header">
             <div class="modal-close" onclick="closeModal()">
                 <i class="fas fa-arrow-right"></i>
             </div>
             <span>جزئیات آگهی</span>
         </div>
-        <div class="modal-content" id="modal-content"></div>
+        <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
+        // ===== تنظیمات ثابت =====
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
+        const SUPPORT_USERNAME = 'Mehdi_E_admin';
+        
         const tg = Telegram.WebApp;
         tg.expand();
 
-        let allAds = [];
-        let userBookmarks = [];
+        // ===== متغیرها =====
+        let allAds = [
+            { id: 1, title: 'آیفون ۱۳ پرو', price: '۵۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'موبایل', ad_type: 'special', plan_days: 1, description: 'آیفون ۱۳ پرو مکس ۲۵۶ گیگ', status: 'approved' },
+            { id: 2, title: 'آپارتمان ۸۰ متری', price: '۲,۵۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'اصفهان', category: 'املاک', ad_type: 'special', plan_days: 3, description: 'آپارتمان ۸۰ متری در منطقه خوب', status: 'approved' },
+            { id: 3, title: 'دوربین سونی', price: '۳۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'شیراز', category: 'دیجیتال', ad_type: 'normal', description: 'دوربین سونی A7III', status: 'approved' },
+            { id: 4, title: 'لپ‌تاپ ایسوس', price: '۲۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'لپ‌تاپ', ad_type: 'normal', description: 'ایسوس ROG', status: 'approved' },
+            { id: 5, title: 'سامسونگ S23', price: '۴۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'مشهد', category: 'موبایل', ad_type: 'special', plan_days: 1, description: 'سامسونگ اس۲۳ اولترا', status: 'approved' }
+        ];
+        
         let currentFilter = 'all';
         let currentSearch = '';
 
-        // ===== دریافت آگهی‌ها =====
-        async function fetchAds() {
-            try {
-                const res = await fetch(`${API_BASE}/api/ads`);
-                const data = await res.json();
-                allAds = data.ads || [];
-                renderSpecialCarousel();
-                renderAds();
-            } catch (e) {
-                console.log('خطا:', e);
-                // داده‌های نمونه برای تست
-                allAds = [
-                    { id: 1, title: 'آیفون ۱۳', price: '۵۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'موبایل', ad_type: 'special', plan_days: 1, image_ids: '[]', description: 'آیفون ۱۳ پرو مکس', status: 'approved' },
-                    { id: 2, title: 'آپارتمان', price: '۲,۵۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'اصفهان', category: 'املاک', ad_type: 'special', plan_days: 3, image_ids: '[]', description: 'آپارتمان ۸۰ متری', status: 'approved' },
-                    { id: 3, title: 'دوربین', price: '۳۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'شیراز', category: 'دیجیتال', ad_type: 'normal', image_ids: '[]', description: 'دوربین سونی', status: 'approved' }
-                ];
-                renderSpecialCarousel();
-                renderAds();
-            }
-        }
-
-        // ===== کاروسال ویژه =====
+        // ===== نمایش کاروسال ویژه =====
         function renderSpecialCarousel() {
             const specialAds = allAds.filter(ad => ad.ad_type === 'special');
-            const track = document.getElementById('special-track');
+            const track = document.getElementById('specialTrack');
             
             if (specialAds.length === 0) {
                 track.innerHTML = '<div class="special-card">آگهی ویژه‌ای وجود ندارد</div>';
                 return;
             }
 
-            // برای حرکت بی‌نهایت، آگهی‌ها را تکرار می‌کنیم
+            // سه بار تکرار برای حرکت پیوسته
             const adsToShow = [...specialAds, ...specialAds, ...specialAds];
             track.innerHTML = adsToShow.map(ad => `
-                <div class="special-card" onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
+                <div class="special-card" onclick='showAdDetail(${JSON.stringify(ad)})'>
                     <div class="special-badge">✨ ویژه ${ad.plan_days || 1} روزه</div>
                     <h3>${ad.title}</h3>
                     <div class="special-price">${ad.price}</div>
@@ -580,12 +568,12 @@
 
             if (currentSearch) {
                 filtered = filtered.filter(ad => 
-                    ad.title?.includes(currentSearch) || 
-                    ad.description?.includes(currentSearch)
+                    ad.title.includes(currentSearch) || 
+                    ad.description.includes(currentSearch)
                 );
             }
 
-            const container = document.getElementById('ads-container');
+            const container = document.getElementById('adsContainer');
             
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="loader">آگهی‌ای یافت نشد</div>';
@@ -594,8 +582,8 @@
 
             container.innerHTML = filtered.map(ad => `
                 <div class="ad-card ${ad.ad_type === 'special' ? 'special' : ''}" 
-                     onclick="showAdDetail(${JSON.stringify(ad).replace(/"/g, '&quot;')})">
-                    <div class="ad-image" style="background: linear-gradient(45deg, #667eea, #764ba2);"></div>
+                     onclick='showAdDetail(${JSON.stringify(ad)})'>
+                    <div class="ad-image"></div>
                     <div class="ad-info">
                         <div class="ad-title">${ad.title}</div>
                         <div class="ad-price">${ad.price}</div>
@@ -605,13 +593,13 @@
             `).join('');
         }
 
-        // ===== نمایش جزئیات =====
+        // ===== نمایش جزئیات آگهی =====
         function showAdDetail(ad) {
-            const modal = document.getElementById('ad-modal');
-            const content = document.getElementById('modal-content');
+            const modal = document.getElementById('adModal');
+            const content = document.getElementById('modalContent');
             
             content.innerHTML = `
-                <div class="modal-image" style="background: linear-gradient(45deg, #667eea, #764ba2);"></div>
+                <div class="modal-image"></div>
                 <h2>${ad.title}</h2>
                 <div style="color:#ffd700; font-size:1.5rem; margin:15px 0;">${ad.price}</div>
                 <p style="margin:20px 0; color:rgba(255,255,255,0.8);">${ad.description || 'توضیحاتی موجود نیست'}</p>
@@ -633,12 +621,7 @@
             tg.BackButton.show();
         }
 
-        // ===== پشتیبانی (رفع شده) =====
-        function openSupport() {
-            // باز کردن مستقیم چت با ادمین
-            tg.openTelegramLink('https://t.me/Mehdi_E_admin');
-        }
-
+        // ===== توابع کمکی =====
         function copyText(text) {
             navigator.clipboard.writeText(text);
             tg.showPopup({ message: '✅ متن کپی شد' });
@@ -646,6 +629,14 @@
 
         function contactSeller(sellerId) {
             tg.openTelegramLink(`https://t.me/${sellerId}`);
+        }
+
+        function openSupport() {
+            tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
+        }
+
+        function openBot() {
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
         }
 
         function filterCategory(cat, element) {
@@ -656,18 +647,14 @@
         }
 
         function searchAds() {
-            currentSearch = document.getElementById('search-input').value;
-            document.getElementById('search-clear').style.display = currentSearch ? 'block' : 'none';
+            currentSearch = document.getElementById('searchInput').value;
+            document.getElementById('searchClear').style.display = currentSearch ? 'block' : 'none';
             renderAds();
         }
 
         function clearSearch() {
-            document.getElementById('search-input').value = '';
+            document.getElementById('searchInput').value = '';
             searchAds();
-        }
-
-        function toggleTheme() {
-            // اینجا می‌تونید تم رو عوض کنید
         }
 
         function loadHome() {
@@ -679,20 +666,24 @@
         function loadBookmarks() {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            document.getElementById('ads-container').innerHTML = '<div class="loader">نشان‌ها به زودی</div>';
-        }
-
-        function openBot() {
-            tg.openTelegramLink('https://t.me/AlsouqAlmaftuhiran_bot');
+            document.getElementById('adsContainer').innerHTML = '<div class="loader">نشان‌ها به زودی</div>';
         }
 
         function closeModal() {
-            document.getElementById('ad-modal').style.display = 'none';
+            document.getElementById('adModal').style.display = 'none';
             tg.BackButton.hide();
         }
 
-        // مقداردهی اولیه
-        fetchAds();
+        // ===== تم (اختیاری) =====
+        let isDark = true;
+        document.getElementById('themeToggle').onclick = () => {
+            isDark = !isDark;
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        };
+
+        // ===== مقداردهی اولیه =====
+        renderSpecialCarousel();
+        renderAds();
 
         tg.BackButton.onClick(closeModal);
     </script>
