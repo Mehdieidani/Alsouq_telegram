@@ -1144,7 +1144,6 @@
                     allAds = data.ads;
                 } else {
                     console.log('No ads from API, using fallback');
-                    // در صورت نبود آگهی، پیام مناسب نمایش داده شود
                     allAds = [];
                 }
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
@@ -1173,7 +1172,7 @@
                     const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/140x80?text=No+Image';
                     items += `
                         <div class="special-item" data-id="${ad.id}">
-                            <img src="${imgUrl}" alt="${ad.title}">
+                            <img src="${imgUrl}" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/140x80?text=No+Image'">
                             <div class="title">${ad.title}</div>
                             <div class="price">💰 ${ad.price} ${ad.currency}</div>
                         </div>
@@ -1199,7 +1198,7 @@
                 const isFav = favorites.includes(ad.id);
                 html += `
                     <div class="ad-card" data-id="${ad.id}">
-                        <img src="${imgUrl}" alt="${ad.title}">
+                        <img src="${imgUrl}" alt="${ad.title}" onerror="this.src='https://via.placeholder.com/150x120?text=No+Image'">
                         <div class="content">
                             <div class="title">${ad.title}</div>
                             <div class="price">💰 ${ad.price} ${ad.currency}</div>
@@ -1227,7 +1226,7 @@
             const images = ad.image_ids || [];
             let imagesHtml = '';
             images.forEach(img => {
-                imagesHtml += `<img src="${API_BASE}/image/${img}" alt="">`;
+                imagesHtml += `<img src="${API_BASE}/image/${img}" alt="" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">`;
             });
             const modalContent = `
                 <button class="modal-close" id="closeModal">&times;</button>
@@ -1354,21 +1353,31 @@
 
         // دکمه زبان در هدر
         document.getElementById('langMainBtn').addEventListener('click', () => {
-            tg?.showPopup({
-                title: 'تغییر زبان',
-                message: 'زبان مورد نظر را انتخاب کنید:',
-                buttons: [
-                    { id: 'fa', type: 'default', text: 'فارسی' },
-                    { id: 'ar', type: 'default', text: 'العربية' },
-                    { id: 'en', type: 'default', text: 'English' },
-                    { type: 'cancel' }
-                ]
-            }, (btnId) => {
-                if (btnId && ['fa','ar','en'].includes(btnId)) {
-                    changeLanguage(btnId);
-                    tg?.sendData(JSON.stringify({ action: 'setLang', lang: btnId }));
+            console.log('Language button clicked');
+            if (tg) {
+                tg.showPopup({
+                    title: 'تغییر زبان',
+                    message: 'زبان مورد نظر را انتخاب کنید:',
+                    buttons: [
+                        { id: 'fa', type: 'default', text: 'فارسی' },
+                        { id: 'ar', type: 'default', text: 'العربية' },
+                        { id: 'en', type: 'default', text: 'English' },
+                        { type: 'cancel' }
+                    ]
+                }, (btnId) => {
+                    console.log('Popup result:', btnId);
+                    if (btnId && ['fa','ar','en'].includes(btnId)) {
+                        changeLanguage(btnId);
+                        tg?.sendData(JSON.stringify({ action: 'setLang', lang: btnId }));
+                    }
+                });
+            } else {
+                // Fallback if Telegram WebApp is not available
+                const newLang = prompt('Select language: fa, ar, en', currentLang);
+                if (newLang && ['fa','ar','en'].includes(newLang)) {
+                    changeLanguage(newLang);
                 }
-            });
+            }
         });
 
         // ==================== دکمه‌های اصلی اقدام ====================
