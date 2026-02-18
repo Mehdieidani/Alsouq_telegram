@@ -6,27 +6,143 @@
     <title>السوق المفتوح + ایران</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* تمام استایل‌های زیبای قبلی شما اینجا محفوظ است */
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        body { font-family: 'Tahoma', sans-serif; background: linear-gradient(45deg, #0f2027, #203a43, #2c5364); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #fff; min-height: 100vh; direction: rtl; margin: 0; overflow-x: hidden; }
-        .container { max-width: 500px; margin: 0 auto; padding: 16px; padding-bottom: 80px; position: relative; z-index: 10; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-size: 22px; font-weight: bold; }
-        .logo span { color: #ffd700; }
-        .lang-btn, .dots-btn { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 44px; height: 44px; color: white; cursor: pointer; }
-        .special-carousel { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; margin-bottom: 20px; overflow: hidden; }
-        .carousel-track { display: flex; gap: 12px; animation: scroll 20s linear infinite; width: max-content; }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .special-item { width: 140px; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; text-align: center; }
-        .special-item img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; }
-        .ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .ad-card { background: rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; position: relative; }
-        .ad-card img { width: 100%; height: 120px; object-fit: cover; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: rgba(0,0,0,0.8); display: flex; justify-content: space-around; padding: 10px; border-radius: 20px 20px 0 0; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; padding: 20px; overflow-y: auto; }
-        .modal.active { display: block; }
-        .category-chip { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; margin-left: 5px; display: inline-block; }
-        .category-chip.active { background: #ffd700; color: #000; }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            direction: rtl;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 80px;
+            position: relative;
+            z-index: 10;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .logo span {
+            color: #ffd700;
+        }
+        .header-left {
+            display: flex;
+            gap: 8px;
+        }
+        .lang-btn, .dots-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: white;
+            cursor: pointer;
+        }
+        .special-carousel {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            gap: 12px;
+            animation: scroll 20s linear infinite;
+            width: max-content;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .special-item {
+            width: 140px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .special-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .ads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .ad-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .ad-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            border-radius: 20px 20px 0 0;
+        }
+        .nav-item {
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal.active {
+            display: block;
+        }
+        .category-chip {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            margin-left: 5px;
+            display: inline-block;
+        }
+        .category-chip.active {
+            background: #ffd700;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -48,7 +164,9 @@
         </div>
     </div>
 
-    <div class="modal" id="adModal"><div id="modalContent"></div></div>
+    <div class="modal" id="adModal">
+        <div id="modalContent"></div>
+    </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="showPage('home')">🏠 خانه</div>
@@ -61,16 +179,20 @@
         tg.expand();
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         let allAds = [];
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
-        // اصلاح نمایش عکس
+        // تابع کمکی برای ساخت URL تصویر (با fallback)
         function getImgUrl(imageIds) {
             try {
                 if (!imageIds) return 'https://via.placeholder.com/150x120?text=No+Image';
                 const ids = Array.isArray(imageIds) ? imageIds : JSON.parse(imageIds);
                 return ids.length ? `${API_BASE}/image/${ids[0]}` : 'https://via.placeholder.com/150x120?text=No+Image';
-            } catch (e) { return 'https://via.placeholder.com/150x120?text=No+Image'; }
+            } catch (e) {
+                return 'https://via.placeholder.com/150x120?text=No+Image';
+            }
         }
 
+        // بارگذاری آگهی‌ها از worker
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -78,13 +200,20 @@
                 if (data.success) {
                     allAds = data.ads;
                     renderAds(allAds);
-                    renderSpecial(allAds.filter(a => a.ad_type === 'special'));
+                    renderSpecial(allAds.filter(ad => ad.ad_type === 'special'));
                 }
-            } catch (e) { console.error("خطا در دریافت آگهی", e); }
+            } catch (e) {
+                console.error('خطا در دریافت آگهی', e);
+            }
         }
 
+        // نمایش آگهی‌ها در شبکه اصلی
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
+            if (!ads.length) {
+                grid.innerHTML = '<div style="grid-column:span2; text-align:center;">آگهی‌ای یافت نشد</div>';
+                return;
+            }
             grid.innerHTML = ads.map(ad => `
                 <div class="ad-card" onclick="showAd(${ad.id})">
                     <img src="${getImgUrl(ad.image_ids)}" onerror="this.src='https://via.placeholder.com/150x120'">
@@ -96,41 +225,86 @@
             `).join('');
         }
 
+        // کاروسل آگهی‌های ویژه (دو بار تکرار برای حرکت پیوسته)
         function renderSpecial(ads) {
             const track = document.getElementById('specialTrack');
-            track.innerHTML = ads.concat(ads).map(ad => `
+            if (!ads.length) {
+                track.innerHTML = '<div style="text-align:center;">آگهی ویژه‌ای موجود نیست</div>';
+                return;
+            }
+            const items = ads.concat(ads).map(ad => `
                 <div class="special-item" onclick="showAd(${ad.id})">
-                    <img src="${getImgUrl(ad.image_ids)}">
+                    <img src="${getImgUrl(ad.image_ids)}" onerror="this.src='https://via.placeholder.com/140x80'">
                     <div style="font-size:12px">${ad.title}</div>
                 </div>
             `).join('');
+            track.innerHTML = items;
         }
 
-        // اصلاح دکمه زبان
-        document.getElementById('langMainBtn').onclick = () => {
-            tg.showPopup({
-                title: 'انتخاب زبان',
-                message: 'زبان مینی‌اپ را انتخاب کنید:',
-                buttons: [
-                    {id: 'fa', type: 'default', text: 'فارسی'},
-                    {id: 'ar', type: 'default', text: 'العربية'},
-                    {id: 'en', type: 'default', text: 'English'}
-                ]
-            }, (id) => { if(id) alert('زبان به ' + id + ' تغییر یافت'); });
-        };
-
+        // نمایش مودال جزئیات آگهی
         window.showAd = (id) => {
             const ad = allAds.find(a => a.id == id);
-            document.getElementById('modalContent').innerHTML = `
-                <button onclick="document.getElementById('adModal').classList.remove('active')" style="color:#fff; background:none; border:none; font-size:20px;">✖ بستن</button>
-                <img src="${getImgUrl(ad.image_ids)}" style="width:100%; border-radius:15px; margin-top:10px;">
-                <h2>${ad.title}</h2>
-                <p>${ad.description}</p>
-                <button style="width:100%; padding:15px; background:gold; border:none; border-radius:10px; font-weight:bold;">تماس با فروشنده</button>
+            if (!ad) return;
+            const images = (ad.image_ids && JSON.parse(ad.image_ids)) || [];
+            const imageHtml = images.map(img => `<img src="${API_BASE}/image/${img}" style="height:200px; border-radius:12px;">`).join('') || '<p>بدون تصویر</p>';
+
+            const modalContent = `
+                <button onclick="document.getElementById('adModal').classList.remove('active')" style="color:#fff; background:none; border:none; font-size:20px; position:absolute; left:10px; top:10px;">✖</button>
+                <div style="display:flex; overflow-x:auto; gap:8px; margin:20px 0;">${imageHtml}</div>
+                <h2 style="margin-bottom:5px;">${ad.title}</h2>
+                <p style="color:gold; font-size:20px;">💰 ${ad.price} ${ad.currency}</p>
+                <p style="line-height:1.6;">${ad.description || 'توضیحاتی ثبت نشده'}</p>
+                <div style="display:flex; gap:8px; margin-top:20px;">
+                    <button style="flex:1; padding:12px; background:linear-gradient(135deg,#667eea,#764ba2); border:none; border-radius:30px; color:white; font-weight:bold;" onclick="window.location.href='tel:${ad.phone}'">📞 تماس</button>
+                    <button style="flex:1; padding:12px; background:rgba(255,255,255,0.2); border:none; border-radius:30px; color:white; font-weight:bold;" onclick="shareAd('${ad.id}')">📤 اشتراک</button>
+                </div>
             `;
+            document.getElementById('modalContent').innerHTML = modalContent;
             document.getElementById('adModal').classList.add('active');
         };
 
+        // اشتراک‌گذاری آگهی
+        window.shareAd = (id) => {
+            const ad = allAds.find(a => a.id == id);
+            const text = `${ad.title}\n💰 ${ad.price} ${ad.currency}\n📍 ${ad.city || ''}\n${ad.description || ''}`;
+            if (navigator.share) {
+                navigator.share({ title: ad.title, text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => tg.showPopup({ title: '✅', message: 'متن آگهی کپی شد' }));
+            }
+        };
+
+        // ===== تغییر زبان (فعال) =====
+        document.getElementById('langMainBtn').addEventListener('click', () => {
+            tg.showPopup({
+                title: 'انتخاب زبان',
+                message: 'زبان مورد نظر را انتخاب کنید:',
+                buttons: [
+                    { id: 'fa', type: 'default', text: 'فارسی' },
+                    { id: 'ar', type: 'default', text: 'العربية' },
+                    { id: 'en', type: 'default', text: 'English' }
+                ]
+            }, (btnId) => {
+                if (btnId) {
+                    // در این نسخه فقط یک پیام تأیید نمایش می‌دهیم
+                    tg.showPopup({ title: '✅', message: `زبان به ${btnId} تغییر یافت` });
+                }
+            });
+        });
+
+        // دکمه سه‌نقطه (فعلاً فقط یک پیام)
+        document.getElementById('dotsBtn').addEventListener('click', () => {
+            tg.showPopup({ title: 'منو', message: 'این بخش به زودی تکمیل می‌شود' });
+        });
+
+        // تغییر صفحات (خانه، علاقه‌مندی، پروفایل)
+        window.showPage = (page) => {
+            // در این نسخه صفحات دیگر فعال نیستند، فقط خانه را نشان می‌دهیم
+            if (page === 'home') return;
+            tg.showPopup({ title: page, message: 'این صفحه در حال توسعه است' });
+        };
+
+        // بارگذاری اولیه
         loadAds();
     </script>
 </body>
