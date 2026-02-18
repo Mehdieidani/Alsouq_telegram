@@ -237,7 +237,7 @@
             font-size: 12px;
         }
 
-        /* دکمه‌های اصلی اقدام (ثبت آگهی و اشتراک ویژه) */
+        /* دکمه‌های اصلی اقدام (ثبت آگهی و اشتراک ویژه) که به ربات متصل می‌شوند */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -459,6 +459,23 @@
             justify-content: center;
         }
 
+        .modal-back {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .modal-images {
             display: flex;
             overflow-x: auto;
@@ -663,31 +680,76 @@
             display: block;
         }
 
-        /* صفحه تنظیمات */
-        .settings-option {
+        /* چت */
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-item {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-
-        .settings-option:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .settings-option span:first-child {
+            padding: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
-
-        .settings-option .arrow {
-            color: #ffd700;
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ffd700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        .chat-info {
+            flex: 1;
+        }
+        .chat-name {
+            font-weight: bold;
+        }
+        .chat-last {
+            font-size: 12px;
+            color: #ccc;
+        }
+        .message-bubble {
+            background: rgba(255,255,255,0.2);
+            border-radius: 18px;
+            padding: 8px 12px;
+            margin: 4px 0;
+            max-width: 80%;
+        }
+        .message-sent {
+            background: #ffd700;
+            color: #000;
+            align-self: flex-end;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .chat-input-area button {
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: none;
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
         }
 
         /* بنر پیشنهاد نصب PWA */
@@ -716,6 +778,15 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* صفحه اعلان‌ها (placeholder) */
+        .notifications-placeholder {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -727,14 +798,13 @@
     <div class="bubble bubble5"></div>
 
     <div class="container">
-        <!-- هدر با سه‌نقطه -->
+        <!-- هدر با سه‌نقطه (بدون گزینه تنظیمات) -->
         <div class="header">
             <div class="logo">السوق المفتوح <span>+ ایران</span></div>
             <div class="menu-dots">
                 <button class="dots-btn" id="dotsBtn">⋯</button>
                 <div class="dropdown-menu" id="dropdownMenu">
                     <div class="dropdown-item" id="aiMenuItem">🤖 دستیار هوش مصنوعی</div>
-                    <div class="dropdown-item" id="settingsMenuItem">⚙️ تنظیمات</div>
                     <div class="dropdown-item" id="contactMenuItem">📞 تماس با پشتیبانی</div>
                     <div class="dropdown-item" id="langMenuItem">🌐 تغییر زبان</div>
                     <div class="dropdown-item" id="installMenuItem">📲 نصب اپلیکیشن</div>
@@ -799,7 +869,22 @@
                         <option value="IQ">🇮🇶 عراق</option>
                         <option value="AE">🇦🇪 امارات</option>
                         <option value="SA">🇸🇦 عربستان</option>
-                        <option value="TR">🇹🇷 ترکیه</option>
+                        <option value="QA">🇶🇦 قطر</option>
+                        <option value="KW">🇰🇼 کویت</option>
+                        <option value="BH">🇧🇭 بحرین</option>
+                        <option value="OM">🇴🇲 عمان</option>
+                        <option value="JO">🇯🇴 اردن</option>
+                        <option value="LB">🇱🇧 لبنان</option>
+                        <option value="EG">🇪🇬 مصر</option>
+                        <option value="MA">🇲🇦 مراکش</option>
+                        <option value="SY">🇸🇾 سوریه</option>
+                        <option value="YE">🇾🇪 یمن</option>
+                        <option value="PS">🇵🇸 فلسطین</option>
+                        <option value="LY">🇱🇾 لیبی</option>
+                        <option value="DZ">🇩🇿 الجزایر</option>
+                        <option value="TN">🇹🇳 تونس</option>
+                        <option value="SD">🇸🇩 سودان</option>
+                        <option value="MR">🇲🇷 موریتانی</option>
                     </select>
                 </div>
                 <button class="save-profile" id="saveProfile" data-i18n="save">ذخیره تغییرات</button>
@@ -815,31 +900,21 @@
                     <button id="aiAsk" data-i18n="go">برو</button>
                 </div>
                 <div class="ai-result" id="aiResult"></div>
+                <div style="margin-top:10px; font-size:12px; color:#aaa;">برای استفاده از هوش مصنوعی واقعی، API Key را در worker تنظیم کنید.</div>
             </div>
         </div>
 
-        <!-- صفحه تنظیمات -->
-        <div id="settingsPage" class="page">
-            <h3 data-i18n="settings">⚙️ تنظیمات</h3>
-            <div class="settings-option" id="themeOption">
-                <span>🎨 <span data-i18n="theme">تم روشن/تاریک</span></span>
-                <span class="arrow">◀</span>
-            </div>
-            <div class="settings-option" id="notifOption">
-                <span>🔔 <span data-i18n="notifications">اعلان‌ها</span></span>
-                <span class="arrow">◀</span>
-            </div>
-            <div class="settings-option" id="langOption">
-                <span>🌐 <span data-i18n="language">زبان</span></span>
-                <span class="arrow">◀</span>
-            </div>
-            <div class="settings-option" id="aboutOption">
-                <span>ℹ️ <span data-i18n="about">درباره ما</span></span>
-                <span class="arrow">◀</span>
-            </div>
-            <div class="settings-option" id="installOption">
-                <span>📲 <span data-i18n="install">نصب اپلیکیشن</span></span>
-                <span class="arrow">◀</span>
+        <!-- صفحه چت -->
+        <div id="chatPage" class="page">
+            <h3 data-i18n="chat">چت‌ها</h3>
+            <div class="chat-list" id="chatList"></div>
+            <div id="chatMessages" style="display: none;">
+                <div id="messageContainer" style="height:300px; overflow-y:auto; display:flex; flex-direction:column;"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="پیام...">
+                    <button id="sendMsg">ارسال</button>
+                </div>
+                <button id="backToChatList" style="margin-top:10px;">بازگشت</button>
             </div>
         </div>
     </div>
@@ -849,13 +924,13 @@
         <div class="modal-content" id="modalContent"></div>
     </div>
 
-    <!-- ناوبری پایین -->
+    <!-- ناوبری پایین (بدون تنظیمات) -->
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home">🏠 <span data-i18n="home">خانه</span></div>
         <div class="nav-item" data-page="favorites">❤️ <span data-i18n="favorites">علاقه‌مندی</span></div>
         <div class="nav-item" data-page="profile">👤 <span data-i18n="profile">پروفایل</span></div>
         <div class="nav-item" data-page="ai">🤖 <span data-i18n="ai">هوش مصنوعی</span></div>
-        <div class="nav-item" data-page="settings">⚙️ <span data-i18n="settings">تنظیمات</span></div>
+        <div class="nav-item" data-page="chat">💬 <span data-i18n="chat">چت</span></div>
     </div>
 
     <script>
@@ -877,6 +952,9 @@
             displayName: '',
             country: 'IR'
         };
+        // داده‌های چت (ذخیره در localStorage برای نمونه)
+        let chats = JSON.parse(localStorage.getItem('chats') || '[{"id":1,"name":"پشتیبانی","lastMessage":"سلام! چطور می‌توانم کمک کنم؟","messages":[{"sender":"them","text":"سلام! چطور می‌توانم کمک کنم؟","time":"10:00"}]},{"id":2,"name":"کاربر 123","lastMessage":"آگهی رو دیدم","messages":[]}]');
+        let currentChatId = null;
 
         // اطلاعات کاربر تلگرام
         const tgUser = tg?.initDataUnsafe?.user;
@@ -891,21 +969,16 @@
                 favorites: 'علاقه‌مندی‌ها',
                 profile: 'پروفایل',
                 ai: 'هوش مصنوعی',
-                settings: 'تنظیمات',
+                chat: 'چت',
                 searchPlaceholder: 'جستجو در آگهی‌ها...',
                 noAds: 'آگهی‌ای یافت نشد',
                 copyHint: '👆 روی متن ضربه بزنید تا کپی شود',
                 call: '📞 تماس',
-                chat: '💬 چت',
+                chatShort: '💬 چت',
                 share: '📤 اشتراک‌گذاری',
                 translate: '🌐 ترجمه با گوگل',
                 save: 'ذخیره',
                 cancel: 'لغو',
-                theme: 'تم روشن/تاریک',
-                notifications: 'اعلان‌ها',
-                language: 'زبان',
-                about: 'درباره ما',
-                install: 'نصب اپلیکیشن',
                 displayName: 'نام نمایشی',
                 displayNamePlaceholder: 'نام شما',
                 country: 'کشور',
@@ -914,6 +987,8 @@
                 go: 'برو',
                 postAd: '📌 ثبت آگهی',
                 vip: '👑 اشتراک ویژه',
+                report: '🚩 ابلاغ',
+                back: '🔙 بازگشت',
                 categories: {
                     'همه': 'همه',
                     'خدمات': 'خدمات',
@@ -922,7 +997,53 @@
                     'املاک': 'املاک',
                     'کالا': 'کالا',
                     'حیوانات': 'حیوانات',
-                    'متفرقه': 'متفرقه'
+                    'موبایل': 'موبایل',
+                    'لپ تاپ': 'لپ تاپ',
+                    'تبلت': 'تبلت',
+                    'موسیقی': 'موسیقی',
+                    'ورزش': 'ورزش',
+                    'کودک': 'کودک',
+                    'آموزش': 'آموزش',
+                    'پزشکی': 'پزشکی',
+                    'حمل و نقل': 'حمل و نقل',
+                    'آرایشی': 'آرایشی',
+                    'مد و پوشاک': 'مد و پوشاک',
+                    'ساعت': 'ساعت',
+                    'عینک': 'عینک',
+                    'کفش': 'کفش',
+                    'کیف': 'کیف',
+                    'فرش': 'فرش',
+                    'لوستر': 'لوستر',
+                    'آلات موسیقی': 'آلات موسیقی',
+                    'ابزار': 'ابزار',
+                    'صنعتی': 'صنعتی',
+                    'کشاورزی': 'کشاورزی',
+                    'دامداری': 'دامداری',
+                    'حیوانات خانگی': 'حیوانات خانگی',
+                    'کتاب': 'کتاب',
+                    'نرم افزار': 'نرم افزار',
+                    'سخت افزار': 'سخت افزار',
+                    'خدمات کامپیوتر': 'خدمات کامپیوتر',
+                    'تعمیرات': 'تعمیرات',
+                    'نظافت': 'نظافت',
+                    'پذیرایی': 'پذیرایی',
+                    'عکاسی': 'عکاسی',
+                    'فیلمبرداری': 'فیلمبرداری',
+                    'طراحی': 'طراحی',
+                    'چاپ': 'چاپ',
+                    'تبلیغات': 'تبلیغات',
+                    'بازاریابی': 'بازاریابی',
+                    'فروش': 'فروش',
+                    'همکاری': 'همکاری',
+                    'پروژه': 'پروژه',
+                    'فریلنسری': 'فریلنسری',
+                    'کریپتو': 'کریپتو',
+                    'ارز دیجیتال': 'ارز دیجیتال',
+                    'هوش مصنوعی': 'هوش مصنوعی',
+                    'بلاکچین': 'بلاکچین',
+                    'برنامه نویسی': 'برنامه نویسی',
+                    'طراحی سایت': 'طراحی سایت',
+                    'سئو': 'سئو'
                 }
             },
             ar: {
@@ -930,21 +1051,16 @@
                 favorites: 'المفضلة',
                 profile: 'الملف الشخصي',
                 ai: 'الذكاء الاصطناعي',
-                settings: 'الإعدادات',
+                chat: 'الدردشة',
                 searchPlaceholder: 'ابحث في الإعلانات...',
                 noAds: 'لا توجد إعلانات',
                 copyHint: '👆 اضغط على النص للنسخ',
                 call: '📞 اتصال',
-                chat: '💬 دردشة',
+                chatShort: '💬 دردشة',
                 share: '📤 مشاركة',
                 translate: '🌐 ترجمة بواسطة جوجل',
                 save: 'حفظ',
                 cancel: 'إلغاء',
-                theme: 'المظهر',
-                notifications: 'الإشعارات',
-                language: 'اللغة',
-                about: 'من نحن',
-                install: 'تثبيت التطبيق',
                 displayName: 'الاسم المعروض',
                 displayNamePlaceholder: 'اسمك',
                 country: 'البلد',
@@ -953,6 +1069,8 @@
                 go: 'اذهب',
                 postAd: '📌 إعلان جديد',
                 vip: '👑 اشتراك VIP',
+                report: '🚩 إبلاغ',
+                back: '🔙 رجوع',
                 categories: {
                     'همه': 'الكل',
                     'خدمات': 'خدمات',
@@ -961,7 +1079,53 @@
                     'املاک': 'عقارات',
                     'کالا': 'سلع',
                     'حیوانات': 'حيوانات',
-                    'متفرقه': 'متنوع'
+                    'موبایل': 'جوال',
+                    'لپ تاپ': 'لابتوب',
+                    'تبلت': 'تابلت',
+                    'موسیقی': 'موسيقى',
+                    'ورزش': 'رياضة',
+                    'کودک': 'أطفال',
+                    'آموزش': 'تعليم',
+                    'پزشکی': 'طب',
+                    'حمل و نقل': 'نقل',
+                    'آرایشی': 'تجميل',
+                    'مد و پوشاک': 'أزياء',
+                    'ساعت': 'ساعة',
+                    'عینک': 'نظارات',
+                    'کفش': 'أحذية',
+                    'کیف': 'حقيبة',
+                    'فرش': 'سجاد',
+                    'لوستر': 'ثريا',
+                    'آلات موسیقی': 'آلات موسيقية',
+                    'ابزار': 'أدوات',
+                    'صنعتی': 'صناعي',
+                    'کشاورزی': 'زراعة',
+                    'دامداری': 'ثروة حيوانية',
+                    'حیوانات خانگی': 'حيوانات أليفة',
+                    'کتاب': 'كتاب',
+                    'نرم افزار': 'برمجيات',
+                    'سخت افزار': 'عتاد',
+                    'خدمات کامپیوتر': 'خدمات حاسوب',
+                    'تعمیرات': 'تصليح',
+                    'نظافت': 'تنظيف',
+                    'پذیرایی': 'استقبال',
+                    'عکاسی': 'تصوير',
+                    'فیلمبرداری': 'فيديو',
+                    'طراحی': 'تصميم',
+                    'چاپ': 'طباعة',
+                    'تبلیغات': 'إعلانات',
+                    'بازاریابی': 'تسويق',
+                    'فروش': 'بيع',
+                    'همکاری': 'تعاون',
+                    'پروژه': 'مشروع',
+                    'فریلنسری': 'حر',
+                    'کریپتو': 'عملات رقمية',
+                    'ارز دیجیتال': 'عملات رقمية',
+                    'هوش مصنوعی': 'ذكاء اصطناعي',
+                    'بلاکچین': 'بلوكتشين',
+                    'برنامه نویسی': 'برمجة',
+                    'طراحی سایت': 'تصميم مواقع',
+                    'سئو': 'تحسين محركات'
                 }
             },
             en: {
@@ -969,21 +1133,16 @@
                 favorites: 'Favorites',
                 profile: 'Profile',
                 ai: 'AI',
-                settings: 'Settings',
+                chat: 'Chat',
                 searchPlaceholder: 'Search ads...',
                 noAds: 'No ads found',
                 copyHint: '👆 Tap text to copy',
                 call: '📞 Call',
-                chat: '💬 Chat',
+                chatShort: '💬 Chat',
                 share: '📤 Share',
                 translate: '🌐 Google Translate',
                 save: 'Save',
                 cancel: 'Cancel',
-                theme: 'Theme',
-                notifications: 'Notifications',
-                language: 'Language',
-                about: 'About',
-                install: 'Install App',
                 displayName: 'Display Name',
                 displayNamePlaceholder: 'Your name',
                 country: 'Country',
@@ -992,6 +1151,8 @@
                 go: 'Go',
                 postAd: '📌 Post Ad',
                 vip: '👑 VIP Subscription',
+                report: '🚩 Report',
+                back: '🔙 Back',
                 categories: {
                     'همه': 'All',
                     'خدمات': 'Services',
@@ -1000,7 +1161,53 @@
                     'املاک': 'Real Estate',
                     'کالا': 'Goods',
                     'حیوانات': 'Pets',
-                    'متفرقه': 'Other'
+                    'موبایل': 'Mobile',
+                    'لپ تاپ': 'Laptop',
+                    'تبلت': 'Tablet',
+                    'موسیقی': 'Music',
+                    'ورزش': 'Sports',
+                    'کودک': 'Kids',
+                    'آموزش': 'Education',
+                    'پزشکی': 'Medical',
+                    'حمل و نقل': 'Transport',
+                    'آرایشی': 'Cosmetics',
+                    'مد و پوشاک': 'Fashion',
+                    'ساعت': 'Watch',
+                    'عینک': 'Glasses',
+                    'کفش': 'Shoes',
+                    'کیف': 'Bag',
+                    'فرش': 'Carpet',
+                    'لوستر': 'Chandelier',
+                    'آلات موسیقی': 'Musical Instruments',
+                    'ابزار': 'Tools',
+                    'صنعتی': 'Industrial',
+                    'کشاورزی': 'Agriculture',
+                    'دامداری': 'Livestock',
+                    'حیوانات خانگی': 'Pets',
+                    'کتاب': 'Books',
+                    'نرم افزار': 'Software',
+                    'سخت افزار': 'Hardware',
+                    'خدمات کامپیوتر': 'Computer Services',
+                    'تعمیرات': 'Repairs',
+                    'نظافت': 'Cleaning',
+                    'پذیرایی': 'Catering',
+                    'عکاسی': 'Photography',
+                    'فیلمبرداری': 'Videography',
+                    'طراحی': 'Design',
+                    'چاپ': 'Printing',
+                    'تبلیغات': 'Advertising',
+                    'بازاریابی': 'Marketing',
+                    'فروش': 'Sales',
+                    'همکاری': 'Collaboration',
+                    'پروژه': 'Project',
+                    'فریلنسری': 'Freelance',
+                    'کریپتو': 'Crypto',
+                    'ارز دیجیتال': 'Digital Currency',
+                    'هوش مصنوعی': 'AI',
+                    'بلاکچین': 'Blockchain',
+                    'برنامه نویسی': 'Programming',
+                    'طراحی سایت': 'Web Design',
+                    'سئو': 'SEO'
                 }
             }
         };
@@ -1010,10 +1217,20 @@
             return translations[currentLang][key] || key;
         }
 
-        // تابع رندر دسته‌بندی‌ها با ترجمه
+        // تابع رندر دسته‌بندی‌ها با ترجمه (لیست کامل)
         function renderCategories() {
             const catContainer = document.getElementById('categoryList');
-            const categoriesList = ['همه', 'خدمات', 'اشتغال', 'خودرو', 'املاک', 'کالا', 'حیوانات', 'متفرقه'];
+            const categoriesList = [
+                'همه', 'خدمات', 'اشتغال', 'خودرو', 'املاک', 'کالا', 'حیوانات',
+                'موبایل', 'لپ تاپ', 'تبلت', 'موسیقی', 'ورزش', 'کودک', 'آموزش',
+                'پزشکی', 'حمل و نقل', 'آرایشی', 'مد و پوشاک', 'ساعت', 'عینک',
+                'کفش', 'کیف', 'فرش', 'لوستر', 'آلات موسیقی', 'ابزار', 'صنعتی',
+                'کشاورزی', 'دامداری', 'حیوانات خانگی', 'کتاب', 'نرم افزار',
+                'سخت افزار', 'خدمات کامپیوتر', 'تعمیرات', 'نظافت', 'پذیرایی',
+                'عکاسی', 'فیلمبرداری', 'طراحی', 'چاپ', 'تبلیغات', 'بازاریابی',
+                'فروش', 'همکاری', 'پروژه', 'فریلنسری', 'کریپتو', 'ارز دیجیتال',
+                'هوش مصنوعی', 'بلاکچین', 'برنامه نویسی', 'طراحی سایت', 'سئو'
+            ];
             catContainer.innerHTML = categoriesList.map(cat => {
                 const translated = translations[currentLang].categories[cat] || cat;
                 return `<span class="category-chip ${cat === currentCategory ? 'active' : ''}" data-category="${cat}">${translated}</span>`;
@@ -1048,16 +1265,9 @@
             });
             // به‌روزرسانی منوی کشویی
             document.getElementById('aiMenuItem').innerHTML = `🤖 ${t('ai')}`;
-            document.getElementById('settingsMenuItem').innerHTML = `⚙️ ${t('settings')}`;
             document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact') || 'پشتیبانی'}`;
             document.getElementById('langMenuItem').innerHTML = `🌐 ${t('language')}`;
             document.getElementById('installMenuItem').innerHTML = `📲 ${t('install')}`;
-            // به‌روزرسانی صفحه تنظیمات
-            document.getElementById('themeOption').innerHTML = `<span>🎨 <span data-i18n="theme">${t('theme')}</span></span><span class="arrow">◀</span>`;
-            document.getElementById('notifOption').innerHTML = `<span>🔔 <span data-i18n="notifications">${t('notifications')}</span></span><span class="arrow">◀</span>`;
-            document.getElementById('langOption').innerHTML = `<span>🌐 <span data-i18n="language">${t('language')}</span></span><span class="arrow">◀</span>`;
-            document.getElementById('aboutOption').innerHTML = `<span>ℹ️ <span data-i18n="about">${t('about')}</span></span><span class="arrow">◀</span>`;
-            document.getElementById('installOption').innerHTML = `<span>📲 <span data-i18n="install">${t('install')}</span></span><span class="arrow">◀</span>`;
             // رندر مجدد دسته‌بندی‌ها
             renderCategories();
         }
@@ -1150,6 +1360,7 @@
             });
             const modalContent = `
                 <button class="modal-close" id="closeModal">&times;</button>
+                <button class="modal-back" id="backModal">🔙</button>
                 <div class="copy-hint">${t('copyHint')}</div>
                 <div class="modal-images">${imagesHtml || '<p>بدون تصویر</p>'}</div>
                 <div class="modal-title" onclick="copyText('${ad.title}')">${ad.title}</div>
@@ -1158,8 +1369,9 @@
                 <div class="modal-actions">
                     <button id="shareAdBtn">${t('share')}</button>
                     <button id="callBtn">${t('call')}</button>
-                    <button id="chatBtnModal">${t('chat')}</button>
+                    <button id="chatBtnModal">${t('chatShort')}</button>
                     <button id="translateBtn">${t('translate')}</button>
+                    <button id="reportBtn">${t('report')}</button>
                 </div>
             `;
             document.getElementById('modalContent').innerHTML = modalContent;
@@ -1168,19 +1380,49 @@
             document.getElementById('closeModal').addEventListener('click', () => {
                 document.getElementById('adModal').classList.remove('active');
             });
+            document.getElementById('backModal').addEventListener('click', () => {
+                document.getElementById('adModal').classList.remove('active');
+            });
             document.getElementById('shareAdBtn').addEventListener('click', () => shareAd(ad));
             document.getElementById('callBtn').addEventListener('click', () => {
                 if (ad.phone) window.location.href = `tel:${ad.phone}`;
                 else alert('شماره تماس موجود نیست');
             });
             document.getElementById('chatBtnModal').addEventListener('click', () => {
-                // شبیه‌سازی چت - در نسخه واقعی می‌تواند به صفحه چت هدایت شود
-                alert('قابلیت چت به زودی');
+                // چت داخلی با فروشنده (ساخت یک چت جدید یا باز کردن چت موجود)
+                // برای نمونه، به صفحه چت می‌رویم و یک چت فرضی با فروشنده ایجاد می‌کنیم
+                const sellerChat = chats.find(c => c.name === ad.user_id) || { id: Date.now(), name: ad.user_id || 'فروشنده', lastMessage: '', messages: [] };
+                if (!chats.find(c => c.name === ad.user_id)) {
+                    chats.push(sellerChat);
+                    localStorage.setItem('chats', JSON.stringify(chats));
+                }
+                currentChatId = sellerChat.id;
+                document.querySelector('[data-page="chat"]').click();
+                renderChatMessages();
             });
             document.getElementById('translateBtn').addEventListener('click', () => {
-                // شبیه‌سازی ترجمه با گوگل
+                // شبیه‌سازی ترجمه با گوگل (در عمل باید API فراخوانی شود)
                 const translated = `[ترجمه گوگل] ${ad.description} (به انگلیسی: ...)`;
                 tg?.showPopup({ title: 'ترجمه', message: translated });
+            });
+            document.getElementById('reportBtn').addEventListener('click', () => {
+                // گزارش به ادمین (شما) با چند گزینه
+                tg?.showPopup({
+                    title: 'گزارش آگهی',
+                    message: 'دلیل گزارش را انتخاب کنید:',
+                    buttons: [
+                        { id: 'spam', type: 'default', text: 'اسپم' },
+                        { id: 'fake', type: 'default', text: 'آگهی جعلی' },
+                        { id: 'offensive', type: 'default', text: 'محتوای توهین‌آمیز' },
+                        { id: 'other', type: 'default', text: 'سایر' },
+                        { type: 'cancel' }
+                    ]
+                }, (btnId) => {
+                    if (btnId) {
+                        // ارسال به چت شما (Mehdi_E_admin)
+                        tg?.openTelegramLink(`https://t.me/Mehdi_E_admin?text=گزارش آگهی ${ad.id}: ${btnId}`);
+                    }
+                });
             });
         }
 
@@ -1225,6 +1467,8 @@
                 document.getElementById(page + 'Page').classList.add('active');
                 if (page === 'favorites') {
                     renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+                } else if (page === 'chat') {
+                    renderChatList();
                 }
             });
         });
@@ -1236,10 +1480,6 @@
         document.getElementById('aiMenuItem').addEventListener('click', () => {
             document.getElementById('dropdownMenu').classList.remove('active');
             document.querySelector('[data-page="ai"]').click();
-        });
-        document.getElementById('settingsMenuItem').addEventListener('click', () => {
-            document.getElementById('dropdownMenu').classList.remove('active');
-            document.querySelector('[data-page="settings"]').click();
         });
         document.getElementById('contactMenuItem').addEventListener('click', () => {
             document.getElementById('dropdownMenu').classList.remove('active');
@@ -1296,7 +1536,7 @@
             renderAds(filtered, 'adsGrid');
         }
 
-        // ==================== دستیار AI ====================
+        // ==================== دستیار AI (شبیه‌سازی) ====================
         document.getElementById('aiAsk').addEventListener('click', () => {
             const input = document.getElementById('aiInput').value;
             if (!input) return;
@@ -1328,37 +1568,6 @@
             }
         });
 
-        // ==================== تنظیمات (گزینه‌ها) ====================
-        document.getElementById('themeOption').addEventListener('click', () => {
-            tg?.showPopup({ title: 'تم', message: 'این قابلیت به زودی اضافه می‌شود.' });
-        });
-        document.getElementById('notifOption').addEventListener('click', () => {
-            tg?.showPopup({ title: 'اعلان‌ها', message: 'این قابلیت به زودی اضافه می‌شود.' });
-        });
-        document.getElementById('langOption').addEventListener('click', () => {
-            // باز کردن منوی انتخاب زبان مشابه قبل
-            tg?.showPopup({
-                title: 'تغییر زبان',
-                message: 'زبان مورد نظر را انتخاب کنید:',
-                buttons: [
-                    { id: 'fa', type: 'default', text: 'فارسی' },
-                    { id: 'ar', type: 'default', text: 'العربية' },
-                    { id: 'en', type: 'default', text: 'English' },
-                    { type: 'cancel' }
-                ]
-            }, (btnId) => {
-                if (btnId && ['fa','ar','en'].includes(btnId)) {
-                    changeLanguage(btnId);
-                }
-            });
-        });
-        document.getElementById('aboutOption').addEventListener('click', () => {
-            tg?.showPopup({ title: 'درباره ما', message: 'السوق المفتوح + ایران - پلتفرم خرید و فروش آنلاین' });
-        });
-        document.getElementById('installOption').addEventListener('click', () => {
-            promptPWAInstall();
-        });
-
         // ==================== PWA Install Prompt ====================
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -1382,6 +1591,66 @@
             }
         }
         document.getElementById('installBtn').addEventListener('click', promptPWAInstall);
+
+        // ==================== چت (ساده با localStorage) ====================
+        function renderChatList() {
+            const chatListDiv = document.getElementById('chatList');
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatListDiv.style.display = 'block';
+            chatMessagesDiv.style.display = 'none';
+            if (!chats.length) {
+                chatListDiv.innerHTML = '<div class="notifications-placeholder">چتی وجود ندارد</div>';
+                return;
+            }
+            let html = '';
+            chats.forEach(chat => {
+                html += `
+                    <div class="chat-item" data-chat-id="${chat.id}">
+                        <div class="chat-avatar">${chat.name.charAt(0)}</div>
+                        <div class="chat-info">
+                            <div class="chat-name">${chat.name}</div>
+                            <div class="chat-last">${chat.lastMessage || 'بدون پیام'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            chatListDiv.innerHTML = html;
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    currentChatId = parseInt(item.dataset.chatId);
+                    renderChatMessages();
+                });
+            });
+        }
+
+        function renderChatMessages() {
+            const chatListDiv = document.getElementById('chatList');
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            chatListDiv.style.display = 'none';
+            chatMessagesDiv.style.display = 'block';
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) return;
+            const messageContainer = document.getElementById('messageContainer');
+            let html = '';
+            chat.messages.forEach(msg => {
+                const cls = msg.sender === 'me' ? 'message-sent' : '';
+                html += `<div class="message-bubble ${cls}" style="align-self:${msg.sender==='me'?'flex-end':'flex-start'}">${msg.text}</div>`;
+            });
+            messageContainer.innerHTML = html;
+            document.getElementById('sendMsg').onclick = () => {
+                const input = document.getElementById('chatInput');
+                if (!input.value) return;
+                const newMsg = { sender: 'me', text: input.value, time: new Date().toLocaleTimeString() };
+                chat.messages.push(newMsg);
+                chat.lastMessage = input.value;
+                localStorage.setItem('chats', JSON.stringify(chats));
+                renderChatMessages();
+                input.value = '';
+            };
+            document.getElementById('backToChatList').onclick = () => {
+                renderChatList();
+            };
+        }
 
         // ==================== بارگذاری اولیه و اعمال زبان ====================
         loadAds();
