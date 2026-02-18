@@ -809,6 +809,9 @@
             tg.enableClosingConfirmation();
         }
 
+        // ==================== آدرس ثابت Worker (تنظیم بر اساس worker شما) ====================
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev'; // آدرس worker
+
         // ==================== داده‌های ثابت و متغیرهای سراسری ====================
         let currentLang = localStorage.getItem('souq_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
@@ -1127,8 +1130,6 @@
         }
 
         // ==================== بارگذاری آگهی‌ها از API ====================
-        const API_BASE = window.location.origin; // دامنه فعلی (همان worker)
-
         async function loadAds() {
             try {
                 console.log('Fetching ads from:', `${API_BASE}/api/ads`);
@@ -1142,24 +1143,17 @@
                 if (data.success && data.ads && data.ads.length) {
                     allAds = data.ads;
                 } else {
-                    // داده‌های نمونه برای تست
                     console.log('No ads from API, using fallback');
-                    allAds = [
-                        { id: 1, title: 'آپارتمان فروشی', description: 'آپارتمان ۱۰۰ متری، منطقه خوب', price: '۱,۲۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'املاک', ad_type: 'special', image_ids: ['sample1'], phone: '09123456789' },
-                        { id: 2, title: 'دستگاه استخراج ارز', description: 'دستگاه Antminer S19', price: '۴۵۰', currency: 'دلار', city: 'دبی', category: 'اشتغال', ad_type: 'normal', image_ids: ['sample2'], phone: '09876543210' },
-                        { id: 3, title: 'خدمات طراحی سایت', description: 'طراحی سایت با وردپرس', price: '۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'مشهد', category: 'خدمات', ad_type: 'special', image_ids: ['sample3'], phone: '09121234567' },
-                    ];
+                    // در صورت نبود آگهی، پیام مناسب نمایش داده شود
+                    allAds = [];
                 }
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
                 renderSpecialCarousel();
                 renderAds(allAds, 'adsGrid');
             } catch (e) {
                 console.error('Error loading ads:', e);
-                // fallback
-                allAds = [
-                    { id: 1, title: 'آپارتمان فروشی', description: 'آپارتمان ۱۰۰ متری', price: '۱,۲۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'املاک', ad_type: 'special', image_ids: [], phone: '09123456789' },
-                ];
-                specialAds = allAds.filter(ad => ad.ad_type === 'special');
+                allAds = [];
+                specialAds = [];
                 renderSpecialCarousel();
                 renderAds(allAds, 'adsGrid');
             }
@@ -1459,5 +1453,4 @@
         console.log('Mini app loaded with API base:', API_BASE);
     </script>
 </body>
-</html>
-```
+    </html>
