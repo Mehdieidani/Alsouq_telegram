@@ -237,6 +237,35 @@
             font-size: 12px;
         }
 
+        /* دکمه‌های اصلی اقدام (ثبت آگهی و اشتراک ویژه) */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .primary-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 30px;
+            padding: 14px 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .primary-btn:active {
+            transform: scale(0.97);
+        }
+
         /* جستجو و دسته‌بندی */
         .search-section {
             margin-bottom: 20px;
@@ -634,7 +663,7 @@
             display: block;
         }
 
-        /* صفحه تنظیمات (جدید) */
+        /* صفحه تنظیمات */
         .settings-option {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -660,6 +689,33 @@
         .settings-option .arrow {
             color: #ffd700;
         }
+
+        /* بنر پیشنهاد نصب PWA */
+        .install-pwa-banner {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .install-pwa-banner span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .install-pwa-banner button {
+            background: #ffd700;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 16px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -681,8 +737,15 @@
                     <div class="dropdown-item" id="settingsMenuItem">⚙️ تنظیمات</div>
                     <div class="dropdown-item" id="contactMenuItem">📞 تماس با پشتیبانی</div>
                     <div class="dropdown-item" id="langMenuItem">🌐 تغییر زبان</div>
+                    <div class="dropdown-item" id="installMenuItem">📲 نصب اپلیکیشن</div>
                 </div>
             </div>
+        </div>
+
+        <!-- بنر پیشنهاد نصب PWA -->
+        <div class="install-pwa-banner" id="installBanner" style="display: none;">
+            <span>📲 نصب اپلیکیشن السوق</span>
+            <button id="installBtn">نصب</button>
         </div>
 
         <!-- صفحه خانه -->
@@ -692,10 +755,16 @@
                 <div class="carousel-track" id="specialTrack"></div>
             </div>
 
+            <!-- دکمه‌های اصلی اقدام (ثبت آگهی و اشتراک ویژه) که به ربات متصل می‌شوند -->
+            <div class="action-buttons">
+                <button class="primary-btn" id="postAdBtn" data-i18n="postAd">📌 ثبت آگهی</button>
+                <button class="primary-btn" id="vipBtn" data-i18n="vip">👑 اشتراک ویژه</button>
+            </div>
+
             <!-- جستجو -->
             <div class="search-section">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
+                    <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="جستجو در آگهی‌ها...">
                     <button id="searchBtn">🔍</button>
                 </div>
                 <div class="categories" id="categoryList"></div>
@@ -708,7 +777,7 @@
 
         <!-- صفحه علاقه‌مندی‌ها -->
         <div id="favoritesPage" class="page">
-            <h3>علاقه‌مندی‌ها</h3>
+            <h3 data-i18n="favorites">علاقه‌مندی‌ها</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
@@ -720,52 +789,56 @@
                     <input type="text" id="tgUsername" readonly>
                 </div>
                 <div class="profile-field">
-                    <label>نام نمایشی</label>
-                    <input type="text" id="displayName" placeholder="نام شما">
+                    <label data-i18n="displayName">نام نمایشی</label>
+                    <input type="text" id="displayName" data-i18n-placeholder="displayNamePlaceholder" placeholder="نام شما">
                 </div>
                 <div class="profile-field">
-                    <label>کشور</label>
+                    <label data-i18n="country">کشور</label>
                     <select id="country">
-                        <option value="IR">ایران</option>
-                        <option value="IQ">عراق</option>
-                        <option value="AE">امارات</option>
-                        <option value="SA">عربستان</option>
-                        <option value="TR">ترکیه</option>
+                        <option value="IR">🇮🇷 ایران</option>
+                        <option value="IQ">🇮🇶 عراق</option>
+                        <option value="AE">🇦🇪 امارات</option>
+                        <option value="SA">🇸🇦 عربستان</option>
+                        <option value="TR">🇹🇷 ترکیه</option>
                     </select>
                 </div>
-                <button class="save-profile" id="saveProfile">ذخیره تغییرات</button>
+                <button class="save-profile" id="saveProfile" data-i18n="save">ذخیره تغییرات</button>
             </div>
         </div>
 
         <!-- صفحه هوش مصنوعی -->
         <div id="aiPage" class="page">
             <div class="ai-assistant">
-                <div class="ai-title">🤖 دستیار هوش مصنوعی (DeepSeek)</div>
+                <div class="ai-title">🤖 <span data-i18n="aiAssistant">دستیار هوش مصنوعی (DeepSeek)</span></div>
                 <div class="ai-input">
-                    <input type="text" id="aiInput" placeholder="مثال: ترجمه به انگلیسی یا تبدیل 100 دلار به تومان">
-                    <button id="aiAsk">برو</button>
+                    <input type="text" id="aiInput" data-i18n-placeholder="aiPlaceholder" placeholder="مثال: ترجمه به انگلیسی یا تبدیل 100 دلار به تومان">
+                    <button id="aiAsk" data-i18n="go">برو</button>
                 </div>
                 <div class="ai-result" id="aiResult"></div>
             </div>
         </div>
 
-        <!-- صفحه تنظیمات (جدید) -->
+        <!-- صفحه تنظیمات -->
         <div id="settingsPage" class="page">
-            <h3>⚙️ تنظیمات</h3>
+            <h3 data-i18n="settings">⚙️ تنظیمات</h3>
             <div class="settings-option" id="themeOption">
-                <span>🎨 تم روشن/تاریک</span>
+                <span>🎨 <span data-i18n="theme">تم روشن/تاریک</span></span>
                 <span class="arrow">◀</span>
             </div>
             <div class="settings-option" id="notifOption">
-                <span>🔔 اعلان‌ها</span>
+                <span>🔔 <span data-i18n="notifications">اعلان‌ها</span></span>
                 <span class="arrow">◀</span>
             </div>
             <div class="settings-option" id="langOption">
-                <span>🌐 زبان</span>
+                <span>🌐 <span data-i18n="language">زبان</span></span>
                 <span class="arrow">◀</span>
             </div>
             <div class="settings-option" id="aboutOption">
-                <span>ℹ️ درباره ما</span>
+                <span>ℹ️ <span data-i18n="about">درباره ما</span></span>
+                <span class="arrow">◀</span>
+            </div>
+            <div class="settings-option" id="installOption">
+                <span>📲 <span data-i18n="install">نصب اپلیکیشن</span></span>
                 <span class="arrow">◀</span>
             </div>
         </div>
@@ -778,11 +851,11 @@
 
     <!-- ناوبری پایین -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-page="home">🏠 خانه</div>
-        <div class="nav-item" data-page="favorites">❤️ علاقه‌مندی</div>
-        <div class="nav-item" data-page="profile">👤 پروفایل</div>
-        <div class="nav-item" data-page="ai">🤖 AI</div>
-        <div class="nav-item" data-page="settings">⚙️ تنظیمات</div>
+        <div class="nav-item active" data-page="home">🏠 <span data-i18n="home">خانه</span></div>
+        <div class="nav-item" data-page="favorites">❤️ <span data-i18n="favorites">علاقه‌مندی</span></div>
+        <div class="nav-item" data-page="profile">👤 <span data-i18n="profile">پروفایل</span></div>
+        <div class="nav-item" data-page="ai">🤖 <span data-i18n="ai">هوش مصنوعی</span></div>
+        <div class="nav-item" data-page="settings">⚙️ <span data-i18n="settings">تنظیمات</span></div>
     </div>
 
     <script>
@@ -794,7 +867,7 @@
         }
 
         // ==================== داده‌های ثابت و متغیرهای سراسری ====================
-        let currentLang = localStorage.getItem('souq_lang') || 'fa'; // ذخیره زبان
+        let currentLang = localStorage.getItem('souq_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         let allAds = [];
         let specialAds = [];
@@ -811,7 +884,7 @@
             document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
-        // ==================== ترجمه‌ها ====================
+        // ==================== ترجمه‌ها (بدون ترجمه اسم پلتفرم) ====================
         const translations = {
             fa: {
                 home: 'خانه',
@@ -825,14 +898,22 @@
                 call: '📞 تماس',
                 chat: '💬 چت',
                 share: '📤 اشتراک‌گذاری',
-                translate: '🌐 ترجمه با AI',
+                translate: '🌐 ترجمه با گوگل',
                 save: 'ذخیره',
                 cancel: 'لغو',
-                theme: '🎨 تم روشن/تاریک',
-                notifications: '🔔 اعلان‌ها',
-                language: '🌐 زبان',
-                about: 'ℹ️ درباره ما',
-                // دسته‌بندی‌ها
+                theme: 'تم روشن/تاریک',
+                notifications: 'اعلان‌ها',
+                language: 'زبان',
+                about: 'درباره ما',
+                install: 'نصب اپلیکیشن',
+                displayName: 'نام نمایشی',
+                displayNamePlaceholder: 'نام شما',
+                country: 'کشور',
+                aiAssistant: 'دستیار هوش مصنوعی (DeepSeek)',
+                aiPlaceholder: 'مثال: ترجمه به انگلیسی یا تبدیل 100 دلار به تومان',
+                go: 'برو',
+                postAd: '📌 ثبت آگهی',
+                vip: '👑 اشتراک ویژه',
                 categories: {
                     'همه': 'همه',
                     'خدمات': 'خدمات',
@@ -856,13 +937,22 @@
                 call: '📞 اتصال',
                 chat: '💬 دردشة',
                 share: '📤 مشاركة',
-                translate: '🌐 ترجمة بالذكاء الاصطناعي',
+                translate: '🌐 ترجمة بواسطة جوجل',
                 save: 'حفظ',
                 cancel: 'إلغاء',
-                theme: '🎨 المظهر',
-                notifications: '🔔 الإشعارات',
-                language: '🌐 اللغة',
-                about: 'ℹ️ من نحن',
+                theme: 'المظهر',
+                notifications: 'الإشعارات',
+                language: 'اللغة',
+                about: 'من نحن',
+                install: 'تثبيت التطبيق',
+                displayName: 'الاسم المعروض',
+                displayNamePlaceholder: 'اسمك',
+                country: 'البلد',
+                aiAssistant: 'مساعد الذكاء الاصطناعي (DeepSeek)',
+                aiPlaceholder: 'مثال: ترجمة إلى العربية أو تحويل 100 دولار إلى درهم',
+                go: 'اذهب',
+                postAd: '📌 إعلان جديد',
+                vip: '👑 اشتراك VIP',
                 categories: {
                     'همه': 'الكل',
                     'خدمات': 'خدمات',
@@ -886,13 +976,22 @@
                 call: '📞 Call',
                 chat: '💬 Chat',
                 share: '📤 Share',
-                translate: '🌐 AI Translate',
+                translate: '🌐 Google Translate',
                 save: 'Save',
                 cancel: 'Cancel',
-                theme: '🎨 Theme',
-                notifications: '🔔 Notifications',
-                language: '🌐 Language',
-                about: 'ℹ️ About',
+                theme: 'Theme',
+                notifications: 'Notifications',
+                language: 'Language',
+                about: 'About',
+                install: 'Install App',
+                displayName: 'Display Name',
+                displayNamePlaceholder: 'Your name',
+                country: 'Country',
+                aiAssistant: 'AI Assistant (DeepSeek)',
+                aiPlaceholder: 'e.g., translate to English or convert 100 USD to EUR',
+                go: 'Go',
+                postAd: '📌 Post Ad',
+                vip: '👑 VIP Subscription',
                 categories: {
                     'همه': 'All',
                     'خدمات': 'Services',
@@ -911,39 +1010,56 @@
             return translations[currentLang][key] || key;
         }
 
+        // تابع رندر دسته‌بندی‌ها با ترجمه
+        function renderCategories() {
+            const catContainer = document.getElementById('categoryList');
+            const categoriesList = ['همه', 'خدمات', 'اشتغال', 'خودرو', 'املاک', 'کالا', 'حیوانات', 'متفرقه'];
+            catContainer.innerHTML = categoriesList.map(cat => {
+                const translated = translations[currentLang].categories[cat] || cat;
+                return `<span class="category-chip ${cat === currentCategory ? 'active' : ''}" data-category="${cat}">${translated}</span>`;
+            }).join('');
+            document.querySelectorAll('.category-chip').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentCategory = el.dataset.category;
+                    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    el.classList.add('active');
+                    // فیلتر ساده (در نسخه واقعی باید بر اساس دسته‌بندی فیلتر شود)
+                });
+            });
+        }
+
         // تابع تغییر زبان
         function changeLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('souq_lang', lang);
-            // به‌روزرسانی تمام عناصر متنی
+            // به‌روزرسانی تمام عناصر دارای data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 el.textContent = t(key);
             });
-            // به‌روزرسانی placeholderها
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
-            // بروزرسانی آیتم‌های ناوبری
-            document.querySelectorAll('.nav-item').forEach(item => {
-                const page = item.dataset.page;
-                if (page === 'home') item.innerHTML = `🏠 ${t('home')}`;
-                else if (page === 'favorites') item.innerHTML = `❤️ ${t('favorites')}`;
-                else if (page === 'profile') item.innerHTML = `👤 ${t('profile')}`;
-                else if (page === 'ai') item.innerHTML = `🤖 ${t('ai')}`;
-                else if (page === 'settings') item.innerHTML = `⚙️ ${t('settings')}`;
+            // به‌روزرسانی ناوبری پایین (span داخل nav-item)
+            document.querySelectorAll('.nav-item span[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
             });
-            // بروزرسانی منوی کشویی
+            // به‌روزرسانی منوی کشویی
             document.getElementById('aiMenuItem').innerHTML = `🤖 ${t('ai')}`;
             document.getElementById('settingsMenuItem').innerHTML = `⚙️ ${t('settings')}`;
             document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact') || 'پشتیبانی'}`;
             document.getElementById('langMenuItem').innerHTML = `🌐 ${t('language')}`;
-            // بروزرسانی صفحه تنظیمات
-            document.getElementById('themeOption').innerHTML = `<span>🎨 ${t('theme')}</span><span class="arrow">◀</span>`;
-            document.getElementById('notifOption').innerHTML = `<span>🔔 ${t('notifications')}</span><span class="arrow">◀</span>`;
-            document.getElementById('langOption').innerHTML = `<span>🌐 ${t('language')}</span><span class="arrow">◀</span>`;
-            document.getElementById('aboutOption').innerHTML = `<span>ℹ️ ${t('about')}</span><span class="arrow">◀</span>`;
+            document.getElementById('installMenuItem').innerHTML = `📲 ${t('install')}`;
+            // به‌روزرسانی صفحه تنظیمات
+            document.getElementById('themeOption').innerHTML = `<span>🎨 <span data-i18n="theme">${t('theme')}</span></span><span class="arrow">◀</span>`;
+            document.getElementById('notifOption').innerHTML = `<span>🔔 <span data-i18n="notifications">${t('notifications')}</span></span><span class="arrow">◀</span>`;
+            document.getElementById('langOption').innerHTML = `<span>🌐 <span data-i18n="language">${t('language')}</span></span><span class="arrow">◀</span>`;
+            document.getElementById('aboutOption').innerHTML = `<span>ℹ️ <span data-i18n="about">${t('about')}</span></span><span class="arrow">◀</span>`;
+            document.getElementById('installOption').innerHTML = `<span>📲 <span data-i18n="install">${t('install')}</span></span><span class="arrow">◀</span>`;
+            // رندر مجدد دسته‌بندی‌ها
+            renderCategories();
         }
 
         // ==================== بارگذاری آگهی‌ها از API ====================
@@ -1058,12 +1174,12 @@
                 else alert('شماره تماس موجود نیست');
             });
             document.getElementById('chatBtnModal').addEventListener('click', () => {
-                // شبیه‌سازی چت - در نسخه واقعی به صفحه چت هدایت شود
+                // شبیه‌سازی چت - در نسخه واقعی می‌تواند به صفحه چت هدایت شود
                 alert('قابلیت چت به زودی');
             });
             document.getElementById('translateBtn').addEventListener('click', () => {
-                // ترجمه با AI
-                const translated = `[ترجمه شده] ${ad.description} (به انگلیسی: ...)`;
+                // شبیه‌سازی ترجمه با گوگل
+                const translated = `[ترجمه گوگل] ${ad.description} (به انگلیسی: ...)`;
                 tg?.showPopup({ title: 'ترجمه', message: translated });
             });
         }
@@ -1148,6 +1264,24 @@
                 }
             });
         });
+        document.getElementById('installMenuItem').addEventListener('click', () => {
+            document.getElementById('dropdownMenu').classList.remove('active');
+            promptPWAInstall();
+        });
+
+        // ==================== دکمه‌های اصلی اقدام (اتصال به ربات) ====================
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            if (tg) {
+                tg.sendData(JSON.stringify({ action: 'post_ad' }));
+                tg.close(); // بستن مینی‌اپ و بازگشت به ربات
+            }
+        });
+        document.getElementById('vipBtn').addEventListener('click', () => {
+            if (tg) {
+                tg.sendData(JSON.stringify({ action: 'vip' }));
+                tg.close();
+            }
+        });
 
         // ==================== جستجو ====================
         document.getElementById('searchBtn').addEventListener('click', filterAds);
@@ -1221,26 +1355,43 @@
         document.getElementById('aboutOption').addEventListener('click', () => {
             tg?.showPopup({ title: 'درباره ما', message: 'السوق المفتوح + ایران - پلتفرم خرید و فروش آنلاین' });
         });
+        document.getElementById('installOption').addEventListener('click', () => {
+            promptPWAInstall();
+        });
+
+        // ==================== PWA Install Prompt ====================
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'flex';
+        });
+
+        function promptPWAInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted install');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').style.display = 'none';
+                });
+            } else {
+                tg?.showPopup({ title: 'نصب', message: 'برای نصب اپلیکیشن، از منوی مرورگر گزینه "Add to Home screen" را انتخاب کنید.' });
+            }
+        }
+        document.getElementById('installBtn').addEventListener('click', promptPWAInstall);
 
         // ==================== بارگذاری اولیه و اعمال زبان ====================
         loadAds();
         changeLanguage(currentLang); // اعمال زبان ذخیره شده
+        renderCategories();
 
-        // نمایش placeholder برای دسته‌بندی‌ها (در نسخه واقعی باید از API دریافت شوند)
-        const categories = ['همه', 'خدمات', 'اشتغال', 'خودرو', 'املاک', 'کالا', 'حیوانات', 'متفرقه'];
-        const catContainer = document.getElementById('categoryList');
-        catContainer.innerHTML = categories.map(cat => 
-            `<span class="category-chip ${cat === currentCategory ? 'active' : ''}" data-category="${cat}">${cat}</span>`
-        ).join('');
-        document.querySelectorAll('.category-chip').forEach(el => {
-            el.addEventListener('click', () => {
-                currentCategory = el.dataset.category;
-                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
-                // فیلتر ساده (در نسخه کامل باید بر اساس دسته‌بندی فیلتر شود)
-                // اینجا فقط برای نمایش
-            });
-        });
+        // اگر PWA نصب شده باشد، بنر را مخفی کن
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            document.getElementById('installBanner').style.display = 'none';
+        }
     </script>
 </body>
-                        </html>
+    </html>
