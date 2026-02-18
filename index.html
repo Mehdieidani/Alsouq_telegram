@@ -130,6 +130,10 @@
             gap: 8px;
         }
 
+        /* سلکتور زبان (dropdown) */
+        .lang-selector {
+            position: relative;
+        }
         .lang-btn {
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
@@ -144,6 +148,31 @@
             color: white;
             font-size: 20px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 120px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 200;
+        }
+        .lang-dropdown.active {
+            display: block;
+        }
+        .lang-option {
+            padding: 10px 16px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lang-option:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         .menu-dots {
@@ -694,11 +723,18 @@
     <div class="bubble bubble5"></div>
 
     <div class="container">
-        <!-- هدر با دکمه زبان و سه‌نقطه -->
+        <!-- هدر با دکمه زبان (dropdown) و سه‌نقطه -->
         <div class="header">
             <div class="logo">السوق المفتوح <span>+ ایران</span></div>
             <div class="header-left">
-                <button class="lang-btn" id="langMainBtn">🌐</button>
+                <div class="lang-selector">
+                    <button class="lang-btn" id="langMainBtn">🌐</button>
+                    <div class="lang-dropdown" id="langDropdown">
+                        <div class="lang-option" data-lang="fa">🇮🇷 فارسی</div>
+                        <div class="lang-option" data-lang="ar">🇦🇪 العربية</div>
+                        <div class="lang-option" data-lang="en">🇬🇧 English</div>
+                    </div>
+                </div>
                 <div class="menu-dots">
                     <button class="dots-btn" id="dotsBtn">⋯</button>
                     <div class="dropdown-menu" id="dropdownMenu">
@@ -826,7 +862,7 @@
             document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
-        // ==================== ترجمه‌ها (برای دکمه زبان) ====================
+        // ==================== ترجمه‌ها ====================
         const translations = {
             fa: {
                 home: 'خانه',
@@ -886,11 +922,11 @@
             return translations[currentLang][key] || key;
         }
 
-        // تابع تغییر زبان (فعال)
+        // تابع تغییر زبان
         function changeLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('souq_lang', lang);
-            // بروزرسانی متون دکمه‌ها (اختیاری)
+            // بروزرسانی متون دکمه‌ها
             document.getElementById('postAdBtn').innerHTML = t('postAd');
             document.getElementById('vipBtn').innerHTML = t('vip');
             document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact')}`;
@@ -903,6 +939,12 @@
                 else if (page === 'favorites') item.innerHTML = `❤️ ${t('favorites')}`;
                 else if (page === 'profile') item.innerHTML = `👤 ${t('profile')}`;
             });
+            // بروزرسانی صفحه علاقه‌مندی‌ها
+            if (document.getElementById('favoritesPage').classList.contains('active')) {
+                renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+            } else {
+                renderAds(allAds, 'adsGrid');
+            }
         }
 
         // ==================== بارگذاری قیمت‌ها از سرور ====================
@@ -1136,24 +1178,29 @@
             promptPWAInstall();
         });
 
-        // ==================== دکمه زبان ====================
-        document.getElementById('langMainBtn').addEventListener('click', () => {
-            tg?.showPopup({
-                title: 'انتخاب زبان',
-                message: 'زبان مورد نظر را انتخاب کنید:',
-                buttons: [
-                    { id: 'fa', type: 'default', text: 'فارسی' },
-                    { id: 'ar', type: 'default', text: 'العربية' },
-                    { id: 'en', type: 'default', text: 'English' },
-                    { type: 'cancel' }
-                ]
-            }, (btnId) => {
-                if (btnId && ['fa','ar','en'].includes(btnId)) {
-                    changeLanguage(btnId);
-                    // ارسال به ربات برای ذخیره زبان (اختیاری)
-                    tg?.sendData(JSON.stringify({ action: 'setLang', lang: btnId }));
-                }
+        // ==================== دکمه زبان (dropdown) ====================
+        const langBtn = document.getElementById('langMainBtn');
+        const langDropdown = document.getElementById('langDropdown');
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('active');
+        });
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const lang = opt.dataset.lang;
+                changeLanguage(lang);
+                tg?.sendData(JSON.stringify({ action: 'setLang', lang }));
+                langDropdown.classList.remove('active');
             });
+        });
+        // بستن منو با کلیک بیرون
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-selector')) {
+                langDropdown.classList.remove('active');
+            }
+            if (!e.target.closest('.menu-dots')) {
+                document.getElementById('dropdownMenu').classList.remove('active');
+            }
         });
 
         // ==================== دکمه‌های اصلی اقدام (اتصال به ربات) ====================
@@ -1176,13 +1223,6 @@
             const country = document.getElementById('country').value;
             tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
             tg?.showPopup({ title: '✅', message: 'پروفایل ذخیره شد' });
-        });
-
-        // ==================== بستن منو با کلیک بیرون ====================
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.menu-dots')) {
-                document.getElementById('dropdownMenu').classList.remove('active');
-            }
         });
 
         // ==================== PWA Install Prompt ====================
@@ -1220,4 +1260,4 @@
         }
     </script>
 </body>
-        </html>
+</html>
