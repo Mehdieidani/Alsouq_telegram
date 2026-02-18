@@ -6,22 +6,98 @@
     <title>السوق المفتوح + ایران</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        /* انیمیشن پس‌زمینه متحرک با حباب طلایی */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) translateX(10px) rotate(5deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Tahoma', sans-serif;
-            background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Vazir', 'Tahoma', 'Segoe UI', sans-serif;
+            background: linear-gradient(45deg, #0f2027, #203a43, #2c5364, #0b8793);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #fff;
             min-height: 100vh;
             direction: rtl;
             margin: 0;
+            padding: 0;
+            position: relative;
             overflow-x: hidden;
         }
+
+        /* حباب‌های طلایی متحرک */
+        .bubble {
+            position: fixed;
+            background: rgba(255, 215, 0, 0.15);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .bubble1 {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 5%;
+            animation-duration: 12s;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.05));
+        }
+
+        .bubble2 {
+            width: 200px;
+            height: 200px;
+            bottom: 10%;
+            right: 5%;
+            animation-duration: 15s;
+            animation-delay: -3s;
+            background: radial-gradient(circle at 70% 30%, rgba(255, 215, 0, 0.25), rgba(255, 215, 0, 0.03));
+        }
+
+        .bubble3 {
+            width: 100px;
+            height: 100px;
+            top: 30%;
+            right: 15%;
+            animation-duration: 10s;
+            animation-delay: -1s;
+            background: radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.08));
+        }
+
+        .bubble4 {
+            width: 180px;
+            height: 180px;
+            bottom: 20%;
+            left: 10%;
+            animation-duration: 18s;
+            animation-delay: -5s;
+            background: radial-gradient(circle at 60% 60%, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.02));
+        }
+
+        .bubble5 {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 20%;
+            animation-duration: 14s;
+            animation-delay: -2s;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.35), rgba(255, 215, 0, 0.06));
+        }
+
         .container {
             max-width: 500px;
             margin: 0 auto;
@@ -30,78 +106,510 @@
             position: relative;
             z-index: 10;
         }
+
+        /* هدر با دکمه زبان و سه‌نقطه */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .logo {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
+
         .logo span {
             color: #ffd700;
         }
+
         .header-left {
             display: flex;
             gap: 8px;
         }
-        .lang-btn, .dots-btn {
+
+        .lang-btn {
             background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
             border: none;
             border-radius: 50%;
             width: 44px;
             height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .menu-dots {
+            position: relative;
+        }
+
+        .dots-btn {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 180px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 100;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
             color: white;
             cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .dropdown-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* کاروسل ویژه (افقی متحرک) */
         .special-carousel {
             background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 16px;
             margin-bottom: 20px;
             overflow: hidden;
+            position: relative;
         }
+
         .carousel-track {
             display: flex;
             gap: 12px;
             animation: scroll 20s linear infinite;
             width: max-content;
         }
+
         @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
+
         .special-item {
             width: 140px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             border-radius: 12px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s;
         }
+
+        .special-item:hover {
+            transform: scale(1.02);
+        }
+
         .special-item img {
             width: 100%;
             height: 80px;
             object-fit: cover;
             border-radius: 8px;
         }
+
+        .special-item .title {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 8px 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .special-item .price {
+            color: #ffd700;
+            font-size: 12px;
+        }
+
+        /* دکمه‌های اصلی اقدام (ثبت آگهی و اشتراک ویژه) */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .primary-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 14px 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .primary-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .primary-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* جستجو و دسته‌بندی */
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 8px 16px;
+            margin-bottom: 12px;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-box button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-chip.active {
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .subcategory {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .subcategory-item {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* شبکه آگهی‌ها */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
+
         .ad-card {
             background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
             border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            cursor: pointer;
             position: relative;
         }
+
+        .ad-card:hover {
+            transform: scale(1.02);
+        }
+
         .ad-card img {
             width: 100%;
             height: 120px;
             object-fit: cover;
         }
+
+        .ad-card .content {
+            padding: 10px;
+        }
+
+        .ad-card .title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ad-card .price {
+            color: #ffd700;
+            font-size: 14px;
+        }
+
+        .ad-card .favorite {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        /* مودال مشاهده آگهی */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            max-width: 500px;
+            margin: 20px auto;
+            background: rgba(30,30,30,0.95);
+            border-radius: 24px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-back {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-images {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+
+        .modal-images img {
+            height: 200px;
+            border-radius: 12px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .modal-price {
+            font-size: 20px;
+            color: gold;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .modal-desc {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-left: 8px;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(5px);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .copy-hint {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        /* پروفایل کاربر */
+        .profile-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .profile-field {
+            margin-bottom: 16px;
+        }
+
+        .profile-field label {
+            display: block;
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+
+        .profile-field input, .profile-field select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 16px;
+        }
+
+        .profile-field input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .save-profile {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 30px;
+            padding: 12px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ناوبری پایین شیشه‌ای */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -109,79 +617,354 @@
             right: 0;
             max-width: 500px;
             margin: 0 auto;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding: 10px;
-            border-radius: 20px 20px 0 0;
+            padding: 8px 0;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 100;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
         }
+
         .nav-item {
+            text-align: center;
+            color: white;
+            font-size: 12px;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 30px;
+            transition: background 0.2s;
         }
-        .modal {
+
+        .nav-item.active {
+            background: rgba(255,215,0,0.3);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* صفحه‌های مختلف */
+        .page {
             display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
         }
-        .modal.active {
+
+        .page.active {
             display: block;
         }
-        .category-chip {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            white-space: nowrap;
-            cursor: pointer;
-            margin-left: 5px;
-            display: inline-block;
+
+        /* بنر پیشنهاد نصب PWA */
+        .install-pwa-banner {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .category-chip.active {
+        .install-pwa-banner span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .install-pwa-banner button {
             background: #ffd700;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 16px;
             color: #000;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+    <!-- حباب‌های طلایی متحرک -->
+    <div class="bubble bubble1"></div>
+    <div class="bubble bubble2"></div>
+    <div class="bubble bubble3"></div>
+    <div class="bubble bubble4"></div>
+    <div class="bubble bubble5"></div>
+
     <div class="container">
+        <!-- هدر با دکمه زبان و سه‌نقطه -->
         <div class="header">
             <div class="logo">السوق المفتوح <span>+ ایران</span></div>
             <div class="header-left">
                 <button class="lang-btn" id="langMainBtn">🌐</button>
-                <button class="dots-btn" id="dotsBtn">⋯</button>
+                <div class="menu-dots">
+                    <button class="dots-btn" id="dotsBtn">⋯</button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <div class="dropdown-item" id="contactMenuItem">📞 تماس با پشتیبانی</div>
+                        <div class="dropdown-item" id="installMenuItem">📲 نصب اپلیکیشن</div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- بنر پیشنهاد نصب PWA -->
+        <div class="install-pwa-banner" id="installBanner" style="display: none;">
+            <span>📲 نصب اپلیکیشن السوق</span>
+            <button id="installBtn">نصب</button>
+        </div>
+
+        <!-- صفحه خانه -->
         <div id="homePage" class="page active">
-            <div class="special-carousel"><div class="carousel-track" id="specialTrack"></div></div>
-            <div class="search-section">
-                <div class="categories" id="categoryList" style="overflow-x: auto; display: flex; padding-bottom: 10px;"></div>
+            <!-- کاروسل آگهی‌های ویژه -->
+            <div class="special-carousel">
+                <div class="carousel-track" id="specialTrack"></div>
             </div>
+
+            <!-- دکمه‌های اصلی اقدام -->
+            <div class="action-buttons">
+                <button class="primary-btn" id="postAdBtn">📌 ثبت آگهی</button>
+                <button class="primary-btn" id="vipBtn">👑 اشتراک ویژه</button>
+            </div>
+
+            <!-- جستجو (فقط برای نمایش) -->
+            <div class="search-section">
+                <div class="categories" id="categoryList"></div>
+            </div>
+
+            <!-- شبکه آگهی‌ها -->
             <div class="ads-grid" id="adsGrid"></div>
         </div>
+
+        <!-- صفحه علاقه‌مندی‌ها -->
+        <div id="favoritesPage" class="page">
+            <h3>❤️ علاقه‌مندی‌ها</h3>
+            <div class="ads-grid" id="favoritesGrid"></div>
+        </div>
+
+        <!-- صفحه پروفایل -->
+        <div id="profilePage" class="page">
+            <div class="profile-section">
+                <div class="profile-field">
+                    <label>نام کاربری تلگرام</label>
+                    <input type="text" id="tgUsername" readonly>
+                </div>
+                <div class="profile-field">
+                    <label>نام نمایشی</label>
+                    <input type="text" id="displayName" placeholder="نام شما">
+                </div>
+                <div class="profile-field">
+                    <label>کشور</label>
+                    <select id="country">
+                        <option value="IR">🇮🇷 ایران</option>
+                        <option value="IQ">🇮🇶 عراق</option>
+                        <option value="AE">🇦🇪 امارات</option>
+                        <option value="SA">🇸🇦 عربستان</option>
+                        <option value="QA">🇶🇦 قطر</option>
+                        <option value="KW">🇰🇼 کویت</option>
+                        <option value="BH">🇧🇭 بحرین</option>
+                        <option value="OM">🇴🇲 عمان</option>
+                        <option value="JO">🇯🇴 اردن</option>
+                        <option value="LB">🇱🇧 لبنان</option>
+                        <option value="EG">🇪🇬 مصر</option>
+                        <option value="MA">🇲🇦 مراکش</option>
+                        <option value="SY">🇸🇾 سوریه</option>
+                        <option value="YE">🇾🇪 یمن</option>
+                        <option value="PS">🇵🇸 فلسطین</option>
+                        <option value="LY">🇱🇾 لیبی</option>
+                        <option value="DZ">🇩🇿 الجزایر</option>
+                        <option value="TN">🇹🇳 تونس</option>
+                        <option value="SD">🇸🇩 سودان</option>
+                        <option value="MR">🇲🇷 موریتانی</option>
+                    </select>
+                </div>
+                <button class="save-profile" id="saveProfile">💾 ذخیره</button>
+            </div>
+        </div>
     </div>
 
+    <!-- مودال مشاهده آگهی -->
     <div class="modal" id="adModal">
-        <div id="modalContent"></div>
+        <div class="modal-content" id="modalContent"></div>
     </div>
 
+    <!-- ناوبری پایین -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('home')">🏠 خانه</div>
-        <div class="nav-item" onclick="showPage('favorites')">❤️ علاقه‌مندی</div>
-        <div class="nav-item" onclick="showPage('profile')">👤 پروفایل</div>
+        <div class="nav-item active" data-page="home">🏠 خانه</div>
+        <div class="nav-item" data-page="favorites">❤️ علاقه‌مندی</div>
+        <div class="nav-item" data-page="profile">👤 پروفایل</div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        let allAds = [];
-        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        // ==================== تنظیمات اولیه تلگرام ====================
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.enableClosingConfirmation();
+        }
 
-        // تابع کمکی برای ساخت URL تصویر (با fallback)
+        // ==================== آدرس ثابت Worker ====================
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+
+        // ==================== داده‌های ثابت و متغیرهای سراسری ====================
+        let currentLang = localStorage.getItem('souq_lang') || 'fa';
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let allAds = [];
+        let specialAds = [];
+        let prices = {
+            special1: '۱۰,۰۰۰',
+            special3: '۲۵,۰۰۰',
+            vip1: '۵۰,۰۰۰',
+            vip3: '۱۳۰,۰۰۰',
+            vip6: '۲۴۰,۰۰۰'
+        }; // پیش‌فرض
+
+        // اطلاعات کاربر تلگرام
+        const tgUser = tg?.initDataUnsafe?.user;
+        if (tgUser) {
+            document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
+        }
+
+        // ==================== ترجمه‌ها (برای دکمه زبان) ====================
+        const translations = {
+            fa: {
+                home: 'خانه',
+                favorites: 'علاقه‌مندی‌ها',
+                profile: 'پروفایل',
+                postAd: '📌 ثبت آگهی',
+                vip: '👑 اشتراک ویژه',
+                noAds: 'آگهی‌ای یافت نشد',
+                copyHint: '👆 روی متن ضربه بزنید تا کپی شود',
+                call: '📞 تماس',
+                chat: '💬 چت',
+                share: '📤 اشتراک',
+                report: '🚩 ابلاغ',
+                back: '🔙 بازگشت',
+                contact: 'پشتیبانی',
+                install: 'نصب اپلیکیشن',
+                save: 'ذخیره'
+            },
+            ar: {
+                home: 'الرئيسية',
+                favorites: 'المفضلة',
+                profile: 'الملف الشخصي',
+                postAd: '📌 إعلان جديد',
+                vip: '👑 اشتراك VIP',
+                noAds: 'لا توجد إعلانات',
+                copyHint: '👆 اضغط على النص للنسخ',
+                call: '📞 اتصال',
+                chat: '💬 دردشة',
+                share: '📤 مشاركة',
+                report: '🚩 إبلاغ',
+                back: '🔙 رجوع',
+                contact: 'الدعم',
+                install: 'تثبيت التطبيق',
+                save: 'حفظ'
+            },
+            en: {
+                home: 'Home',
+                favorites: 'Favorites',
+                profile: 'Profile',
+                postAd: '📌 Post Ad',
+                vip: '👑 VIP',
+                noAds: 'No ads found',
+                copyHint: '👆 Tap text to copy',
+                call: '📞 Call',
+                chat: '💬 Chat',
+                share: '📤 Share',
+                report: '🚩 Report',
+                back: '🔙 Back',
+                contact: 'Support',
+                install: 'Install App',
+                save: 'Save'
+            }
+        };
+
+        // تابع ترجمه
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // تابع تغییر زبان (فعال)
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('souq_lang', lang);
+            // بروزرسانی متون دکمه‌ها (اختیاری)
+            document.getElementById('postAdBtn').innerHTML = t('postAd');
+            document.getElementById('vipBtn').innerHTML = t('vip');
+            document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact')}`;
+            document.getElementById('installMenuItem').innerHTML = `📲 ${t('install')}`;
+            document.getElementById('saveProfile').innerHTML = `💾 ${t('save')}`;
+            // بروزرسانی آیتم‌های ناوبری
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const page = item.dataset.page;
+                if (page === 'home') item.innerHTML = `🏠 ${t('home')}`;
+                else if (page === 'favorites') item.innerHTML = `❤️ ${t('favorites')}`;
+                else if (page === 'profile') item.innerHTML = `👤 ${t('profile')}`;
+            });
+        }
+
+        // ==================== بارگذاری قیمت‌ها از سرور ====================
+        async function loadPrices() {
+            try {
+                const res = await fetch(`${API_BASE}/api/prices`);
+                const data = await res.json();
+                if (data.success) {
+                    prices = data.prices;
+                }
+            } catch (e) {
+                console.warn('خطا در دریافت قیمت‌ها، استفاده از مقادیر پیش‌فرض');
+            }
+        }
+
+        // ==================== بارگذاری آگهی‌ها از API ====================
+        async function loadAds() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ads`);
+                const data = await res.json();
+                if (data.success && data.ads && data.ads.length) {
+                    allAds = data.ads;
+                } else {
+                    allAds = [];
+                }
+                specialAds = allAds.filter(ad => ad.ad_type === 'special');
+                renderSpecialCarousel();
+                renderAds(allAds, 'adsGrid');
+            } catch (e) {
+                console.error('خطا در دریافت آگهی', e);
+                allAds = [];
+                specialAds = [];
+                renderSpecialCarousel();
+                renderAds(allAds, 'adsGrid');
+            }
+        }
+
+        // ==================== رندر کاروسل ویژه ====================
+        function renderSpecialCarousel() {
+            const track = document.getElementById('specialTrack');
+            if (!specialAds.length) {
+                track.innerHTML = '<div style="padding:20px; text-align:center;">آگهی ویژه‌ای موجود نیست</div>';
+                return;
+            }
+            // دو بار تکرار برای حرکت پیوسته
+            let items = '';
+            for (let i = 0; i < 2; i++) {
+                specialAds.forEach(ad => {
+                    const imgUrl = getImgUrl(ad.image_ids);
+                    items += `
+                        <div class="special-item" onclick="showAd(${ad.id})">
+                            <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/140x80'">
+                            <div class="title">${ad.title}</div>
+                            <div class="price">💰 ${ad.price} ${ad.currency}</div>
+                        </div>
+                    `;
+                });
+            }
+            track.innerHTML = items;
+        }
+
+        // ==================== ساخت URL تصویر با fallback ====================
         function getImgUrl(imageIds) {
             try {
                 if (!imageIds) return 'https://via.placeholder.com/150x120?text=No+Image';
@@ -192,120 +975,249 @@
             }
         }
 
-        // بارگذاری آگهی‌ها از worker
-        async function loadAds() {
-            try {
-                const res = await fetch(`${API_BASE}/api/ads`);
-                const data = await res.json();
-                if (data.success) {
-                    allAds = data.ads;
-                    renderAds(allAds);
-                    renderSpecial(allAds.filter(ad => ad.ad_type === 'special'));
-                }
-            } catch (e) {
-                console.error('خطا در دریافت آگهی', e);
-            }
-        }
-
-        // نمایش آگهی‌ها در شبکه اصلی
-        function renderAds(ads) {
-            const grid = document.getElementById('adsGrid');
+        // ==================== رندر شبکه آگهی‌ها ====================
+        function renderAds(ads, containerId) {
+            const container = document.getElementById(containerId);
             if (!ads.length) {
-                grid.innerHTML = '<div style="grid-column:span2; text-align:center;">آگهی‌ای یافت نشد</div>';
+                container.innerHTML = `<div style="grid-column:span2; text-align:center;">${t('noAds')}</div>`;
                 return;
             }
-            grid.innerHTML = ads.map(ad => `
-                <div class="ad-card" onclick="showAd(${ad.id})">
-                    <img src="${getImgUrl(ad.image_ids)}" onerror="this.src='https://via.placeholder.com/150x120'">
-                    <div style="padding:10px;">
-                        <div style="font-weight:bold">${ad.title}</div>
-                        <div style="color:gold">${ad.price} ${ad.currency}</div>
+            let html = '';
+            ads.forEach(ad => {
+                const imgUrl = getImgUrl(ad.image_ids);
+                const isFav = favorites.includes(ad.id);
+                html += `
+                    <div class="ad-card" data-id="${ad.id}">
+                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x120'">
+                        <div class="content">
+                            <div class="title">${ad.title}</div>
+                            <div class="price">💰 ${ad.price} ${ad.currency}</div>
+                        </div>
+                        <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">
+                            ${isFav ? '❤️' : '🤍'}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            });
+            container.innerHTML = html;
+            // اضافه کردن رویداد کلیک روی کارت‌ها
+            document.querySelectorAll(`#${containerId} .ad-card`).forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('favorite')) {
+                        showAd(card.dataset.id);
+                    }
+                });
+            });
         }
 
-        // کاروسل آگهی‌های ویژه (دو بار تکرار برای حرکت پیوسته)
-        function renderSpecial(ads) {
-            const track = document.getElementById('specialTrack');
-            if (!ads.length) {
-                track.innerHTML = '<div style="text-align:center;">آگهی ویژه‌ای موجود نیست</div>';
-                return;
-            }
-            const items = ads.concat(ads).map(ad => `
-                <div class="special-item" onclick="showAd(${ad.id})">
-                    <img src="${getImgUrl(ad.image_ids)}" onerror="this.src='https://via.placeholder.com/140x80'">
-                    <div style="font-size:12px">${ad.title}</div>
-                </div>
-            `).join('');
-            track.innerHTML = items;
-        }
-
-        // نمایش مودال جزئیات آگهی
-        window.showAd = (id) => {
-            const ad = allAds.find(a => a.id == id);
+        // ==================== نمایش مودال آگهی ====================
+        window.showAd = (adId) => {
+            const ad = allAds.find(a => a.id == adId);
             if (!ad) return;
-            const images = (ad.image_ids && JSON.parse(ad.image_ids)) || [];
-            const imageHtml = images.map(img => `<img src="${API_BASE}/image/${img}" style="height:200px; border-radius:12px;">`).join('') || '<p>بدون تصویر</p>';
-
+            const images = ad.image_ids ? (Array.isArray(ad.image_ids) ? ad.image_ids : JSON.parse(ad.image_ids)) : [];
+            let imagesHtml = '';
+            images.forEach(img => {
+                imagesHtml += `<img src="${API_BASE}/image/${img}" onerror="this.src='https://via.placeholder.com/200'">`;
+            });
             const modalContent = `
-                <button onclick="document.getElementById('adModal').classList.remove('active')" style="color:#fff; background:none; border:none; font-size:20px; position:absolute; left:10px; top:10px;">✖</button>
-                <div style="display:flex; overflow-x:auto; gap:8px; margin:20px 0;">${imageHtml}</div>
-                <h2 style="margin-bottom:5px;">${ad.title}</h2>
-                <p style="color:gold; font-size:20px;">💰 ${ad.price} ${ad.currency}</p>
-                <p style="line-height:1.6;">${ad.description || 'توضیحاتی ثبت نشده'}</p>
-                <div style="display:flex; gap:8px; margin-top:20px;">
-                    <button style="flex:1; padding:12px; background:linear-gradient(135deg,#667eea,#764ba2); border:none; border-radius:30px; color:white; font-weight:bold;" onclick="window.location.href='tel:${ad.phone}'">📞 تماس</button>
-                    <button style="flex:1; padding:12px; background:rgba(255,255,255,0.2); border:none; border-radius:30px; color:white; font-weight:bold;" onclick="shareAd('${ad.id}')">📤 اشتراک</button>
+                <button class="modal-close" id="closeModal">&times;</button>
+                <button class="modal-back" id="backModal">🔙</button>
+                <div class="copy-hint">${t('copyHint')}</div>
+                <div class="modal-images">${imagesHtml || '<p>بدون تصویر</p>'}</div>
+                <div class="modal-title" onclick="copyText('${ad.title}')">${ad.title}</div>
+                <div class="modal-price" onclick="copyText('${ad.price} ${ad.currency}')">💰 ${ad.price} ${ad.currency}</div>
+                <div class="modal-desc" onclick="copyText('${ad.description}')">${ad.description || 'توضیحاتی ثبت نشده'}</div>
+                <div class="modal-actions">
+                    <button id="shareAdBtn">${t('share')}</button>
+                    <button id="callBtn">${t('call')}</button>
+                    <button id="chatBtnModal">${t('chat')}</button>
+                    <button id="translateBtn">🌐 ترجمه</button>
+                    <button id="reportBtn">${t('report')}</button>
                 </div>
             `;
             document.getElementById('modalContent').innerHTML = modalContent;
             document.getElementById('adModal').classList.add('active');
+
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('adModal').classList.remove('active');
+            });
+            document.getElementById('backModal').addEventListener('click', () => {
+                document.getElementById('adModal').classList.remove('active');
+            });
+            document.getElementById('shareAdBtn').addEventListener('click', () => shareAd(ad));
+            document.getElementById('callBtn').addEventListener('click', () => {
+                if (ad.phone) window.location.href = `tel:${ad.phone}`;
+                else alert('شماره تماس موجود نیست');
+            });
+            document.getElementById('chatBtnModal').addEventListener('click', () => {
+                // چت داخلی (اینجا شبیه‌سازی شده)
+                tg?.showPopup({ title: 'چت', message: 'قابلیت چت داخلی به زودی' });
+            });
+            document.getElementById('translateBtn').addEventListener('click', () => {
+                // ترجمه ساده با گوگل (شبیه‌سازی)
+                const translated = `[ترجمه] ${ad.description}`;
+                tg?.showPopup({ title: 'ترجمه', message: translated });
+            });
+            document.getElementById('reportBtn').addEventListener('click', () => {
+                tg?.showPopup({
+                    title: 'گزارش',
+                    message: 'دلیل گزارش را انتخاب کنید:',
+                    buttons: [
+                        { id: 'spam', type: 'default', text: 'اسپم' },
+                        { id: 'fake', type: 'default', text: 'جعلی' },
+                        { id: 'offensive', type: 'default', text: 'توهین‌آمیز' },
+                        { type: 'cancel' }
+                    ]
+                }, (btnId) => {
+                    if (btnId) {
+                        tg?.openTelegramLink(`https://t.me/Mehdi_E_admin?text=گزارش آگهی ${ad.id}: ${btnId}`);
+                    }
+                });
+            });
         };
 
-        // اشتراک‌گذاری آگهی
-        window.shareAd = (id) => {
-            const ad = allAds.find(a => a.id == id);
+        // ==================== کپی متن ====================
+        window.copyText = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                tg?.showPopup({ title: '✅', message: 'متن کپی شد' });
+            });
+        };
+
+        // ==================== اشتراک‌گذاری ====================
+        function shareAd(ad) {
             const text = `${ad.title}\n💰 ${ad.price} ${ad.currency}\n📍 ${ad.city || ''}\n${ad.description || ''}`;
             if (navigator.share) {
-                navigator.share({ title: ad.title, text });
+                navigator.share({ title: ad.title, text, url: window.location.href });
             } else {
-                navigator.clipboard.writeText(text).then(() => tg.showPopup({ title: '✅', message: 'متن آگهی کپی شد' }));
+                navigator.clipboard.writeText(text).then(() => {
+                    tg?.showPopup({ title: '✅', message: 'متن آگهی کپی شد' });
+                });
             }
+        }
+
+        // ==================== تغییر وضعیت علاقه‌مندی ====================
+        window.toggleFavorite = function(event, adId) {
+            event.stopPropagation();
+            const index = favorites.indexOf(adId);
+            if (index === -1) favorites.push(adId);
+            else favorites.splice(index, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            // به‌روزرسانی صفحه خانه و علاقه‌مندی‌ها
+            renderAds(allAds, 'adsGrid');
+            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ===== تغییر زبان (فعال) =====
+        // ==================== ناوبری پایین ====================
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                const page = item.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page + 'Page').classList.add('active');
+                if (page === 'favorites') {
+                    renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+                } else if (page === 'profile') {
+                    // هیچ کاری لازم نیست
+                }
+            });
+        });
+
+        // ==================== منوی سه‌نقطه ====================
+        document.getElementById('dotsBtn').addEventListener('click', () => {
+            document.getElementById('dropdownMenu').classList.toggle('active');
+        });
+        document.getElementById('contactMenuItem').addEventListener('click', () => {
+            document.getElementById('dropdownMenu').classList.remove('active');
+            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
+        });
+        document.getElementById('installMenuItem').addEventListener('click', () => {
+            document.getElementById('dropdownMenu').classList.remove('active');
+            promptPWAInstall();
+        });
+
+        // ==================== دکمه زبان ====================
         document.getElementById('langMainBtn').addEventListener('click', () => {
-            tg.showPopup({
+            tg?.showPopup({
                 title: 'انتخاب زبان',
                 message: 'زبان مورد نظر را انتخاب کنید:',
                 buttons: [
                     { id: 'fa', type: 'default', text: 'فارسی' },
                     { id: 'ar', type: 'default', text: 'العربية' },
-                    { id: 'en', type: 'default', text: 'English' }
+                    { id: 'en', type: 'default', text: 'English' },
+                    { type: 'cancel' }
                 ]
             }, (btnId) => {
-                if (btnId) {
-                    // در این نسخه فقط یک پیام تأیید نمایش می‌دهیم
-                    tg.showPopup({ title: '✅', message: `زبان به ${btnId} تغییر یافت` });
+                if (btnId && ['fa','ar','en'].includes(btnId)) {
+                    changeLanguage(btnId);
+                    // ارسال به ربات برای ذخیره زبان (اختیاری)
+                    tg?.sendData(JSON.stringify({ action: 'setLang', lang: btnId }));
                 }
             });
         });
 
-        // دکمه سه‌نقطه (فعلاً فقط یک پیام)
-        document.getElementById('dotsBtn').addEventListener('click', () => {
-            tg.showPopup({ title: 'منو', message: 'این بخش به زودی تکمیل می‌شود' });
+        // ==================== دکمه‌های اصلی اقدام (اتصال به ربات) ====================
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            if (tg) {
+                tg.sendData(JSON.stringify({ action: 'post_ad' }));
+                tg.close();
+            }
+        });
+        document.getElementById('vipBtn').addEventListener('click', () => {
+            if (tg) {
+                tg.sendData(JSON.stringify({ action: 'vip' }));
+                tg.close();
+            }
         });
 
-        // تغییر صفحات (خانه، علاقه‌مندی، پروفایل)
-        window.showPage = (page) => {
-            // در این نسخه صفحات دیگر فعال نیستند، فقط خانه را نشان می‌دهیم
-            if (page === 'home') return;
-            tg.showPopup({ title: page, message: 'این صفحه در حال توسعه است' });
-        };
+        // ==================== ذخیره پروفایل ====================
+        document.getElementById('saveProfile').addEventListener('click', () => {
+            const displayName = document.getElementById('displayName').value;
+            const country = document.getElementById('country').value;
+            tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
+            tg?.showPopup({ title: '✅', message: 'پروفایل ذخیره شد' });
+        });
 
-        // بارگذاری اولیه
+        // ==================== بستن منو با کلیک بیرون ====================
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-dots')) {
+                document.getElementById('dropdownMenu').classList.remove('active');
+            }
+        });
+
+        // ==================== PWA Install Prompt ====================
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').style.display = 'flex';
+        });
+
+        function promptPWAInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted install');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').style.display = 'none';
+                });
+            } else {
+                tg?.showPopup({ title: 'نصب', message: 'برای نصب اپلیکیشن، از منوی مرورگر گزینه "Add to Home screen" را انتخاب کنید.' });
+            }
+        }
+        document.getElementById('installBtn').addEventListener('click', promptPWAInstall);
+
+        // ==================== بارگذاری اولیه ====================
+        loadPrices();
         loadAds();
+        changeLanguage(currentLang); // اعمال زبان ذخیره شده
+
+        // اگر PWA نصب شده باشد، بنر را مخفی کن
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            document.getElementById('installBanner').style.display = 'none';
+        }
     </script>
 </body>
-</html>
+        </html>
