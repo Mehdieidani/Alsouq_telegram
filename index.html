@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -849,6 +850,8 @@
                 vip: '👑 اشتراک ویژه',
                 report: '🚩 ابلاغ',
                 back: '🔙 بازگشت',
+                contact: 'پشتیبانی',
+                install: 'نصب اپلیکیشن',
                 categories: {
                     'همه': 'همه',
                     'خدمات': 'خدمات',
@@ -926,6 +929,8 @@
                 vip: '👑 اشتراك VIP',
                 report: '🚩 إبلاغ',
                 back: '🔙 رجوع',
+                contact: 'الدعم',
+                install: 'تثبيت التطبيق',
                 categories: {
                     'همه': 'الكل',
                     'خدمات': 'خدمات',
@@ -1003,6 +1008,8 @@
                 vip: '👑 VIP Subscription',
                 report: '🚩 Report',
                 back: '🔙 Back',
+                contact: 'Support',
+                install: 'Install App',
                 categories: {
                     'همه': 'All',
                     'خدمات': 'Services',
@@ -1114,25 +1121,34 @@
                 el.textContent = t(key);
             });
             // به‌روزرسانی منوی کشویی
-            document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact') || 'پشتیبانی'}`;
+            document.getElementById('contactMenuItem').innerHTML = `📞 ${t('contact')}`;
             document.getElementById('installMenuItem').innerHTML = `📲 ${t('install')}`;
             // رندر مجدد دسته‌بندی‌ها
             renderCategories();
         }
 
-        // ==================== بارگذاری آگهی‌ها از API (با fallback) ====================
+        // ==================== بارگذاری آگهی‌ها از API ====================
+        const API_BASE = window.location.origin; // دامنه فعلی (همان worker)
+
         async function loadAds() {
             try {
-                const res = await fetch('/api/ads');
+                console.log('Fetching ads from:', `${API_BASE}/api/ads`);
+                const res = await fetch(`${API_BASE}/api/ads`);
+                console.log('Response status:', res.status);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 const data = await res.json();
-                if (data.success && data.ads.length) {
+                console.log('Received data:', data);
+                if (data.success && data.ads && data.ads.length) {
                     allAds = data.ads;
                 } else {
                     // داده‌های نمونه برای تست
+                    console.log('No ads from API, using fallback');
                     allAds = [
-                        { id: 1, title: 'آپارتمان فروشی', description: 'آپارتمان ۱۰۰ متری، منطقه خوب', price: '۱,۲۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'املاک', ad_type: 'special', image_ids: [], phone: '09123456789' },
-                        { id: 2, title: 'دستگاه استخراج ارز', description: 'دستگاه Antminer S19', price: '۴۵۰', currency: 'دلار', city: 'دبی', category: 'اشتغال', ad_type: 'normal', image_ids: [], phone: '09876543210' },
-                        { id: 3, title: 'خدمات طراحی سایت', description: 'طراحی سایت با وردپرس', price: '۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'مشهد', category: 'خدمات', ad_type: 'special', image_ids: [], phone: '09121234567' },
+                        { id: 1, title: 'آپارتمان فروشی', description: 'آپارتمان ۱۰۰ متری، منطقه خوب', price: '۱,۲۰۰,۰۰۰,۰۰۰', currency: 'تومان', city: 'تهران', category: 'املاک', ad_type: 'special', image_ids: ['sample1'], phone: '09123456789' },
+                        { id: 2, title: 'دستگاه استخراج ارز', description: 'دستگاه Antminer S19', price: '۴۵۰', currency: 'دلار', city: 'دبی', category: 'اشتغال', ad_type: 'normal', image_ids: ['sample2'], phone: '09876543210' },
+                        { id: 3, title: 'خدمات طراحی سایت', description: 'طراحی سایت با وردپرس', price: '۵,۰۰۰,۰۰۰', currency: 'تومان', city: 'مشهد', category: 'خدمات', ad_type: 'special', image_ids: ['sample3'], phone: '09121234567' },
                     ];
                 }
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
@@ -1161,7 +1177,7 @@
             let items = '';
             for (let i = 0; i < 2; i++) {
                 specialAds.forEach(ad => {
-                    const imgUrl = ad.image_ids?.length ? `/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/140x80?text=No+Image';
+                    const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/140x80?text=No+Image';
                     items += `
                         <div class="special-item" data-id="${ad.id}">
                             <img src="${imgUrl}" alt="${ad.title}">
@@ -1186,7 +1202,7 @@
             }
             let html = '';
             ads.forEach(ad => {
-                const imgUrl = ad.image_ids?.length ? `/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/150x120?text=No+Image';
+                const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/150x120?text=No+Image';
                 const isFav = favorites.includes(ad.id);
                 html += `
                     <div class="ad-card" data-id="${ad.id}">
@@ -1218,7 +1234,7 @@
             const images = ad.image_ids || [];
             let imagesHtml = '';
             images.forEach(img => {
-                imagesHtml += `<img src="/image/${img}" alt="">`;
+                imagesHtml += `<img src="${API_BASE}/image/${img}" alt="">`;
             });
             const modalContent = `
                 <button class="modal-close" id="closeModal">&times;</button>
@@ -1251,14 +1267,20 @@
                 else alert('شماره تماس موجود نیست');
             });
             document.getElementById('chatBtnModal').addEventListener('click', () => {
-                // چت در تلگرام با فروشنده (فرض بر این است که آیدی فروشنده در ad.user_id یا ad.phone_telegram موجود است)
-                // اگر شماره تلگرام نداریم، می‌توانیم به پشتیبانی وصل کنیم
-                tg?.openTelegramLink('https://t.me/Mehdi_E_admin'); // موقتاً به پشتیبانی
+                // چت در تلگرام با فروشنده (اگر آیدی داشته باشد) یا پشتیبانی
+                tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
             });
             document.getElementById('translateBtn').addEventListener('click', () => {
-                // ترجمه با گوگل (شبیه‌سازی)
-                const translated = `[ترجمه گوگل] ${ad.description} (به انگلیسی: ...)`;
-                tg?.showPopup({ title: 'ترجمه', message: translated });
+                // شبیه‌سازی ترجمه گوگل
+                let translatedText = '';
+                if (currentLang === 'fa') {
+                    translatedText = `[Google Translate]\n${ad.description}`;
+                } else if (currentLang === 'ar') {
+                    translatedText = `[ترجمة جوجل]\n${ad.description}`;
+                } else {
+                    translatedText = `[Google Translate]\n${ad.description}`;
+                }
+                tg?.showPopup({ title: 'ترجمه', message: translatedText });
             });
             document.getElementById('reportBtn').addEventListener('click', () => {
                 tg?.showPopup({
@@ -1433,6 +1455,10 @@
         if (window.matchMedia('(display-mode: standalone)').matches) {
             document.getElementById('installBanner').style.display = 'none';
         }
+
+        // نمایش کنسول لاگ برای عیب‌یابی
+        console.log('Mini app loaded with API base:', API_BASE);
     </script>
 </body>
-    </html>
+</html>
+```
