@@ -57,7 +57,7 @@
             z-index: 10;
         }
 
-        /* ===== هدر با رنگ‌های طلایی/سرمه‌ای ===== */
+        /* ===== هدر با دکمه زبان و پشتیبانی ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -98,7 +98,7 @@
             gap: 8px;
         }
 
-        .lang-btn, .dots-btn {
+        .lang-btn, .support-btn {
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -115,37 +115,11 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        .lang-btn:hover, .dots-btn:hover {
+        .lang-btn:hover, .support-btn:hover {
             border-color: #D4AF37;
             background: #0A1A2F;
             transform: scale(1.05);
         }
-
-        .menu-dots { position: relative; }
-        .dropdown-menu {
-            position: absolute;
-            top: 58px;
-            left: 0;
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
-            border-radius: 30px;
-            padding: 8px 0;
-            min-width: 200px;
-            box-shadow: 0 20px 40px black;
-            display: none;
-            z-index: 200;
-        }
-        .dropdown-menu.active { display: block; }
-        .dropdown-item {
-            padding: 12px 20px;
-            color: #e5e9f0;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .dropdown-item:hover { background: #D4AF3730; }
 
         /* ===== کاروسل ویژه طلایی ===== */
         .special-carousel {
@@ -173,6 +147,7 @@
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
+            flex-shrink: 0;
         }
         .special-item:hover {
             border-color: #D4AF37;
@@ -231,6 +206,9 @@
             font-size: 16px;
             outline: none;
         }
+        .search-box input::placeholder {
+            color: #a0b8cc;
+        }
         .search-box button {
             background: transparent;
             border: none;
@@ -263,11 +241,11 @@
             font-weight: bold;
         }
 
-        /* ===== شبکه آگهی‌ها (کارت‌های طلایی-سرمه‌ای) ===== */
-        .ads-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        /* ===== لیست آگهی‌ها (عمودی با عرض کامل) ===== */
+        .ads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
         }
         .ad-card {
             background: #0A1A2F;
@@ -277,18 +255,53 @@
             cursor: pointer;
             position: relative;
             transition: 0.3s;
+            width: 100%;
         }
         .ad-card:hover { border-color: #D4AF37; transform: translateY(-5px); }
-        .ad-card img { width: 100%; height: 130px; object-fit: cover; }
-        .ad-card .content { padding: 14px; }
-        .ad-card .title { font-weight: bold; font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .ad-card .price { color: #D4AF37; font-weight: bold; font-size: 16px; }
+        .ad-card img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-bottom: 2px solid #D4AF3740;
+        }
+        .ad-card .content { 
+            padding: 18px; 
+        }
+        .ad-card .title { 
+            font-weight: bold; 
+            font-size: 18px; 
+            margin-bottom: 8px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        .ad-card .price { 
+            color: #D4AF37; 
+            font-weight: bold; 
+            font-size: 18px; 
+            margin-bottom: 8px;
+        }
+        .ad-card .meta {
+            display: flex;
+            gap: 15px;
+            color: #a0b8cc;
+            font-size: 14px;
+        }
         .ad-card .favorite {
-            position: absolute; top: 10px; left: 10px;
-            background: #0A1A2F; border: 2px solid #D4AF37; border-radius: 50%;
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; cursor: pointer;
+            position: absolute; 
+            top: 15px; 
+            left: 15px;
+            background: #0A1A2F; 
+            border: 2px solid #D4AF37; 
+            border-radius: 50%;
+            width: 44px; 
+            height: 44px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 22px; 
+            cursor: pointer;
+            z-index: 5;
         }
 
         /* ===== مودال مشاهده آگهی (لوکس) ===== */
@@ -359,7 +372,7 @@
             border: none;
         }
 
-        /* ===== پروفایل و صفحات دیگر ===== */
+        /* ===== پروفایل کاربر (کیف پول، امتیاز، لینک دعوت) ===== */
         .page { display: none; }
         .page.active { display: block; }
         .profile-section {
@@ -377,6 +390,20 @@
             border-radius: 60px;
             background: #0A1A2F;
             color: white;
+        }
+        .profile-field input:read-only {
+            background: #0e1f36;
+            color: #a0b8cc;
+        }
+        .copy-btn {
+            background: #D4AF37;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 20px;
+            color: #0A1A2F;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
         }
         .save-profile {
             background: #D4AF37;
@@ -418,7 +445,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- هدر طلایی-سرمه‌ای -->
+        <!-- هدر طلایی-سرمه‌ای با دکمه زبان و پشتیبانی (بدون سه نقطه) -->
         <div class="header">
             <div class="logo">
                 <span class="logo-main">iSouq</span>
@@ -426,13 +453,7 @@
             </div>
             <div class="header-left">
                 <button class="lang-btn" id="langMainBtn">🌐</button>
-                <div class="menu-dots">
-                    <button class="dots-btn" id="dotsBtn">⋯</button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-item" id="contactMenuItem">📞 پشتیبانی</div>
-                        <div class="dropdown-item" id="installMenuItem">📲 نصب اپلیکیشن</div>
-                    </div>
-                </div>
+                <button class="support-btn" id="supportBtn">🆘</button>
             </div>
         </div>
 
@@ -452,19 +473,19 @@
                 <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
                 <button id="searchBtn">🔍</button>
             </div>
-            <!-- دسته‌بندی‌های گسترده (بیش از 30 مورد) -->
+            <!-- دسته‌بندی‌های گسترده -->
             <div class="categories" id="categoryList"></div>
-            <!-- شبکه آگهی‌ها -->
-            <div class="ads-grid" id="adsGrid"></div>
+            <!-- لیست آگهی‌ها (عمودی با عرض کامل) -->
+            <div class="ads-list" id="adsList"></div>
         </div>
 
         <!-- صفحه علاقه‌مندی‌ها -->
         <div id="favoritesPage" class="page">
             <h3 style="color:#D4AF37; margin-bottom:20px;">❤️ علاقه‌مندی‌ها</h3>
-            <div class="ads-grid" id="favoritesGrid"></div>
+            <div class="ads-list" id="favoritesList"></div>
         </div>
 
-        <!-- صفحه پروفایل (با کیف پول و شارژ) -->
+        <!-- صفحه پروفایل با کیف پول و امتیاز و لینک دعوت واقعی -->
         <div id="profilePage" class="page">
             <div class="profile-section">
                 <div class="profile-field">
@@ -501,17 +522,18 @@
                     </select>
                 </div>
                 <div class="profile-field">
-                    <label>💰 موجودی کیف پول: <span id="walletBalance">0</span> تومان</label>
-                    <button class="primary-btn" id="chargeBtn" style="margin-top:8px;">💳 شارژ حساب</button>
+                    <label>💰 موجودی کیف پول:</label>
+                    <input type="text" id="walletBalance" readonly value="0">
                 </div>
                 <div class="profile-field">
-                    <label>⭐ امتیاز شما: <span id="userPoints">0</span></label>
+                    <label>⭐ امتیاز شما:</label>
+                    <input type="text" id="userPoints" readonly value="0">
                 </div>
                 <div class="profile-field">
                     <label>🔗 لینک دعوت</label>
                     <div style="display:flex; gap:5px;">
                         <input type="text" id="referralLink" readonly value="در حال دریافت...">
-                        <button id="copyReferral">📋</button>
+                        <button class="copy-btn" id="copyReferral">📋 کپی</button>
                     </div>
                 </div>
                 <button class="save-profile" id="saveProfile">💾 ذخیره تغییرات</button>
@@ -604,30 +626,23 @@
         }
 
         function updateUILanguage() {
-            // به‌روزرسانی عناصر دارای data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 el.textContent = t(key);
             });
-            // به‌روزرسانی placeholder
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.dataset.i18nPlaceholder;
                 el.placeholder = t(key);
             });
-            // ناوبری
             document.querySelectorAll('.nav-item').forEach(item => {
                 const page = item.dataset.page;
                 if (page === 'home') item.innerHTML = '🏠 ' + t('home');
                 if (page === 'favorites') item.innerHTML = '❤️ ' + t('favorites');
                 if (page === 'profile') item.innerHTML = '👤 ' + t('profile');
             });
-            // دکمه‌ها
             document.getElementById('postAdBtn').innerHTML = t('postAd');
             document.getElementById('vipBtn').innerHTML = t('vip');
-            document.getElementById('contactMenuItem').innerHTML = `📞 ${t('support')}`;
-            document.getElementById('installMenuItem').innerHTML = `📲 ${t('install')}`;
             document.getElementById('saveProfile').innerHTML = `💾 ${t('save')}`;
-            document.getElementById('chargeBtn').innerHTML = `💳 ${t('charge')}`;
         }
 
         // ========== تغییر زبان (با پاپ‌آپ تلگرام) ==========
@@ -648,9 +663,14 @@
                     document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
                     updateUILanguage();
                     renderCategories();
-                    renderAds(allAds, 'adsGrid'); // برای آپدیت تاریخ‌ها
+                    renderAds(allAds, 'adsList'); // بروزرسانی تاریخ‌ها
                 }
             });
+        });
+
+        // ========== دکمه پشتیبانی (چت مستقیم با ادمین) ==========
+        document.getElementById('supportBtn').addEventListener('click', () => {
+            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
         // ========== دسته‌بندی‌های گسترده ==========
@@ -678,22 +698,30 @@
             });
         }
 
-        // ========== دریافت اطلاعات کاربر (کیف پول، امتیاز، لینک دعوت) ==========
+        // ========== دریافت اطلاعات کاربر از worker ==========
         async function loadUserProfile() {
             try {
-                // اینجا باید از API مخصوص پروفایل استفاده کنید. فرض می‌کنیم یک endpoint به نام /api/userprofile وجود دارد
-                // یا از همان اطلاعاتی که از ربات می‌آید استفاده می‌کنیم. فعلاً با داده‌های نمونه
-                // در عمل، باید از worker خود اطلاعات را بخوانید
-                // برای نمونه از localStorage یا داده‌های ساختگی
-                const mockBalance = 250000;
-                const mockPoints = 120;
-                const mockReferral = 'ABC123';
-                document.getElementById('walletBalance').innerText = mockBalance.toLocaleString();
-                document.getElementById('userPoints').innerText = mockPoints;
-                const refLink = `https://t.me/AlsouqAlmaftuhiran_bot?start=${mockReferral}`;
-                document.getElementById('referralLink').value = refLink;
+                if (!tgUser) return;
+                const userId = tgUser.id;
+                const response = await fetch(`${API_BASE}/api/user?telegram_id=${userId}`);
+                const data = await response.json();
+                if (data.success) {
+                    userData = data.user;
+                    document.getElementById('walletBalance').value = userData.balance?.toLocaleString() || '0';
+                    document.getElementById('userPoints').value = userData.points || '0';
+                    const refLink = `https://t.me/AlsouqAlmaftuhiran_bot?start=${userData.referral_code || ''}`;
+                    document.getElementById('referralLink').value = refLink;
+                } else {
+                    // fallback
+                    document.getElementById('walletBalance').value = '0';
+                    document.getElementById('userPoints').value = '0';
+                    document.getElementById('referralLink').value = 'خطا در دریافت';
+                }
             } catch (e) {
                 console.error('خطا در دریافت پروفایل', e);
+                document.getElementById('walletBalance').value = '0';
+                document.getElementById('userPoints').value = '0';
+                document.getElementById('referralLink').value = 'خطا در دریافت';
             }
         }
 
@@ -706,13 +734,13 @@
                 else allAds = [];
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
                 renderSpecialCarousel();
-                renderAds(allAds, 'adsGrid');
+                renderAds(allAds, 'adsList');
             } catch (e) {
                 console.error('خطا در دریافت آگهی‌ها', e);
                 allAds = [];
                 specialAds = [];
                 renderSpecialCarousel();
-                renderAds([], 'adsGrid');
+                renderAds([], 'adsList');
             }
         }
 
@@ -747,17 +775,22 @@
         function renderAds(ads, containerId) {
             const container = document.getElementById(containerId);
             if (!ads.length) {
-                container.innerHTML = `<div style="grid-column:span2; text-align:center;">${t('noAds')}</div>`;
+                container.innerHTML = `<div style="text-align:center; padding:30px;">${t('noAds')}</div>`;
                 return;
             }
             container.innerHTML = ads.map(ad => {
                 const imgUrl = getImgUrl(ad.image_ids);
                 const isFav = favorites.includes(ad.id);
+                const timeStr = ad.created_at ? new Date(ad.created_at*1000).toLocaleDateString(currentLang === 'fa' ? 'fa-IR' : (currentLang === 'ar' ? 'ar-SA' : 'en-US')) : '';
                 return `<div class="ad-card" data-id="${ad.id}">
-                    <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x120'">
+                    <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/200'">
                     <div class="content">
                         <div class="title">${ad.title}</div>
                         <div class="price">💰 ${ad.price} ${ad.currency}</div>
+                        <div class="meta">
+                            <span>📍 ${ad.city || ''}</span>
+                            <span>⏱️ ${timeStr}</span>
+                        </div>
                     </div>
                     <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
                 </div>`;
@@ -772,8 +805,8 @@
             const idx = favorites.indexOf(id);
             if (idx === -1) favorites.push(id); else favorites.splice(idx, 1);
             localStorage.setItem('isouq_favorites', JSON.stringify(favorites));
-            renderAds(allAds, 'adsGrid');
-            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+            renderAds(allAds, 'adsList');
+            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesList');
         };
 
         // ========== نمایش آگهی با دکمه‌های تماس، واتساپ، تلگرام و ترجمه ==========
@@ -784,7 +817,7 @@
             const imgs = images.map(img => `<img src="${API_BASE}/image/${img}" onerror="this.src='https://via.placeholder.com/200'">`).join('');
             const phone = ad.phone || '';
             const whatsappLink = `https://wa.me/${phone.replace(/\D/g,'')}`;
-            const telegramLink = `https://t.me/${ad.telegram_username || ''}`; // اگر ذخیره کرده باشید
+            const telegramLink = ad.telegram_username ? `https://t.me/${ad.telegram_username}` : 'https://t.me/Mehdi_E_admin'; // fallback به پشتیبانی
             const translateUrl = `https://translate.google.com/?sl=auto&tl=${currentLang}&op=translate&text=${encodeURIComponent(ad.description || '')}`;
 
             document.getElementById('modalContent').innerHTML = `
@@ -837,7 +870,7 @@
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 document.getElementById(page + 'Page').classList.add('active');
                 if (page === 'favorites') {
-                    renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+                    renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesList');
                 } else if (page === 'profile') {
                     loadUserProfile();
                 }
@@ -851,8 +884,24 @@
         document.getElementById('vipBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); }
         });
-        document.getElementById('chargeBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'charge' })); tg.close(); }
+        document.getElementById('saveProfile').addEventListener('click', () => {
+            const displayName = document.getElementById('displayName').value;
+            const country = document.getElementById('country').value;
+            tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
+            tg?.showPopup({ title: '✅', message: t('save') });
+        });
+
+        // ========== کپی لProfile();
+                }
+            });
+        });
+
+        // ========== دکمه‌های اصلی ==========
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
+        });
+        document.getElementById('vipBtn').addEventListener('click', () => {
+            if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); }
         });
         document.getElementById('saveProfile').addEventListener('click', () => {
             const displayName = document.getElementById('displayName').value;
@@ -870,20 +919,14 @@
             });
         });
 
-        // ========== منوی سه‌نقطه ==========
-        document.getElementById('dotsBtn').addEventListener('click', () => {
-            document.getElementById('dropdownMenu').classList.toggle('active');
-        });
-        document.getElementById('contactMenuItem').addEventListener('click', () => {
-            document.getElementById('dropdownMenu').classList.remove('active');
-            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
-        });
-        document.getElementById('installMenuItem').addEventListener('click', () => {
-            document.getElementById('dropdownMenu').classList.remove('active');
-            tg?.showPopup({ title: t('install'), message: 'برای نصب اپلیکیشن، از منوی مرورگر گزینه "Add to Home screen" را انتخاب کنید.' });
-        });
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.menu-dots')) document.getElementById('dropdownMenu').classList.remove('active');
+        // ========== جستجو ==========
+        document.getElementById('searchBtn').addEventListener('click', filterAdsینک دعوت ==========
+        document.getElementById('copyReferral').addEventListener('click', () => {
+            const link = document.getElementById('referralLink');
+            link.select();
+            navigator.clipboard.writeText(link.value).then(() => {
+                tg?.showPopup({ title: '✅', message: t('copyHint') });
+            });
         });
 
         // ========== جستجو ==========
@@ -895,7 +938,7 @@
                 (ad.title && ad.title.toLowerCase().includes(term)) ||
                 (ad.description && ad.description.toLowerCase().includes(term))
             );
-            renderAds(filtered, 'adsGrid');
+            renderAds(filtered, 'adsList');
         }
 
         // ========== شروع ==========
@@ -905,4 +948,4 @@
         loadUserProfile();
     </script>
 </body>
-    </html>
+</html>
