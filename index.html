@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جدار | J-DAR</title>
+    <title>J-DAR | جدار</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Font Awesome 6 (رایگان) برای آیکون‌های زیبا -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* ===== فونت وزیر ===== */
         @font-face {
@@ -121,7 +123,7 @@
             transform: scale(1.05);
         }
 
-        /* ===== کاروسل ویژه با ارتفاع مناسب ===== */
+        /* ===== کاروسل ویژه ===== */
         .special-carousel {
             background: rgba(10, 26, 47, 0.5);
             backdrop-filter: blur(15px);
@@ -172,7 +174,7 @@
             font-weight: 600;
         }
 
-        /* ===== دکمه‌های اصلی طلایی ===== */
+        /* ===== دکمه‌های اصلی ===== */
         .action-buttons {
             display: flex;
             gap: 12px;
@@ -198,6 +200,9 @@
             background: #D4AF37;
             color: #0A1A2F;
         }
+        .primary-btn i {
+            font-size: 18px;
+        }
 
         /* ===== جستجو ===== */
         .search-box {
@@ -216,6 +221,9 @@
             font-size: 16px;
             outline: none;
         }
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
         .search-box button {
             background: transparent;
             border: none;
@@ -231,6 +239,7 @@
             gap: 8px;
             padding-bottom: 8px;
             scrollbar-width: none;
+            margin-bottom: 12px;
         }
         .categories::-webkit-scrollbar { display: none; }
         .category-chip {
@@ -250,7 +259,7 @@
             font-weight: bold;
         }
 
-        /* ===== شبکه آگهی‌ها ===== */
+        /* ===== شبکه آگهی‌ها (طراحی دیوار-مانند) ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -265,30 +274,82 @@
             position: relative;
             transition: 0.3s;
         }
-        .ad-card:hover { border-color: #D4AF37; transform: translateY(-5px); }
-        .ad-card img { width: 100%; height: 150px; object-fit: cover; }
-        .ad-card .content { padding: 16px; }
-        .ad-card .title { font-weight: bold; font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .ad-card .price { color: #D4AF37; font-weight: bold; font-size: 16px; }
-        .ad-card .favorite {
-            position: absolute; top: 10px; left: 10px;
-            background: #0A1A2F; border: 2px solid #D4AF37; border-radius: 50%;
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; cursor: pointer;
+        .ad-card:hover {
+            border-color: #D4AF37;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212,175,55,0.2);
+        }
+        .ad-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-bottom: 2px solid #D4AF3740;
+        }
+        .ad-card .content {
+            padding: 12px 12px 10px;
+        }
+        .ad-card .title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+        }
+        .ad-card .price {
+            color: #D4AF37;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .ad-card .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #a0b8cc;
+        }
+        .ad-card .meta i {
+            margin-left: 3px;
+            font-size: 11px;
         }
         .ad-card .rating {
-            position: absolute; bottom: 10px; right: 10px;
-            background: #0A1A2F; border: 1px solid #D4AF37; border-radius: 20px;
-            padding: 2px 8px;
-            font-size: 12px;
-            color: #D4AF37;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
+            color: #D4AF37;
+            font-size: 12px;
+            background: rgba(10,26,47,0.8);
+            padding: 2px 6px;
+            border-radius: 30px;
+            border: 1px solid #D4AF3740;
+        }
+        .ad-card .favorite {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(10,26,47,0.8);
+            backdrop-filter: blur(4px);
+            border: 2px solid #D4AF3740;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        .ad-card .favorite:hover {
+            background: #D4AF37;
+            color: #0A1A2F;
+            border-color: #D4AF37;
         }
 
-        /* ===== مودال مشاهده آگهی ===== */
+        /* ===== مودال مشاهده آگهی (طراحی لوکس) ===== */
         .modal {
             display: none;
             position: fixed;
@@ -308,27 +369,82 @@
             border-radius: 80px;
             padding: 30px;
             animation: modalFade 0.4s;
+            position: relative;
         }
         @keyframes modalFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .modal-close {
-            position: absolute; top: 20px; left: 20px;
-            background: #D4AF37; border: none; border-radius: 50%;
-            width: 50px; height: 50px;
-            color: #0A1A2F; font-size: 28px; cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #D4AF37;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: #0A1A2F;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
         }
-        .modal-images { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; border-radius: 50px; }
-        .modal-images img { height: 230px; border-radius: 40px; }
-        .modal-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; color: white; }
-        .modal-price { font-size: 26px; color: #D4AF37; font-weight: bold; margin-bottom: 12px; }
-        .modal-meta { display: flex; gap: 15px; color: #a0b8cc; border-top: 2px solid #D4AF3740; padding-top: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .modal-desc { margin-bottom: 25px; line-height: 1.8; }
+        .modal-close:hover {
+            transform: scale(1.1);
+        }
+        .modal-images {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-radius: 60px;
+            scroll-snap-type: x mandatory;
+        }
+        .modal-images img {
+            height: 250px;
+            border-radius: 50px;
+            scroll-snap-align: start;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: white;
+        }
+        .modal-price {
+            font-size: 26px;
+            color: #D4AF37;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            color: #a0b8cc;
+            border-top: 2px solid #D4AF3740;
+            border-bottom: 2px solid #D4AF3740;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .modal-meta i {
+            margin-left: 5px;
+            color: #D4AF37;
+        }
+        .modal-desc {
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #e0e8f0;
+        }
         .modal-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .modal-actions button, .modal-actions a {
+        .modal-actions a, .modal-actions button {
             flex: 1;
             padding: 14px;
             border: 2px solid #D4AF3740;
@@ -341,43 +457,117 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
             transition: 0.2s;
+            font-size: 15px;
         }
-        .modal-actions button:hover, .modal-actions a:hover {
+        .modal-actions a:hover, .modal-actions button:hover {
             background: #D4AF37;
             color: #0A1A2F;
         }
+        .modal-actions i {
+            font-size: 18px;
+        }
+
+        /* ===== بخش نظرات ===== */
         .review-section {
-            margin-top: 20px;
+            margin-top: 25px;
             border-top: 2px solid #D4AF3740;
             padding-top: 20px;
         }
-        .review-item {
-            background: #0A1A2F;
-            border: 1px solid #D4AF3740;
-            border-radius: 40px;
-            padding: 15px;
-            margin-bottom: 10px;
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-        .rating-stars { color: #D4AF37; font-size: 18px; }
-        .review-input { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; }
+        .review-header .avg {
+            font-size: 24px;
+            font-weight: bold;
+            color: #D4AF37;
+        }
+        .review-header .stars {
+            color: #D4AF37;
+            font-size: 18px;
+        }
+        .review-header .count {
+            color: #a0b8cc;
+        }
+        .review-item {
+            background: rgba(10,26,47,0.7);
+            border: 2px solid #D4AF3740;
+            border-radius: 40px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+        .review-item .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .review-item .user i {
+            background: #D4AF37;
+            color: #0A1A2F;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .review-item .user-name {
+            font-weight: bold;
+        }
+        .review-item .rating-stars {
+            color: #D4AF37;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+        .review-item .comment {
+            color: #d0d8e0;
+            margin-bottom: 6px;
+        }
+        .review-item .date {
+            font-size: 11px;
+            color: #a0b8cc;
+        }
+        .review-input {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
         .review-input input, .review-input textarea {
             background: #0A1A2F;
             border: 2px solid #D4AF3740;
             border-radius: 60px;
-            padding: 12px 20px;
+            padding: 14px 20px;
             color: white;
             width: 100%;
+            resize: none;
+        }
+        .review-input textarea {
+            border-radius: 30px;
         }
         .review-input button {
             background: #D4AF37;
             color: #0A1A2F;
             border: none;
             border-radius: 60px;
-            padding: 12px 20px;
+            padding: 14px;
             font-weight: bold;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .review-input button:hover {
+            opacity: 0.9;
         }
 
         /* ===== پروفایل ===== */
@@ -398,6 +588,10 @@
             border-radius: 60px;
             background: #0A1A2F;
             color: white;
+        }
+        .profile-field input:focus, .profile-field select:focus {
+            border-color: #D4AF37;
+            outline: none;
         }
         .save-profile {
             background: #D4AF37;
@@ -433,21 +627,25 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
+            font-size: 13px;
+        }
+        .nav-item i {
+            font-size: 22px;
         }
         .nav-item.active { color: #D4AF37; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- هدر با لوگو J-DAR -->
+        <!-- هدر -->
         <div class="header">
             <div class="logo">
                 <span class="logo-main">J-DAR</span>
                 <span class="logo-sub">جدار | پلتفرم هوشمند</span>
             </div>
             <div class="header-left">
-                <button class="lang-btn" id="langMainBtn">🌐</button>
-                <button class="support-btn" id="supportBtn">💬</button>
+                <button class="lang-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
+                <button class="support-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
             </div>
         </div>
 
@@ -457,21 +655,21 @@
                 <div class="carousel-track" id="specialTrack"></div>
             </div>
             <div class="action-buttons">
-                <button class="primary-btn" id="postAdBtn">📌 ثبت آگهی</button>
-                <button class="primary-btn" id="vipBtn">👑 اشتراک ویژه</button>
+                <button class="primary-btn" id="postAdBtn"><i class="fas fa-plus-circle"></i> ثبت آگهی</button>
+                <button class="primary-btn" id="vipBtn"><i class="fas fa-crown"></i> اشتراک ویژه</button>
             </div>
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
-                <button id="searchBtn">🔍</button>
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
             </div>
             <div class="categories" id="mainCategoryList"></div>
-            <div class="categories" id="subCategoryList" style="margin-top: 10px;"></div>
+            <div class="categories" id="subCategoryList"></div>
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
         <!-- صفحه علاقه‌مندی‌ها -->
         <div id="favoritesPage" class="page">
-            <h3 style="color:#D4AF37; margin-bottom:20px;">❤️ علاقه‌مندی‌ها</h3>
+            <h3 style="color:#D4AF37; margin-bottom:20px;"><i class="fas fa-heart"></i> علاقه‌مندی‌ها</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
@@ -479,40 +677,40 @@
         <div id="profilePage" class="page">
             <div class="profile-section">
                 <div class="profile-field">
-                    <label>نام کاربری تلگرام</label>
+                    <label><i class="fas fa-user"></i> نام کاربری تلگرام</label>
                     <input type="text" id="tgUsername" readonly>
                 </div>
                 <div class="profile-field">
-                    <label>نام نمایشی</label>
+                    <label><i class="fas fa-tag"></i> نام نمایشی</label>
                     <input type="text" id="displayName" placeholder="نام شما">
                 </div>
                 <div class="profile-field">
-                    <label>کشور</label>
+                    <label><i class="fas fa-map-marker-alt"></i> کشور</label>
                     <select id="country">
                         <option value="IR">🇮🇷 ایران</option>
                         <option value="IQ">🇮🇶 عراق</option>
                     </select>
                 </div>
                 <div class="profile-field">
-                    <label>💰 موجودی کیف پول: <span id="walletBalance">0</span> تومان</label>
-                    <button class="primary-btn" id="chargeBtn" style="margin-top:8px;">💳 شارژ حساب</button>
+                    <label><i class="fas fa-wallet"></i> موجودی کیف پول: <span id="walletBalance">0</span> تومان</label>
+                    <button class="primary-btn" id="chargeBtn" style="margin-top:8px;"><i class="fas fa-credit-card"></i> شارژ حساب</button>
                 </div>
                 <div class="profile-field">
-                    <label>⭐ امتیاز شما: <span id="userPoints">0</span></label>
+                    <label><i class="fas fa-star"></i> امتیاز شما: <span id="userPoints">0</span></label>
                     <div style="margin-top:5px;">
                         <span>🌟 میانگین امتیاز: </span><span id="userRatingAvg" style="color:#D4AF37;">0</span>
                         <span>(<span id="userRatingCount">0</span> نظر)</span>
                     </div>
-                    <button class="primary-btn" id="viewReviewsBtn" style="margin-top:5px;">📋 مشاهده نظرات</button>
+                    <button class="primary-btn" id="viewReviewsBtn" style="margin-top:5px;"><i class="fas fa-comments"></i> مشاهده نظرات</button>
                 </div>
                 <div class="profile-field">
-                    <label>🔗 لینک دعوت</label>
+                    <label><i class="fas fa-link"></i> لینک دعوت</label>
                     <div style="display:flex; gap:5px;">
                         <input type="text" id="referralLink" readonly>
-                        <button id="copyReferral">📋</button>
+                        <button id="copyReferral" class="lang-btn" style="width:50px;"><i class="fas fa-copy"></i></button>
                     </div>
                 </div>
-                <button class="save-profile" id="saveProfile">💾 ذخیره تغییرات</button>
+                <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> ذخیره تغییرات</button>
             </div>
         </div>
     </div>
@@ -524,9 +722,9 @@
 
     <!-- ناوبری پایین -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-page="home">🏠 خانه</div>
-        <div class="nav-item" data-page="favorites">❤️ علاقه‌مندی</div>
-        <div class="nav-item" data-page="profile">👤 پروفایل</div>
+        <div class="nav-item active" data-page="home"><i class="fas fa-home"></i> خانه</div>
+        <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i> علاقه‌مندی</div>
+        <div class="nav-item" data-page="profile"><i class="fas fa-user"></i> پروفایل</div>
     </div>
 
     <script>
@@ -534,7 +732,7 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev'; // آدرس worker
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let allAds = [];
@@ -544,43 +742,172 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ========== ترجمه (مختصر برای سه زبان) ==========
+        // ========== ترجمه‌های کامل ==========
         const translations = {
             fa: {
-                home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل', postAd: '📌 ثبت آگهی', vip: '👑 اشتراک ویژه',
-                noAds: 'آگهی‌ای یافت نشد', call: '📞 تماس', whatsapp: '📱 واتساپ', telegram: '📲 تلگرام',
-                translate: '🌐 ترجمه گوگل', report: '🚩 گزارش', copyHint: '👆 برای کپی ضربه بزنید',
-                support: 'پشتیبانی', save: 'ذخیره', charge: 'شارژ حساب'
+                home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل', postAd: 'ثبت آگهی', vip: 'اشتراک ویژه',
+                noAds: 'آگهی‌ای یافت نشد', call: 'تماس', whatsapp: 'واتساپ', telegram: 'تلگرام',
+                translate: 'ترجمه', report: 'گزارش', copyHint: 'کپی شد', support: 'پشتیبانی',
+                save: 'ذخیره', charge: 'شارژ حساب',
+                categories: {
+                    'پزشکی': 'پزشکی',
+                    'پزشک عمومی': 'پزشک عمومی',
+                    'متخصص': 'متخصص',
+                    'دندانپزشک': 'دندانپزشک',
+                    'داروخانه': 'داروخانه',
+                    'آزمایشگاه': 'آزمایشگاه',
+                    'بیمارستان': 'بیمارستان',
+                    'خدمات پرستاری': 'خدمات پرستاری',
+                    'تجهیزات پزشکی': 'تجهیزات پزشکی',
+                    'چشم‌پزشکی': 'چشم‌پزشکی',
+                    'کاشت مو': 'کاشت مو',
+                    'زیبایی': 'زیبایی',
+                    'لیزر': 'لیزر',
+                    'پوست و مو': 'پوست و مو',
+                    'گردشگری': 'گردشگری',
+                    'تور داخلی': 'تور داخلی',
+                    'تور خارجی': 'تور خارجی',
+                    'راهنما': 'راهنما',
+                    'اقامتگاه': 'اقامتگاه',
+                    'حمل و نقل': 'حمل و نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شاندیز',
+                    'سرعین': 'سرعین',
+                    'کیش': 'کیش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'اصفهان',
+                    'شیراز': 'شیراز',
+                    'زیارت': 'زیارت',
+                    'عتبات عالیات': 'عتبات عالیات',
+                    'سوریه': 'سوریه',
+                    'کربلا': 'کربلا',
+                    'نجف': 'نجف',
+                    'کاظمین': 'کاظمین',
+                    'سامرا': 'سامرا',
+                    'عمره': 'عمره',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمکران',
+                    'شاه چراغ': 'شاه چراغ'
+                }
             },
             ar: {
-                home: 'الرئيسية', favorites: 'المفضلة', profile: 'الملف', postAd: '📌 إعلان', vip: '👑 VIP',
-                noAds: 'لا توجد إعلانات', call: '📞 اتصال', whatsapp: '📱 واتساب', telegram: '📲 تلغرام',
-                translate: '🌐 ترجمة جوجل', report: '🚩 إبلاغ', copyHint: '👆 اضغط للنسخ',
-                support: 'الدعم', save: 'حفظ', charge: 'شحن'
+                home: 'الرئيسية', favorites: 'المفضلة', profile: 'الملف', postAd: 'إعلان', vip: 'VIP',
+                noAds: 'لا توجد إعلانات', call: 'اتصال', whatsapp: 'واتساب', telegram: 'تلغرام',
+                translate: 'ترجمة', report: 'إبلاغ', copyHint: 'تم النسخ', support: 'الدعم',
+                save: 'حفظ', charge: 'شحن',
+                categories: {
+                    'پزشکی': 'طب',
+                    'پزشک عمومی': 'طبيب عام',
+                    'متخصص': 'أخصائي',
+                    'دندانپزشک': 'طبيب أسنان',
+                    'داروخانه': 'صيدلية',
+                    'آزمایشگاه': 'مختبر',
+                    'بیمارستان': 'مستشفى',
+                    'خدمات پرستاری': 'تمريض',
+                    'تجهیزات پزشکی': 'معدات طبية',
+                    'چشم‌پزشکی': 'طب عيون',
+                    'کاشت مو': 'زراعة شعر',
+                    'زیبایی': 'تجميل',
+                    'لیزر': 'ليزر',
+                    'پوست و مو': 'جلد وشعر',
+                    'گردشگری': 'سياحة',
+                    'تور داخلی': 'جولة داخلية',
+                    'تور خارجی': 'جولة خارجية',
+                    'راهنما': 'مرشد',
+                    'اقامتگاه': 'مبيت',
+                    'حمل و نقل': 'نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شانديز',
+                    'سرعین': 'سرعين',
+                    'کیش': 'كيش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'أصفهان',
+                    'شیراز': 'شيراز',
+                    'زیارت': 'زيارة',
+                    'عتبات عالیات': 'عتبات',
+                    'سوریه': 'سوريا',
+                    'کربلا': 'كربلاء',
+                    'نجف': 'النجف',
+                    'کاظمین': 'كاظمين',
+                    'سامرا': 'سامراء',
+                    'عمره': 'عمرة',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمكران',
+                    'شاه چراغ': 'شاه جراغ'
+                }
             },
             en: {
-                home: 'Home', favorites: 'Favorites', profile: 'Profile', postAd: '📌 Post Ad', vip: '👑 VIP',
-                noAds: 'No ads found', call: '📞 Call', whatsapp: '📱 WhatsApp', telegram: '📲 Telegram',
-                translate: '🌐 Google Translate', report: '🚩 Report', copyHint: '👆 Tap to copy',
-                support: 'Support', save: 'Save', charge: 'Charge'
+                home: 'Home', favorites: 'Favorites', profile: 'Profile', postAd: 'Post Ad', vip: 'VIP',
+                noAds: 'No ads', call: 'Call', whatsapp: 'WhatsApp', telegram: 'Telegram',
+                translate: 'Translate', report: 'Report', copyHint: 'Copied', support: 'Support',
+                save: 'Save', charge: 'Charge',
+                categories: {
+                    'پزشکی': 'Medical',
+                    'پزشک عمومی': 'General Practitioner',
+                    'متخصص': 'Specialist',
+                    'دندانپزشک': 'Dentist',
+                    'داروخانه': 'Pharmacy',
+                    'آزمایشگاه': 'Laboratory',
+                    'بیمارستان': 'Hospital',
+                    'خدمات پرستاری': 'Nursing',
+                    'تجهیزات پزشکی': 'Medical Equipment',
+                    'چشم‌پزشکی': 'Ophthalmology',
+                    'کاشت مو': 'Hair Transplant',
+                    'زیبایی': 'Cosmetic',
+                    'لیزر': 'Laser',
+                    'پوست و مو': 'Skin & Hair',
+                    'گردشگری': 'Tourism',
+                    'تور داخلی': 'Domestic Tour',
+                    'تور خارجی': 'International Tour',
+                    'راهنما': 'Guide',
+                    'اقامتگاه': 'Accommodation',
+                    'حمل و نقل': 'Transport',
+                    'خدمات سفر': 'Travel Services',
+                    'شاندیز': 'Shandiz',
+                    'سرعین': 'Sareyn',
+                    'کیش': 'Kish',
+                    'مشهد': 'Mashhad',
+                    'اصفهان': 'Isfahan',
+                    'شیراز': 'Shiraz',
+                    'زیارت': 'Pilgrimage',
+                    'عتبات عالیات': 'Atabat',
+                    'سوریه': 'Syria',
+                    'کربلا': 'Karbala',
+                    'نجف': 'Najaf',
+                    'کاظمین': 'Kadhimayn',
+                    'سامرا': 'Samarra',
+                    'عمره': 'Umrah',
+                    'حج': 'Hajj',
+                    'قم': 'Qom',
+                    'جمکران': 'Jamkaran',
+                    'شاه چراغ': 'Shah Cheragh'
+                }
             }
         };
 
-        function t(key) { return translations[currentLang][key] || key; }
+        function t(key, catKey = null) {
+            if (catKey) return translations[currentLang].categories[catKey] || catKey;
+            return translations[currentLang][key] || key;
+        }
 
         function updateUILanguage() {
             document.querySelectorAll('.nav-item').forEach(item => {
                 const page = item.dataset.page;
-                if (page === 'home') item.innerHTML = '🏠 ' + t('home');
-                if (page === 'favorites') item.innerHTML = '❤️ ' + t('favorites');
-                if (page === 'profile') item.innerHTML = '👤 ' + t('profile');
+                if (page === 'home') item.innerHTML = '<i class="fas fa-home"></i> ' + t('home');
+                if (page === 'favorites') item.innerHTML = '<i class="fas fa-heart"></i> ' + t('favorites');
+                if (page === 'profile') item.innerHTML = '<i class="fas fa-user"></i> ' + t('profile');
             });
-            document.getElementById('postAdBtn').innerHTML = t('postAd');
-            document.getElementById('vipBtn').innerHTML = t('vip');
-            document.getElementById('saveProfile').innerHTML = `💾 ${t('save')}`;
-            document.getElementById('chargeBtn').innerHTML = `💳 ${t('charge')}`;
+            document.getElementById('postAdBtn').innerHTML = '<i class="fas fa-plus-circle"></i> ' + t('postAd');
+            document.getElementById('vipBtn').innerHTML = '<i class="fas fa-crown"></i> ' + t('vip');
+            document.getElementById('saveProfile').innerHTML = '<i class="fas fa-save"></i> ' + t('save');
+            document.getElementById('chargeBtn').innerHTML = '<i class="fas fa-credit-card"></i> ' + t('charge');
+            document.getElementById('supportBtn').innerHTML = '<i class="fas fa-headset"></i>';
+            document.getElementById('langMainBtn').innerHTML = '<i class="fas fa-globe"></i>';
         }
 
+        // ========== تغییر زبان ==========
         document.getElementById('langMainBtn').addEventListener('click', () => {
             tg?.showPopup({
                 title: 'انتخاب زبان',
@@ -607,12 +934,21 @@
             tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
-        // ========== دسته‌بندی‌ها ==========
+        // ========== دسته‌بندی‌های گسترده ==========
         const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
         const subCategories = {
-            'پزشکی': ['پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان', 'خدمات پرستاری', 'تجهیزات پزشکی'],
-            'گردشگری': ['تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر'],
-            'زیارت': ['عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج']
+            'پزشکی': [
+                'پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان',
+                'خدمات پرستاری', 'تجهیزات پزشکی', 'چشم‌پزشکی', 'کاشت مو', 'زیبایی', 'لیزر', 'پوست و مو'
+            ],
+            'گردشگری': [
+                'تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر',
+                'شاندیز', 'سرعین', 'کیش', 'مشهد', 'اصفهان', 'شیراز'
+            ],
+            'زیارت': [
+                'عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج',
+                'قم', 'جمکران', 'شاه چراغ'
+            ]
         };
         let currentMainCat = 'پزشکی';
         let currentSubCat = '';
@@ -620,7 +956,7 @@
         function renderCategories() {
             const mainContainer = document.getElementById('mainCategoryList');
             mainContainer.innerHTML = mainCategories.map(cat => 
-                `<span class="category-chip ${cat === currentMainCat ? 'active' : ''}" data-maincat="${cat}">${cat}</span>`
+                `<span class="category-chip ${cat === currentMainCat ? 'active' : ''}" data-maincat="${cat}">${t('categories', cat)}</span>`
             ).join('');
             document.querySelectorAll('[data-maincat]').forEach(el => {
                 el.addEventListener('click', () => {
@@ -639,7 +975,8 @@
             const subs = subCategories[mainCat] || [];
             let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">همه</span>`;
             subs.forEach(sub => {
-                html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${sub}</span>`;
+                const translated = t('categories', sub);
+                html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${translated}</span>`;
             });
             subContainer.innerHTML = html;
             document.querySelectorAll('[data-subcat]').forEach(el => {
@@ -650,6 +987,30 @@
                     filterAds();
                 });
             });
+        }
+
+        // ========== تابع زمان نسبی ==========
+        function getRelativeTime(timestamp) {
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - timestamp;
+            if (diff < 60) return 'چند لحظه پیش';
+            if (diff < 3600) {
+                const m = Math.floor(diff / 60);
+                return `${m} دقیقه پیش`;
+            }
+            if (diff < 86400) {
+                const h = Math.floor(diff / 3600);
+                return `${h} ساعت پیش`;
+            }
+            if (diff < 604800) {
+                const d = Math.floor(diff / 86400);
+                return `${d} روز پیش`;
+            }
+            if (diff < 2592000) {
+                const w = Math.floor(diff / 604800);
+                return `${w} هفته پیش`;
+            }
+            return 'قدیمی';
         }
 
         // ========== دریافت اطلاعات کاربر ==========
@@ -723,14 +1084,21 @@
                 const isFav = favorites.includes(ad.id);
                 const ratingAvg = ad.rating_avg ? ad.rating_avg.toFixed(1) : '0';
                 const ratingCount = ad.rating_count || 0;
+                const time = getRelativeTime(ad.created_at);
                 return `<div class="ad-card" data-id="${ad.id}">
                     <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x150'">
                     <div class="content">
                         <div class="title">${ad.title}</div>
                         <div class="price">💰 ${ad.price} ${ad.currency}</div>
+                        <div class="meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${ad.city || ''}</span>
+                            <span><i class="far fa-clock"></i> ${time}</span>
+                        </div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> ${ratingAvg} (${ratingCount})
+                        </div>
                     </div>
                     <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
-                    <div class="rating">⭐ ${ratingAvg} (${ratingCount})</div>
                 </div>`;
             }).join('');
             document.querySelectorAll(`#${containerId} .ad-card`).forEach(card => {
@@ -760,39 +1128,55 @@
             // دریافت نظرات
             const reviewsRes = await fetch(`${API_BASE}/api/reviews?adId=${id}`);
             const reviewsData = await reviewsRes.json();
-            const reviewsHtml = (reviewsData.reviews || []).map(r => `
-                <div class="review-item">
-                    <div class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
-                    <div>${r.comment || 'بدون نظر'}</div>
-                    <div style="font-size:12px; color:#a0b8cc;">${r.first_name || r.username || 'کاربر'}</div>
-                </div>
-            `).join('');
+            const reviews = reviewsData.reviews || [];
+            const avgRating = ad.rating_avg ? ad.rating_avg.toFixed(1) : '0';
+            const reviewCount = reviews.length;
+
+            let reviewsHtml = '';
+            reviews.forEach(r => {
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                reviewsHtml += `
+                    <div class="review-item">
+                        <div class="user">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="user-name">${r.first_name || r.username || 'کاربر'}</span>
+                        </div>
+                        <div class="rating-stars">${stars}</div>
+                        <div class="comment">${r.comment || 'بدون نظر'}</div>
+                        <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div>
+                    </div>
+                `;
+            });
 
             document.getElementById('modalContent').innerHTML = `
-                <button class="modal-close" onclick="document.getElementById('adModal').classList.remove('active')">&times;</button>
+                <button class="modal-close" onclick="document.getElementById('adModal').classList.remove('active')"><i class="fas fa-times"></i></button>
                 <div class="modal-images">${imgs || '<p>بدون تصویر</p>'}</div>
                 <div class="modal-title">${ad.title}</div>
                 <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
                 <div class="modal-meta">
-                    <span>📂 ${ad.category || ''}</span>
-                    <span>📍 ${ad.city || ''}</span>
-                    <span>⏱️ ${new Date(ad.created_at*1000).toLocaleDateString()}</span>
+                    <span><i class="fas fa-folder"></i> ${ad.category || ''}</span>
+                    <span><i class="fas fa-map-marker-alt"></i> ${ad.city || ''}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${new Date(ad.created_at*1000).toLocaleDateString()}</span>
                 </div>
                 <div class="modal-desc">${ad.description || ''}</div>
                 <div class="modal-actions">
-                    <a href="tel:${phone}" target="_blank">${t('call')}</a>
-                    <a href="${whatsappLink}" target="_blank">${t('whatsapp')}</a>
-                    <a href="${telegramLink}" target="_blank">${t('telegram')}</a>
-                    <button onclick="window.open('${translateUrl}', '_blank')">${t('translate')}</button>
-                    <button onclick="reportAd(${ad.id})">${t('report')}</button>
+                    <a href="tel:${phone}" target="_blank"><i class="fas fa-phone-alt"></i> ${t('call')}</a>
+                    <a href="${whatsappLink}" target="_blank"><i class="fab fa-whatsapp"></i> ${t('whatsapp')}</a>
+                    <a href="${telegramLink}" target="_blank"><i class="fab fa-telegram"></i> ${t('telegram')}</a>
+                    <button onclick="window.open('${translateUrl}', '_blank')"><i class="fas fa-language"></i> ${t('translate')}</button>
+                    <button onclick="reportAd(${ad.id})"><i class="fas fa-flag"></i> ${t('report')}</button>
                 </div>
                 <div class="review-section">
-                    <h4 style="color:#D4AF37;">نظرات کاربران</h4>
+                    <div class="review-header">
+                        <span class="avg">⭐ ${avgRating}</span>
+                        <span class="stars">${'★'.repeat(Math.round(ad.rating_avg || 0))}${'☆'.repeat(5 - Math.round(ad.rating_avg || 0))}</span>
+                        <span class="count">(${reviewCount} نظر)</span>
+                    </div>
                     ${reviewsHtml || '<p>هنوز نظری ثبت نشده است.</p>'}
                     <div class="review-input">
                         <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
                         <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
-                        <button onclick="submitReview(${ad.id})">ثبت نظر</button>
+                        <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ثبت نظر</button>
                     </div>
                 </div>
             `;
@@ -814,8 +1198,7 @@
             if (data.success) {
                 alert('نظر شما ثبت شد');
                 document.getElementById('adModal').classList.remove('active');
-                // بارگذاری مجدد آگهی‌ها برای به‌روزرسانی امتیاز
-                loadAds();
+                loadAds(); // بارگذاری مجدد برای به‌روزرسانی امتیاز
             } else {
                 alert('خطا: ' + data.error);
             }
@@ -899,4 +1282,4 @@
         if (userId) loadUserProfile();
     </script>
 </body>
-    </html>
+                        </html>
