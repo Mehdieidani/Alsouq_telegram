@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جدار | پلتفرم خرید و فروش حرفه‌ای</title>
+    <title>جدار | المنصة الرسمية للبيع والشراء</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ===== فونت اختصاصی وزیر ===== */
+        /* ========== FONTS ========== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
-        
-        /* ===== ریست و پایه ===== */
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        /* ========== RESET & BASE ========== */
         * {
             margin: 0;
             padding: 0;
@@ -23,31 +29,40 @@
 
         body {
             font-family: 'Vazir', 'Tahoma', sans-serif;
-            background: #0a0f1a;
+            background: #0a0e17;
             color: #ffffff;
             min-height: 100vh;
             direction: rtl;
             overflow-x: hidden;
             position: relative;
+            line-height: 1.6;
         }
 
-        /* ===== افکت رزین شیشه‌ای پس‌زمینه ===== */
+        /* ========== RESIN DYNAMIC BACKGROUND ========== */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(210, 180, 140, 0.08) 0%, transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.06) 0%, transparent 40%),
-                linear-gradient(135deg, #0f1422 0%, #1a1f2e 50%, #0f1422 100%);
-            pointer-events: none;
+                radial-gradient(circle at 30% 40%, rgba(210, 180, 140, 0.03) 0%, transparent 25%),
+                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.04) 0%, transparent 30%),
+                radial-gradient(circle at 10% 80%, rgba(200, 170, 100, 0.02) 0%, transparent 35%),
+                repeating-linear-gradient(45deg, rgba(255,215,0,0.01) 0px, rgba(255,215,0,0.01) 2px, transparent 2px, transparent 8px);
+            animation: resinFlow 35s linear infinite;
             z-index: 0;
+            pointer-events: none;
         }
 
-        /* ===== کانتینر اصلی با افکت شیشه ===== */
+        @keyframes resinFlow {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(3deg) scale(1.02); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        /* ========== MAIN CONTAINER ========== */
         .container {
             max-width: 500px;
             margin: 0 auto;
@@ -56,42 +71,42 @@
             z-index: 10;
         }
 
-        /* ===== هدر لوکس با افکت شیشه ===== */
+        /* ========== PREMIUM GLASS HEADER ========== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 28px;
-            background: rgba(20, 30, 45, 0.4);
+            background: rgba(12, 20, 30, 0.5);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 60px;
-            padding: 8px 16px 8px 8px;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.18);
+            border-radius: 100px;
+            padding: 8px 16px 8px 12px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
         }
 
         .logo {
             display: flex;
             flex-direction: column;
-            margin-right: 8px;
         }
 
         .logo-main {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffd700, #d4af37);
+            background: linear-gradient(135deg, #ffd700, #d4af37, #f5e7a3);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1.2;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(255,215,0,0.3);
         }
 
         .logo-sub {
-            font-size: 11px;
-            color: #a0b8cc;
-            letter-spacing: 0.5px;
+            font-size: 10px;
+            color: #9aaec9;
+            letter-spacing: 0.3px;
         }
 
         .header-left {
@@ -99,31 +114,32 @@
             gap: 8px;
         }
 
-        /* ===== دکمه‌های هدر با طراحی خاص ===== */
+        /* ========== ICON BUTTONS ========== */
         .lang-btn, .dots-btn {
             width: 48px;
             height: 48px;
-            border-radius: 40px;
-            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            background: rgba(20, 30, 45, 0.5);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             color: #ffd700;
             font-size: 22px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .lang-btn:hover, .dots-btn:hover {
-            background: rgba(255, 215, 0, 0.15);
+            background: rgba(255, 215, 0, 0.2);
             border-color: #ffd700;
-            transform: scale(1.05);
+            transform: scale(1.1) rotate(3deg);
+            box-shadow: 0 15px 30px #ffd70040;
         }
 
-        /* ===== منوی کشویی شیشه‌ای ===== */
+        /* ========== DROPDOWN MENU ========== */
         .menu-dots {
             position: relative;
         }
@@ -132,111 +148,111 @@
             position: absolute;
             top: 58px;
             left: 0;
-            background: rgba(15, 20, 30, 0.85);
-            backdrop-filter: blur(25px);
+            background: rgba(10, 18, 28, 0.85);
+            backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 24px;
+            border-radius: 30px;
             padding: 10px 0;
-            min-width: 200px;
-            box-shadow: 0 25px 50px -10px black;
+            min-width: 210px;
+            box-shadow: 0 30px 60px -15px black;
             display: none;
             z-index: 200;
         }
 
         .dropdown-menu.active {
             display: block;
-            animation: fadeIn 0.2s ease;
+            animation: menuSlide 0.25s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+        @keyframes menuSlide {
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .dropdown-item {
-            padding: 14px 20px;
-            color: #e5e9f0;
+            padding: 15px 22px;
+            color: #eef2f6;
             cursor: pointer;
             transition: background 0.2s;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             font-size: 15px;
         }
 
         .dropdown-item:hover {
-            background: rgba(255, 215, 0, 0.12);
+            background: rgba(255, 215, 0, 0.15);
         }
 
-        /* ===== کاروسل ویژه با طراحی برجسته ===== */
+        /* ========== DYNAMIC SPECIAL CAROUSEL ========== */
         .special-carousel {
-            background: rgba(15, 22, 35, 0.5);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 40px;
-            padding: 22px 16px;
+            background: rgba(12, 20, 32, 0.45);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 60px;
+            padding: 24px 18px;
             margin-bottom: 32px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 20px 40px -15px #00000080;
+            box-shadow: 0 25px 45px -15px #000000cc;
         }
 
         .carousel-track {
             display: flex;
             gap: 18px;
-            animation: scroll 30s linear infinite;
+            animation: smoothScroll 40s linear infinite;
             width: max-content;
         }
 
-        @keyframes scroll {
+        @keyframes smoothScroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
 
         .special-item {
-            width: 160px;
-            background: rgba(25, 35, 50, 0.7);
-            backdrop-filter: blur(5px);
+            width: 170px;
+            background: rgba(20, 32, 48, 0.7);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 30px;
-            padding: 14px;
+            border-radius: 40px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
             flex-shrink: 0;
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
         }
 
         .special-item:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px) scale(1.02);
             border-color: #ffd700;
-            box-shadow: 0 20px 30px -10px #ffd70030;
+            box-shadow: 0 30px 40px -15px #ffd70060;
         }
 
         .special-item img {
             width: 100%;
             height: 100px;
             object-fit: cover;
-            border-radius: 20px;
-            background: #2a3a4a;
+            border-radius: 30px;
+            background: #2e3d4e;
         }
 
         .special-item .title {
             font-size: 15px;
             font-weight: 700;
-            margin: 12px 0 6px;
+            margin: 14px 0 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: white;
+            color: #fff;
         }
 
         .special-item .price {
             color: #ffd700;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
         }
 
-        /* ===== دکمه‌های اصلی با افکت عمیق ===== */
+        /* ========== PRIMARY ACTION BUTTONS ========== */
         .action-buttons {
             display: flex;
             gap: 14px;
@@ -245,9 +261,9 @@
 
         .primary-btn {
             flex: 1;
-            background: linear-gradient(145deg, #1e2a3a, #0f1a28);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 50px;
+            background: linear-gradient(145deg, #1f2b3a, #101a28);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 60px;
             padding: 18px 8px;
             color: white;
             font-size: 17px;
@@ -257,31 +273,31 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 15px 30px -10px black;
+            box-shadow: 0 18px 35px -12px black;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
         }
 
         .primary-btn:hover {
             border-color: #ffd700;
-            background: linear-gradient(145deg, #253545, #152230);
-            transform: translateY(-3px);
-            box-shadow: 0 25px 40px -15px #ffd70060;
+            background: linear-gradient(145deg, #283a4a, #172334);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px -15px #ffd70070;
         }
 
-        /* ===== جستجو و دسته‌بندی با طراحی شیک ===== */
+        /* ========== SEARCH & CATEGORIES ========== */
         .search-section {
             margin-bottom: 32px;
         }
 
         .search-box {
             display: flex;
-            background: rgba(20, 30, 45, 0.5);
-            backdrop-filter: blur(12px);
+            background: rgba(18, 28, 42, 0.5);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 50px;
-            padding: 10px 20px;
-            margin-bottom: 20px;
+            border-radius: 60px;
+            padding: 12px 22px;
+            margin-bottom: 22px;
             align-items: center;
         }
 
@@ -304,6 +320,11 @@
             color: #ffd700;
             font-size: 24px;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.1);
         }
 
         .categories {
@@ -320,16 +341,16 @@
         }
 
         .category-chip {
-            background: rgba(25, 35, 50, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(22, 34, 48, 0.6);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 215, 0, 0.15);
-            padding: 10px 22px;
-            border-radius: 40px;
+            padding: 10px 24px;
+            border-radius: 50px;
             font-size: 15px;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: #e5e9f0;
+            transition: all 0.25s ease;
+            color: #e0e8f0;
         }
 
         .category-chip.active {
@@ -337,9 +358,10 @@
             color: #0a0f1a;
             border-color: #ffd700;
             font-weight: 700;
+            box-shadow: 0 10px 20px #ffd70040;
         }
 
-        /* ===== شبکه آگهی‌ها با کارت‌های لوکس ===== */
+        /* ========== ADS GRID (LUXURY CARDS) ========== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -347,31 +369,32 @@
         }
 
         .ad-card {
-            background: rgba(18, 25, 38, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 215, 0, 0.12);
-            border-radius: 32px;
+            background: rgba(16, 25, 38, 0.55);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 40px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             cursor: pointer;
             position: relative;
+            box-shadow: 0 20px 30px -15px black;
         }
 
         .ad-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 215, 0, 0.4);
-            box-shadow: 0 25px 40px -15px #000000d0;
+            transform: translateY(-10px);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 35px 50px -15px #ffd70050;
         }
 
         .ad-card img {
             width: 100%;
             height: 140px;
             object-fit: cover;
-            background: #2a3a4a;
+            background: #2f3f50;
         }
 
         .ad-card .content {
-            padding: 16px 12px;
+            padding: 18px 14px;
         }
 
         .ad-card .title {
@@ -386,35 +409,35 @@
 
         .ad-card .price {
             color: #ffd700;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
         }
 
         .ad-card .favorite {
             position: absolute;
-            top: 12px;
-            left: 12px;
+            top: 14px;
+            left: 14px;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
-            border-radius: 40px;
-            width: 42px;
-            height: 42px;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 5;
-            font-size: 20px;
+            font-size: 22px;
             transition: all 0.2s;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.25);
         }
 
         .ad-card .favorite:hover {
-            background: rgba(255, 215, 0, 0.25);
-            transform: scale(1.1);
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.15);
         }
 
-        /* ===== مودال مشاهده آگهی (طراحی درجه یک) ===== */
+        /* ========== PREMIUM MODAL ========== */
         .modal {
             display: none;
             position: fixed;
@@ -423,7 +446,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(35px);
             z-index: 1000;
             overflow-y: auto;
             padding: 20px;
@@ -435,128 +458,129 @@
 
         .modal-content {
             max-width: 500px;
-            margin: 20px auto;
-            background: rgba(15, 22, 35, 0.9);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 48px;
-            padding: 28px;
+            margin: 30px auto;
+            background: rgba(12, 20, 32, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 70px;
+            padding: 32px;
             color: white;
             position: relative;
-            animation: modalRise 0.4s ease;
-            box-shadow: 0 40px 80px -20px black;
+            animation: modalRaise 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            box-shadow: 0 50px 90px -20px black;
         }
 
-        @keyframes modalRise {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes modalRaise {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.08);
             border: none;
-            border-radius: 40px;
-            width: 48px;
-            height: 48px;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
             color: white;
-            font-size: 26px;
+            font-size: 28px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.25);
         }
 
         .modal-close:hover {
-            background: rgba(255, 215, 0, 0.2);
+            background: rgba(255, 215, 0, 0.25);
             color: #ffd700;
+            transform: rotate(90deg);
         }
 
         .modal-images {
             display: flex;
             overflow-x: auto;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 14px;
+            margin-bottom: 28px;
             scrollbar-width: none;
-            border-radius: 28px;
+            border-radius: 50px;
         }
 
         .modal-images img {
-            height: 250px;
-            border-radius: 28px;
-            box-shadow: 0 20px 30px -10px black;
+            height: 260px;
+            border-radius: 40px;
+            box-shadow: 0 25px 40px -10px black;
         }
 
         .modal-title {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 800;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff, #e5e9f0);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #d0e0f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .modal-price {
-            font-size: 26px;
+            font-size: 28px;
             color: #ffd700;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .modal-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 22px;
             font-size: 15px;
-            color: #a0b8cc;
-            margin-bottom: 24px;
-            border-top: 1px solid rgba(255, 215, 0, 0.15);
-            padding-top: 20px;
+            color: #a0b8d0;
+            margin-bottom: 28px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            padding-top: 22px;
         }
 
         .modal-desc {
-            line-height: 1.8;
-            margin-bottom: 32px;
-            color: #d0e0f0;
+            line-height: 1.9;
+            margin-bottom: 36px;
+            color: #d0e0f5;
             font-size: 16px;
         }
 
         .modal-actions {
             display: flex;
-            gap: 14px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
         .modal-actions button {
             flex: 1;
-            padding: 16px;
+            padding: 18px;
             border: none;
-            border-radius: 50px;
-            background: rgba(25, 35, 50, 0.8);
+            border-radius: 60px;
+            background: rgba(25, 38, 55, 0.8);
             border: 1px solid rgba(255, 215, 0, 0.2);
             color: white;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 17px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             backdrop-filter: blur(5px);
         }
 
         .modal-actions button:hover {
-            background: rgba(45, 60, 80, 0.9);
+            background: rgba(45, 65, 90, 0.9);
             border-color: #ffd700;
             color: #ffd700;
         }
 
-        /* ===== پروفایل کاربر با طراحی ممتاز ===== */
+        /* ========== PROFILE PAGE ========== */
         .page {
             display: none;
         }
@@ -566,32 +590,32 @@
         }
 
         .profile-section {
-            background: rgba(15, 22, 35, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            border-radius: 48px;
-            padding: 28px;
+            background: rgba(14, 22, 36, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 70px;
+            padding: 32px;
             margin-bottom: 20px;
         }
 
         .profile-field {
-            margin-bottom: 24px;
+            margin-bottom: 26px;
         }
 
         .profile-field label {
             display: block;
             font-size: 14px;
-            color: #a0b8cc;
+            color: #a0b8d0;
             margin-bottom: 8px;
             letter-spacing: 0.3px;
         }
 
         .profile-field input, .profile-field select {
             width: 100%;
-            padding: 16px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            background: rgba(10, 15, 25, 0.6);
+            padding: 18px 24px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: rgba(8, 14, 24, 0.6);
             color: white;
             font-size: 16px;
             outline: none;
@@ -606,8 +630,8 @@
             background: linear-gradient(145deg, #ffd700, #e6b800);
             color: #0a0f1a;
             border: none;
-            border-radius: 50px;
-            padding: 16px;
+            border-radius: 60px;
+            padding: 18px;
             width: 100%;
             font-weight: 800;
             font-size: 18px;
@@ -619,7 +643,7 @@
             opacity: 0.9;
         }
 
-        /* ===== ناوبری پایین شیشه‌ای فوق‌العاده ===== */
+        /* ========== BOTTOM GLASS NAVIGATION ========== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -627,24 +651,24 @@
             right: 0;
             max-width: 500px;
             margin: 0 auto;
-            background: rgba(10, 18, 28, 0.7);
-            backdrop-filter: blur(30px);
+            background: rgba(8, 16, 26, 0.7);
+            backdrop-filter: blur(40px);
             border-top: 1px solid rgba(255, 215, 0, 0.25);
             display: flex;
             justify-content: space-around;
             padding: 8px 0;
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
             z-index: 100;
             box-shadow: 0 -20px 40px -15px black;
         }
 
         .nav-item {
             text-align: center;
-            color: #a0b8cc;
+            color: #9aafc9;
             font-size: 12px;
             cursor: pointer;
-            padding: 8px 20px;
+            padding: 8px 22px;
             border-radius: 40px;
             transition: all 0.2s ease;
             display: flex;
@@ -661,73 +685,78 @@
         .nav-item i {
             font-size: 22px;
         }
+
+        /* ========== ARABIC RTL FIXES ========== */
+        [lang="ar"] body {
+            font-family: 'Vazir', 'Tahoma', sans-serif;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- هدر با برند جدید جدار -->
+        <!-- HEADER WITH JEDAR BRANDING -->
         <div class="header">
             <div class="logo">
                 <span class="logo-main">جدار</span>
-                <span class="logo-sub">السوق المفتوح + ایران</span>
+                <span class="logo-sub" data-i18n="jedarSub">السوق المفتوح + ایران</span>
             </div>
             <div class="header-left">
                 <button class="lang-btn" id="langMainBtn">🌐</button>
                 <div class="menu-dots">
                     <button class="dots-btn" id="dotsBtn">⋯</button>
                     <div class="dropdown-menu" id="dropdownMenu">
-                        <div class="dropdown-item" id="contactMenuItem">📞 پشتیبانی</div>
-                        <div class="dropdown-item" id="installMenuItem">📲 نصب اپ</div>
+                        <div class="dropdown-item" id="contactMenuItem" data-i18n="support">📞 پشتیبانی</div>
+                        <div class="dropdown-item" id="installMenuItem" data-i18n="installApp">📲 نصب اپ</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- صفحه خانه -->
+        <!-- HOME PAGE -->
         <div id="homePage" class="page active">
-            <!-- کاروسل ویژه -->
+            <!-- SPECIAL CAROUSEL -->
             <div class="special-carousel">
                 <div class="carousel-track" id="specialTrack"></div>
             </div>
             
-            <!-- دکمه‌های اصلی -->
+            <!-- MAIN ACTION BUTTONS -->
             <div class="action-buttons">
-                <button class="primary-btn" id="postAdBtn">📌 ثبت آگهی</button>
-                <button class="primary-btn" id="vipBtn">👑 اشتراک ویژه</button>
+                <button class="primary-btn" id="postAdBtn" data-i18n="postAd">📌 ثبت آگهی</button>
+                <button class="primary-btn" id="vipBtn" data-i18n="vip">👑 اشتراک ویژه</button>
             </div>
             
-            <!-- جستجو -->
+            <!-- SEARCH SECTION -->
             <div class="search-section">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
+                    <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="جستجو در آگهی‌ها...">
                     <button id="searchBtn">🔍</button>
                 </div>
                 <div class="categories" id="categoryList"></div>
             </div>
             
-            <!-- شبکه آگهی‌ها -->
+            <!-- ADS GRID -->
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
-        <!-- صفحه علاقه‌مندی‌ها -->
+        <!-- FAVORITES PAGE -->
         <div id="favoritesPage" class="page">
-            <h3 style="margin-bottom: 24px; color:#ffd700; font-size:24px;">❤️ علاقه‌مندی‌ها</h3>
+            <h3 style="margin-bottom: 24px; color:#ffd700; font-size:24px;" data-i18n="favoritesHeader">❤️ علاقه‌مندی‌ها</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
-        <!-- صفحه پروفایل -->
+        <!-- PROFILE PAGE -->
         <div id="profilePage" class="page">
             <div class="profile-section">
                 <div class="profile-field">
-                    <label>نام کاربری تلگرام</label>
+                    <label data-i18n="tgUsername">نام کاربری تلگرام</label>
                     <input type="text" id="tgUsername" readonly>
                 </div>
                 <div class="profile-field">
-                    <label>نام نمایشی</label>
-                    <input type="text" id="displayName" placeholder="نام شما">
+                    <label data-i18n="displayNameLabel">نام نمایشی</label>
+                    <input type="text" id="displayName" data-i18n-placeholder="displayNamePlaceholder" placeholder="نام شما">
                 </div>
                 <div class="profile-field">
-                    <label>کشور</label>
+                    <label data-i18n="countryLabel">کشور</label>
                     <select id="country">
                         <option value="IR">🇮🇷 ایران</option>
                         <option value="IQ">🇮🇶 عراق</option>
@@ -751,77 +780,178 @@
                         <option value="MR">🇲🇷 موریتانی</option>
                     </select>
                 </div>
-                <button class="save-profile" id="saveProfile">💾 ذخیره تغییرات</button>
+                <button class="save-profile" id="saveProfile" data-i18n="save">💾 ذخیره تغییرات</button>
             </div>
         </div>
     </div>
 
-    <!-- مودال مشاهده آگهی -->
+    <!-- AD MODAL -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
-    <!-- ناوبری پایین -->
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-page="home"><i>🏠</i> خانه</div>
-        <div class="nav-item" data-page="favorites"><i>❤️</i> علاقه‌مندی</div>
-        <div class="nav-item" data-page="profile"><i>👤</i> پروفایل</div>
+        <div class="nav-item active" data-page="home"><i>🏠</i> <span data-i18n="home">خانه</span></div>
+        <div class="nav-item" data-page="favorites"><i>❤️</i> <span data-i18n="favorites">علاقه‌مندی</span></div>
+        <div class="nav-item" data-page="profile"><i>👤</i> <span data-i18n="profile">پروفایل</span></div>
     </div>
 
     <script>
-        // ========== تنظیمات اولیه ==========
+        // ========== TELEGRAM INIT ==========
         const tg = window.Telegram?.WebApp;
-        if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
+        if (tg) {
+            tg.expand();
+            tg.enableClosingConfirmation();
+        }
 
+        // ========== CONFIGURATION ==========
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        let currentLang = localStorage.getItem('souq_lang') || 'fa';
-        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
+        let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let allAds = [];
         let specialAds = [];
 
         const tgUser = tg?.initDataUnsafe?.user;
-        if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
-
-        // ========== ترجمه (مختصر) ==========
-        const translations = {
-            fa: { home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل', postAd: '📌 ثبت آگهی', vip: '👑 اشتراک ویژه', noAds: 'آگهی‌ای یافت نشد', call: '📞 تماس', chat: '💬 چت', share: '📤 اشتراک', report: '🚩 گزارش' },
-            ar: { home: 'الرئيسية', favorites: 'المفضلة', profile: 'الملف', postAd: '📌 إعلان', vip: '👑 VIP', noAds: 'لا توجد إعلانات', call: '📞 اتصال', chat: '💬 دردشة', share: '📤 مشاركة', report: '🚩 إبلاغ' },
-            en: { home: 'Home', favorites: 'Favorites', profile: 'Profile', postAd: '📌 Post Ad', vip: '👑 VIP', noAds: 'No ads', call: '📞 Call', chat: '💬 Chat', share: '📤 Share', report: '🚩 Report' }
-        };
-        function t(key) { return translations[currentLang][key] || key; }
-
-        // ========== آپدیت متون ==========
-        function updateUILang() {
-            document.querySelectorAll('.nav-item').forEach((el, idx) => {
-                const page = el.dataset.page;
-                if (page === 'home') el.innerHTML = '<i>🏠</i> ' + t('home');
-                if (page === 'favorites') el.innerHTML = '<i>❤️</i> ' + t('favorites');
-                if (page === 'profile') el.innerHTML = '<i>👤</i> ' + t('profile');
-            });
+        if (tgUser) {
+            document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
-        // ========== دریافت آگهی‌ها ==========
+        // ========== COMPLETE TRANSLATIONS (AR/FA/EN) ==========
+        const translations = {
+            fa: {
+                jedarSub: 'السوق المفتوح + ایران',
+                home: 'خانه',
+                favorites: 'علاقه‌مندی',
+                profile: 'پروفایل',
+                postAd: '📌 ثبت آگهی',
+                vip: '👑 اشتراک ویژه',
+                searchPlaceholder: 'جستجو در آگهی‌ها...',
+                noAds: 'آگهی‌ای یافت نشد',
+                call: '📞 تماس',
+                chat: '💬 چت',
+                share: '📤 اشتراک',
+                report: '🚩 گزارش',
+                favoritesHeader: '❤️ علاقه‌مندی‌ها',
+                tgUsername: 'نام کاربری تلگرام',
+                displayNameLabel: 'نام نمایشی',
+                displayNamePlaceholder: 'نام شما',
+                countryLabel: 'کشور',
+                save: '💾 ذخیره تغییرات',
+                support: '📞 پشتیبانی',
+                installApp: '📲 نصب اپ',
+                copyHint: '👆 برای کپی ضربه بزنید',
+            },
+            ar: {
+                jedarSub: 'السوق المفتوح + إيران',
+                home: 'الرئيسية',
+                favorites: 'المفضلة',
+                profile: 'الملف الشخصي',
+                postAd: '📌 إعلان جديد',
+                vip: '👑 اشتراك VIP',
+                searchPlaceholder: 'ابحث في الإعلانات...',
+                noAds: 'لا توجد إعلانات',
+                call: '📞 اتصال',
+                chat: '💬 دردشة',
+                share: '📤 مشاركة',
+                report: '🚩 إبلاغ',
+                favoritesHeader: '❤️ المفضلة',
+                tgUsername: 'اسم المستخدم في تلغرام',
+                displayNameLabel: 'الاسم المعروض',
+                displayNamePlaceholder: 'اسمك',
+                countryLabel: 'الدولة',
+                save: '💾 حفظ التغييرات',
+                support: '📞 الدعم',
+                installApp: '📲 تثبيت التطبيق',
+                copyHint: '👆 اضغط لنسخ النص',
+            },
+            en: {
+                jedarSub: 'Al-Souq Al-Maftouh + Iran',
+                home: 'Home',
+                favorites: 'Favorites',
+                profile: 'Profile',
+                postAd: '📌 Post Ad',
+                vip: '👑 VIP',
+                searchPlaceholder: 'Search ads...',
+                noAds: 'No ads found',
+                call: '📞 Call',
+                chat: '💬 Chat',
+                share: '📤 Share',
+                report: '🚩 Report',
+                favoritesHeader: '❤️ Favorites',
+                tgUsername: 'Telegram Username',
+                displayNameLabel: 'Display Name',
+                displayNamePlaceholder: 'Your name',
+                countryLabel: 'Country',
+                save: '💾 Save Changes',
+                support: '📞 Support',
+                installApp: '📲 Install App',
+                copyHint: '👆 Tap to copy',
+            }
+        };
+
+        // ========== TRANSLATION FUNCTION ==========
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // ========== UPDATE UI LANGUAGE (fully dynamic) ==========
+        function updateUILanguage() {
+            // update all data-i18n elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            // update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
+            // update nav items (they have inner spans)
+            document.querySelectorAll('.nav-item span[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            // update dropdown items manually (since they have mixed content)
+            document.getElementById('contactMenuItem').innerHTML = `📞 ${t('support')}`;
+            document.getElementById('installMenuItem').innerHTML = `📲 ${t('installApp')}`;
+        }
+
+        // ========== LOAD ADS FROM WORKER ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
                 const data = await res.json();
-                if (data.success && data.ads.length) allAds = data.ads;
-                else allAds = [];
+                if (data.success && data.ads.length) {
+                    allAds = data.ads;
+                } else {
+                    allAds = [];
+                }
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
-                renderSpecial();
+                renderSpecialCarousel();
                 renderAds(allAds, 'adsGrid');
-            } catch { allAds = []; specialAds = []; renderSpecial(); renderAds([], 'adsGrid'); }
+            } catch (error) {
+                console.error('Error loading ads:', error);
+                allAds = [];
+                specialAds = [];
+                renderSpecialCarousel();
+                renderAds([], 'adsGrid');
+            }
         }
 
-        function renderSpecial() {
+        // ========== RENDER SPECIAL CAROUSEL ==========
+        function renderSpecialCarousel() {
             const track = document.getElementById('specialTrack');
-            if (!specialAds.length) { track.innerHTML = '<div style="padding:30px;text-align:center;">آگهی ویژه‌ای نیست</div>'; return; }
+            if (!specialAds.length) {
+                track.innerHTML = `<div style="padding:30px;text-align:center;">${t('noAds')}</div>`;
+                return;
+            }
             let items = '';
             for (let i = 0; i < 2; i++) {
                 specialAds.forEach(ad => {
-                    const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/160x100?text=Ad';
+                    const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/170x100?text=Ad';
                     items += `<div class="special-item" onclick="showAd(${ad.id})">
-                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/160x100'">
+                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/170x100'">
                         <div class="title">${ad.title}</div>
                         <div class="price">💰 ${ad.price} ${ad.currency}</div>
                     </div>`;
@@ -830,13 +960,29 @@
             track.innerHTML = items;
         }
 
+        // ========== GET IMAGE URL ==========
+        function getImgUrl(imageIds) {
+            try {
+                if (!imageIds) return 'https://via.placeholder.com/150x120?text=No+Image';
+                const ids = Array.isArray(imageIds) ? imageIds : JSON.parse(imageIds);
+                return ids.length ? `${API_BASE}/image/${ids[0]}` : 'https://via.placeholder.com/150x120?text=No+Image';
+            } catch {
+                return 'https://via.placeholder.com/150x120?text=No+Image';
+            }
+        }
+
+        // ========== RENDER ADS GRID ==========
         function renderAds(ads, containerId) {
             const container = document.getElementById(containerId);
-            if (!ads.length) { container.innerHTML = `<div style="grid-column:span2; text-align:center;">${t('noAds')}</div>`; return; }
-            container.innerHTML = ads.map(ad => {
-                const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/150x120?text=Ad';
+            if (!ads.length) {
+                container.innerHTML = `<div style="grid-column:span2; text-align:center;">${t('noAds')}</div>`;
+                return;
+            }
+            let html = '';
+            ads.forEach(ad => {
+                const imgUrl = getImgUrl(ad.image_ids);
                 const isFav = favorites.includes(ad.id);
-                return `<div class="ad-card" data-id="${ad.id}">
+                html += `<div class="ad-card" data-id="${ad.id}">
                     <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x120'">
                     <div class="content">
                         <div class="title">${ad.title}</div>
@@ -844,56 +990,98 @@
                     </div>
                     <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
                 </div>`;
-            }).join('');
+            });
+            container.innerHTML = html;
             document.querySelectorAll(`#${containerId} .ad-card`).forEach(card => {
-                card.addEventListener('click', (e) => { if (!e.target.classList.contains('favorite')) showAd(card.dataset.id); });
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('favorite')) {
+                        showAd(card.dataset.id);
+                    }
+                });
             });
         }
 
+        // ========== TOGGLE FAVORITE ==========
         window.toggleFavorite = (e, id) => {
             e.stopPropagation();
             const idx = favorites.indexOf(id);
             if (idx === -1) favorites.push(id); else favorites.splice(idx, 1);
-            localStorage.setItem('favorites', JSON.stringify(favorites));
+            localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
             renderAds(allAds, 'adsGrid');
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
+        // ========== SHOW AD MODAL ==========
         window.showAd = (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
             const images = ad.image_ids ? (Array.isArray(ad.image_ids) ? ad.image_ids : JSON.parse(ad.image_ids)) : [];
             const imgs = images.map(img => `<img src="${API_BASE}/image/${img}" onerror="this.src='https://via.placeholder.com/200'">`).join('');
-            const time = ad.created_at ? new Date(ad.created_at*1000).toLocaleDateString('fa-IR') : '';
+            const time = ad.created_at ? new Date(ad.created_at*1000).toLocaleDateString(currentLang === 'fa' ? 'fa-IR' : (currentLang === 'ar' ? 'ar-SA' : 'en-US')) : '';
+            
             document.getElementById('modalContent').innerHTML = `
                 <button class="modal-close" onclick="document.getElementById('adModal').classList.remove('active')">&times;</button>
+                <div class="copy-hint" style="text-align:center; color:#aaa; margin-bottom:8px;">${t('copyHint')}</div>
                 <div class="modal-images">${imgs || '<p>بدون تصویر</p>'}</div>
-                <div class="modal-title">${ad.title}</div>
-                <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
+                <div class="modal-title" onclick="copyText('${ad.title.replace(/'/g, "\\'")}')">${ad.title}</div>
+                <div class="modal-price" onclick="copyText('${ad.price} ${ad.currency}')">💰 ${ad.price} ${ad.currency}</div>
                 <div class="modal-meta">
                     <span>📂 ${ad.category || ''}</span>
                     <span>📍 ${ad.city || ''}</span>
                     <span>⏱️ ${time}</span>
                 </div>
-                <div class="modal-desc">${ad.description || ''}</div>
+                <div class="modal-desc" onclick="copyText('${ad.description ? ad.description.replace(/'/g, "\\'") : ''}')">${ad.description || ''}</div>
                 <div class="modal-actions">
                     <button onclick="window.location.href='tel:${ad.phone}'">${t('call')}</button>
                     <button onclick="tg?.openTelegramLink('https://t.me/Mehdi_E_admin')">${t('chat')}</button>
                     <button onclick="shareAd(${ad.id})">${t('share')}</button>
+                    <button onclick="reportAd(${ad.id})">${t('report')}</button>
                 </div>
             `;
             document.getElementById('adModal').classList.add('active');
+            // increment view count
             fetch(`${API_BASE}/api/view`, { method: 'POST', body: JSON.stringify({ adId: ad.id }), headers: { 'Content-Type': 'application/json' } });
         };
 
+        // ========== COPY TEXT ==========
+        window.copyText = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                tg?.showPopup({ title: '✅', message: t('copyHint') });
+            });
+        };
+
+        // ========== SHARE AD ==========
         window.shareAd = (id) => {
             const ad = allAds.find(a => a.id == id);
             const text = `${ad.title}\n💰 ${ad.price} ${ad.currency}\n${ad.description || ''}`;
-            if (navigator.share) navigator.share({ title: ad.title, text });
-            else navigator.clipboard?.writeText(text);
+            if (navigator.share) {
+                navigator.share({ title: ad.title, text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    tg?.showPopup({ title: '✅', message: t('copyHint') });
+                });
+            }
         };
 
-        // ========== ناوبری پایین ==========
+        // ========== REPORT AD ==========
+        window.reportAd = (id) => {
+            tg?.showPopup({
+                title: t('report'),
+                message: 'دلیل گزارش را انتخاب کنید:',
+                buttons: [
+                    { id: 'spam', type: 'default', text: 'اسپم' },
+                    { id: 'fake', type: 'default', text: 'جعلی' },
+                    { id: 'offensive', type: 'default', text: 'توهین‌آمیز' },
+                    { type: 'cancel' }
+                ]
+            }, (btnId) => {
+                if (btnId) {
+                    tg?.openTelegramLink(`https://t.me/Mehdi_E_admin?text=گزارش آگهی ${id}: ${btnId}`);
+                }
+            });
+        };
+
+        // ========== BOTTOM NAVIGATION ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -901,41 +1089,52 @@
                 const page = item.dataset.page;
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 document.getElementById(page + 'Page').classList.add('active');
-                if (page === 'favorites') renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+                if (page === 'favorites') {
+                    renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+                }
             });
         });
 
-        // ========== دکمه‌ها ==========
-        document.getElementById('postAdBtn').addEventListener('click', () => { if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); } });
-        document.getElementById('vipBtn').addEventListener('click', () => { if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); } });
+        // ========== MAIN BUTTONS ==========
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
+        });
+        document.getElementById('vipBtn').addEventListener('click', () => {
+            if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); }
+        });
         document.getElementById('saveProfile').addEventListener('click', () => {
             const displayName = document.getElementById('displayName').value;
             const country = document.getElementById('country').value;
             tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
-            tg?.showPopup({ title: '✅', message: 'پروفایل ذخیره شد' });
+            tg?.showPopup({ title: '✅', message: t('save') });
         });
 
-        // ========== زبان ==========
+        // ========== LANGUAGE BUTTON (FULLY FUNCTIONAL) ==========
         document.getElementById('langMainBtn').addEventListener('click', () => {
             tg?.showPopup({
-                title: 'انتخاب زبان',
+                title: 'انتخاب زبان / اختر اللغة / Select Language',
                 message: 'زبان مورد نظر را انتخاب کنید:',
                 buttons: [
-                    { id: 'fa', type: 'default', text: 'فارسی' },
-                    { id: 'ar', type: 'default', text: 'العربية' },
-                    { id: 'en', type: 'default', text: 'English' },
+                    { id: 'fa', type: 'default', text: '🇮🇷 فارسی' },
+                    { id: 'ar', type: 'default', text: '🇦🇪 العربية' },
+                    { id: 'en', type: 'default', text: '🇬🇧 English' },
                     { type: 'cancel' }
                 ]
             }, (btnId) => {
                 if (btnId && ['fa','ar','en'].includes(btnId)) {
                     currentLang = btnId;
-                    localStorage.setItem('souq_lang', btnId);
-                    updateUILang();
+                    localStorage.setItem('jedar_lang', btnId);
+                    document.documentElement.lang = btnId === 'ar' ? 'ar' : (btnId === 'fa' ? 'fa' : 'en');
+                    document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
+                    updateUILanguage();
+                    // reload ads to refresh date formats (optional)
+                    renderAds(allAds, 'adsGrid');
+                    renderSpecialCarousel();
                 }
             });
         });
 
-        // ========== منوی سه‌نقطه ==========
+        // ========== THREE-DOT MENU ==========
         document.getElementById('dotsBtn').addEventListener('click', () => {
             document.getElementById('dropdownMenu').classList.toggle('active');
         });
@@ -945,42 +1144,31 @@
         });
         document.getElementById('installMenuItem').addEventListener('click', () => {
             document.getElementById('dropdownMenu').classList.remove('active');
-            tg?.showPopup({ title: 'نصب', message: 'برای نصب اپلیکیشن، از منوی مرورگر گزینه "Add to Home screen" را انتخاب کنید.' });
+            tg?.showPopup({ title: t('installApp'), message: 'برای نصب اپلیکیشن، از منوی مرورگر گزینه "Add to Home screen" را انتخاب کنید.' });
         });
+
+        // ========== SEARCH ==========
+        document.getElementById('searchBtn').addEventListener('click', filterAds);
+        document.getElementById('searchInput').addEventListener('keyup', filterAds);
+        function filterAds() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAds.filter(ad => 
+                (ad.title && ad.title.toLowerCase().includes(term)) || 
+                (ad.description && ad.description.toLowerCase().includes(term))
+            );
+            renderAds(filtered, 'adsGrid');
+        }
+
+        // ========== CLOSE DROPDOWN ON CLICK OUTSIDE ==========
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.menu-dots')) document.getElementById('dropdownMenu').classList.remove('active');
+            if (!e.target.closest('.menu-dots')) {
+                document.getElementById('dropdownMenu').classList.remove('active');
+            }
         });
 
-        // ========== جستجو ==========
-        document.getElementById('searchBtn').addEventListener('click', filterAds);
-        document.getElementById('searchInput').addEventListener('keyup', filterAds);
-        function filterAds() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allAds.filter(ad => ad.title?.toLowerCase().includes(term) || ad.description?.toLowerCase().includes(term));
-            renderAds(filtered, 'adsGrid');
-        }
-
-        // ========== شروع ==========
+        // ========== INITIAL LOAD ==========
         loadAds();
-        updateUILang();
+        updateUILanguage();
     </script>
 </body>
-</html>
-```osest('.menu-dots')) document.getElementById('dropdownMenu').classList.remove('active');
-        });
-
-        // ========== جستجو ==========
-        document.getElementById('searchBtn').addEventListener('click', filterAds);
-        document.getElementById('searchInput').addEventListener('keyup', filterAds);
-        function filterAds() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allAds.filter(ad => ad.title?.toLowerCase().includes(term) || ad.description?.toLowerCase().includes(term));
-            renderAds(filtered, 'adsGrid');
-        }
-
-        // ========== شروع ==========
-        loadAds();
-        updateUILang();
-    </script>
-</body>
-                        </html>
+    </html>
