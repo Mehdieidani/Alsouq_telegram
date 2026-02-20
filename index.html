@@ -16,20 +16,24 @@
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
             font-weight: bold;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Vazir', 'Tahoma', sans-serif;
-            background-color: #0A1A2F;
-            color: #e5e9f0;
+            background-color: #f0f4fa;
+            color: #1e2a3a;
             min-height: 100vh;
             direction: rtl;
             overflow-x: hidden;
             line-height: 1.6;
         }
+
+        /* ===== پس‌زمینه متحرک با حرکت بسیار آرام ===== */
         body::before {
             content: '';
             position: fixed;
@@ -37,12 +41,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 30%, #D4AF3715 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, #D4AF3710 0%, transparent 50%),
-                        linear-gradient(145deg, #0A1A2F 0%, #10233f 100%);
+            background: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                        linear-gradient(135deg, #f8fafd 0%, #eef2f6 100%);
+            animation: gentleDrift 35s ease-in-out infinite;
             z-index: 0;
             pointer-events: none;
         }
+
+        @keyframes gentleDrift {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+            33% { transform: scale(1.02) translate(1%, 1%); opacity: 0.9; }
+            66% { transform: scale(0.98) translate(-1%, -1%); opacity: 0.8; }
+            100% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+        }
+
         .container {
             max-width: 500px;
             margin: 0 auto;
@@ -50,123 +63,147 @@
             position: relative;
             z-index: 10;
         }
+
+        /* ===== هدر با لوگو ثابت ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            background: rgba(10, 26, 47, 0.6);
-            backdrop-filter: blur(20px);
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 60px;
             padding: 8px 12px;
-            box-shadow: 0 15px 30px -10px black;
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
         }
+
         .logo {
             display: flex;
             flex-direction: column;
             margin-right: 8px;
         }
+
         .logo-main {
             font-size: 34px;
             font-weight: 900;
-            background: linear-gradient(135deg, #D4AF37, #F5E7A3);
+            background: linear-gradient(135deg, #b8860b, #daa520);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1.1;
             letter-spacing: 1px;
         }
+
         .logo-sub {
             font-size: 10px;
-            color: #a0b8cc;
+            color: #5a6a7a;
         }
+
         .header-left {
             display: flex;
             gap: 8px;
         }
+
         .lang-btn, .support-btn {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: rgba(10, 26, 47, 0.6);
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(10px);
-            border: 2px solid #D4AF3740;
+            border: 2px solid rgba(212, 175, 55, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            color: #D4AF37;
+            color: #b8860b;
             font-size: 22px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
+
         .lang-btn:hover, .support-btn:hover {
-            border-color: #D4AF37;
-            background: #0A1A2F;
+            border-color: #daa520;
+            background: rgba(255, 255, 255, 0.9);
             transform: scale(1.05);
         }
+
+        /* ===== کاروسل ویژه با حاشیه طلایی ===== */
         .special-carousel {
-            background: rgba(10, 26, 47, 0.5);
-            backdrop-filter: blur(15px);
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 80px;
             padding: 20px 0;
             margin-bottom: 28px;
             overflow: hidden;
             width: 100%;
         }
+
         .carousel-track {
             display: flex;
             gap: 16px;
-            animation: scroll 30s linear infinite;
+            animation: scroll 35s linear infinite;
             width: max-content;
             padding: 0 16px;
         }
+
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
         .special-item {
             width: 180px;
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 60px;
             padding: 16px;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
         }
+
         .special-item:hover {
-            border-color: #D4AF37;
+            border-color: #daa520;
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(218, 165, 32, 0.2);
         }
+
         .special-item img {
             width: 100%;
             height: 110px;
             object-fit: cover;
             border-radius: 40px;
         }
+
         .special-item .title {
             font-weight: bold;
             margin: 10px 0 5px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: #1e2a3a;
         }
+
         .special-item .price {
-            color: #D4AF37;
+            color: #b8860b;
             font-weight: 600;
         }
+
+        /* ===== دکمه‌های اصلی ===== */
         .action-buttons {
             display: flex;
             gap: 12px;
             margin-bottom: 28px;
         }
+
         .primary-btn {
             flex: 1;
-            background: #0A1A2F;
-            border: 2px solid #D4AF37;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #daa520;
             border-radius: 60px;
             padding: 16px 8px;
-            color: white;
+            color: #1e2a3a;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
@@ -175,37 +212,48 @@
             justify-content: center;
             gap: 8px;
             transition: 0.3s;
+            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.1);
         }
+
         .primary-btn:hover {
-            background: #D4AF37;
-            color: #0A1A2F;
+            background: #daa520;
+            color: white;
+            transform: translateY(-2px);
         }
+
+        /* ===== جستجو ===== */
         .search-box {
             display: flex;
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 60px;
             padding: 8px 16px;
             margin-bottom: 20px;
         }
+
         .search-box input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
+            color: #1e2a3a;
             font-size: 16px;
             outline: none;
         }
+
         .search-box input::placeholder {
-            color: rgba(255,255,255,0.5);
+            color: rgba(30, 42, 58, 0.5);
         }
+
         .search-box button {
             background: transparent;
             border: none;
-            color: #D4AF37;
+            color: #b8860b;
             font-size: 24px;
             cursor: pointer;
         }
+
+        /* ===== دسته‌بندی‌ها ===== */
         .categories {
             display: flex;
             overflow-x: auto;
@@ -214,51 +262,63 @@
             scrollbar-width: none;
             margin-bottom: 12px;
         }
+
         .categories::-webkit-scrollbar { display: none; }
+
         .category-chip {
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(212, 175, 55, 0.2);
             border-radius: 40px;
             padding: 8px 20px;
             white-space: nowrap;
             cursor: pointer;
-            color: #e5e9f0;
+            color: #1e2a3a;
             transition: 0.2s;
         }
+
         .category-chip.active {
-            background: #D4AF37;
-            color: #0A1A2F;
-            border-color: #D4AF37;
+            background: #daa520;
+            color: white;
+            border-color: #daa520;
             font-weight: bold;
         }
+
+        /* ===== شبکه آگهی‌ها ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
+
         .ad-card {
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(212, 175, 55, 0.2);
             border-radius: 40px;
             overflow: hidden;
             cursor: pointer;
             position: relative;
             transition: 0.3s;
         }
+
         .ad-card:hover {
-            border-color: #D4AF37;
+            border-color: #daa520;
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(212,175,55,0.2);
+            box-shadow: 0 10px 25px rgba(218, 165, 32, 0.15);
         }
+
         .ad-card img {
             width: 100%;
             height: 150px;
             object-fit: cover;
-            border-bottom: 2px solid #D4AF3740;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
         }
+
         .ad-card .content {
             padding: 12px 12px 10px;
         }
+
         .ad-card .title {
             font-weight: bold;
             font-size: 15px;
@@ -266,39 +326,43 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: white;
+            color: #1e2a3a;
         }
+
         .ad-card .price {
-            color: #D4AF37;
+            color: #b8860b;
             font-weight: bold;
             font-size: 16px;
             margin-bottom: 4px;
         }
+
         .ad-card .meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 12px;
-            color: #a0b8cc;
+            color: #5a6a7a;
         }
+
         .ad-card .rating {
             display: flex;
             align-items: center;
             gap: 3px;
-            color: #D4AF37;
+            color: #b8860b;
             font-size: 12px;
-            background: rgba(10,26,47,0.8);
+            background: rgba(255, 255, 255, 0.5);
             padding: 2px 6px;
             border-radius: 30px;
-            border: 1px solid #D4AF3740;
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
+
         .ad-card .favorite {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(10,26,47,0.8);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(4px);
-            border: 2px solid #D4AF3740;
+            border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -309,44 +373,53 @@
             z-index: 5;
             font-size: 20px;
             transition: 0.2s;
+            color: #b8860b;
         }
+
         .ad-card .favorite:hover {
-            background: #D4AF37;
-            color: #0A1A2F;
-            border-color: #D4AF37;
+            background: #daa520;
+            color: white;
+            border-color: #daa520;
         }
+
+        /* ===== مودال مشاهده آگهی ===== */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(20px);
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
         }
+
         .modal.active { display: block; }
+
         .modal-content {
             max-width: 500px;
             margin: 30px auto;
-            background: #0A1A2F;
-            border: 3px solid #D4AF37;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 3px solid #daa520;
             border-radius: 80px;
             padding: 30px;
             animation: modalFade 0.4s;
             position: relative;
         }
+
         @keyframes modalFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
         .modal-close {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: #D4AF37;
+            background: #daa520;
             border: none;
             border-radius: 50%;
             width: 50px;
             height: 50px;
-            color: #0A1A2F;
+            color: white;
             font-size: 28px;
             cursor: pointer;
             display: flex;
@@ -354,9 +427,9 @@
             justify-content: center;
             transition: 0.2s;
         }
-        .modal-close:hover {
-            transform: scale(1.1);
-        }
+
+        .modal-close:hover { transform: scale(1.1); }
+
         .modal-images {
             display: flex;
             overflow-x: auto;
@@ -365,53 +438,61 @@
             border-radius: 60px;
             scroll-snap-type: x mandatory;
         }
+
         .modal-images img {
             height: 250px;
             border-radius: 50px;
             scroll-snap-align: start;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
+
         .modal-title {
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 8px;
-            color: white;
+            color: #1e2a3a;
         }
+
         .modal-price {
             font-size: 26px;
-            color: #D4AF37;
+            color: #b8860b;
             font-weight: bold;
             margin-bottom: 16px;
         }
+
         .modal-meta {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            color: #a0b8cc;
-            border-top: 2px solid #D4AF3740;
-            border-bottom: 2px solid #D4AF3740;
+            color: #5a6a7a;
+            border-top: 2px solid rgba(218, 165, 32, 0.3);
+            border-bottom: 2px solid rgba(218, 165, 32, 0.3);
             padding: 15px 0;
             margin-bottom: 20px;
             font-size: 14px;
         }
+
         .modal-desc {
             line-height: 1.8;
             margin-bottom: 25px;
-            color: #e0e8f0;
+            color: #1e2a3a;
         }
+
         .modal-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
         }
-        .modal-actions a, .modal-actions button {
+
+        .modal-actions a,
+        .modal-actions button {
             flex: 1;
             padding: 14px;
-            border: 2px solid #D4AF3740;
+            border: 2px solid rgba(218, 165, 32, 0.3);
             border-radius: 60px;
-            background: #0A1A2F;
-            color: white;
+            background: rgba(255, 255, 255, 0.7);
+            color: #1e2a3a;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
@@ -422,15 +503,20 @@
             transition: 0.2s;
             font-size: 15px;
         }
-        .modal-actions a:hover, .modal-actions button:hover {
-            background: #D4AF37;
-            color: #0A1A2F;
+
+        .modal-actions a:hover,
+        .modal-actions button:hover {
+            background: #daa520;
+            color: white;
         }
+
+        /* ===== بخش نظرات ===== */
         .review-section {
             margin-top: 25px;
-            border-top: 2px solid #D4AF3740;
+            border-top: 2px solid rgba(218, 165, 32, 0.3);
             padding-top: 20px;
         }
+
         .review-header {
             display: flex;
             align-items: center;
@@ -438,34 +524,41 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+
         .review-header .avg {
             font-size: 24px;
             font-weight: bold;
-            color: #D4AF37;
+            color: #b8860b;
         }
+
         .review-header .stars {
-            color: #D4AF37;
+            color: #daa520;
             font-size: 18px;
         }
+
         .review-header .count {
-            color: #a0b8cc;
+            color: #5a6a7a;
         }
+
         .review-item {
-            background: rgba(10,26,47,0.7);
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(218, 165, 32, 0.2);
             border-radius: 40px;
             padding: 18px;
             margin-bottom: 15px;
         }
+
         .review-item .user {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 8px;
         }
+
         .review-item .user i {
-            background: #D4AF37;
-            color: #0A1A2F;
+            background: #daa520;
+            color: white;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -474,43 +567,53 @@
             justify-content: center;
             font-size: 16px;
         }
+
         .review-item .user-name {
             font-weight: bold;
+            color: #1e2a3a;
         }
+
         .review-item .rating-stars {
-            color: #D4AF37;
+            color: #daa520;
             font-size: 16px;
             margin-bottom: 6px;
         }
+
         .review-item .comment {
-            color: #d0d8e0;
+            color: #1e2a3a;
             margin-bottom: 6px;
         }
+
         .review-item .date {
             font-size: 11px;
-            color: #a0b8cc;
+            color: #5a6a7a;
         }
+
         .review-input {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-top: 20px;
         }
-        .review-input input, .review-input textarea {
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+
+        .review-input input,
+        .review-input textarea {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(218, 165, 32, 0.3);
             border-radius: 60px;
             padding: 14px 20px;
-            color: white;
+            color: #1e2a3a;
             width: 100%;
             resize: none;
         }
+
         .review-input textarea {
             border-radius: 30px;
         }
+
         .review-input button {
-            background: #D4AF37;
-            color: #0A1A2F;
+            background: #daa520;
+            color: white;
             border: none;
             border-radius: 60px;
             padding: 14px;
@@ -522,30 +625,39 @@
             gap: 8px;
             transition: 0.2s;
         }
+
         .review-input button:hover {
             opacity: 0.9;
         }
+
+        /* ===== پروفایل ===== */
         .page { display: none; }
         .page.active { display: block; }
+
         .profile-section {
-            background: #0A1A2F;
-            border: 2px solid #D4AF3740;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(218, 165, 32, 0.3);
             border-radius: 60px;
             padding: 24px;
         }
+
         .profile-field { margin-bottom: 20px; }
-        .profile-field label { display: block; color: #D4AF37; margin-bottom: 5px; }
-        .profile-field input, .profile-field select {
+        .profile-field label { display: block; color: #b8860b; margin-bottom: 5px; }
+
+        .profile-field input,
+        .profile-field select {
             width: 100%;
             padding: 14px 20px;
-            border: 2px solid #D4AF3740;
+            border: 2px solid rgba(218, 165, 32, 0.3);
             border-radius: 60px;
-            background: #0A1A2F;
-            color: white;
+            background: rgba(255, 255, 255, 0.5);
+            color: #1e2a3a;
         }
+
         .save-profile {
-            background: #D4AF37;
-            color: #0A1A2F;
+            background: #daa520;
+            color: white;
             border: none;
             border-radius: 60px;
             padding: 16px;
@@ -553,6 +665,8 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* ===== ناوبری پایین ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -560,18 +674,21 @@
             right: 0;
             max-width: 500px;
             margin: 0 auto;
-            background: #0A1A2F;
-            border-top: 3px solid #D4AF37;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-top: 3px solid #daa520;
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
             border-top-left-radius: 50px;
             border-top-right-radius: 50px;
             z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
         }
+
         .nav-item {
             text-align: center;
-            color: #a0b8cc;
+            color: #5a6a7a;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -579,7 +696,8 @@
             gap: 4px;
             font-size: 13px;
         }
-        .nav-item.active { color: #D4AF37; }
+
+        .nav-item.active { color: #daa520; }
     </style>
 </head>
 <body>
@@ -615,13 +733,13 @@
             <!-- دسته‌بندی‌ها -->
             <div class="categories" id="mainCategoryList"></div>
             <div class="categories" id="subCategoryList"></div>
-            <!-- شبکه آگهی‌های عادی -->
+            <!-- شبکه آگهی‌ها -->
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
         <!-- صفحه علاقه‌مندی‌ها -->
         <div id="favoritesPage" class="page">
-            <h3 style="color:#D4AF37; margin-bottom:20px;" data-i18n="favoritesHeader">❤️ علاقه‌مندی‌ها</h3>
+            <h3 style="color:#b8860b; margin-bottom:20px;" data-i18n="favoritesHeader">❤️ علاقه‌مندی‌ها</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
@@ -650,7 +768,7 @@
                 <div class="profile-field">
                     <label data-i18n="pointsLabel">⭐ امتیاز شما: <span id="userPoints">0</span></label>
                     <div style="margin-top:5px;">
-                        <span data-i18n="avgRating">🌟 میانگین امتیاز: </span><span id="userRatingAvg" style="color:#D4AF37;">0</span>
+                        <span data-i18n="avgRating">🌟 میانگین امتیاز: </span><span id="userRatingAvg" style="color:#b8860b;">0</span>
                         <span>(<span id="userRatingCount">0</span> <span data-i18n="reviewsCount">نظر</span>)</span>
                     </div>
                     <button class="primary-btn" id="viewReviewsBtn" style="margin-top:5px;" data-i18n="viewReviews">📋 مشاهده نظرات</button>
@@ -693,7 +811,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ========== ترجمه‌های کامل (همه متن‌ها به جز لوگو) ==========
+        // ========== ترجمه‌های کامل ==========
         const translations = {
             fa: {
                 home: '🏠 خانه',
@@ -929,6 +1047,7 @@
                 el.placeholder = t(key);
             });
             renderCategories();
+            renderAds(allAds, 'adsGrid');
         }
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
@@ -947,7 +1066,6 @@
                     document.documentElement.lang = btnId === 'ar' ? 'ar' : (btnId === 'fa' ? 'fa' : 'en');
                     document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
                     updateUILanguage();
-                    renderAds(allAds, 'adsGrid');
                 }
             });
         });
@@ -956,6 +1074,7 @@
             tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
+        // ========== دسته‌بندی‌ها ==========
         const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
         const subCategories = {
             'پزشکی': [
@@ -1010,6 +1129,7 @@
             });
         }
 
+        // ========== زمان نسبی ==========
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
@@ -1033,6 +1153,7 @@
             return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
+        // ========== دریافت اطلاعات واقعی از سرور ==========
         async function loadUserProfile() {
             try {
                 if (!userId) return;
@@ -1049,9 +1170,16 @@
                     document.getElementById('userRatingAvg').innerText = ratingData.avg_rating.toFixed(1);
                     document.getElementById('userRatingCount').innerText = ratingData.total_reviews;
                 }
-            } catch (e) { console.error('خطا در دریافت پروفایل', e); }
+            } catch (e) { 
+                console.error('خطا در دریافت پروفایل', e);
+                // مقادیر پیش‌فرض در صورت خطا
+                document.getElementById('walletBalance').innerText = '0';
+                document.getElementById('userPoints').innerText = '0';
+                document.getElementById('referralLink').value = 'خطا در دریافت';
+            }
         }
 
+        // ========== دریافت آگهی‌ها از سرور ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -1060,7 +1188,12 @@
                 specialAds = allAds.filter(ad => ad.ad_type === 'special');
                 renderSpecialCarousel();
                 renderAds(allAds, 'adsGrid');
-            } catch { allAds = []; specialAds = []; renderSpecialCarousel(); renderAds([], 'adsGrid'); }
+            } catch { 
+                allAds = []; 
+                specialAds = []; 
+                renderSpecialCarousel(); 
+                renderAds([], 'adsGrid'); 
+            }
         }
 
         function renderSpecialCarousel() {
@@ -1238,6 +1371,7 @@
             });
         }
 
+        // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1253,6 +1387,7 @@
             });
         });
 
+        // ========== دکمه‌های اصلی ==========
         document.getElementById('postAdBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
         });
@@ -1276,6 +1411,7 @@
             });
         });
 
+        // ========== جستجو ==========
         document.getElementById('searchBtn').addEventListener('click', filterAds);
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
         function filterAds() {
@@ -1289,10 +1425,11 @@
             renderAds(filtered, 'adsGrid');
         }
 
+        // ========== شروع ==========
         loadAds();
         renderCategories();
         updateUILanguage();
         if (userId) loadUserProfile();
     </script>
 </body>
-</html>
+    </html>
