@@ -584,7 +584,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- هدر با لوگو J-DAR (ثابت و بدون ترجمه) -->
+        <!-- هدر با لوگو ثابت -->
         <div class="header">
             <div class="logo">
                 <span class="logo-main">J-DAR</span>
@@ -598,7 +598,7 @@
 
         <!-- صفحه اصلی -->
         <div id="homePage" class="page active">
-            <!-- کاروسل ویژه (بالا، متحرک) -->
+            <!-- کاروسل ویژه -->
             <div class="special-carousel">
                 <div class="carousel-track" id="specialTrack"></div>
             </div>
@@ -615,7 +615,7 @@
             <!-- دسته‌بندی‌ها -->
             <div class="categories" id="mainCategoryList"></div>
             <div class="categories" id="subCategoryList"></div>
-            <!-- شبکه آگهی‌های عادی (کشویی) -->
+            <!-- شبکه آگهی‌های عادی -->
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
@@ -693,7 +693,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ========== ترجمه‌های کامل (همه متن‌ها به جز لوگوی اصلی) ==========
+        // ========== ترجمه‌های کامل (همه متن‌ها به جز لوگو) ==========
         const translations = {
             fa: {
                 home: '🏠 خانه',
@@ -914,24 +914,20 @@
 
         // ========== به‌روزرسانی همه متن‌ها (به جز لوگو) ==========
         function updateUILanguage() {
-            // ناوبری پایین
             document.querySelectorAll('.nav-item span[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 el.innerHTML = t(key);
             });
-            // دکمه‌های اصلی
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (key && !el.closest('.logo')) { // لوگو را تغییر نده
+                if (key && !el.closest('.logo')) {
                     el.innerHTML = t(key);
                 }
             });
-            // placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
-            // دسته‌بندی‌ها (بعداً رندر می‌شوند)
             renderCategories();
         }
 
@@ -951,7 +947,7 @@
                     document.documentElement.lang = btnId === 'ar' ? 'ar' : (btnId === 'fa' ? 'fa' : 'en');
                     document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
                     updateUILanguage();
-                    renderAds(allAds, 'adsGrid'); // برای آپدیت تاریخ‌ها و ... (اختیاری)
+                    renderAds(allAds, 'adsGrid');
                 }
             });
         });
@@ -960,7 +956,6 @@
             tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
-        // ========== دسته‌بندی‌ها (با ترجمه) ==========
         const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
         const subCategories = {
             'پزشکی': [
@@ -1015,7 +1010,6 @@
             });
         }
 
-        // ========== زمان نسبی ==========
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
@@ -1039,7 +1033,6 @@
             return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
-        // ========== پروفایل ==========
         async function loadUserProfile() {
             try {
                 if (!userId) return;
@@ -1059,7 +1052,6 @@
             } catch (e) { console.error('خطا در دریافت پروفایل', e); }
         }
 
-        // ========== آگهی‌ها ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -1246,7 +1238,6 @@
             });
         }
 
-        // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1285,7 +1276,6 @@
             });
         });
 
-        // ========== جستجو ==========
         document.getElementById('searchBtn').addEventListener('click', filterAds);
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
         function filterAds() {
@@ -1299,11 +1289,10 @@
             renderAds(filtered, 'adsGrid');
         }
 
-        // ========== شروع ==========
         loadAds();
         renderCategories();
-        updateUILanguage(); // اعمال زبان ذخیره‌شده
+        updateUILanguage();
         if (userId) loadUserProfile();
     </script>
 </body>
-    </html>
+</html>
