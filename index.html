@@ -383,7 +383,7 @@
             border-color: #daa520;
         }
 
-        /* ===== مودال مشاهده آگهی ===== */
+        /* ===== مودال مشاهده آگهی (تمام‌صفحه) ===== */
         .modal {
             display: none;
             position: fixed;
@@ -391,60 +391,71 @@
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            padding: 20px;
             overflow-y: auto;
+            padding: 0;
         }
 
         .modal.active { display: block; }
 
         .modal-content {
-            max-width: 500px;
-            margin: 30px auto;
-            background: rgba(255, 255, 255, 0.9);
+            max-width: 100%;
+            min-height: 100%;
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border: 3px solid #daa520;
-            border-radius: 80px;
-            padding: 30px;
-            animation: modalFade 0.4s;
+            border: none;
+            border-radius: 0;
+            padding: 70px 20px 30px 20px;
+            animation: modalFade 0.3s ease;
             position: relative;
+            box-shadow: none;
+            margin: 0;
         }
 
         @keyframes modalFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .modal-close {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
             background: #daa520;
             border: none;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             color: white;
-            font-size: 28px;
+            font-size: 32px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: 0.2s;
+            z-index: 1100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .modal-close:hover { transform: scale(1.1); }
+        .modal-close:hover { transform: scale(1.1); background: #c69500; }
 
         .modal-images {
             display: flex;
             overflow-x: auto;
             gap: 12px;
             margin-bottom: 24px;
-            border-radius: 60px;
+            border-radius: 30px;
             scroll-snap-type: x mandatory;
+            padding: 5px 0;
         }
 
         .modal-images img {
             height: 250px;
-            border-radius: 50px;
+            border-radius: 30px;
             scroll-snap-align: start;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .modal-images img:hover {
+            transform: scale(1.02);
         }
 
         .modal-title {
@@ -488,8 +499,8 @@
 
         .modal-actions a,
         .modal-actions button {
-            flex: 1;
-            padding: 14px;
+            flex: 1 1 40%;
+            padding: 14px 8px;
             border: 2px solid rgba(218, 165, 32, 0.3);
             border-radius: 60px;
             background: rgba(255, 255, 255, 0.7);
@@ -502,7 +513,7 @@
             justify-content: center;
             gap: 8px;
             transition: 0.2s;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .modal-actions a:hover,
@@ -629,6 +640,54 @@
 
         .review-input button:hover {
             opacity: 0.9;
+        }
+
+        /* ===== لایت‌باکس برای مشاهده تصاویر ===== */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 50px;
+            cursor: pointer;
+            background: rgba(218, 165, 32, 0.5);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .lightbox-close:hover {
+            background: #daa520;
         }
 
         /* ===== پروفایل ===== */
@@ -786,9 +845,15 @@
         </div>
     </div>
 
-    <!-- مودال مشاهده آگهی -->
+    <!-- مودال مشاهده آگهی (تمام‌صفحه) -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <!-- لایت‌باکس برای نمایش بزرگ تصاویر -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img id="lightboxImg" src="" alt="">
     </div>
 
     <!-- ناوبری پایین -->
@@ -1039,30 +1104,22 @@
 
         // ========== به‌روزرسانی همه متن‌ها (به جز لوگو) ==========
         function updateUILanguage() {
-            // به‌روزرسانی تمام عناصر با data-i18n (حتی آنهایی که داخل span هستند)
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (key && !el.closest('.logo')) {
-                    // اگر المان حاوی آیکون است (مثل i) و متن داخل span است، span را به‌روز کن
                     if (el.tagName === 'SPAN' && el.parentElement?.querySelector('i')) {
                         el.textContent = t(key);
-                    } else if (el.tagName === 'LABEL' && el.querySelector('i')) {
-                        // برای label، فقط متن داخلش را عوض می‌کنیم، آیکون را دست‌نخورده می‌گذاریم
-                        // اینجا می‌توانیم مستقیم textContent را تغییر دهیم اما آیکون حذف می‌شود. بهتر است از روشی استفاده کنیم که آیکون حفظ شود.
-                        // در این نسخه، المان‌های label دارای آیکون و span هستند.
                     } else {
                         el.textContent = t(key);
                     }
                 }
             });
 
-            // به‌روزرسانی placeholderها
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
 
-            // به‌روزرسانی دسته‌بندی‌ها
             renderCategories();
             renderAds(allAds, 'adsGrid');
         }
@@ -1130,7 +1187,6 @@
         function renderSubCategories(mainCat) {
             const subContainer = document.getElementById('subCategoryList');
             const subs = subCategories[mainCat] || [];
-            // استفاده از ترجمه برای کلمه "همه"
             let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">${t('all')}</span>`;
             subs.forEach(sub => {
                 const translated = t('categories', sub);
@@ -1289,6 +1345,21 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
+        // لایت‌باکس
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1354,6 +1425,16 @@
                 </div>
             `;
             document.getElementById('adModal').classList.add('active');
+
+            // اضافه کردن رویداد کلیک به تصاویر برای باز شدن در لایت‌باکس
+            const modalImages = document.querySelectorAll('.modal-images img');
+            modalImages.forEach(img => {
+                img.addEventListener('click', function() {
+                    lightboxImg.src = this.src;
+                    lightbox.classList.add('active');
+                });
+            });
+
             fetch(`${API_BASE}/api/view`, { method: 'POST', body: JSON.stringify({ adId: ad.id }), headers: { 'Content-Type': 'application/json' } });
         };
 
@@ -1407,7 +1488,6 @@
                 } else if (page === 'profile') {
                     loadUserProfile();
                 }
-                // بعد از تغییر صفحه، زبان را دوباره اعمال کنیم تا مطمئن شویم همه چیز ترجمه شده
                 updateUILanguage();
             });
         });
