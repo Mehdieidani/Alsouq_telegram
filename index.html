@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -68,7 +67,7 @@
             z-index: 10;
         }
 
-        /* ===== هدر شیشه‌ای براق طلایی ===== */
+        /* ===== هدر شیشه‌ای براق طلایی با چهار دکمه ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -108,10 +107,10 @@
 
         .header-left {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .lang-btn, .support-btn {
+        .header-btn {
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -128,14 +127,14 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
-        .lang-btn:hover, .support-btn:hover {
+        .header-btn:hover {
             border-color: #f9e076;
             background: rgba(40, 20, 60, 0.8);
             transform: scale(1.05);
             box-shadow: 0 0 20px #f9e076;
         }
 
-        /* ===== کاروسل ویژه ===== */
+        /* ===== کاروسل ویژه با قابلیت کشیدن با انگشت ===== */
         .special-carousel {
             background: rgba(20, 10, 40, 0.4);
             backdrop-filter: blur(12px);
@@ -146,17 +145,28 @@
             overflow: hidden;
             width: 100%;
             box-shadow: 0 10px 20px -5px rgba(0,0,0,0.6);
+            position: relative;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        .carousel-wrapper {
+            overflow: hidden;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .carousel-wrapper:active {
+            cursor: grabbing;
         }
 
         .carousel-track {
             display: flex;
             gap: 16px;
-            animation: scroll 35s linear infinite;
             width: max-content;
             padding: 0 16px;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
         }
-
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         .special-item {
             width: 180px;
@@ -169,6 +179,7 @@
             cursor: pointer;
             transition: 0.3s;
             color: #f0e6d0;
+            flex-shrink: 0;
         }
 
         .special-item:hover {
@@ -197,39 +208,6 @@
         .special-item .price {
             color: #f9e076;
             font-weight: 600;
-        }
-
-        /* ===== دکمه‌های اصلی ===== */
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .primary-btn {
-            flex: 1;
-            background: rgba(30, 20, 50, 0.7);
-            backdrop-filter: blur(15px);
-            border: 2px solid #f9e076;
-            border-radius: 60px;
-            padding: 16px 8px;
-            color: #f0e6d0;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.6);
-        }
-
-        .primary-btn:hover {
-            background: #f9e076;
-            color: #1e1235;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px #f9e076;
         }
 
         /* ===== جستجو ===== */
@@ -297,7 +275,7 @@
             box-shadow: 0 0 15px #f9e076;
         }
 
-        /* ===== شبکه آگهی‌ها ===== */
+        /* ===== شبکه آگهی‌ها (دو ستون) ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -885,28 +863,27 @@
 </head>
 <body>
     <div class="container">
-        <!-- هدر -->
+        <!-- هدر با چهار دکمه کوچک -->
         <div class="header">
             <div class="logo">
                 <span class="logo-main">J-DAR</span>
                 <span class="logo-sub">جدار | پلتفرم هوشمند</span>
             </div>
             <div class="header-left">
-                <button class="lang-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
-                <button class="support-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
+                <button class="header-btn" id="postAdBtn" title="ثبت آگهی"><i class="fas fa-plus-circle"></i></button>
+                <button class="header-btn" id="vipBtn" title="اشتراک ویژه"><i class="fas fa-crown"></i></button>
+                <button class="header-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
+                <button class="header-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
             </div>
         </div>
 
         <!-- صفحه اصلی -->
         <div id="homePage" class="page active">
-            <!-- کاروسل ویژه -->
+            <!-- کاروسل ویژه (قابل کشیدن با انگشت) -->
             <div class="special-carousel">
-                <div class="carousel-track" id="specialTrack"></div>
-            </div>
-            <!-- دکمه‌های اصلی -->
-            <div class="action-buttons">
-                <button class="primary-btn" id="postAdBtn"><i class="fas fa-plus-circle"></i> <span data-i18n="postAd">ثبت آگهی</span></button>
-                <button class="primary-btn" id="vipBtn"><i class="fas fa-crown"></i> <span data-i18n="vip">اشتراک ویژه</span></button>
+                <div class="carousel-wrapper" id="carouselWrapper">
+                    <div class="carousel-track" id="specialTrack"></div>
+                </div>
             </div>
             <!-- جستجو -->
             <div class="search-box">
@@ -916,7 +893,7 @@
             <!-- دسته‌بندی‌ها -->
             <div class="categories" id="mainCategoryList"></div>
             <div class="categories" id="subCategoryList"></div>
-            <!-- شبکه آگهی‌ها -->
+            <!-- شبکه آگهی‌ها (دو ستون) -->
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
@@ -946,7 +923,7 @@
                 </div>
                 <div class="profile-field">
                     <label data-i18n="balanceLabel"><i class="fas fa-wallet"></i> <span data-i18n="balanceLabel">موجودی کیف پول:</span> <span id="walletBalance">0</span> تومان</label>
-                    <button class="primary-btn" id="chargeBtn" style="margin-top:8px;"><i class="fas fa-credit-card"></i> <span data-i18n="charge">شارژ حساب</span></button>
+                    <button class="header-btn" id="chargeBtn" style="width:100%; border-radius:60px; margin-top:8px;"><i class="fas fa-credit-card"></i> <span data-i18n="charge">شارژ حساب</span></button>
                 </div>
                 <div class="profile-field">
                     <label data-i18n="pointsLabel"><i class="fas fa-star"></i> <span data-i18n="pointsLabel">امتیاز شما:</span> <span id="userPoints">0</span></label>
@@ -954,13 +931,13 @@
                         <span data-i18n="avgRating"><i class="fas fa-star-half-alt"></i> <span data-i18n="avgRating">میانگین امتیاز:</span> </span><span id="userRatingAvg" style="color:#f9e076;">0</span>
                         <span>(<span id="userRatingCount">0</span> <span data-i18n="reviewsCount">نظر</span>)</span>
                     </div>
-                    <button class="primary-btn" id="viewReviewsBtn" style="margin-top:5px;"><i class="fas fa-comments"></i> <span data-i18n="viewReviews">مشاهده نظرات</span></button>
+                    <button class="header-btn" id="viewReviewsBtn" style="width:100%; border-radius:60px; margin-top:5px;"><i class="fas fa-comments"></i> <span data-i18n="viewReviews">مشاهده نظرات</span></button>
                 </div>
                 <div class="profile-field">
                     <label data-i18n="referralLinkLabel"><i class="fas fa-link"></i> <span data-i18n="referralLinkLabel">لینک دعوت</span></label>
                     <div style="display:flex; gap:5px;">
                         <input type="text" id="referralLink" readonly>
-                        <button id="copyReferral" class="lang-btn" style="width:50px;"><i class="fas fa-copy"></i></button>
+                        <button id="copyReferral" class="header-btn" style="width:50px;"><i class="fas fa-copy"></i></button>
                     </div>
                 </div>
                 <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> <span data-i18n="save">ذخیره تغییرات</span></button>
@@ -1004,7 +981,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ========== ترجمه‌ها (کامل - مشابه فایل قبلی) ==========
+        // ========== ترجمه‌های کامل ==========
         const translations = {
             fa: {
                 home: 'خانه',
@@ -1078,13 +1055,155 @@
                     'شاه چراغ': 'شاه چراغ'
                 }
             },
-            ar: { /* ... (برای کامل شدن می‌توانید از فایل قبلی کپی کنید) */ },
-            en: { /* ... (برای کامل شدن می‌توانید از فایل قبلی کپی کنید) */ }
+            ar: {
+                home: 'الرئيسية',
+                favorites: 'المفضلة',
+                profile: 'الملف',
+                postAd: 'إعلان',
+                vip: 'VIP',
+                noAds: 'لا توجد إعلانات',
+                searchPlaceholder: 'ابحث في الإعلانات...',
+                call: 'اتصال',
+                whatsapp: 'واتساب',
+                telegram: 'تلغرام',
+                translate: 'ترجمة',
+                report: 'إبلاغ',
+                copyHint: 'تم النسخ',
+                support: 'الدعم',
+                save: 'حفظ',
+                charge: 'شحن',
+                favoritesHeader: 'المفضلة',
+                tgUsername: 'اسم المستخدم في تلغرام',
+                displayNameLabel: 'الاسم المعروض',
+                displayNamePlaceholder: 'اسمك',
+                countryLabel: 'الدولة',
+                balanceLabel: 'رصيد المحفظة:',
+                pointsLabel: 'نقاطك:',
+                avgRating: 'متوسط التقييم:',
+                reviewsCount: 'رأي',
+                viewReviews: 'عرض التقييمات',
+                referralLinkLabel: 'رابط الدعوة',
+                specialCarousel: 'إعلانات مميزة',
+                all: 'الكل',
+                categories: {
+                    'پزشکی': 'طب',
+                    'پزشک عمومی': 'طبيب عام',
+                    'متخصص': 'أخصائي',
+                    'دندانپزشک': 'طبيب أسنان',
+                    'داروخانه': 'صيدلية',
+                    'آزمایشگاه': 'مختبر',
+                    'بیمارستان': 'مستشفى',
+                    'خدمات پرستاری': 'تمريض',
+                    'تجهیزات پزشکی': 'معدات طبية',
+                    'چشم‌پزشکی': 'طب عيون',
+                    'کاشت مو': 'زراعة شعر',
+                    'زیبایی': 'تجميل',
+                    'لیزر': 'ليزر',
+                    'پوست و مو': 'جلد وشعر',
+                    'گردشگری': 'سياحة',
+                    'تور داخلی': 'جولة داخلية',
+                    'تور خارجی': 'جولة خارجية',
+                    'راهنما': 'مرشد',
+                    'اقامتگاه': 'مبيت',
+                    'حمل و نقل': 'نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شانديز',
+                    'سرعین': 'سرعين',
+                    'کیش': 'كيش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'أصفهان',
+                    'شیراز': 'شيراز',
+                    'زیارت': 'زيارة',
+                    'عتبات عالیات': 'عتبات',
+                    'سوریه': 'سوريا',
+                    'کربلا': 'كربلاء',
+                    'نجف': 'النجف',
+                    'کاظمین': 'كاظمين',
+                    'سامرا': 'سامراء',
+                    'عمره': 'عمرة',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمكران',
+                    'شاه چراغ': 'شاه جراغ'
+                }
+            },
+            en: {
+                home: 'Home',
+                favorites: 'Favorites',
+                profile: 'Profile',
+                postAd: 'Post Ad',
+                vip: 'VIP',
+                noAds: 'No ads',
+                searchPlaceholder: 'Search ads...',
+                call: 'Call',
+                whatsapp: 'WhatsApp',
+                telegram: 'Telegram',
+                translate: 'Translate',
+                report: 'Report',
+                copyHint: 'Copied',
+                support: 'Support',
+                save: 'Save',
+                charge: 'Charge',
+                favoritesHeader: 'Favorites',
+                tgUsername: 'Telegram Username',
+                displayNameLabel: 'Display Name',
+                displayNamePlaceholder: 'Your name',
+                countryLabel: 'Country',
+                balanceLabel: 'Wallet Balance:',
+                pointsLabel: 'Your Points:',
+                avgRating: 'Average Rating:',
+                reviewsCount: 'reviews',
+                viewReviews: 'View Reviews',
+                referralLinkLabel: 'Referral Link',
+                specialCarousel: 'Special Ads',
+                all: 'All',
+                categories: {
+                    'پزشکی': 'Medical',
+                    'پزشک عمومی': 'General Practitioner',
+                    'متخصص': 'Specialist',
+                    'دندانپزشک': 'Dentist',
+                    'داروخانه': 'Pharmacy',
+                    'آزمایشگاه': 'Laboratory',
+                    'بیمارستان': 'Hospital',
+                    'خدمات پرستاری': 'Nursing',
+                    'تجهیزات پزشکی': 'Medical Equipment',
+                    'چشم‌پزشکی': 'Ophthalmology',
+                    'کاشت مو': 'Hair Transplant',
+                    'زیبایی': 'Cosmetic',
+                    'لیزر': 'Laser',
+                    'پوست و مو': 'Skin & Hair',
+                    'گردشگری': 'Tourism',
+                    'تور داخلی': 'Domestic Tour',
+                    'تور خارجی': 'International Tour',
+                    'راهنما': 'Guide',
+                    'اقامتگاه': 'Accommodation',
+                    'حمل و نقل': 'Transport',
+                    'خدمات سفر': 'Travel Services',
+                    'شاندیز': 'Shandiz',
+                    'سرعین': 'Sareyn',
+                    'کیش': 'Kish',
+                    'مشهد': 'Mashhad',
+                    'اصفهان': 'Isfahan',
+                    'شیراز': 'Shiraz',
+                    'زیارت': 'Pilgrimage',
+                    'عتبات عالیات': 'Atabat',
+                    'سوریه': 'Syria',
+                    'کربلا': 'Karbala',
+                    'نجف': 'Najaf',
+                    'کاظمین': 'Kadhimayn',
+                    'سامرا': 'Samarra',
+                    'عمره': 'Umrah',
+                    'حج': 'Hajj',
+                    'قم': 'Qom',
+                    'جمکران': 'Jamkaran',
+                    'شاه چراغ': 'Shah Cheragh'
+                }
+            }
         };
 
         function t(key, catKey = null) {
-            if (catKey) return translations[currentLang].categories[catKey] || catKey;
-            return translations[currentLang][key] || key;
+            if (catKey) return translations[currentLang]?.categories?.[catKey] || catKey;
+            return translations[currentLang]?.[key] || key;
         }
 
         function updateUILanguage() {
@@ -1102,6 +1221,11 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
+            // به‌روزرسانی title دکمه‌های هدر
+            document.getElementById('postAdBtn').setAttribute('title', t('postAd'));
+            document.getElementById('vipBtn').setAttribute('title', t('vip'));
+            document.getElementById('langMainBtn').setAttribute('title', t('select_lang'));
+            document.getElementById('supportBtn').setAttribute('title', t('support'));
             renderCategories();
             renderAds(allAds, 'adsGrid');
         }
@@ -1176,17 +1300,31 @@
             });
         }
 
+        // ========== زمان نسبی ==========
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
-            if (diff < 60) return 'چند لحظه پیش';
-            if (diff < 3600) return `${Math.floor(diff/60)} دقیقه پیش`;
-            if (diff < 86400) return `${Math.floor(diff/3600)} ساعت پیش`;
-            if (diff < 604800) return `${Math.floor(diff/86400)} روز پیش`;
-            if (diff < 2592000) return `${Math.floor(diff/604800)} هفته پیش`;
-            return 'قدیمی';
+            if (diff < 60) return currentLang === 'fa' ? 'چند لحظه پیش' : (currentLang === 'ar' ? 'منذ لحظات' : 'just now');
+            if (diff < 3600) {
+                const m = Math.floor(diff / 60);
+                return currentLang === 'fa' ? `${m} دقیقه پیش` : (currentLang === 'ar' ? `منذ ${m} دقيقة` : `${m} minutes ago`);
+            }
+            if (diff < 86400) {
+                const h = Math.floor(diff / 3600);
+                return currentLang === 'fa' ? `${h} ساعت پیش` : (currentLang === 'ar' ? `منذ ${h} ساعة` : `${h} hours ago`);
+            }
+            if (diff < 604800) {
+                const d = Math.floor(diff / 86400);
+                return currentLang === 'fa' ? `${d} روز پیش` : (currentLang === 'ar' ? `منذ ${d} يوم` : `${d} days ago`);
+            }
+            if (diff < 2592000) {
+                const w = Math.floor(diff / 604800);
+                return currentLang === 'fa' ? `${w} هفته پیش` : (currentLang === 'ar' ? `منذ ${w} أسبوع` : `${w} weeks ago`);
+            }
+            return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
+        // ========== دریافت اطلاعات کاربر ==========
         async function loadUserProfile() {
             try {
                 if (!userId) return;
@@ -1216,6 +1354,7 @@
             }
         }
 
+        // ========== دریافت آگهی‌ها ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -1238,8 +1377,9 @@
                 track.innerHTML = `<div style="padding:30px; text-align:center;">${t('noAds')}</div>`;
                 return;
             }
+            // برای کاروسل بی‌نهایت، آیتم‌ها را سه بار تکرار می‌کنیم
             let items = '';
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 3; i++) {
                 specialAds.forEach(ad => {
                     const imgUrl = ad.image_ids?.length ? `${API_BASE}/image/${ad.image_ids[0]}` : 'https://via.placeholder.com/180x110?text=Ad';
                     items += `<div class="special-item" onclick="showAd(${ad.id})">
@@ -1250,6 +1390,79 @@
                 });
             }
             track.innerHTML = items;
+            // پس از رندر، کاروسل را مقداردهی اولیه می‌کنیم
+            initCarousel();
+        }
+
+        // ========== کاروسل کشیدنی ==========
+        let carouselInitialized = false;
+        function initCarousel() {
+            if (carouselInitialized) return;
+            const wrapper = document.getElementById('carouselWrapper');
+            const track = document.getElementById('specialTrack');
+            if (!wrapper || !track) return;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            wrapper.addEventListener('touchstart', (e) => {
+                isDown = true;
+                startX = e.touches[0].pageX - wrapper.offsetLeft;
+                scrollLeft = wrapper.scrollLeft;
+                wrapper.style.cursor = 'grabbing';
+            });
+
+            wrapper.addEventListener('touchend', () => {
+                isDown = false;
+                wrapper.style.cursor = 'grab';
+                // چرخش بی‌نهایت: اگر به انتها یا ابتدا رسیدیم، به موقعیت میانی بپریم
+                const maxScroll = track.scrollWidth - wrapper.clientWidth;
+                if (wrapper.scrollLeft >= maxScroll - 10) {
+                    wrapper.scrollLeft = maxScroll / 2;
+                } else if (wrapper.scrollLeft <= 10) {
+                    wrapper.scrollLeft = maxScroll / 2;
+                }
+            });
+
+            wrapper.addEventListener('touchmove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.touches[0].pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 1.5; // سرعت حرکت
+                wrapper.scrollLeft = scrollLeft - walk;
+            });
+
+            // برای پشتیبانی از موس (در حالت توسعه)
+            wrapper.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - wrapper.offsetLeft;
+                scrollLeft = wrapper.scrollLeft;
+                wrapper.style.cursor = 'grabbing';
+            });
+            wrapper.addEventListener('mouseup', () => {
+                isDown = false;
+                wrapper.style.cursor = 'grab';
+                const maxScroll = track.scrollWidth - wrapper.clientWidth;
+                if (wrapper.scrollLeft >= maxScroll - 10) {
+                    wrapper.scrollLeft = maxScroll / 2;
+                } else if (wrapper.scrollLeft <= 10) {
+                    wrapper.scrollLeft = maxScroll / 2;
+                }
+            });
+            wrapper.addEventListener('mouseleave', () => {
+                isDown = false;
+                wrapper.style.cursor = 'grab';
+            });
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - wrapper.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                wrapper.scrollLeft = scrollLeft - walk;
+            });
+
+            carouselInitialized = true;
         }
 
         function getImgUrl(imageIds) {
@@ -1479,6 +1692,7 @@
             });
         }
 
+        // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1495,6 +1709,7 @@
             });
         });
 
+        // ========== دکمه‌های اصلی ==========
         document.getElementById('postAdBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
         });
@@ -1518,6 +1733,7 @@
             });
         });
 
+        // ========== جستجو ==========
         document.getElementById('searchBtn').addEventListener('click', filterAds);
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
         function filterAds() {
@@ -1531,6 +1747,7 @@
             renderAds(filtered, 'adsGrid');
         }
 
+        // ========== شروع ==========
         loadAds();
         renderCategories();
         updateUILanguage();
