@@ -716,7 +716,7 @@
 
         <!-- صفحه اصلی -->
         <div id="homePage" class="page active">
-            <!-- کاروسل ویژه -->
+            <!-- کاروسل ویژه (با عنوان قابل ترجمه) -->
             <div class="special-carousel">
                 <div class="carousel-track" id="specialTrack"></div>
             </div>
@@ -811,7 +811,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ========== ترجمه‌های کامل ==========
+        // ========== ترجمه‌های کامل (همه متن‌ها به جز لوگو) ==========
         const translations = {
             fa: {
                 home: '🏠 خانه',
@@ -841,6 +841,8 @@
                 reviewsCount: 'نظر',
                 viewReviews: '📋 مشاهده نظرات',
                 referralLinkLabel: '🔗 لینک دعوت',
+                specialCarousel: 'آگهی‌های ویژه',
+                all: 'همه',
                 categories: {
                     'پزشکی': 'پزشکی',
                     'پزشک عمومی': 'پزشک عمومی',
@@ -911,6 +913,8 @@
                 reviewsCount: 'رأي',
                 viewReviews: '📋 عرض التقييمات',
                 referralLinkLabel: '🔗 رابط الدعوة',
+                specialCarousel: 'إعلانات مميزة',
+                all: 'الكل',
                 categories: {
                     'پزشکی': 'طب',
                     'پزشک عمومی': 'طبيب عام',
@@ -981,6 +985,8 @@
                 reviewsCount: 'reviews',
                 viewReviews: '📋 View Reviews',
                 referralLinkLabel: '🔗 Referral Link',
+                specialCarousel: 'Special Ads',
+                all: 'All',
                 categories: {
                     'پزشکی': 'Medical',
                     'پزشک عمومی': 'General Practitioner',
@@ -1047,6 +1053,8 @@
                 el.placeholder = t(key);
             });
             renderCategories();
+            // بروزرسانی عنوان کاروسل ویژه (اگر در آینده اضافه شود)
+            // فعلاً نیازی نیست چون کاروسل track هست
             renderAds(allAds, 'adsGrid');
         }
 
@@ -1113,7 +1121,8 @@
         function renderSubCategories(mainCat) {
             const subContainer = document.getElementById('subCategoryList');
             const subs = subCategories[mainCat] || [];
-            let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">${t('categories', 'همه') || 'همه'}</span>`;
+            // استفاده از ترجمه برای کلمه "همه"
+            let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">${t('all')}</span>`;
             subs.forEach(sub => {
                 const translated = t('categories', sub);
                 html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${translated}</span>`;
