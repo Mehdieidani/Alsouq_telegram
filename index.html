@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جدار | J-DAR · سوپر اپلیکیشن آینده</title>
-    <!-- PWA manifest -->
     <link rel="manifest" href="data:application/manifest+json,{
         &quot;name&quot;: &quot;J-DAR&quot;,
         &quot;short_name&quot;: &quot;جدار&quot;,
@@ -433,19 +432,19 @@
             backdrop-filter: blur(30px);
             z-index: 1000;
             padding: 20px;
-            overflow-y: auto;
+            overflow-y: hidden; /* جلوگیری از اسکرول کل مودال */
         }
         .modal.active { display: block; }
         .modal-content {
             max-width: 500px;
-            margin: 20px auto;
+            margin: 0 auto;
             background: rgba(20,25,45,0.95);
             backdrop-filter: blur(20px);
             border: 2px solid #daa520;
             border-radius: 80px;
             display: flex;
             flex-direction: column;
-            max-height: 90vh;
+            max-height: 95vh;
             position: relative;
         }
         .modal-back {
@@ -468,12 +467,14 @@
         }
         .modal-back:hover { transform: scale(1.1); }
 
+        /* استایل هدر ثابت (حاوی عکس‌ها) */
         .modal-header {
-            padding: 30px 20px 10px 20px;
+            padding: 30px 20px 15px 20px;
             flex-shrink: 0;
             background: rgba(20,25,45,0.95);
             border-top-left-radius: 80px;
             border-top-right-radius: 80px;
+            border-bottom: 1px solid rgba(218,165,32,0.3);
         }
         .modal-header .modal-category {
             color: #daa520;
@@ -484,15 +485,16 @@
             font-size: 26px;
             font-weight: bold;
             margin-bottom: 5px;
-            padding-left: 40px; /* فضا برای دکمه بازگشت */
+            padding-left: 40px;
         }
         .modal-header .modal-location-time {
             font-size: 14px;
             color: #aaa;
         }
 
+        /* استایل بدنه متحرک (حاوی توضیحات و لیست نظرات) */
         .modal-body {
-            padding: 0 20px;
+            padding: 15px 20px;
             overflow-y: auto;
             flex: 1;
             scrollbar-width: thin;
@@ -502,25 +504,27 @@
         .modal-body::-webkit-scrollbar-track { background: #2a2f45; border-radius: 10px; }
         .modal-body::-webkit-scrollbar-thumb { background: #daa520; border-radius: 10px; }
 
+        /* استایل فوتر ثابت (حاوی دکمه‌ها و فرم ثبت رای) */
         .modal-footer {
-            padding: 20px 20px 30px 20px;
+            padding: 15px 20px 30px 20px;
             flex-shrink: 0;
             background: rgba(20,25,45,0.95);
             border-bottom-left-radius: 80px;
             border-bottom-right-radius: 80px;
+            border-top: 1px solid rgba(218,165,32,0.3);
         }
 
         /* کاروسل تصاویر */
         .carousel-container {
             position: relative;
-            margin: 15px 0;
+            margin: 15px 0 0 0;
             border-radius: 50px;
             overflow: hidden;
             border: 2px solid #daa520;
         }
         .carousel-main {
             width: 100%;
-            height: 250px;
+            height: 200px; /* کاهش ارتفاع عکس‌ها برای باز شدن فضای اسکرول در موبایل */
             position: relative;
         }
         .carousel-main img {
@@ -595,13 +599,13 @@
             font-size: 32px;
             color: #daa520;
             font-weight: bold;
-            margin: 5px 0 20px;
+            margin: 5px 0 15px;
         }
         .modal-actions {
             display: grid;
             grid-template-columns: repeat(3,1fr);
             gap: 10px;
-            margin: 20px 0;
+            margin: 10px 0;
         }
         .modal-actions a, .modal-actions button {
             padding: 12px;
@@ -624,15 +628,14 @@
 
         /* بخش نظرات – در فوتر */
         .review-section {
-            margin-top: 20px;
-            border-top: 1px solid rgba(218,165,32,0.3);
-            padding-top: 20px;
+            margin-top: 5px;
+            padding-top: 10px;
         }
         .review-header {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         .review-header .avg { font-size: 24px; font-weight: bold; color: #daa520; }
@@ -641,13 +644,13 @@
         .review-input {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         .review-input input, .review-input textarea {
             background: rgba(0,0,0,0.3);
             border: 1px solid rgba(218,165,32,0.2);
             border-radius: 60px;
-            padding: 14px 20px;
+            padding: 12px 20px;
             color: white;
             width: 100%;
             resize: none;
@@ -658,7 +661,7 @@
             color: white;
             border: none;
             border-radius: 60px;
-            padding: 14px;
+            padding: 12px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -669,7 +672,7 @@
 
         /* لیست نظرات (در بدنه) */
         .reviews-list {
-            margin-top: 25px;
+            margin-top: 20px;
         }
         .review-item {
             background: rgba(255,255,255,0.03);
@@ -840,7 +843,6 @@
     <div class="container">
         <div class="telegram-warning" id="telegramWarning">⚠️ برای انجام عملیات نیاز به ربات تلگرام دارید</div>
 
-        <!-- هدر -->
         <div class="header">
             <div class="logo">
                 <div class="logo-icon"><i class="fas fa-bolt"></i></div>
@@ -853,7 +855,6 @@
             </div>
         </div>
 
-        <!-- صفحه اصلی -->
         <div id="homePage" class="page active">
             <div class="wallet-card">
                 <div class="wallet-row">
@@ -895,13 +896,11 @@
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
-        <!-- صفحه علاقه‌مندی‌ها -->
         <div id="favoritesPage" class="page">
             <h3 style="color:#daa520; margin-bottom:20px;"><i class="fas fa-heart"></i> <span data-i18n="favorites">علاقه‌مندی‌ها</span></h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
-        <!-- صفحه پروفایل -->
         <div id="profilePage" class="page">
             <div class="profile-section">
                 <div class="profile-field"><label data-i18n="tg_username">نام کاربری تلگرام</label><input type="text" id="tgUsername" readonly></div>
@@ -923,12 +922,10 @@
         </div>
     </div>
 
-    <!-- مودال اصلی آگهی (با ساختار ثابت) -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
-    <!-- مودال گالری تصاویر -->
     <div class="gallery-modal" id="galleryModal">
         <div class="gallery-content">
             <button class="gallery-back" id="galleryBack"><i class="fas fa-arrow-right"></i></button>
@@ -942,7 +939,6 @@
         </div>
     </div>
 
-    <!-- ناوبری پایین -->
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span data-i18n="home">خانه</span></div>
         <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span data-i18n="favorites">علاقه‌مندی</span></div>
@@ -1196,16 +1192,16 @@
                 }).join('');
             } catch(e){}
 
-            // ساختار مودال: هدر (عنوان، زمان)، بدنه (تصاویر، توضیحات، لیست نظرات)، فوتر (قیمت، دکمه‌ها، فرم نظر)
+            // ساختار جدید مودال: هدر ثابت (عنوان، زمان، تصاویر)، بدنه اسکرول‌دار (توضیحات، لیست نظرات)، فوتر ثابت (قیمت، دکمه‌ها، فرم نظر)
             document.getElementById('modalContent').innerHTML = `
                 <button class="modal-back" onclick="document.getElementById('adModal').classList.remove('active')"><i class="fas fa-arrow-right"></i></button>
                 <div class="modal-header">
                     <div class="modal-category">${ad.category||''}</div>
                     <div class="modal-title">${ad.title}</div>
                     <div class="modal-location-time">${locTime}</div>
+                    ${carouselHtml}
                 </div>
                 <div class="modal-body">
-                    ${carouselHtml}
                     <div class="modal-warning"><i class="fas fa-exclamation-triangle"></i> ${t('warningTitle')}</div>
                     ${descHtml}
                     <div class="reviews-list">
@@ -1330,4 +1326,4 @@
         const savedCountry = localStorage.getItem('jedar_country'); if(savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-                    </html>
+    </html>
