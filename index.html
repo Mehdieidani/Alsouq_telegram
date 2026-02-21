@@ -147,8 +147,72 @@
             border: none; cursor: pointer;
         }
 
-        .modal-image-box { width: 100%; height: 350px; background: #1a1a1a; position: relative; }
-        .modal-image-box img { width: 100%; height: 100%; object-fit: cover; }
+        /* Carousel inside modal */
+        .modal-carousel {
+            width: 100%;
+            height: 350px;
+            background: #1a1a1a;
+            position: relative;
+            overflow: hidden;
+        }
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        .carousel-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 20;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .carousel-prev { right: 10px; }
+        .carousel-next { left: 10px; }
+        .carousel-nav:hover { background: var(--primary); }
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        .carousel-dot.active { background: var(--primary); transform: scale(1.2); }
+        .carousel-watermark {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(218,165,32,0.7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+            z-index: 20;
+        }
 
         .modal-content-padding { padding: 20px; }
         .modal-title-main { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
@@ -199,11 +263,12 @@
         .modal-footer {
             padding: 15px 20px 30px; background: #111422;
             border-top: 1px solid rgba(255,255,255,0.1);
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
         }
         .btn-main { padding: 14px; border-radius: 12px; font-weight: bold; text-align: center; text-decoration: none; font-size: 16px; border: none; cursor: pointer; }
         .btn-call { background: var(--danger); color: white; }
-        .btn-chat { background: transparent; border: 1px solid var(--text-gray); color: white; }
+        .btn-wa { background: #25D366; color: white; }
+        .btn-telegram { background: #0088cc; color: white; }
 
         /* Profile Page */
         .page { display: none; }
@@ -245,7 +310,7 @@
         .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-item span { font-size: 11px; }
 
-        /* Gallery Modal */
+        /* Gallery Modal (fullscreen) */
         .gallery-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 2000; display: none;
@@ -368,13 +433,18 @@
         </div>
     </div>
 
-    <!-- مودال مشاهده آگهی (دیوار استایل) -->
+    <!-- مودال مشاهده آگهی (با کاروسل و سه دکمه) -->
     <div class="modal" id="adModal">
         <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
         
         <div class="modal-body" style="flex:1; overflow-y:auto;">
-            <div class="modal-image-box">
-                <img id="modalImg" src="" alt="">
+            <!-- کاروسل تصاویر -->
+            <div class="modal-carousel" id="modalCarousel">
+                <div class="carousel-inner" id="carouselInner"></div>
+                <div class="carousel-nav carousel-prev" id="carouselPrev"><i class="fas fa-chevron-right"></i></div>
+                <div class="carousel-nav carousel-next" id="carouselNext"><i class="fas fa-chevron-left"></i></div>
+                <div class="carousel-indicators" id="carouselIndicators"></div>
+                <div class="carousel-watermark">J-DAR</div>
             </div>
 
             <div class="modal-content-padding">
@@ -410,12 +480,13 @@
         </div>
 
         <div class="modal-footer">
-            <a id="modalCallBtn" href="#" class="btn-main btn-call">اطلاعات تماس</a>
-            <button class="btn-main btn-chat" onclick="alert('سرویس چت به زودی فعال می‌شود')">چت</button>
+            <a id="modalCallBtn" href="#" class="btn-main btn-call">تماس</a>
+            <a id="modalWhatsappBtn" href="#" target="_blank" class="btn-main btn-wa">واتساپ</a>
+            <a id="modalTelegramBtn" href="#" target="_blank" class="btn-main btn-telegram">تلگرام</a>
         </div>
     </div>
 
-    <!-- مودال گالری تصاویر -->
+    <!-- مودال گالری تصاویر (تمام‌صفحه) -->
     <div class="gallery-modal" id="galleryModal">
         <div class="gallery-content">
             <div class="gallery-back" id="galleryBack"><i class="fas fa-arrow-right"></i></div>
@@ -440,7 +511,6 @@
         // ========== PWA ==========
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-        // می‌توانید یک دکمه نصب جداگانه اضافه کنید.
 
         // ========== تلگرام ==========
         const tg = window.Telegram?.WebApp;
@@ -702,7 +772,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ========== گالری ==========
+        // ========== گالری (تمام‌صفحه) ==========
         let currentImages = [], currentIdx = 0;
         function openGallery(idx) {
             if (!currentImages.length) return;
@@ -741,7 +811,42 @@
             const tgLink = tgUsername ? `https://t.me/${tgUsername}` : '#';
             const descHtml = ad.description || 'توضیحاتی ثبت نشده است.';
 
-            document.getElementById('modalImg').src = images.length ? `${API_BASE}/image/${images[0]}` : 'https://via.placeholder.com/400?text=No+Image';
+            // پر کردن کاروسل
+            const carouselInner = document.getElementById('carouselInner');
+            const indicatorsDiv = document.getElementById('carouselIndicators');
+            if (images.length) {
+                let innerHtml = '';
+                let indHtml = '';
+                for (let i = 0; i < images.length; i++) {
+                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="openGallery(${i})">`;
+                    indHtml += `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
+                }
+                carouselInner.innerHTML = innerHtml;
+                indicatorsDiv.innerHTML = indHtml;
+                carouselInner.style.transform = 'translateX(0)';
+            } else {
+                carouselInner.innerHTML = `<img src="https://via.placeholder.com/400?text=No+Image">`;
+                indicatorsDiv.innerHTML = '';
+            }
+
+            // تنظیم دکمه‌های کاروسل
+            let currentCarouselIdx = 0;
+            const updateCarousel = (index) => {
+                if (index < 0) index = images.length - 1;
+                if (index >= images.length) index = 0;
+                currentCarouselIdx = index;
+                carouselInner.style.transform = `translateX(-${index * 100}%)`;
+                document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            };
+            document.getElementById('carouselPrev').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx - 1); };
+            document.getElementById('carouselNext').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx + 1); };
+            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                dot.onclick = (e) => { e.stopPropagation(); updateCarousel(i); };
+            });
+
+            // سایر اطلاعات
             document.getElementById('modalTitle').innerText = ad.title;
             document.getElementById('modalMeta').innerText = locTime;
             document.getElementById('modalPrice').innerText = `${Number(ad.price).toLocaleString()} تومان`;
@@ -749,6 +854,8 @@
             document.getElementById('modalCity').innerText = ad.city || 'نامشخص';
             document.getElementById('modalDesc').innerText = descHtml;
             document.getElementById('modalCallBtn').href = `tel:${phone}`;
+            document.getElementById('modalWhatsappBtn').href = whatsappLink;
+            document.getElementById('modalTelegramBtn').href = tgLink;
 
             // نظرات
             let reviewsHtml = '';
