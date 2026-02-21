@@ -338,7 +338,7 @@
             border-color: #daa520;
         }
 
-        /* مودال مشاهده آگهی (شبیه دیوار) */
+        /* مودال مشاهده آگهی (تمام صفحه) */
         .modal {
             display: none;
             position: fixed;
@@ -707,11 +707,6 @@
                 </div>
                 <div class="profile-field">
                     <label data-i18n="pointsLabel"><i class="fas fa-star"></i> <span data-i18n="pointsLabel">امتیاز شما:</span> <span id="userPoints">0</span></label>
-                    <div style="margin-top:5px;">
-                        <span data-i18n="avgRating"><i class="fas fa-star-half-alt"></i> <span data-i18n="avgRating">میانگین امتیاز:</span> </span><span id="userRatingAvg" style="color:#b8860b;">0</span>
-                        <span>(<span id="userRatingCount">0</span> <span data-i18n="reviewsCount">نظر</span>)</span>
-                    </div>
-                    <button class="primary-btn" id="viewReviewsBtn" style="margin-top:5px;"><i class="fas fa-comments"></i> <span data-i18n="viewReviews">مشاهده نظرات</span></button>
                 </div>
                 <div class="profile-field">
                     <label data-i18n="referralLinkLabel"><i class="fas fa-link"></i> <span data-i18n="referralLinkLabel">لینک دعوت</span></label>
@@ -763,7 +758,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ترجمه‌های کامل سه‌زبانه (تصحیح شده)
+        // ========== ترجمه‌های کامل سه‌زبانه ==========
         const translations = {
             fa: {
                 home: 'خانه',
@@ -789,9 +784,6 @@
                 countryLabel: 'کشور',
                 balanceLabel: 'موجودی کیف پول:',
                 pointsLabel: 'امتیاز شما:',
-                avgRating: 'میانگین امتیاز:',
-                reviewsCount: 'نظر',
-                viewReviews: 'مشاهده نظرات',
                 referralLinkLabel: 'لینک دعوت',
                 all: 'همه',
                 special_badge: 'نردبان شده',
@@ -865,9 +857,6 @@
                 countryLabel: 'الدولة',
                 balanceLabel: 'رصيد المحفظة:',
                 pointsLabel: 'نقاطك:',
-                avgRating: 'متوسط التقييم:',
-                reviewsCount: 'رأي',
-                viewReviews: 'عرض التقييمات',
                 referralLinkLabel: 'رابط الدعوة',
                 all: 'الكل',
                 special_badge: 'مميز',
@@ -941,9 +930,6 @@
                 countryLabel: 'Country',
                 balanceLabel: 'Wallet Balance:',
                 pointsLabel: 'Your Points:',
-                avgRating: 'Average Rating:',
-                reviewsCount: 'reviews',
-                viewReviews: 'View Reviews',
                 referralLinkLabel: 'Referral Link',
                 all: 'All',
                 special_badge: 'Promoted',
@@ -1040,7 +1026,7 @@
             tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
-        // دسته‌بندی‌ها
+        // ========== دسته‌بندی‌ها ==========
         const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
         const subCategories = {
             'پزشکی': [
@@ -1095,7 +1081,7 @@
             });
         }
 
-        // زمان نسبی
+        // ========== زمان نسبی ==========
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
@@ -1119,7 +1105,7 @@
             return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
-        // دریافت اطلاعات کاربر
+        // ========== دریافت اطلاعات کاربر ==========
         async function loadUserProfile() {
             try {
                 if (!userId) return;
@@ -1134,23 +1120,15 @@
                     document.getElementById('userPoints').innerText = '0';
                     document.getElementById('referralLink').value = 'خطا در دریافت';
                 }
-                const ratingRes = await fetch(`${API_BASE}/api/user/rating?userId=${userId}`);
-                const ratingData = await ratingRes.json();
-                if (ratingData.success) {
-                    document.getElementById('userRatingAvg').innerText = ratingData.avg_rating.toFixed(1);
-                    document.getElementById('userRatingCount').innerText = ratingData.total_reviews;
-                }
             } catch (e) { 
                 console.error('خطا در دریافت پروفایل', e);
                 document.getElementById('walletBalance').innerText = '0';
                 document.getElementById('userPoints').innerText = '0';
                 document.getElementById('referralLink').value = 'خطا در دریافت';
-                document.getElementById('userRatingAvg').innerText = '0';
-                document.getElementById('userRatingCount').innerText = '0';
             }
         }
 
-        // دریافت آگهی‌ها
+        // ========== دریافت آگهی‌ها ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -1184,7 +1162,6 @@
                 const isFav = favorites.includes(ad.id);
                 const time = getRelativeTime(ad.created_at);
                 const location = ad.city || '';
-                // ساخت متن متا
                 let metaHtml = '';
                 if (ad.ad_type === 'special') {
                     metaHtml = `<span class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</span> | ${time} ${location ? 'در ' + location : ''}`;
@@ -1219,7 +1196,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // گالری تصاویر
+        // ========== گالری تصاویر ==========
         let currentAdImages = [];
         let currentImageIndex = 0;
 
@@ -1233,10 +1210,8 @@
         function updateGalleryImage() {
             const img = document.getElementById('galleryImg');
             img.src = `${API_BASE}/image/${currentAdImages[currentImageIndex]}`;
-            const counter = t('imageCounter');
-            document.getElementById('galleryCounter').innerText = counter 
-                ? counter.replace('{current}', currentImageIndex+1).replace('{total}', currentAdImages.length)
-                : (currentImageIndex+1) + '/' + currentAdImages.length;
+            document.getElementById('galleryCounter').innerText = 
+                t('imageCounter').replace('{current}', currentImageIndex+1).replace('{total}', currentAdImages.length);
         }
 
         document.getElementById('galleryBack').addEventListener('click', () => {
@@ -1257,7 +1232,7 @@
             }
         });
 
-        // نمایش آگهی
+        // ========== نمایش آگهی ==========
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1272,10 +1247,8 @@
             const phone = ad.phone || '';
             const telegramUsername = ad.telegram_username || '';
 
-            // نمایش توضیحات (اگر وجود داشته باشد)
             const descriptionHtml = ad.description ? `<div class="modal-description">${ad.description}</div>` : '';
 
-            // تصویر اصلی با قابلیت کلیک برای گالری
             const imageHtml = images.length > 0 
                 ? `<img src="${mainImage}" class="modal-image" onclick="openGallery(0)" onerror="this.src='https://via.placeholder.com/400x300'">` 
                 : `<img src="https://via.placeholder.com/400x300?text=No+Image" class="modal-image">`;
@@ -1324,7 +1297,7 @@
             });
         }
 
-        // ناوبری
+        // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1341,7 +1314,7 @@
             });
         });
 
-        // دکمه‌های اصلی
+        // ========== دکمه‌های اصلی ==========
         document.getElementById('postAdBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
         });
@@ -1365,7 +1338,7 @@
             });
         });
 
-        // جستجو
+        // ========== جستجو ==========
         document.getElementById('searchBtn').addEventListener('click', filterAds);
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
         function filterAds() {
@@ -1379,11 +1352,12 @@
             renderAds(filtered, 'adsGrid');
         }
 
-        // شروع
+        // ========== شروع ==========
         loadAds();
         renderCategories();
         updateUILanguage();
         if (userId) loadUserProfile();
     </script>
 </body>
-                                                                                                </html>
+</html>
+```
