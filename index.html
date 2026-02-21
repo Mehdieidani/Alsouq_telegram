@@ -426,6 +426,10 @@
             padding: 0 10px;
         }
 
+        .modal-image-container {
+            position: relative;
+        }
+
         .modal-image {
             width: 100%;
             border-radius: 40px;
@@ -434,11 +438,6 @@
             max-height: 300px;
             object-fit: cover;
             cursor: pointer;
-            position: relative;
-        }
-
-        .modal-image-container {
-            position: relative;
         }
 
         .modal-watermark {
@@ -697,10 +696,28 @@
             z-index: 11;
             pointer-events: none;
         }
+
+        /* پیام راهنما برای محیط غیر تلگرام */
+        .telegram-warning {
+            background: #ffc107;
+            color: #1e2a3a;
+            text-align: center;
+            padding: 10px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        .telegram-warning.show { display: block; }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- هشدار برای محیط غیر تلگرام -->
+        <div class="telegram-warning" id="telegramWarning">
+            ⚠️ این صفحه باید در تلگرام باز شود
+        </div>
+
         <!-- هدر -->
         <div class="header">
             <div class="logo">
@@ -800,6 +817,12 @@
     <script>
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
+
+        const isTelegramEnvironment = !!(window.Telegram?.WebApp);
+        const telegramWarning = document.getElementById('telegramWarning');
+        if (!isTelegramEnvironment) {
+            telegramWarning.classList.add('show');
+        }
 
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
@@ -1160,28 +1183,38 @@
         // ========== دریافت اطلاعات کاربر ==========
         async function loadUserProfile() {
             try {
+                // اگر userId نداریم (مرورگر عادی) پیام مناسب نمایش بده
                 if (!userId) {
                     document.getElementById('walletBalance').innerText = '0';
                     document.getElementById('userPoints').innerText = '0';
-                    document.getElementById('referralLink').value = 'وارد شوید';
+                    document.getElementById('referralLink').value = 'برای دیدن اطلاعات وارد تلگرام شوید';
                     return;
                 }
+
                 const res = await fetch(`${API_BASE}/api/user/profile?user_id=${userId}`);
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
                 const data = await res.json();
+
                 if (data.success) {
-                    document.getElementById('walletBalance').innerText = data.balance?.toLocaleString() || '0';
-                    document.getElementById('userPoints').innerText = data.points || '0';
+                    // تبدیل به عدد برای اطمینان از نمایش درست
+                    const balanceNum = Number(data.balance) || 0;
+                    const pointsNum = Number(data.points) || 0;
+                    document.getElementById('walletBalance').innerText = balanceNum.toLocaleString();
+                    document.getElementById('userPoints').innerText = pointsNum.toString();
                     document.getElementById('referralLink').value = `https://t.me/AlsouqAlmaftuhiran_bot?start=${data.referral_code || ''}`;
                 } else {
+                    // خطای API (مثلاً کاربر یافت نشد)
                     document.getElementById('walletBalance').innerText = '0';
                     document.getElementById('userPoints').innerText = '0';
-                    document.getElementById('referralLink').value = 'خطا در دریافت';
+                    document.getElementById('referralLink').value = 'کاربر یافت نشد';
                 }
             } catch (e) { 
                 console.error('خطا در دریافت پروفایل', e);
                 document.getElementById('walletBalance').innerText = '0';
                 document.getElementById('userPoints').innerText = '0';
-                document.getElementById('referralLink').value = 'خطا در دریافت';
+                document.getElementById('referralLink').value = 'خطا در ارتباط';
             }
         }
 
