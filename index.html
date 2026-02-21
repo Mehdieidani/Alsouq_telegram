@@ -219,7 +219,7 @@
             font-weight: bold;
         }
 
-        /* یک ستونه */
+        /* یک ستونه با کارت افقی */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -236,7 +236,9 @@
             position: relative;
             transition: 0.3s;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: stretch;
+            min-height: 140px;
         }
 
         .ad-card:hover {
@@ -245,67 +247,91 @@
             box-shadow: 0 10px 25px rgba(218, 165, 32, 0.15);
         }
 
-        .ad-card img {
+        .ad-card .card-image {
+            width: 120px;
+            flex-shrink: 0;
+            background: #ddd;
+            border-left: 2px solid rgba(212, 175, 55, 0.2); /*因为在RTL中左边是图片，所以右边框实际上是左侧 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-card .card-image img {
             width: 100%;
-            height: 200px;
+            height: 100%;
             object-fit: cover;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .ad-card .content {
-            padding: 12px 12px 10px;
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .ad-card .title {
             font-weight: bold;
             font-size: 16px;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-bottom: 6px;
             color: #1e2a3a;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .ad-card .price {
             color: #b8860b;
             font-weight: bold;
             font-size: 18px;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .ad-card .meta {
             display: flex;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
             color: #5a6a7a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            direction: ltr;
-            text-align: right;
+            gap: 5px;
+            flex-wrap: wrap;
         }
 
         .ad-card .meta i {
-            margin-left: 5px;
-            flex-shrink: 0;
+            margin-left: 4px;
+        }
+
+        .ad-card .special-badge {
+            background: #daa520;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
         }
 
         .ad-card .favorite {
             position: absolute;
             top: 10px;
-            left: 10px;
+            left: 10px; /*因为在RTL中左边是图片，所以心形放在图片的左上角？实际上心形应该放在卡片的左上角，但图片在左边，所以心形会覆盖在图片上，可能更好放在右上角（图片的右上） */
+            /* 根据习惯，心形放在图片的右上角（即卡片的左侧） */
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(4px);
             border: 2px solid rgba(212, 175, 55, 0.3);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 5;
-            font-size: 20px;
+            font-size: 18px;
             transition: 0.2s;
             color: #b8860b;
         }
@@ -316,7 +342,7 @@
             border-color: #daa520;
         }
 
-        /* مودال اصلی آگهی */
+        /* مودال اصلی آگهی (مانند قبل) */
         .modal {
             display: none;
             position: fixed;
@@ -841,7 +867,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ترجمه‌های کامل سه‌زبانه
+        // ========== ترجمه‌های کامل سه‌زبانه ==========
         const translations = {
             fa: {
                 home: 'خانه',
@@ -1118,7 +1144,7 @@
             tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
         });
 
-        // دسته‌بندی‌ها
+        // ========== دسته‌بندی‌ها ==========
         const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
         const subCategories = {
             'پزشکی': [
@@ -1173,7 +1199,7 @@
             });
         }
 
-        // زمان نسبی
+        // ========== زمان نسبی ==========
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
@@ -1197,7 +1223,7 @@
             return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
-        // دریافت اطلاعات کاربر
+        // ========== دریافت اطلاعات کاربر ==========
         async function loadUserProfile() {
             try {
                 if (!userId) return;
@@ -1228,7 +1254,7 @@
             }
         }
 
-        // دریافت آگهی‌ها
+        // ========== دریافت آگهی‌ها ==========
         async function loadAds() {
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
@@ -1245,10 +1271,10 @@
 
         function getImgUrl(imageIds) {
             try {
-                if (!imageIds) return 'https://via.placeholder.com/150x150?text=No+Image';
+                if (!imageIds) return 'https://via.placeholder.com/120x120?text=No+Image';
                 const ids = Array.isArray(imageIds) ? imageIds : JSON.parse(imageIds);
-                return ids.length ? `${API_BASE}/image/${ids[0]}` : 'https://via.placeholder.com/150x150?text=No+Image';
-            } catch { return 'https://via.placeholder.com/150x150?text=No+Image'; }
+                return ids.length ? `${API_BASE}/image/${ids[0]}` : 'https://via.placeholder.com/120x120?text=No+Image';
+            } catch { return 'https://via.placeholder.com/120x120?text=No+Image'; }
         }
 
         function renderAds(ads, containerId) {
@@ -1262,17 +1288,22 @@
                 const isFav = favorites.includes(ad.id);
                 const time = getRelativeTime(ad.created_at);
                 const location = ad.city || '';
-                // زیرنویس: اگر ویژه است "نردبان شده | زمان در مکان" وگرنه "زمان در مکان"
-                const metaText = ad.ad_type === 'special' 
-                    ? `${t('special_badge')} | ${time} ${location ? 'در ' + location : ''}`
-                    : `${time} ${location ? 'در ' + location : ''}`;
+                // ساخت متن متا
+                let metaHtml = '';
+                if (ad.ad_type === 'special') {
+                    metaHtml = `<span class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</span> | ${time} ${location ? 'در ' + location : ''}`;
+                } else {
+                    metaHtml = `${time} ${location ? 'در ' + location : ''}`;
+                }
                 return `<div class="ad-card" data-id="${ad.id}">
-                    <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x150'">
+                    <div class="card-image">
+                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/120x120'">
+                    </div>
                     <div class="content">
                         <div class="title">${ad.title}</div>
                         <div class="price">💰 ${ad.price} ${ad.currency}</div>
-                        <div class="meta" title="${metaText}">
-                            <i class="far fa-clock"></i> ${metaText}
+                        <div class="meta" title="${metaHtml.replace(/<[^>]*>/g, '')}">
+                            <i class="far fa-clock"></i> ${metaHtml}
                         </div>
                     </div>
                     <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
@@ -1292,7 +1323,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // گالری تصاویر
+        // ========== گالری تصاویر ==========
         let currentAdImages = [];
         let currentImageIndex = 0;
 
@@ -1328,7 +1359,7 @@
             }
         });
 
-        // نمایش آگهی
+        // ========== نمایش آگهی ==========
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1449,7 +1480,7 @@
             }
         };
 
-        // ناوبری
+        // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1466,7 +1497,7 @@
             });
         });
 
-        // دکمه‌های اصلی
+        // ========== دکمه‌های اصلی ==========
         document.getElementById('postAdBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
         });
@@ -1490,7 +1521,7 @@
             });
         });
 
-        // جستجو
+        // ========== جستجو ==========
         document.getElementById('searchBtn').addEventListener('click', filterAds);
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
         function filterAds() {
@@ -1504,11 +1535,11 @@
             renderAds(filtered, 'adsGrid');
         }
 
-        // شروع
+        // ========== شروع ==========
         loadAds();
         renderCategories();
         updateUILanguage();
         if (userId) loadUserProfile();
     </script>
 </body>
-                </html>
+    </html>
