@@ -25,7 +25,8 @@
             --card-bg: rgba(20, 25, 45, 0.7);
             --text-white: #ffffff;
             --text-gray: #aaaaaa;
-            --danger: #e6123d; /* رنگ قرمز دیوار برای دکمه تماس */
+            --danger: #e6123d;
+            --gold-glow: 0 0 15px #daa520;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -109,11 +110,31 @@
         .cat-chip { background: var(--card-bg); padding: 8px 18px; border-radius: 50px; white-space: nowrap; border: 1px solid rgba(218,165,32,0.2); cursor: pointer; }
         .cat-chip.active { background: var(--primary); color: black; font-weight: bold; }
 
-        /* Ad Card */
+        /* Ad Card - تحسين الإعلانات الذهبية */
         .ad-card {
             background: var(--card-bg); border-radius: 20px; overflow: hidden;
             display: flex; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);
             height: 130px; position: relative; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .ad-card.special-ad {
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(218,165,32,0.5);
+            background: linear-gradient(145deg, rgba(20,25,45,0.9), rgba(30,35,55,0.9));
+        }
+        .ad-card.special-ad::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #daa520, #f5e56b, #daa520);
+            border-radius: 22px;
+            z-index: -1;
+            animation: goldPulse 2s infinite;
+        }
+        @keyframes goldPulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
         .ad-card .favorite {
             position: absolute; top: 10px; left: 10px; width: 36px; height: 36px;
@@ -130,9 +151,10 @@
         .special-badge {
             position: absolute; top: 10px; right: 10px; background: var(--primary); color: black;
             padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: bold; z-index: 5;
+            box-shadow: 0 0 10px gold;
         }
 
-        /* MODAL (دقیقاً شبیه دیوار) */
+        /* MODAL */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-dark); z-index: 1000; display: none;
@@ -337,6 +359,15 @@
             border-radius: 50px; margin-bottom: 15px; display: none;
         }
         .telegram-warning.show { display: block; }
+
+        /* تحسين ظهور الصور عند فتح المودال */
+        .carousel-inner img {
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -344,7 +375,9 @@
     <canvas id="particles"></canvas>
 
     <div class="container">
-        <div class="telegram-warning" id="telegramWarning">⚠️ برای انجام عملیات نیاز به ربات تلگرام دارید</div>
+        <div class="telegram-warning" id="telegramWarning">
+            ⚠️ للعمليات المتقدمة، يرجى فتح البوت مباشرة
+        </div>
 
         <!-- هدر -->
         <header class="app-header">
@@ -598,23 +631,17 @@
 
         function formatPrice(price) {
             if (price === undefined || price === null) return t('negotiable');
-            // اگر رشته است و شامل حرف غیر از عدد و فاصله است (یعنی متن)
             if (typeof price === 'string') {
-                // حذف فاصله‌ها و بررسی اینکه آیا فقط عدد است
                 const trimmed = price.replace(/\s/g, '');
                 if (/^\d+$/.test(trimmed)) {
-                    // عدد خالص
                     return Number(trimmed).toLocaleString() + ' تومان';
                 } else {
-                    // شامل حرف یا کاراکتر غیر عددی
                     return t('negotiable');
                 }
             }
-            // اگر عدد است
             if (typeof price === 'number') {
                 return price.toLocaleString() + ' تومان';
             }
-            // fallback
             return t('negotiable');
         }
 
@@ -769,8 +796,9 @@
                 const loc = ad.city || '';
                 const meta = `${time} ${loc ? 'در ' + loc : ''}`;
                 const specialBadge = ad.ad_type === 'special' ? `<span class="special-badge">${t('special_badge')}</span>` : '';
-                const priceDisplay = formatPrice(ad.price); // استفاده از تابع جدید
-                return `<div class="ad-card" data-id="${ad.id}">
+                const priceDisplay = formatPrice(ad.price);
+                const specialClass = ad.ad_type === 'special' ? 'special-ad' : '';
+                return `<div class="ad-card ${specialClass}" data-id="${ad.id}">
                     ${specialBadge}
                     <img class="ad-img" src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
                     <div class="ad-info">
@@ -855,7 +883,7 @@
                 indicatorsDiv.innerHTML = '';
             }
 
-            // إعادة تعيين الكاروسيل إلى الصورة الأولى
+            // تعريف متغير محلي للكاروسيل وإعادة تعيينه
             let currentCarouselIdx = 0;
             const updateCarousel = (index) => {
                 if (images.length === 0) return;
@@ -868,20 +896,19 @@
                 });
             };
 
-            // تعيين مستمعات الأحداث
+            // تعيين المستمعات
             document.getElementById('carouselPrev').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx - 1); };
             document.getElementById('carouselNext').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx + 1); };
             document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
                 dot.onclick = (e) => { e.stopPropagation(); updateCarousel(i); };
             });
 
-            // عرض الصورة الأولى
+            // عرض الصورة الأولى فوراً
             updateCarousel(0);
 
-            // سایر اطلاعات
+            // تحديث باقي العناصر
             document.getElementById('modalTitle').innerText = ad.title;
             document.getElementById('modalMeta').innerText = locTime;
-            // عرض السعر باستخدام formatPrice
             document.getElementById('modalPrice').innerText = formatPrice(ad.price);
             document.getElementById('modalCat').innerText = ad.category || 'متفرقه';
             document.getElementById('modalCity').innerText = ad.city || 'نامشخص';
@@ -976,7 +1003,11 @@
         // ========== دکمه‌های هدایت به ربات ==========
         function redirectToBot(action) {
             const url = `https://t.me/${BOT_USERNAME}?start=${action}`;
-            if (tg) tg.openTelegramLink(url); else window.open(url, '_blank');
+            if (tg) {
+                tg.openTelegramLink(url);
+            } else {
+                window.open(url, '_blank');
+            }
         }
 
         document.getElementById('postAdBtn').addEventListener('click', () => redirectToBot('post_ad'));
