@@ -26,7 +26,6 @@
             --text-white: #ffffff;
             --text-gray: #aaaaaa;
             --danger: #e6123d;
-            --gold-glow: 0 0 15px #daa520;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -188,6 +187,7 @@
             object-fit: cover;
             flex-shrink: 0;
             cursor: pointer;
+            background-color: #2a2a2a; /* placeholder color */
         }
         .carousel-nav {
             position: absolute;
@@ -240,13 +240,6 @@
         .modal-content-padding { padding: 20px; }
         .modal-title-main { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
         .modal-sub-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-
-        /* Warning Box */
-        .safety-box {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(218,165,32,0.2);
-            border-radius: 12px; padding: 15px; display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 20px; cursor: pointer;
-        }
 
         /* Info Rows */
         .info-row {
@@ -360,13 +353,13 @@
         }
         .telegram-warning.show { display: block; }
 
-        /* تحسين ظهور الصور عند فتح المودال */
+        /* تحميل الصور */
         .carousel-inner img {
-            opacity: 0;
-            animation: fadeIn 0.3s forwards;
+            opacity: 1;
+            transition: opacity 0.2s;
         }
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        .carousel-inner img[data-src] {
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -467,7 +460,7 @@
         </div>
     </div>
 
-    <!-- مودال مشاهده آگهی (با کاروسل و سه دکمه) -->
+    <!-- مودال مشاهده آگهی (با کاروسل و سه دکمه) - بدون بخش هشدار -->
     <div class="modal" id="adModal">
         <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
         
@@ -485,10 +478,7 @@
                 <h1 id="modalTitle" class="modal-title-main">عنوان آگهی</h1>
                 <p id="modalMeta" class="modal-sub-text">دقایقی پیش در تهران</p>
 
-                <div class="safety-box" onclick="alert('راهنمای خرید امن')">
-                    <span><i class="fas fa-shield-alt" style="color: var(--primary); margin-left: 8px;"></i> زنگ خطرهای قبل از معامله</span>
-                    <i class="fas fa-chevron-left" style="font-size: 12px; color: var(--text-gray);"></i>
-                </div>
+                <!-- تم إزالة قسم safety-box نهائياً -->
 
                 <div class="info-row">
                     <span class="label">قیمت</span>
@@ -575,7 +565,7 @@
                 categories_title: 'دسته‌بندی‌ها', all: 'همه', latest_ads: 'جدیدترین‌ها', more: 'بیشتر',
                 no_ads: 'آگهی‌ای یافت نشد', balance: 'موجودی کیف پول', points: 'امتیاز وفاداری',
                 call: 'تماس', chat: 'چت', whatsapp: 'واتساپ', telegram: 'تلگرام',
-                contactInfo: 'اطلاعات تماس', warningTitle: 'زنگ خطرهای قبل از معامله', save: 'ذخیره',
+                contactInfo: 'اطلاعات تماس', save: 'ذخیره',
                 copyHint: 'کپی شد', install: 'نصب', imageCounter: '{current} از {total}', reviewsCount: 'نظر',
                 tg_username: 'نام کاربری تلگرام', display_name_label: 'نام نمایشی',
                 display_name_placeholder: 'نام شما', country_label: 'کشور',
@@ -593,7 +583,7 @@
                 categories_title: 'الفئات', all: 'الكل', latest_ads: 'أحدث الإعلانات', more: 'المزيد',
                 no_ads: 'لا توجد إعلانات', balance: 'رصيد المحفظة', points: 'نقاط الولاء',
                 call: 'اتصال', chat: 'دردشة', whatsapp: 'واتساب', telegram: 'تلغرام',
-                contactInfo: 'معلومات الاتصال', warningTitle: 'أجراس الخطر قبل الصفقة', save: 'حفظ',
+                contactInfo: 'معلومات الاتصال', save: 'حفظ',
                 copyHint: 'تم النسخ', install: 'تثبيت', imageCounter: '{current} من {total}', reviewsCount: 'رأي',
                 tg_username: 'اسم المستخدم', display_name_label: 'الاسم المعروض',
                 display_name_placeholder: 'اسمك', country_label: 'الدولة',
@@ -611,7 +601,7 @@
                 categories_title: 'Categories', all: 'All', latest_ads: 'Latest Ads', more: 'More',
                 no_ads: 'No ads found', balance: 'Wallet Balance', points: 'Loyalty Points',
                 call: 'Call', chat: 'Chat', whatsapp: 'WhatsApp', telegram: 'Telegram',
-                contactInfo: 'Contact Info', warningTitle: 'Safety tips before transaction', save: 'Save',
+                contactInfo: 'Contact Info', save: 'Save',
                 copyHint: 'Copied', install: 'Install', imageCounter: '{current} of {total}', reviewsCount: 'reviews',
                 tg_username: 'Telegram Username', display_name_label: 'Display Name',
                 display_name_placeholder: 'Your name', country_label: 'Country',
@@ -643,6 +633,19 @@
                 return price.toLocaleString() + ' تومان';
             }
             return t('negotiable');
+        }
+
+        function formatPhoneNumber(phone, countryCode) {
+            if (!phone) return null;
+            // تنظيف الرقم من أي أحرف غير رقمية
+            let cleaned = phone.replace(/\D/g, '');
+            // إذا كان الرقم يبدأ بصفر، نحذفه
+            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+            // نضيف مفتاح الدولة إذا لم يكن موجوداً
+            if (!cleaned.startsWith(countryCode)) {
+                cleaned = countryCode + cleaned;
+            }
+            return cleaned;
         }
 
         function updateUILanguage() {
@@ -858,22 +861,30 @@
             const locTime = `${timeStr} ${locStr ? 'در ' + locStr : ''}`;
             const phone = ad.phone || '';
             const countrySelect = document.getElementById('country');
-            const cc = countrySelect ? countryCodes[countrySelect.value] || '98' : '98';
-            let cleanPhone = phone.replace(/\D/g, '');
-            if (cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
-            const whatsappLink = cleanPhone ? `https://wa.me/${cc}${cleanPhone}` : '#';
+            const countryCode = countrySelect ? countryCodes[countrySelect.value] || '98' : '98';
+            
+            // تنسيق أرقام الهاتف مع إضافة مفتاح الدولة تلقائياً
+            const formattedPhone = formatPhoneNumber(phone, countryCode);
+            const whatsappLink = formattedPhone ? `https://wa.me/${formattedPhone}` : '#';
+            
             const tgUsername = ad.telegram_username || '';
-            const tgLink = tgUsername ? `https://t.me/${tgUsername}` : '#';
+            // رابط التليجرام: إذا كان اسم المستخدم موجوداً نستخدمه، وإذا كان هناك رقم هاتف يمكن استخدامه في التليجرام؟ التليجرام يحتاج معرف وليس رقم عادة.
+            // سنكتفي برابط التليجرام عبر المعرف إذا وجد، وإلا نعرض الرابط مع الرقم ولكن التليجرام لا يدخل بالرقم مباشرة.
+            // بعض التطبيقات تسمح بفتح التليجرام برقم عبر deep link، لكن ليس شائعاً.
+            const tgLink = tgUsername ? `https://t.me/${tgUsername}` : (formattedPhone ? `https://t.me/+${formattedPhone}` : '#');
+            
             const descHtml = ad.description || 'توضیحاتی ثبت نشده است.';
 
             // پر کردن کاروسل
             const carouselInner = document.getElementById('carouselInner');
             const indicatorsDiv = document.getElementById('carouselIndicators');
+            
+            // بناء HTML للصور مع إضافة onload للتأكد من التحميل
             if (images.length) {
                 let innerHtml = '';
                 let indHtml = '';
                 for (let i = 0; i < images.length; i++) {
-                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="openGallery(${i})">`;
+                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="openGallery(${i})" onerror="this.src='https://via.placeholder.com/400?text=No+Image';">`;
                     indHtml += `<span class="carousel-dot" data-index="${i}"></span>`;
                 }
                 carouselInner.innerHTML = innerHtml;
@@ -883,7 +894,7 @@
                 indicatorsDiv.innerHTML = '';
             }
 
-            // تعريف متغير محلي للكاروسيل وإعادة تعيينه
+            // إعادة تعيين الكاروسيل إلى الصورة الأولى
             let currentCarouselIdx = 0;
             const updateCarousel = (index) => {
                 if (images.length === 0) return;
@@ -903,7 +914,7 @@
                 dot.onclick = (e) => { e.stopPropagation(); updateCarousel(i); };
             });
 
-            // عرض الصورة الأولى فوراً
+            // عرض الصورة الأولى
             updateCarousel(0);
 
             // تحديث باقي العناصر
@@ -1099,4 +1110,4 @@
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-    </html>
+</html>
