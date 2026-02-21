@@ -21,7 +21,17 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* استایل‌ها دقیقاً مانند قبل، بدون تغییر */
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
+            font-weight: bold;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -493,6 +503,7 @@
             color: white;
         }
 
+        /* مودال مشاهده آگهی با ساختار ثابت */
         .modal {
             display: none;
             position: fixed;
@@ -513,12 +524,50 @@
             backdrop-filter: blur(20px);
             border: 2px solid #daa520;
             border-radius: 80px;
-            padding: 30px 20px;
             animation: modalFade 0.4s;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh; /* محدودیت ارتفاع برای اسکرول داخلی */
         }
 
         @keyframes modalFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-header {
+            padding: 30px 20px 10px 20px;
+            flex-shrink: 0;
+            background: rgba(20, 25, 45, 0.9);
+            border-top-left-radius: 80px;
+            border-top-right-radius: 80px;
+        }
+
+        .modal-body {
+            padding: 0 20px;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: #daa520 #2a2f45;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-body::-webkit-scrollbar-track {
+            background: #2a2f45;
+            border-radius: 10px;
+        }
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #daa520;
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            padding: 20px 20px 30px 20px;
+            flex-shrink: 0;
+            background: rgba(20, 25, 45, 0.9);
+            border-bottom-left-radius: 80px;
+            border-bottom-right-radius: 80px;
+        }
 
         .modal-back {
             position: absolute;
@@ -538,6 +587,7 @@
             transition: 0.2s;
             text-decoration: none;
             border: 2px solid rgba(255,255,255,0.3);
+            z-index: 10;
         }
 
         .modal-back:hover { transform: scale(1.1); }
@@ -1115,11 +1165,12 @@
         </div>
     </div>
 
-    <!-- مودال‌ها -->
+    <!-- مودال اصلی آگهی (با ساختار ثابت) -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
+    <!-- مودال گالری تصاویر -->
     <div class="gallery-modal" id="galleryModal">
         <div class="gallery-content">
             <button class="gallery-back" id="galleryBack"><i class="fas fa-arrow-right"></i></button>
@@ -1133,6 +1184,7 @@
         </div>
     </div>
 
+    <!-- ناوبری پایین -->
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span data-i18n="home">خانه</span></div>
         <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span data-i18n="favorites">علاقه‌مندی</span></div>
@@ -1182,144 +1234,31 @@
         // ========== ترجمه‌های کامل سه‌زبانه (بر اساس کلیدهای Worker) ==========
         const translations = {
             fa: {
-                // تمام کلیدهای موجود در فایل Worker
-                select_lang: '🌐 لطفاً زبان خود را انتخاب کنید:',
-                welcome: 'به J-DAR خوش آمدید!',
                 home: '🏠 خانه',
-                post_ad: '📌 ثبت آگهی',
-                my_ads: '📋 آگهی‌های من',
-                special_ads: '⭐ آگهی‌های ویژه',
-                vip_subscription: '👑 اشتراک ویژه',
+                favorites: 'علاقه‌مندی',
                 profile: '👤 پروفایل',
-                support: '🆘 پشتیبانی',
-                support_message: '💬 برای ارتباط با پشتیبانی روی دکمه زیر کلیک کنید:',
-                no_subscription: '❌ شما اشتراک ویژه ندارید',
-                subscription_remaining: '✅ اشتراک شما فعال است ({days} روز باقی‌مانده)',
-                subscription_expired: '⚠️ اشتراک شما منقضی شده است',
-                admin: '⚙️ پنل مدیریت',
-                statistics: '📊 آمار',
-                cancel: '❌ لغو',
-                skip: '⏭️ رد کردن',
-                normal_ad: '📌 عادی',
-                special_ad_type: '⭐ ویژه',
-                enter_title: '📝 عنوان آگهی را وارد کنید:',
-                enter_photos: '🖼 لطفاً عکس‌ها را ارسال کنید (حداکثر ۵) /done',
-                enter_description: '📝 توضیحات را وارد کنید:',
-                select_category: '📋 دسته‌بندی اصلی را انتخاب کنید:',
-                select_subcategory: '📋 زیرمجموعه را انتخاب کنید (اختیاری):',
-                select_country: '🌍 کشور را انتخاب کنید:',
-                enter_city: '🏙 شهر را وارد کنید:',
-                enter_price: '💰 قیمت را وارد کنید (فقط عدد):',
-                enter_phone: '📞 شماره تماس را وارد کنید:',
-                select_currency: '💱 واحد پول را انتخاب کنید:',
-                select_type: '🔖 نوع آگهی را انتخاب کنید:',
-                select_plan: '⏱ مدت ویژه (روز) را انتخاب کنید:',
-                select_vip_plan: '👑 مدت اشتراک (ماه) را انتخاب کنید:',
-                photo_received: '✅ عکس {count} از ۵ دریافت شد. /done',
-                max_photos: '⚠️ حداکثر ۵ عکس',
-                min_photos: '❌ حداقل یک عکس',
-                payment_info: '💳 اطلاعات پرداخت',
-                card_info: '💳 کارت بانکی:\n<span dir="ltr">{number}</span>\nبه نام {name} - بانک {bank}',
-                tether_info: '💎 USDT تتر TrustWallet (TRC20):\n{address}',
-                payment_note: '⚠️ پس از واریز، رسید را ارسال کنید',
-                send_receipt: '🧾 تصویر رسید را ارسال کنید:',
-                receipt_received: '✅ رسید دریافت شد. پس از تأیید مدیر، آگهی/اشتراک شما فعال می‌شود.',
-                ad_saved: '✅ آگهی شما ثبت و برای بررسی ارسال شد.',
-                ad_saved_special: '✅ آگهی ویژه شما ثبت و برای تأیید ارسال شد.',
-                vip_saved: '✅ درخواست اشتراک ثبت و برای تأیید ارسال شد.',
-                no_ads: '📭 آگهی‌ای یافت نشد.',
-                pending_ads: '📋 آگهی‌های در انتظار',
-                pending_subs: '💰 درخواست‌های اشتراک',
-                pending_charges: '💰 درخواست‌های شارژ',
-                no_pending: '✅ هیچ موردی در انتظار نیست.',
-                ad_approved: '✅ آگهی {id} تایید شد.',
-                ad_rejected: '❌ آگهی {id} رد شد.',
-                ad_deleted: '✅ آگهی {id} با موفقیت حذف شد.',
-                sub_approved: '✅ اشتراک {id} تایید شد.',
-                sub_rejected: '❌ اشتراک {id} رد شد.',
-                charge_approved: '✅ شارژ {amount} تومانی کاربر {user} تایید شد.',
-                charge_rejected: '❌ درخواست شارژ {id} رد شد.',
-                price_settings: '⚙️ قیمت‌ها',
-                price_updated: '✅ قیمت {key} به {value} تغییر کرد.',
-                invalid_key: '❌ کلید نامعتبر',
-                invalid_format: '❌ فرمت نامعتبر',
-                payment_settings: '💳 تنظیمات پرداخت',
-                payment_updated: '✅ اطلاعات پرداخت به‌روز شد.',
-                set_payment_format: 'فرمت: /setpayment card [شماره] [نام] [بانک] یا /setpayment tether [آدرس]',
-                admin_management: '👥 مدیریت ادمین‌ها',
-                add_admin_format: '/addadmin [user_id] [role]',
-                remove_admin_format: '/removeadmin [user_id]',
-                list_admins: '📋 لیست ادمین‌ها:\n',
-                admin_added: '✅ ادمین با نقش {role} اضافه شد.',
-                admin_removed: '✅ ادمین حذف شد.',
-                stats: '📊 آمار\nکاربران: {users}\nآگهی‌ها: {ads}\nویژه: {special}\nدر انتظار: {pending}\nVIP: {vip}',
-                unauthorized: '⛔ دسترسی ندارید',
-                invalid_command: '❌ دستور نامعتبر',
-                operation_cancelled: '❌ عملیات لغو شد.',
-                iran: '🇮🇷 ایران',
-                iraq: '🇮🇶 عراق',
-                code_iran: '98+',
-                code_iraq: '964+',
-                currency_toman: 'تومان',
-                currency_dollar: 'دلار',
-                currency_tether: 'تتر',
-                currency_dinar: 'دینار عراق',
-                balance: '💰 موجودی کیف پول',
-                points: '⭐ امتیاز شما',
-                charge: '💰 شارژ حساب',
-                enter_charge_amount: '💰 لطفاً مبلغ شارژ را انتخاب کنید:',
-                insufficient_balance: '⚠️ موجودی کافی نیست. مبلغ مورد نیاز: {amount} تومان - موجودی: {balance} تومان',
-                charge_request_sent: '✅ درخواست شارژ شما ثبت شد. پس از تأیید مدیر، موجودی اضافه می‌شود.',
-                referral: '🤝 دعوت از دوستان',
-                referral_link: '🔗 لینک دعوت شما:\nhttps://t.me/AlsouqAlmaftuhiran_bot?start={code}',
-                referral_stats: '📊 آمار دعوت‌ها:\nتعداد دعوت‌های موفق: {count}\nامتیاز کسب شده: {points}',
-                referral_points: '✨ به ازای هر دعوت موفق {points} امتیاز دریافت می‌کنید.',
+                post_ad: '📌 ثبت آگهی',
+                vip_subscription: '👑 اشتراک ویژه',
+                charge: '💰 شارژ',
                 convert_points: '🎁 تبدیل امتیاز',
-                convert_options: 'گزینه‌های تبدیل امتیاز:\n1️⃣ {p1} امتیاز = آگهی ویژه ۳ روزه\n2️⃣ {p2} امتیاز = اشتراک طلایی ۱۵ روزه\n3️⃣ تبدیل به تومان (هر امتیاز {rate} تومان)',
-                insufficient_points: '❌ امتیاز شما کافی نیست.',
-                points_converted: '✅ {points} امتیاز با موفقیت به {amount} تومان تبدیل و به کیف پول شما اضافه شد.',
-                special_ad_created: '✅ آگهی ویژه ۳ روزه با استفاده از امتیاز شما ایجاد شد. لطفاً مراحل ثبت آگهی را کامل کنید.',
-                vip_activated: '✅ اشتراک طلایی ۱۵ روزه با استفاده از امتیاز شما فعال شد.',
-                copyHint: '👆 برای کپی ضربه بزنید',
-                call: '📞 تماس',
-                chat: '💬 چت',
-                share: '📤 اشتراک',
-                report: '🚩 گزارش',
-                back: '🔙 بازگشت',
-                contact: 'پشتیبانی',
-                install: '📲 نصب',
-                save: '💾 ذخیره',
-                justNow: 'چند لحظه پیش',
-                minute: 'دقیقه',
-                minutes: 'دقیقه',
-                hour: 'ساعت',
-                hours: 'ساعت',
-                day: 'روز',
-                days: 'روز',
-                week: 'هفته',
-                weeks: 'هفته',
-                user_management: '👥 مدیریت کاربران',
-                block_user: '🚫 مسدود کاربر',
-                unblock_user: '✅ رفع انسداد',
-                user_blocked: '⛔ کاربر {id} مسدود شد.',
-                user_unblocked: '✅ کاربر {id} از مسدودیت خارج شد.',
-                you_are_blocked: '⛔ حساب شما مسدود شده است. با پشتیبانی تماس بگیرید.',
-                view_user_details: '👤 مشاهده جزئیات کاربر',
-                edit_ad: '✏️ ویرایش آگهی',
-                manage_ads: '📋 مدیریت آگهی‌ها',
-                all_ads: '📋 همه آگهی‌ها',
-                edit_title: '✏️ ویرایش عنوان',
-                edit_description: '✏️ ویرایش توضیحات',
-                edit_price: '✏️ ویرایش قیمت',
-                edit_phone: '✏️ ویرایش شماره تماس',
-                edit_city: '✏️ ویرایش شهر',
-                edit_success: '✅ اطلاعات آگهی با موفقیت به‌روزرسانی شد.',
                 search: 'جستجو',
+                searchPlaceholder: 'جستجو در آگهی‌ها...',
                 categories: 'دسته‌بندی‌ها',
                 all: 'همه',
                 latest_ads: 'جدیدترین آگهی‌ها',
                 more: 'بیشتر',
-                favorites: 'علاقه‌مندی',
+                no_ads: '📭 آگهی‌ای یافت نشد',
+                balance: '💰 موجودی کیف پول',
+                points: '⭐ امتیاز شما',
+                call: '📞 تماس',
+                chat: '💬 چت',
+                contactInfo: 'اطلاعات تماس',
+                warningTitle: 'زنگ خطرهای قبل از معامله',
+                save: '💾 ذخیره',
+                copyHint: '✅ کپی شد',
+                install: '📲 نصب',
+                imageCounter: '{current} از {total}',
+                reviewsCount: 'نظر',
                 tg_username: 'نام کاربری تلگرام',
                 display_name_label: 'نام نمایشی',
                 display_name_placeholder: 'نام شما',
@@ -1328,10 +1267,12 @@
                 points_label: 'امتیاز شما:',
                 referral_link_label: 'لینک دعوت',
                 special_badge: 'نردبان شده',
-                contactInfo: 'اطلاعات تماس',
-                warningTitle: 'زنگ خطرهای قبل از معامله',
-                imageCounter: '{current} از {total}',
-                reviewsCount: 'نظر',
+                support: 'پشتیبانی',
+                support_message: 'برای ارتباط با پشتیبانی کلیک کنید',
+                cancel: '❌ لغو',
+                skip: '⏭️ رد کردن',
+                normal_ad: '📌 عادی',
+                special_ad_type: '⭐ ویژه',
                 categories: {
                     'پزشکی': 'پزشکی',
                     'پزشک عمومی': 'پزشک عمومی',
@@ -1375,7 +1316,6 @@
                 }
             },
             ar: {
-                // ترجمه عربی (بر اساس فایل Worker)
                 home: 'الرئيسية',
                 favorites: 'المفضلة',
                 profile: 'الملف',
@@ -1415,7 +1355,6 @@
                 skip: 'تخطي',
                 normal_ad: 'عادي',
                 special_ad_type: 'مميز',
-                // ... می‌توانید بقیه را نیز از فایل Worker کپی کنید
                 categories: {
                     'پزشکی': 'طب',
                     'پزشک عمومی': 'طبيب عام',
@@ -1544,6 +1483,7 @@
 
         function t(key, catKey = null) {
             if (catKey) {
+                // اگر کلید دسته‌بندی وجود نداشت، خود catKey برگردانده شود
                 return translations[currentLang]?.categories?.[catKey] || catKey;
             }
             return translations[currentLang]?.[key] || key;
@@ -1835,7 +1775,7 @@
             }
         });
 
-        // ========== نمایش آگهی ==========
+        // ========== نمایش آگهی با ساختار جدید ==========
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1884,32 +1824,39 @@
                 }).join('');
             } catch (e) { console.error('خطا در دریافت نظرات', e); }
 
+            // ساختار جدید: هدر ثابت، بدنه اسکرول، فوتر ثابت
             document.getElementById('modalContent').innerHTML = `
                 <button class="modal-back" onclick="document.getElementById('adModal').classList.remove('active')"><i class="fas fa-arrow-right"></i></button>
-                <div class="modal-category">${ad.category || ''}</div>
-                <div class="modal-title">${ad.title}</div>
-                <div class="modal-location-time">${locationTime}</div>
-                ${imageHtml}
-                <div class="modal-warning">
-                    <i class="fas fa-exclamation-triangle"></i> ${t('warningTitle')}
+                <div class="modal-header">
+                    <div class="modal-category">${ad.category || ''}</div>
+                    <div class="modal-title">${ad.title}</div>
+                    <div class="modal-location-time">${locationTime}</div>
                 </div>
-                ${descriptionHtml}
-                <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
-                <div class="modal-actions">
-                    <button class="contact-btn" onclick="showContact('${phone}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
-                    <a href="https://t.me/${telegramUsername}" target="_blank" class="chat-btn"><i class="fas fa-comment-dots"></i> ${t('chat')}</a>
-                </div>
-                <div class="review-section">
-                    <div class="review-header">
-                        <span class="avg"><i class="fas fa-star"></i> ${avgRating}</span>
-                        <span class="stars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
-                        <span class="count">(${reviewCount} ${t('reviewsCount')})</span>
+                <div class="modal-body">
+                    ${imageHtml}
+                    <div class="modal-warning">
+                        <i class="fas fa-exclamation-triangle"></i> ${t('warningTitle')}
                     </div>
-                    ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
-                    <div class="review-input">
-                        <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
-                        <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
-                        <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ${t('save')}</button>
+                    ${descriptionHtml}
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
+                    <div class="modal-actions">
+                        <button class="contact-btn" onclick="showContact('${phone}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
+                        <a href="https://t.me/${telegramUsername}" target="_blank" class="chat-btn"><i class="fas fa-comment-dots"></i> ${t('chat')}</a>
+                    </div>
+                    <div class="review-section">
+                        <div class="review-header">
+                            <span class="avg"><i class="fas fa-star"></i> ${avgRating}</span>
+                            <span class="stars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
+                            <span class="count">(${reviewCount} ${t('reviewsCount')})</span>
+                        </div>
+                        ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
+                        <div class="review-input">
+                            <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
+                            <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
+                            <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ${t('save')}</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2054,5 +2001,4 @@
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-</html>
-```
+    </html>
