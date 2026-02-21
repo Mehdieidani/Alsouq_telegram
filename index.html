@@ -331,7 +331,7 @@
         .ad-card .favorite {
             position: absolute;
             top: 10px;
-            left: 10px; /* در RTL، left یعنی راست بصری (روی عکس) */
+            left: 10px; /* راست بصری */
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(4px);
             border: 2px solid rgba(212, 175, 55, 0.3);
@@ -342,10 +342,11 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 5;
+            z-index: 10;
             font-size: 18px;
             transition: 0.2s;
             color: #b8860b;
+            pointer-events: auto;
         }
 
         .ad-card .favorite:hover {
@@ -831,7 +832,9 @@
 
         const tgUser = tg?.initDataUnsafe?.user;
         const userId = tgUser?.id?.toString();
-        if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
+        if (tgUser) {
+            document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
+        }
 
         // ========== ترجمه‌های کامل سه‌زبانه ==========
         const translations = {
@@ -1180,41 +1183,47 @@
             return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
-        // ========== دریافت اطلاعات کاربر ==========
+        // ========== دریافت اطلاعات کاربر با مدیریت خطا ==========
         async function loadUserProfile() {
-            try {
-                // اگر userId نداریم (مرورگر عادی) پیام مناسب نمایش بده
-                if (!userId) {
-                    document.getElementById('walletBalance').innerText = '0';
-                    document.getElementById('userPoints').innerText = '0';
-                    document.getElementById('referralLink').value = 'برای دیدن اطلاعات وارد تلگرام شوید';
-                    return;
-                }
+            const balanceEl = document.getElementById('walletBalance');
+            const pointsEl = document.getElementById('userPoints');
+            const referralEl = document.getElementById('referralLink');
 
+            // اگر userId نداریم (محیط غیر تلگرام)
+            if (!userId) {
+                balanceEl.innerText = '0';
+                pointsEl.innerText = '0';
+                referralEl.value = 'برای دیدن اطلاعات وارد تلگرام شوید';
+                return;
+            }
+
+            try {
                 const res = await fetch(`${API_BASE}/api/user/profile?user_id=${userId}`);
                 if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
+                    throw new Error(`خطای سرور: ${res.status}`);
                 }
                 const data = await res.json();
 
                 if (data.success) {
-                    // تبدیل به عدد برای اطمینان از نمایش درست
+                    // تبدیل به عدد برای اطمینان
                     const balanceNum = Number(data.balance) || 0;
                     const pointsNum = Number(data.points) || 0;
-                    document.getElementById('walletBalance').innerText = balanceNum.toLocaleString();
-                    document.getElementById('userPoints').innerText = pointsNum.toString();
-                    document.getElementById('referralLink').value = `https://t.me/AlsouqAlmaftuhiran_bot?start=${data.referral_code || ''}`;
+                    balanceEl.innerText = balanceNum.toLocaleString();
+                    pointsEl.innerText = pointsNum.toString();
+                    referralEl.value = data.referral_code 
+                        ? `https://t.me/AlsouqAlmaftuhiran_bot?start=${data.referral_code}`
+                        : 'کد دعوت موجود نیست';
                 } else {
-                    // خطای API (مثلاً کاربر یافت نشد)
-                    document.getElementById('walletBalance').innerText = '0';
-                    document.getElementById('userPoints').innerText = '0';
-                    document.getElementById('referralLink').value = 'کاربر یافت نشد';
+                    // API موفق نبوده (مثلاً کاربر وجود ندارد)
+                    balanceEl.innerText = '0';
+                    pointsEl.innerText = '0';
+                    referralEl.value = 'کاربر یافت نشد (ابتدا در ربات عضو شوید)';
                 }
-            } catch (e) { 
-                console.error('خطا در دریافت پروفایل', e);
-                document.getElementById('walletBalance').innerText = '0';
-                document.getElementById('userPoints').innerText = '0';
-                document.getElementById('referralLink').value = 'خطا در ارتباط';
+            } catch (error) {
+                console.error('خطا در دریافت پروفایل:', error);
+                balanceEl.innerText = '0';
+                pointsEl.innerText = '0';
+                referralEl.value = 'خطا در ارتباط با سرور';
             }
         }
 
@@ -1450,7 +1459,21 @@
         loadAds();
         renderCategories();
         updateUILanguage();
-        if (userId) loadUserProfile();
+        // همیشه تلاش می‌کنیم پروفایل را بارگذاری کنیم (اگر userId نباشد خود تابع مدیریت می‌کند)
+        loadUserProfile();
+
+        // ذخیره نام کاربری در localStorage هنگام تغییر
+        document.getElementById('displayName').addEventListener('input', (e) => {
+            localStorage.setItem('jedar_displayName', e.target.value);
+        });
+        document.getElementById('country').addEventListener('change', (e) => {
+            localStorage.setItem('jedar_country', e.target.value);
+        });
+        // بارگذاری مقادیر ذخیره شده
+        const savedName = localStorage.getItem('jedar_displayName');
+        if (savedName) document.getElementById('displayName').value = savedName;
+        const savedCountry = localStorage.getItem('jedar_country');
+        if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
     </html>
