@@ -127,8 +127,6 @@
             transform: scale(1.05);
         }
 
-        /* کاروسل ویژه حذف شد */
-
         .action-buttons {
             display: flex;
             gap: 12px;
@@ -221,9 +219,10 @@
             font-weight: bold;
         }
 
+        /* یک ستونه */
         .ads-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 16px;
         }
 
@@ -236,6 +235,8 @@
             cursor: pointer;
             position: relative;
             transition: 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         .ad-card:hover {
@@ -246,27 +247,9 @@
 
         .ad-card img {
             width: 100%;
-            height: 150px;
+            height: 200px;
             object-fit: cover;
             border-bottom: 2px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .ad-card .special-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #daa520;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 6;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            border: 1px solid rgba(255,255,255,0.5);
         }
 
         .ad-card .content {
@@ -275,7 +258,7 @@
 
         .ad-card .title {
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
@@ -293,17 +276,18 @@
         .ad-card .meta {
             display: flex;
             align-items: center;
-            font-size: 12px;
+            font-size: 13px;
             color: #5a6a7a;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            direction: ltr; /* برای این که متن انگلیسی و فارسی به هم نریزد */
+            direction: ltr;
             text-align: right;
         }
 
         .ad-card .meta i {
-            margin-left: 4px;
+            margin-left: 5px;
+            flex-shrink: 0;
         }
 
         .ad-card .favorite {
@@ -332,7 +316,7 @@
             border-color: #daa520;
         }
 
-        /* مودال اصلی آگهی (شبیه دیوار) */
+        /* مودال اصلی آگهی */
         .modal {
             display: none;
             position: fixed;
@@ -756,7 +740,7 @@
             </div>
         </div>
 
-        <!-- صفحه اصلی (کاروسل ویژه حذف شد) -->
+        <!-- صفحه اصلی -->
         <div id="homePage" class="page active">
             <div class="action-buttons">
                 <button class="primary-btn" id="postAdBtn"><i class="fas fa-plus-circle"></i> <span data-i18n="postAd">ثبت آگهی</span></button>
@@ -857,7 +841,7 @@
         const userId = tgUser?.id?.toString();
         if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
 
-        // ترجمه‌ها (فقط موارد جدید)
+        // ترجمه‌های کامل سه‌زبانه
         const translations = {
             fa: {
                 home: 'خانه',
@@ -888,7 +872,7 @@
                 viewReviews: 'مشاهده نظرات',
                 referralLinkLabel: 'لینک دعوت',
                 all: 'همه',
-                special_badge: 'نردبان شده',   // تغییر به "نردبان شده"
+                special_badge: 'نردبان شده',
                 chat: 'چت',
                 contactInfo: 'اطلاعات تماس',
                 warningTitle: 'زنگ خطرهای قبل از معامله',
@@ -936,17 +920,158 @@
                 }
             },
             ar: {
-                // مشابه قبل با ترجمه special_badge به "مميز" (فعلاً همان را نگه می‌داریم)
+                home: 'الرئيسية',
+                favorites: 'المفضلة',
+                profile: 'الملف',
+                postAd: 'إعلان',
+                vip: 'VIP',
+                noAds: 'لا توجد إعلانات',
+                searchPlaceholder: 'ابحث في الإعلانات...',
+                call: 'اتصال',
+                whatsapp: 'واتساب',
+                telegram: 'تلغرام',
+                translate: 'ترجمة',
+                report: 'إبلاغ',
+                copyHint: 'تم النسخ',
+                support: 'الدعم',
+                save: 'حفظ',
+                charge: 'شحن',
+                favoritesHeader: 'المفضلة',
+                tgUsername: 'اسم المستخدم في تلغرام',
+                displayNameLabel: 'الاسم المعروض',
+                displayNamePlaceholder: 'اسمك',
+                countryLabel: 'الدولة',
+                balanceLabel: 'رصيد المحفظة:',
+                pointsLabel: 'نقاطك:',
+                avgRating: 'متوسط التقييم:',
+                reviewsCount: 'رأي',
+                viewReviews: 'عرض التقييمات',
+                referralLinkLabel: 'رابط الدعوة',
+                all: 'الكل',
                 special_badge: 'مميز',
-                // بقیه موارد مشابه
+                chat: 'دردشة',
+                contactInfo: 'معلومات الاتصال',
+                warningTitle: 'أجراس الخطر قبل الصفقة',
+                imageCounter: '{current} من {total}',
+                categories: {
+                    'پزشکی': 'طب',
+                    'پزشک عمومی': 'طبيب عام',
+                    'متخصص': 'أخصائي',
+                    'دندانپزشک': 'طبيب أسنان',
+                    'داروخانه': 'صيدلية',
+                    'آزمایشگاه': 'مختبر',
+                    'بیمارستان': 'مستشفى',
+                    'خدمات پرستاری': 'تمريض',
+                    'تجهیزات پزشکی': 'معدات طبية',
+                    'چشم‌پزشکی': 'طب عيون',
+                    'کاشت مو': 'زراعة شعر',
+                    'زیبایی': 'تجميل',
+                    'لیزر': 'ليزر',
+                    'پوست و مو': 'جلد وشعر',
+                    'گردشگری': 'سياحة',
+                    'تور داخلی': 'جولة داخلية',
+                    'تور خارجی': 'جولة خارجية',
+                    'راهنما': 'مرشد',
+                    'اقامتگاه': 'مبيت',
+                    'حمل و نقل': 'نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شانديز',
+                    'سرعین': 'سرعين',
+                    'کیش': 'كيش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'أصفهان',
+                    'شیراز': 'شيراز',
+                    'زیارت': 'زيارة',
+                    'عتبات عالیات': 'عتبات',
+                    'سوریه': 'سوريا',
+                    'کربلا': 'كربلاء',
+                    'نجف': 'النجف',
+                    'کاظمین': 'كاظمين',
+                    'سامرا': 'سامراء',
+                    'عمره': 'عمرة',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمكران',
+                    'شاه چراغ': 'شاه جراغ'
+                }
             },
             en: {
+                home: 'Home',
+                favorites: 'Favorites',
+                profile: 'Profile',
+                postAd: 'Post Ad',
+                vip: 'VIP',
+                noAds: 'No ads',
+                searchPlaceholder: 'Search ads...',
+                call: 'Call',
+                whatsapp: 'WhatsApp',
+                telegram: 'Telegram',
+                translate: 'Translate',
+                report: 'Report',
+                copyHint: 'Copied',
+                support: 'Support',
+                save: 'Save',
+                charge: 'Charge',
+                favoritesHeader: 'Favorites',
+                tgUsername: 'Telegram Username',
+                displayNameLabel: 'Display Name',
+                displayNamePlaceholder: 'Your name',
+                countryLabel: 'Country',
+                balanceLabel: 'Wallet Balance:',
+                pointsLabel: 'Your Points:',
+                avgRating: 'Average Rating:',
+                reviewsCount: 'reviews',
+                viewReviews: 'View Reviews',
+                referralLinkLabel: 'Referral Link',
+                all: 'All',
                 special_badge: 'Promoted',
-                // بقیه موارد مشابه
+                chat: 'Chat',
+                contactInfo: 'Contact Info',
+                warningTitle: 'Safety tips before transaction',
+                imageCounter: '{current} of {total}',
+                categories: {
+                    'پزشکی': 'Medical',
+                    'پزشک عمومی': 'General Practitioner',
+                    'متخصص': 'Specialist',
+                    'دندانپزشک': 'Dentist',
+                    'داروخانه': 'Pharmacy',
+                    'آزمایشگاه': 'Laboratory',
+                    'بیمارستان': 'Hospital',
+                    'خدمات پرستاری': 'Nursing',
+                    'تجهیزات پزشکی': 'Medical Equipment',
+                    'چشم‌پزشکی': 'Ophthalmology',
+                    'کاشت مو': 'Hair Transplant',
+                    'زیبایی': 'Cosmetic',
+                    'لیزر': 'Laser',
+                    'پوست و مو': 'Skin & Hair',
+                    'گردشگری': 'Tourism',
+                    'تور داخلی': 'Domestic Tour',
+                    'تور خارجی': 'International Tour',
+                    'راهنما': 'Guide',
+                    'اقامتگاه': 'Accommodation',
+                    'حمل و نقل': 'Transport',
+                    'خدمات سفر': 'Travel Services',
+                    'شاندیز': 'Shandiz',
+                    'سرعین': 'Sareyn',
+                    'کیش': 'Kish',
+                    'مشهد': 'Mashhad',
+                    'اصفهان': 'Isfahan',
+                    'شیراز': 'Shiraz',
+                    'زیارت': 'Pilgrimage',
+                    'عتبات عالیات': 'Atabat',
+                    'سوریه': 'Syria',
+                    'کربلا': 'Karbala',
+                    'نجف': 'Najaf',
+                    'کاظمین': 'Kadhimayn',
+                    'سامرا': 'Samarra',
+                    'عمره': 'Umrah',
+                    'حج': 'Hajj',
+                    'قم': 'Qom',
+                    'جمکران': 'Jamkaran',
+                    'شاه چراغ': 'Shah Cheragh'
+                }
             }
         };
-
-        // برای اختصار ترجمه‌های کامل عربی و انگلیسی را نمی‌آوریم (مثل نسخه قبلی) اما در عمل باید کامل باشند.
 
         function t(key, catKey = null) {
             if (catKey) return translations[currentLang]?.categories?.[catKey] || catKey;
@@ -966,6 +1091,7 @@
             });
             renderCategories();
             renderAds(allAds, 'adsGrid');
+            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         }
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
@@ -1109,9 +1235,11 @@
                 const data = await res.json();
                 if (data.success) allAds = data.ads; else allAds = [];
                 renderAds(allAds, 'adsGrid');
+                renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
             } catch { 
                 allAds = []; 
                 renderAds([], 'adsGrid'); 
+                renderAds([], 'favoritesGrid');
             }
         }
 
@@ -1126,7 +1254,7 @@
         function renderAds(ads, containerId) {
             const container = document.getElementById(containerId);
             if (!ads.length) {
-                container.innerHTML = `<div style="grid-column:span2; text-align:center;">${t('noAds')}</div>`;
+                container.innerHTML = `<div style="text-align:center;">${t('noAds')}</div>`;
                 return;
             }
             container.innerHTML = ads.map(ad => {
@@ -1138,9 +1266,7 @@
                 const metaText = ad.ad_type === 'special' 
                     ? `${t('special_badge')} | ${time} ${location ? 'در ' + location : ''}`
                     : `${time} ${location ? 'در ' + location : ''}`;
-                const specialBadge = ad.ad_type === 'special' ? `<div class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</div>` : '';
                 return `<div class="ad-card" data-id="${ad.id}">
-                    ${specialBadge}
                     <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/150x150'">
                     <div class="content">
                         <div class="title">${ad.title}</div>
@@ -1385,4 +1511,4 @@
         if (userId) loadUserProfile();
     </script>
 </body>
-    </html>
+                </html>
