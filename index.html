@@ -165,6 +165,7 @@
             height: 100%;
             object-fit: cover;
             flex-shrink: 0;
+            cursor: pointer;
         }
         .carousel-nav {
             position: absolute;
@@ -547,6 +548,7 @@
                 display_name_placeholder: 'نام شما', country_label: 'کشور',
                 balance_label: 'موجودی کیف پول:', points_label: 'امتیاز شما:',
                 referral_link_label: 'لینک دعوت', special_badge: 'نردبان شده',
+                negotiable: 'توافقی',
                 categories: {
                     'پزشکی':'پزشکی','گردشگری':'گردشگری','زیارت':'زیارت'
                 }
@@ -564,6 +566,7 @@
                 display_name_placeholder: 'اسمك', country_label: 'الدولة',
                 balance_label: 'رصيد المحفظة:', points_label: 'نقاطك:',
                 referral_link_label: 'رابط الدعوة', special_badge: 'مميز',
+                negotiable: 'قابل للتفاوض',
                 categories: {
                     'پزشکی':'طب','گردشگری':'سياحة','زیارت':'زيارة'
                 }
@@ -581,6 +584,7 @@
                 display_name_placeholder: 'Your name', country_label: 'Country',
                 balance_label: 'Wallet Balance:', points_label: 'Your Points:',
                 referral_link_label: 'Referral Link', special_badge: 'Promoted',
+                negotiable: 'Negotiable',
                 categories: {
                     'پزشکی':'Medical','گردشگری':'Tourism','زیارت':'Pilgrimage'
                 }
@@ -590,6 +594,28 @@
         function t(key, catKey = null) {
             if (catKey) return translations[currentLang]?.categories?.[catKey] || catKey;
             return translations[currentLang]?.[key] || key;
+        }
+
+        function formatPrice(price) {
+            if (price === undefined || price === null) return t('negotiable');
+            // اگر رشته است و شامل حرف غیر از عدد و فاصله است (یعنی متن)
+            if (typeof price === 'string') {
+                // حذف فاصله‌ها و بررسی اینکه آیا فقط عدد است
+                const trimmed = price.replace(/\s/g, '');
+                if (/^\d+$/.test(trimmed)) {
+                    // عدد خالص
+                    return Number(trimmed).toLocaleString() + ' تومان';
+                } else {
+                    // شامل حرف یا کاراکتر غیر عددی
+                    return t('negotiable');
+                }
+            }
+            // اگر عدد است
+            if (typeof price === 'number') {
+                return price.toLocaleString() + ' تومان';
+            }
+            // fallback
+            return t('negotiable');
         }
 
         function updateUILanguage() {
@@ -743,13 +769,14 @@
                 const loc = ad.city || '';
                 const meta = `${time} ${loc ? 'در ' + loc : ''}`;
                 const specialBadge = ad.ad_type === 'special' ? `<span class="special-badge">${t('special_badge')}</span>` : '';
+                const priceDisplay = formatPrice(ad.price); // استفاده از تابع جدید
                 return `<div class="ad-card" data-id="${ad.id}">
                     ${specialBadge}
                     <img class="ad-img" src="${img}" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
                     <div class="ad-info">
                         <div class="ad-title">${ad.title}</div>
                         <div>
-                            <div class="ad-price">${Number(ad.price).toLocaleString()} تومان</div>
+                            <div class="ad-price">${priceDisplay}</div>
                             <div class="ad-meta">${meta}</div>
                         </div>
                     </div>
@@ -819,19 +846,19 @@
                 let indHtml = '';
                 for (let i = 0; i < images.length; i++) {
                     innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="openGallery(${i})">`;
-                    indHtml += `<span class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`;
+                    indHtml += `<span class="carousel-dot" data-index="${i}"></span>`;
                 }
                 carouselInner.innerHTML = innerHtml;
                 indicatorsDiv.innerHTML = indHtml;
-                carouselInner.style.transform = 'translateX(0)';
             } else {
                 carouselInner.innerHTML = `<img src="https://via.placeholder.com/400?text=No+Image">`;
                 indicatorsDiv.innerHTML = '';
             }
 
-            // تنظیم دکمه‌های کاروسل
+            // إعادة تعيين الكاروسيل إلى الصورة الأولى
             let currentCarouselIdx = 0;
             const updateCarousel = (index) => {
+                if (images.length === 0) return;
                 if (index < 0) index = images.length - 1;
                 if (index >= images.length) index = 0;
                 currentCarouselIdx = index;
@@ -840,16 +867,22 @@
                     dot.classList.toggle('active', i === index);
                 });
             };
+
+            // تعيين مستمعات الأحداث
             document.getElementById('carouselPrev').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx - 1); };
             document.getElementById('carouselNext').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx + 1); };
             document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
                 dot.onclick = (e) => { e.stopPropagation(); updateCarousel(i); };
             });
 
+            // عرض الصورة الأولى
+            updateCarousel(0);
+
             // سایر اطلاعات
             document.getElementById('modalTitle').innerText = ad.title;
             document.getElementById('modalMeta').innerText = locTime;
-            document.getElementById('modalPrice').innerText = `${Number(ad.price).toLocaleString()} تومان`;
+            // عرض السعر باستخدام formatPrice
+            document.getElementById('modalPrice').innerText = formatPrice(ad.price);
             document.getElementById('modalCat').innerText = ad.category || 'متفرقه';
             document.getElementById('modalCity').innerText = ad.city || 'نامشخص';
             document.getElementById('modalDesc').innerText = descHtml;
