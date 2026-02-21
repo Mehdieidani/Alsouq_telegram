@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جدار | J-DAR</title>
+    <!-- PWA manifest -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        &quot;name&quot;: &quot;J-DAR&quot;,
+        &quot;short_name&quot;: &quot;جدار&quot;,
+        &quot;start_url&quot;: &quot;/&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#0b0c15&quot;,
+        &quot;theme_color&quot;: &quot;#daa520&quot;,
+        &quot;icons&quot;: [{
+            &quot;src&quot;: &quot;https://via.placeholder.com/192x192?text=J-DAR&quot;,
+            &quot;sizes&quot;: &quot;192x192&quot;,
+            &quot;type&quot;: &quot;image/png&quot;
+        }]
+    }">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -103,6 +117,7 @@
         .header-left {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .icon-btn {
@@ -126,6 +141,24 @@
             transform: scale(1.05);
             border-color: #daa520;
         }
+
+        /* دکمه نصب PWA */
+        .install-btn {
+            display: none;
+            background: rgba(218, 165, 32, 0.2);
+            border: 1px solid #daa520;
+            border-radius: 40px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 14px;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+        .install-btn.show { display: flex; }
+        .install-btn i { font-size: 16px; }
 
         /* کارت کیف پول */
         .wallet-card {
@@ -682,6 +715,30 @@
             outline: none;
         }
 
+        .profile-field .copy-link-row {
+            display: flex;
+            gap: 8px;
+        }
+        .profile-field .copy-link-row input {
+            flex: 1;
+        }
+        .profile-field .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            background: rgba(218, 165, 32, 0.2);
+            border: 1px solid #daa520;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .profile-field .share-btn:hover {
+            background: #daa520;
+        }
+
         .save-profile {
             background: linear-gradient(145deg, #b8860b, #daa520);
             border: none;
@@ -968,7 +1025,7 @@
     <div class="container">
         <!-- هشدار برای محیط غیر تلگرام -->
         <div class="telegram-warning" id="telegramWarning">
-            ⚠️ این صفحه باید در تلگرام باز شود
+            ⚠️ برای انجام عملیات نیاز به ورود به ربات تلگرام دارید
         </div>
 
         <!-- هدر sticky -->
@@ -978,6 +1035,9 @@
                 <span class="logo-text">J-DAR</span>
             </div>
             <div class="header-left">
+                <div class="install-btn" id="installBtn">
+                    <i class="fas fa-download"></i> <span data-i18n="install">نصب</span>
+                </div>
                 <button class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
                 <button class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
             </div>
@@ -990,7 +1050,7 @@
             <div class="wallet-card">
                 <div class="wallet-row">
                     <div class="wallet-info">
-                        <h4 data-i18n="balance">💰 موجودی کیف پول:</h4>
+                        <h4 data-i18n="balance">💰 موجودی کیف پول</h4>
                         <div class="amount"><span id="walletBalance">0</span> <small>تومان</small></div>
                     </div>
                     <div class="wallet-points">
@@ -1075,9 +1135,10 @@
                 </div>
                 <div class="profile-field">
                     <label data-i18n="referral_link_label"><i class="fas fa-link"></i> <span data-i18n="referral_link_label">لینک دعوت</span></label>
-                    <div style="display:flex; gap:5px;">
+                    <div class="copy-link-row">
                         <input type="text" id="referralLink" readonly>
                         <button id="copyReferral" class="icon-btn" style="width:50px;"><i class="fas fa-copy"></i></button>
+                        <button id="shareReferral" class="share-btn"><i class="fas fa-share-alt"></i></button>
                     </div>
                 </div>
                 <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> <span data-i18n="save">ذخیره تغییرات</span></button>
@@ -1112,6 +1173,24 @@
     </div>
 
     <script>
+        // PWA installation
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.add('show');
+        });
+        installBtn.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    installBtn.classList.remove('show');
+                });
+            }
+        });
+
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
 
@@ -1121,6 +1200,7 @@
             telegramWarning.classList.add('show');
         }
 
+        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot'; // یوزرنیم ربات
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev'; // آدرس Worker شما
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
@@ -1216,8 +1296,8 @@
                 currency_dollar: 'دلار',
                 currency_tether: 'تتر',
                 currency_dinar: 'دینار عراق',
-                balance: '💰 موجودی کیف پول: {balance} تومان',
-                points: '⭐ امتیاز شما: {points}',
+                balance: '💰 موجودی کیف پول',
+                points: '⭐ امتیاز شما',
                 charge: '💰 شارژ حساب',
                 enter_charge_amount: '💰 لطفاً مبلغ شارژ را انتخاب کنید:',
                 insufficient_balance: '⚠️ موجودی کافی نیست. مبلغ مورد نیاز: {amount} تومان - موجودی: {balance} تومان',
@@ -1239,7 +1319,7 @@
                 report: '🚩 گزارش',
                 back: '🔙 بازگشت',
                 contact: 'پشتیبانی',
-                install: '📲 نصب اپ',
+                install: '📲 نصب',
                 save: '💾 ذخیره',
                 justNow: 'چند لحظه پیش',
                 minute: 'دقیقه',
@@ -1327,7 +1407,7 @@
                 }
             },
             ar: {
-                // برای صرفه‌جویی، ترجمه‌های عربی را کامل قرار دهید (از فایل Worker)
+                // ترجمه عربی (مختصر برای نمایش)
                 home: 'الرئيسية',
                 favorites: 'المفضلة',
                 profile: 'الملف',
@@ -1335,12 +1415,15 @@
                 vip_subscription: 'اشتراك VIP',
                 charge: 'شحن',
                 convert_points: 'تحويل النقاط',
+                search: 'بحث',
                 searchPlaceholder: 'ابحث في الإعلانات...',
                 categories: 'الفئات',
                 all: 'الكل',
                 latest_ads: 'أحدث الإعلانات',
                 more: 'المزيد',
                 no_ads: 'لا توجد إعلانات',
+                balance: 'رصيد المحفظة',
+                points: 'النقاط',
                 call: 'اتصال',
                 chat: 'دردشة',
                 contactInfo: 'معلومات الاتصال',
@@ -1355,12 +1438,9 @@
                 points_label: 'نقاطك:',
                 referral_link_label: 'رابط الدعوة',
                 special_badge: 'مميز',
-                balance: 'رصيد المحفظة',
-                points: 'النقاط',
-                search: 'بحث',
+                install: 'تثبيت',
                 imageCounter: '{current} من {total}',
                 reviewsCount: 'رأي',
-                // بقیه موارد مشابه...
             },
             en: {
                 home: 'Home',
@@ -1370,12 +1450,15 @@
                 vip_subscription: 'VIP',
                 charge: 'Charge',
                 convert_points: 'Convert Points',
+                search: 'Search',
                 searchPlaceholder: 'Search ads...',
                 categories: 'Categories',
                 all: 'All',
                 latest_ads: 'Latest Ads',
                 more: 'More',
                 no_ads: 'No ads',
+                balance: 'Wallet Balance',
+                points: 'Points',
                 call: 'Call',
                 chat: 'Chat',
                 contactInfo: 'Contact Info',
@@ -1390,9 +1473,7 @@
                 points_label: 'Your Points:',
                 referral_link_label: 'Referral Link',
                 special_badge: 'Promoted',
-                balance: 'Wallet Balance',
-                points: 'Points',
-                search: 'Search',
+                install: 'Install',
                 imageCounter: '{current} of {total}',
                 reviewsCount: 'reviews',
             }
@@ -1420,27 +1501,43 @@
         }
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
-            tg?.showPopup({
-                title: 'انتخاب زبان / اختر اللغة / Select Language',
-                message: 'زبان مورد نظر را انتخاب کنید:',
-                buttons: [
-                    { id: 'fa', type: 'default', text: '🇮🇷 فارسی' },
-                    { id: 'ar', type: 'default', text: '🇦🇪 العربية' },
-                    { id: 'en', type: 'default', text: '🇬🇧 English' }
-                ]
-            }, (btnId) => {
-                if (btnId && ['fa','ar','en'].includes(btnId)) {
-                    currentLang = btnId;
-                    localStorage.setItem('jedar_lang', btnId);
-                    document.documentElement.lang = btnId === 'ar' ? 'ar' : (btnId === 'fa' ? 'fa' : 'en');
-                    document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
+            if (tg) {
+                tg.showPopup({
+                    title: 'انتخاب زبان / اختر اللغة / Select Language',
+                    message: 'زبان مورد نظر را انتخاب کنید:',
+                    buttons: [
+                        { id: 'fa', type: 'default', text: '🇮🇷 فارسی' },
+                        { id: 'ar', type: 'default', text: '🇦🇪 العربية' },
+                        { id: 'en', type: 'default', text: '🇬🇧 English' }
+                    ]
+                }, (btnId) => {
+                    if (btnId && ['fa','ar','en'].includes(btnId)) {
+                        currentLang = btnId;
+                        localStorage.setItem('jedar_lang', btnId);
+                        document.documentElement.lang = btnId === 'ar' ? 'ar' : (btnId === 'fa' ? 'fa' : 'en');
+                        document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
+                        updateUILanguage();
+                    }
+                });
+            } else {
+                // Fallback برای مرورگرهای عادی: یک ساده‌سازی
+                let newLang = prompt('زبان مورد نظر را وارد کنید (fa/ar/en):', currentLang);
+                if (newLang && ['fa','ar','en'].includes(newLang)) {
+                    currentLang = newLang;
+                    localStorage.setItem('jedar_lang', newLang);
+                    document.documentElement.lang = newLang === 'ar' ? 'ar' : (newLang === 'fa' ? 'fa' : 'en');
+                    document.documentElement.dir = (newLang === 'fa' || newLang === 'ar') ? 'rtl' : 'ltr';
                     updateUILanguage();
                 }
-            });
+            }
         });
 
         document.getElementById('supportBtn').addEventListener('click', () => {
-            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
+            if (tg) {
+                tg.openTelegramLink('https://t.me/Mehdi_E_admin');
+            } else {
+                window.open('https://t.me/Mehdi_E_admin', '_blank');
+            }
         });
 
         // ========== دسته‌بندی‌ها ==========
@@ -1552,7 +1649,7 @@
                     if (balanceElProfile) balanceElProfile.innerText = balanceNum.toLocaleString();
                     if (pointsElProfile) pointsElProfile.innerText = pointsNum.toString();
                     referralEl.value = data.referral_code 
-                        ? `https://t.me/AlsouqAlmaftuhiran_bot?start=${data.referral_code}`
+                        ? `https://t.me/${BOT_USERNAME}?start=${data.referral_code}`
                         : 'کد دعوت موجود نیست';
                 } else {
                     balanceElHome.innerText = '0';
@@ -1783,26 +1880,33 @@
 
         function showContact(phone) {
             if (!phone) {
-                tg?.showPopup({ title: 'اطلاعات تماس', message: 'شماره تماسی ثبت نشده است.' });
+                alert('شماره تماسی ثبت نشده است.');
                 return;
             }
-            tg?.showPopup({
-                title: '📞 اطلاعات تماس',
-                message: `شماره تلفن: ${phone}`,
-                buttons: [
-                    { id: 'call', type: 'default', text: 'تماس' },
-                    { id: 'copy', type: 'default', text: 'کپی' },
-                    { type: 'cancel' }
-                ]
-            }, (btnId) => {
-                if (btnId === 'call') {
+            if (tg) {
+                tg.showPopup({
+                    title: '📞 اطلاعات تماس',
+                    message: `شماره تلفن: ${phone}`,
+                    buttons: [
+                        { id: 'call', type: 'default', text: 'تماس' },
+                        { id: 'copy', type: 'default', text: 'کپی' },
+                        { type: 'cancel' }
+                    ]
+                }, (btnId) => {
+                    if (btnId === 'call') {
+                        window.location.href = `tel:${phone}`;
+                    } else if (btnId === 'copy') {
+                        navigator.clipboard.writeText(phone).then(() => {
+                            tg.showPopup({ title: '✅', message: t('copyHint') });
+                        });
+                    }
+                });
+            } else {
+                // در مرورگر عادی، یک confirm ساده
+                if (confirm(`شماره تماس: ${phone}\nبرای تماس OK را بزنید.`)) {
                     window.location.href = `tel:${phone}`;
-                } else if (btnId === 'copy') {
-                    navigator.clipboard.writeText(phone).then(() => {
-                        tg?.showPopup({ title: '✅', message: t('copyHint') });
-                    });
                 }
-            });
+            }
         }
 
         // ========== ناوبری ==========
@@ -1822,31 +1926,56 @@
             });
         });
 
-        // ========== دکمه‌های اصلی ==========
-        document.getElementById('postAdBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
-        });
-        document.getElementById('vipBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); }
-        });
-        document.getElementById('chargeBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'charge' })); tg.close(); }
-        });
-        document.getElementById('convertPointsBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'convert_points' })); tg.close(); }
-        });
+        // ========== دکمه‌های اصلی (با هدایت به ربات) ==========
+        function redirectToBot(action) {
+            const url = `https://t.me/${BOT_USERNAME}?start=${action}`;
+            if (tg) {
+                tg.openTelegramLink(url);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        document.getElementById('postAdBtn').addEventListener('click', () => redirectToBot('post_ad'));
+        document.getElementById('vipBtn').addEventListener('click', () => redirectToBot('vip'));
+        document.getElementById('chargeBtn').addEventListener('click', () => redirectToBot('charge'));
+        document.getElementById('convertPointsBtn').addEventListener('click', () => redirectToBot('convert_points'));
+
         document.getElementById('saveProfile').addEventListener('click', () => {
             const displayName = document.getElementById('displayName').value;
             const country = document.getElementById('country').value;
-            tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
-            tg?.showPopup({ title: '✅', message: t('save') });
+            if (tg) {
+                tg.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
+                tg.showPopup({ title: '✅', message: t('save') });
+            } else {
+                alert('برای ذخیره تغییرات به ربات تلگرام بروید.');
+                redirectToBot('updateProfile');
+            }
         });
+
         document.getElementById('copyReferral').addEventListener('click', () => {
             const link = document.getElementById('referralLink');
             link.select();
             navigator.clipboard.writeText(link.value).then(() => {
-                tg?.showPopup({ title: '✅', message: t('copyHint') });
+                if (tg) {
+                    tg.showPopup({ title: '✅', message: t('copyHint') });
+                } else {
+                    alert(t('copyHint'));
+                }
             });
+        });
+
+        document.getElementById('shareReferral').addEventListener('click', () => {
+            const link = document.getElementById('referralLink').value;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'دعوت به جدار',
+                    text: 'به جدار بپیوندید',
+                    url: link
+                });
+            } else {
+                alert('لینک دعوت: ' + link);
+            }
         });
 
         // ========== جستجو ==========
