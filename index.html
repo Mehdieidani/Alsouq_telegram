@@ -528,7 +528,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            max-height: 90vh; /* محدودیت ارتفاع برای اسکرول داخلی */
+            max-height: 90vh;
         }
 
         @keyframes modalFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -1231,7 +1231,7 @@
             document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
-        // ========== ترجمه‌های کامل سه‌زبانه (بر اساس کلیدهای Worker) ==========
+        // ========== ترجمه‌های کامل سه‌زبانه ==========
         const translations = {
             fa: {
                 home: '🏠 خانه',
@@ -1483,10 +1483,13 @@
 
         function t(key, catKey = null) {
             if (catKey) {
-                // اگر کلید دسته‌بندی وجود نداشت، خود catKey برگردانده شود
-                return translations[currentLang]?.categories?.[catKey] || catKey;
+                // دسترسی به ترجمه دسته‌بندی
+                let catTrans = translations[currentLang]?.categories?.[catKey];
+                // اگر ترجمه وجود نداشت، خود catKey را برمی‌گردانیم (که فارسی است)
+                return catTrans !== undefined ? catTrans : catKey;
             }
-            return translations[currentLang]?.[key] || key;
+            let trans = translations[currentLang]?.[key];
+            return trans !== undefined ? trans : key;
         }
 
         function updateUILanguage() {
@@ -2001,4 +2004,5 @@
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-    </html>
+</html>
+```
