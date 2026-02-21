@@ -571,9 +571,9 @@
         }
 
         .modal-header .modal-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: #fff;
             padding-left: 40px; /* فضا برای دکمه بازگشت */
         }
@@ -581,7 +581,7 @@
         .modal-header .modal-location-time {
             font-size: 14px;
             color: #aaa;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
 
         .modal-body {
@@ -710,7 +710,7 @@
         }
 
         .modal-price {
-            font-size: 32px;
+            font-size: 28px;
             color: #daa520;
             font-weight: bold;
             margin: 5px 0 20px;
@@ -1267,6 +1267,12 @@
             document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
+        // Country code mapping
+        const countryCodes = {
+            'IR': '98',
+            'IQ': '964'
+        };
+
         // ========== ترجمه‌های کامل سه‌زبانه ==========
         const translations = {
             fa: {
@@ -1717,7 +1723,17 @@
             try {
                 const res = await fetch(`${API_BASE}/api/ads`);
                 const data = await res.json();
-                if (data.success) allAds = data.ads; else allAds = [];
+                if (data.success) {
+                    allAds = data.ads;
+                    // مرتب‌سازی: آگهی‌های ویژه اول (اگر API مرتب نکرده باشد)
+                    allAds.sort((a, b) => {
+                        if (a.ad_type === 'special' && b.ad_type !== 'special') return -1;
+                        if (a.ad_type !== 'special' && b.ad_type === 'special') return 1;
+                        return b.created_at - a.created_at; // جدیدترین اول
+                    });
+                } else {
+                    allAds = [];
+                }
                 renderAds(allAds, 'adsGrid');
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
             } catch { 
@@ -1828,8 +1844,14 @@
             const locationStr = ad.city || '';
             const locationTime = `${timeStr} ${locationStr ? 'در ' + locationStr : ''}`;
             const phone = ad.phone || '';
+            // دریافت کد کشور از سلکت (در صفحه پروفایل) یا پیش‌فرض ایران
+            const countrySelect = document.getElementById('country');
+            const countryCode = countrySelect ? countryCodes[countrySelect.value] || '98' : '98';
+            // حذف صفر ابتدای شماره اگر با کد کشور شروع شده باشد
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
+            const whatsappLink = cleanPhone ? `https://wa.me/${countryCode}${cleanPhone}` : '#';
             const telegramUsername = ad.telegram_username || '';
-            const whatsappLink = phone ? `https://wa.me/${phone.replace(/\D/g, '')}` : '#';
             const telegramLink = telegramUsername ? `https://t.me/${telegramUsername}` : '#';
             const descriptionHtml = ad.description ? `<div class="modal-description">${ad.description}</div>` : '';
 
@@ -1980,36 +2002,6 @@
             }
         };
 
-        function showContact(phone) {
-            if (!phone) {
-                alert('شماره تماسی ثبت نشده است.');
-                return;
-            }
-            if (tg) {
-                tg.showPopup({
-                    title: '📞 اطلاعات تماس',
-                    message: `شماره تلفن: ${phone}`,
-                    buttons: [
-                        { id: 'call', type: 'default', text: 'تماس' },
-                        { id: 'copy', type: 'default', text: 'کپی' },
-                        { type: 'cancel' }
-                    ]
-                }, (btnId) => {
-                    if (btnId === 'call') {
-                        window.location.href = `tel:${phone}`;
-                    } else if (btnId === 'copy') {
-                        navigator.clipboard.writeText(phone).then(() => {
-                            tg.showPopup({ title: '✅', message: t('copyHint') });
-                        });
-                    }
-                });
-            } else {
-                if (confirm(`شماره تماس: ${phone}\nبرای تماس OK را بزنید.`)) {
-                    window.location.href = `tel:${phone}`;
-                }
-            }
-        }
-
         // ========== ناوبری ==========
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -2097,4 +2089,5 @@
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-    </html>
+</html>
+```
