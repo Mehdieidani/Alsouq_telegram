@@ -358,9 +358,6 @@
             opacity: 1;
             transition: opacity 0.2s;
         }
-        .carousel-inner img[data-src] {
-            opacity: 0.5;
-        }
     </style>
 </head>
 <body>
@@ -832,12 +829,12 @@
 
         // ========== گالری (تمام‌صفحه) ==========
         let currentImages = [], currentIdx = 0;
-        function openGallery(idx) {
+        window.openGallery = function(idx) {
             if (!currentImages.length) return;
             currentIdx = idx;
             updateGallery();
             document.getElementById('galleryModal').classList.add('active');
-        }
+        };
         function updateGallery() {
             document.getElementById('galleryImg').src = `${API_BASE}/image/${currentImages[currentIdx]}`;
             document.getElementById('galleryCounter').innerText = t('imageCounter').replace('{current}', currentIdx+1).replace('{total}', currentImages.length);
@@ -868,9 +865,6 @@
             const whatsappLink = formattedPhone ? `https://wa.me/${formattedPhone}` : '#';
             
             const tgUsername = ad.telegram_username || '';
-            // رابط التليجرام: إذا كان اسم المستخدم موجوداً نستخدمه، وإذا كان هناك رقم هاتف يمكن استخدامه في التليجرام؟ التليجرام يحتاج معرف وليس رقم عادة.
-            // سنكتفي برابط التليجرام عبر المعرف إذا وجد، وإلا نعرض الرابط مع الرقم ولكن التليجرام لا يدخل بالرقم مباشرة.
-            // بعض التطبيقات تسمح بفتح التليجرام برقم عبر deep link، لكن ليس شائعاً.
             const tgLink = tgUsername ? `https://t.me/${tgUsername}` : (formattedPhone ? `https://t.me/+${formattedPhone}` : '#');
             
             const descHtml = ad.description || 'توضیحاتی ثبت نشده است.';
@@ -884,7 +878,8 @@
                 let innerHtml = '';
                 let indHtml = '';
                 for (let i = 0; i < images.length; i++) {
-                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="openGallery(${i})" onerror="this.src='https://via.placeholder.com/400?text=No+Image';">`;
+                    // استخدام window.openGallery بدلاً من openGallery فقط
+                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="window.openGallery(${i})" onerror="this.src='https://via.placeholder.com/400?text=No+Image';">`;
                     indHtml += `<span class="carousel-dot" data-index="${i}"></span>`;
                 }
                 carouselInner.innerHTML = innerHtml;
@@ -1013,7 +1008,11 @@
 
         // ========== دکمه‌های هدایت به ربات ==========
         function redirectToBot(action) {
-            const url = `https://t.me/${BOT_USERNAME}?start=${action}`;
+            // التأكد من أن الأمر يبدأ بـ / إذا لزم الأمر
+            let command = action;
+            // بعض البوتات تتوقع الأمر مع / في البداية
+            // يمكن تعديل ذلك حسب البوت
+            const url = `https://t.me/${BOT_USERNAME}?start=${command}`;
             if (tg) {
                 tg.openTelegramLink(url);
             } else {
@@ -1110,4 +1109,4 @@
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
 </body>
-</html>
+    </html>
