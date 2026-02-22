@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* استایل‌های قبلی بدون تغییر باقی می‌مانند */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -564,25 +563,24 @@
             pointer-events: none;
         }
 
-        .modal-warning {
-            background: rgba(255, 193, 7, 0.2);
-            border-right: 6px solid #ffc107;
-            padding: 12px 15px;
-            margin: 15px 10px;
+        .modal-exchange {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 10px;
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.05);
             border-radius: 30px;
-            font-size: 14px;
-            color: #ffd966;
+            font-size: 16px;
         }
 
-        .modal-description {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 40px;
-            padding: 15px;
-            margin: 15px 10px;
-            font-size: 15px;
-            line-height: 1.8;
-            color: #ddd;
+        .modal-exchange span:first-child {
+            color: #aaa;
+        }
+
+        .modal-exchange span:last-child {
+            color: #fff;
+            font-weight: 500;
         }
 
         .modal-price {
@@ -598,7 +596,6 @@
             margin: 20px 10px;
         }
 
-        .modal-actions a,
         .modal-actions button {
             flex: 1;
             padding: 16px;
@@ -615,25 +612,13 @@
             border: none;
         }
 
-        .chat-btn {
+        .contact-btn {
             background: #daa520;
             color: white;
-        }
-
-        .chat-btn:hover {
-            opacity: 0.9;
-        }
-
-        .contact-btn {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid #daa520 !important;
-            color: #fff;
         }
 
         .contact-btn:hover {
-            background: #daa520;
-            color: white;
+            opacity: 0.9;
         }
 
         .page { display: none; }
@@ -817,125 +802,6 @@
         }
         .telegram-warning.show { display: block; }
 
-        .review-section {
-            margin-top: 25px;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            padding-top: 20px;
-        }
-
-        .review-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .review-header .avg {
-            font-size: 24px;
-            font-weight: bold;
-            color: #daa520;
-        }
-
-        .review-header .stars {
-            color: #daa520;
-            font-size: 18px;
-        }
-
-        .review-header .count {
-            color: #aaa;
-        }
-
-        .review-item {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 40px;
-            padding: 18px;
-            margin-bottom: 15px;
-        }
-
-        .review-item .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .review-item .user i {
-            background: #daa520;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .review-item .user-name {
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .review-item .rating-stars {
-            color: #daa520;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-
-        .review-item .comment {
-            color: #ddd;
-            margin-bottom: 6px;
-        }
-
-        .review-item .date {
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        .review-input {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .review-input input,
-        .review-input textarea {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 60px;
-            padding: 14px 20px;
-            color: white;
-            width: 100%;
-            resize: none;
-        }
-
-        .review-input textarea {
-            border-radius: 30px;
-        }
-
-        .review-input button {
-            background: #daa520;
-            color: white;
-            border: none;
-            border-radius: 60px;
-            padding: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .review-input button:hover {
-            opacity: 0.9;
-        }
-
         .help-modal {
             background: rgba(20, 25, 45, 0.95);
             backdrop-filter: blur(20px);
@@ -1067,7 +933,7 @@
         </div>
     </div>
 
-    <!-- مودال آگهی -->
+    <!-- مودال آگهی (طراحی جدید مشابه دیوار) -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
@@ -1158,9 +1024,10 @@
                 balanceLabel: 'موجودی کیف پول:',
                 pointsLabel: 'امتیاز شما:',
                 referralLinkLabel: 'لینک دعوت',
-                warningTitle: '⚠️ نکات ایمنی قبل از معامله',
                 contactInfo: 'اطلاعات تماس',
-                chat: 'چت',
+                exchangeStatus: 'وضعیت معاوضه',
+                notWilling: 'مایل نیستم',
+                willing: 'مایل هستم',
                 search: 'جستجو',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1230,9 +1097,10 @@
                 balanceLabel: 'رصيد المحفظة:',
                 pointsLabel: 'نقاطك:',
                 referralLinkLabel: 'رابط الدعوة',
-                warningTitle: '⚠️ نصائح الأمان قبل الصفقة',
                 contactInfo: 'معلومات الاتصال',
-                chat: 'دردشة',
+                exchangeStatus: 'حالة المقايضة',
+                notWilling: 'غير راغب',
+                willing: 'راغب',
                 search: 'بحث',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1302,9 +1170,10 @@
                 balanceLabel: 'Wallet Balance:',
                 pointsLabel: 'Your Points:',
                 referralLinkLabel: 'Referral Link',
-                warningTitle: '⚠️ Safety tips before transaction',
                 contactInfo: 'Contact Info',
-                chat: 'Chat',
+                exchangeStatus: 'Exchange status',
+                notWilling: 'Not willing',
+                willing: 'Willing',
                 search: 'Search',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1479,8 +1348,8 @@
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
             } catch { 
                 allAds = [
-                    { id: 1, title: 'نمونه آگهی پزشکی', price: '۵۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'تهران', created_at: Math.floor(Date.now()/1000)-3600, image_ids: [], ad_type: 'normal' },
-                    { id: 2, title: 'تور مشهد ویژه', price: '۱۲۰,۰۰۰', currency: 'تومان', category: 'گردشگری', city: 'مشهد', created_at: Math.floor(Date.now()/1000)-7200, image_ids: [], ad_type: 'special' },
+                    { id: 1, title: 'جاکفشی، کمد، دراور', price: '۵,۵۰۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'اهواز، دغاغله، جاده دغاغله', created_at: Math.floor(Date.now()/1000)-120, image_ids: [], ad_type: 'normal' },
+                    { id: 2, title: 'کمد، کابینت، جاکفشی، تی وی وال', price: '۵,۵۰۰,۰۰۰', currency: 'تومان', category: 'گردشگری', city: 'اهواز، دغاغله، جاده دغاغله', created_at: Math.floor(Date.now()/1000)-300, image_ids: [], ad_type: 'special' },
                 ];
                 renderAds(allAds, 'adsGrid');
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
@@ -1540,7 +1409,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ========== نمایش آگهی ==========
+        // ========== نمایش آگهی (طراحی جدید مشابه دیوار) ==========
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1551,8 +1420,14 @@
             const locationStr = ad.city || '';
             const locationTime = `${timeStr} ${locationStr ? 'در ' + locationStr : ''}`;
             const phone = ad.phone || '';
-            const telegramUsername = ad.telegram_username || '';
-            const descriptionHtml = ad.description ? `<div class="modal-description">${ad.description}</div>` : '';
+
+            const exchangeHtml = `
+                <div class="modal-exchange">
+                    <span>${t('exchangeStatus')}:</span>
+                    <span>${t('notWilling')}</span>
+                </div>
+            `;
+
             const imageHtml = images.length > 0 
                 ? `<div class="modal-image-container">
                     <img src="${mainImage}" class="modal-image" onclick="openGallery(0)" onerror="this.src='https://via.placeholder.com/400x300'">
@@ -1566,12 +1441,10 @@
                 <div class="modal-title">${ad.title}</div>
                 <div class="modal-location-time">${locationTime}</div>
                 ${imageHtml}
-                <div class="modal-warning"><i class="fas fa-exclamation-triangle"></i> ${t('warningTitle')}</div>
-                ${descriptionHtml}
+                ${exchangeHtml}
                 <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
                 <div class="modal-actions">
                     <button class="contact-btn" onclick="showContact('${phone}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
-                    <a href="https://t.me/${telegramUsername}" target="_blank" class="chat-btn"><i class="fas fa-comment-dots"></i> ${t('chat')}</a>
                 </div>
             `;
             document.getElementById('adModal').classList.add('active');
