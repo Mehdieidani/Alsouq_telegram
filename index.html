@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* جميع الأنماط الكاملة كما كانت */
+        /* الأنماط الكاملة - نفس ما كان سابقاً */
         :root {
             --primary: #daa520;
             --primary-dark: #b8860b;
@@ -483,7 +483,8 @@
     <script>
         // ========== إعدادات أساسية ==========
         const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
-        const BOT_LINK = `https://t.me/${BOT_USERNAME}`;
+        const BOT_LINK_HTTPS = `https://t.me/${BOT_USERNAME}`;
+        const BOT_LINK_TG = `tg://resolve?domain=${BOT_USERNAME}`;
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const MY_TELEGRAM_ID = 'Mehdi_E_admin';
         
@@ -498,11 +499,16 @@
         // ========== دالة فتح البوت (المفتاح هنا) ==========
         function openBot() {
             if (isTelegram && tg?.openTelegramLink) {
-                tg.openTelegramLink(BOT_LINK);
+                // داخل تيليجرام نستخدم الدالة المخصصة
+                // نحاول أولاً بصيغة tg:// ثم https كخيار احتياطي
+                tg.openTelegramLink(BOT_LINK_TG);
+                // بعض الإصدارات قد لا تدعم tg://، لذا نضيف تأخير بسيط لمحاولة https
+                setTimeout(() => {
+                    tg.openTelegramLink(BOT_LINK_HTTPS);
+                }, 100);
             } else {
-                // استخدام window.location.href بدلاً من window.open
-                // هذا يضمن فتح الرابط في نفس الصفحة (أو الخروج منها)
-                window.location.href = BOT_LINK;
+                // خارج تيليجرام نستخدم location.href
+                window.location.href = BOT_LINK_HTTPS;
             }
         }
 
@@ -512,10 +518,9 @@
         document.getElementById('chargeBtn').addEventListener('click', openBot);
         document.getElementById('convertPointsBtn').addEventListener('click', openBot);
 
-        // ========== باقي دوال التطبيق (يجب إضافتها كاملة من الإصدارات السابقة) ==========
-        // ملاحظة: تم حذف الدوال الأخرى للاختصار، ولكن يجب إضافتها هنا
-        // مثل دوال تحميل الإعلانات، عرض الصور، المفضلة، إلخ.
-        // يمكنك نسخها من الردود السابقة
+        // ========== باقي دوال التطبيق يجب إضافتها هنا ==========
+        // (مثل تحميل الإعلانات، عرض الصور، إلخ)
+        // يمكنك إدراجها من الإصدارات السابقة
 
         // مؤقت للتأكيد
         alert('تم تحميل الصفحة. اضغط على الأزرار لفتح البوت.');
