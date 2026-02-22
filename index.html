@@ -905,11 +905,11 @@
                 <div class="wallet-row">
                     <div class="wallet-info">
                         <h4 data-i18n="balance">💰 موجودی کیف پول</h4>
-                        <div class="amount"><span id="walletBalance">۱۲٬۷۵۰</span> <small>تومان</small></div>
+                        <div class="amount"><span id="walletBalance">۰</span> <small>تومان</small></div>
                     </div>
                     <div class="wallet-points">
                         <i class="fas fa-star"></i>
-                        <span class="points-num" id="userPoints">۲۳۰</span>
+                        <span class="points-num" id="userPoints">۰</span>
                     </div>
                 </div>
             </div>
@@ -1266,7 +1266,7 @@
             return /^[\d,]+$/.test(str);
         }
 
-        // آگهی‌های نمونه با آمار واقعی
+        // آگهی‌های نمونه
         const sampleAds = [
             { id: 1, title: 'مانتو مشکی', price: '۹۰۰,۰۰۰', views: '7.4k', likes: '171', image: 'https://via.placeholder.com/400/2a2a36/ffffff?text=مانتو', category: 'پزشکی', city: 'تهران', created_at: Math.floor(Date.now()/1000)-3600, description: 'مانتو مشکی نوقط یکبار استفاده شده سایز ۴۶', phone: '09123456789', telegram_username: 'username', rating_avg: 4.5, rating_count: 12 },
             { id: 2, title: 'کفش کالج', price: 'توافقی', views: '10.1k', likes: '109', image: 'https://via.placeholder.com/400/2a2a36/ffffff?text=کفش', category: 'گردشگری', city: 'مشهد', created_at: Math.floor(Date.now()/1000)-7200, description: 'کفش کالج چرم طبیعی', phone: '09123456788', telegram_username: 'username2', rating_avg: 4.0, rating_count: 8 },
@@ -1338,16 +1338,34 @@
             const locationTime = `${timeStr} در ${ad.city || ''}`;
             const priceDisplay = isNumericPrice(ad.price) ? `${ad.price} تومان` : t('negotiable');
 
-            // نظرات نمونه
-            const reviewsHtml = `
-                <div class="review-item">
-                    <div class="user"><i class="fas fa-user-circle"></i> <span class="user-name">کاربر نمونه</span></div>
-                    <div class="rating-stars">★★★★☆</div>
-                    <div class="comment">کیفیت عالی، ممنون</div>
-                    <div class="date">${new Date().toLocaleDateString()}</div>
-                </div>
-            `;
-            const reviewBtnText = t('reviewBtn', ad.rating_avg.toFixed(1), ad.rating_count);
+            // دریافت نظرات از Worker
+            let reviewsHtml = '';
+            let avgRating = ad.rating_avg.toFixed(1);
+            let reviewCount = ad.rating_count;
+            try {
+                const reviewsRes = await fetch(`${API_BASE}/api/reviews?adId=${id}`);
+                const reviewsData = await reviewsRes.json();
+                const reviews = reviewsData.reviews || [];
+                reviewCount = reviews.length;
+                if (reviews.length > 0) {
+                    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+                    avgRating = (sum / reviews.length).toFixed(1);
+                }
+                reviewsHtml = reviews.map(r => {
+                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                    return `
+                        <div class="review-item">
+                            <div class="user"><i class="fas fa-user-circle"></i> <span class="user-name">${r.first_name || r.username || 'کاربر'}</span></div>
+                            <div class="rating-stars">${stars}</div>
+                            <div class="comment">${r.comment || 'بدون نظر'}</div>
+                            <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) { console.error('خطا در دریافت نظرات', e); }
+
+            const descriptionHtml = ad.description ? `<div class="modal-description">${ad.description}</div>` : '';
+            const reviewBtnText = t('reviewBtn', avgRating, reviewCount);
 
             const modalHtml = `
                 <button class="modal-back" onclick="document.getElementById('adModal').classList.remove('active')"><i class="fas fa-arrow-right"></i></button>
@@ -1358,14 +1376,14 @@
                     <div class="modal-title">${ad.title}</div>
                     <div class="modal-location-time">${locationTime}</div>
                     <div class="modal-price">💰 ${priceDisplay}</div>
-                    <div class="modal-description">${ad.description || ''}</div>
+                    ${descriptionHtml}
                     <div class="review-section">
                         <div class="review-header">
-                            <span class="avg"><i class="fas fa-star"></i> ${ad.rating_avg.toFixed(1)}</span>
-                            <span class="stars">${'★'.repeat(Math.round(ad.rating_avg))}${'☆'.repeat(5 - Math.round(ad.rating_avg))}</span>
-                            <span class="count">(${ad.rating_count} ${t('reviewsCount')})</span>
+                            <span class="avg"><i class="fas fa-star"></i> ${avgRating}</span>
+                            <span class="stars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
+                            <span class="count">(${reviewCount} ${t('reviewsCount')})</span>
                         </div>
-                        ${reviewsHtml}
+                        ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1445,12 +1463,25 @@
                 return;
             }
             if (!userId) { tg?.showPopup({ title: '❌', message: 'ابتدا وارد شوید' }); return; }
-            // شبیه‌سازی ارسال نظر
-            tg?.showPopup({ title: '✅', message: 'نظر شما ثبت شد' });
-            document.getElementById('reviewFormModal').classList.remove('active');
-            document.getElementById('newRating').value = '';
-            document.getElementById('newComment').value = '';
-            if (currentAdId) showAd(currentAdId);
+            try {
+                const res = await fetch(`${API_BASE}/api/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adId, userId, rating, comment })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    tg?.showPopup({ title: '✅', message: 'نظر شما ثبت شد' });
+                    document.getElementById('reviewFormModal').classList.remove('active');
+                    document.getElementById('newRating').value = '';
+                    document.getElementById('newComment').value = '';
+                    if (currentAdId) showAd(currentAdId);
+                } else {
+                    tg?.showPopup({ title: '❌', message: data.error || 'خطا در ثبت نظر' });
+                }
+            } catch (e) {
+                tg?.showPopup({ title: '❌', message: 'خطا در ارتباط با سرور' });
+            }
         });
 
         document.getElementById('cancelReviewBtn').addEventListener('click', () => {
@@ -1489,7 +1520,7 @@
             });
         });
 
-        // ========== دکمه‌های اصلی ==========
+        // ========== دکمه‌های اصلی (ارسال به ربات) ==========
         document.getElementById('postAdBtn').addEventListener('click', () => {
             if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
         });
@@ -1529,6 +1560,7 @@
             }
             try {
                 const res = await fetch(`${API_BASE}/api/user/profile?user_id=${userId}`);
+                if (!res.ok) throw new Error();
                 const data = await res.json();
                 if (data.success) {
                     balanceElHome.innerText = (data.balance || 0).toLocaleString();
