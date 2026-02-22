@@ -1,79 +1,74 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اختبار فتح البوت</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #0c0f1c; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; direction: rtl; }
-        button { background: #daa520; border: none; border-radius: 30px; padding: 15px 25px; margin: 10px; font-size: 18px; font-weight: bold; color: black; cursor: pointer; width: 250px; }
-        .link-box { background: #1e1e2f; padding: 15px; border-radius: 10px; margin-top: 30px; width: 100%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 10px; border-radius: 5px; border: none; margin: 10px 0; }
+        body { background: #0c0f1c; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        button, .btn-like { background: #daa520; border: none; border-radius: 30px; padding: 15px 25px; margin: 10px; font-size: 18px; font-weight: bold; color: black; cursor: pointer; width: 280px; text-align: center; }
+        .link-box { background: #1e1e2f; padding: 20px; border-radius: 15px; margin-top: 30px; width: 100%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: none; margin: 15px 0; direction: ltr; text-align: left; }
+        .note { color: #aaa; font-size: 14px; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <h1>اختبار فتح البوت</h1>
-    <button id="openBotBtn1">فتح البوت (طريقة 1)</button>
-    <button id="openBotBtn2">فتح البوت (طريقة 2)</button>
+    <h1>🔍 اختبار فتح البوت</h1>
+    
+    <!-- زر بمحاولات متعددة -->
+    <button id="multiTryBtn">🔁 محاولة فتح البوت (طرق متعددة)</button>
+    
+    <!-- رابط مباشر على شكل زر -->
+    <a href="https://t.me/AlsouqAlmaftuhiran_bot" target="_blank" id="directLink" class="btn-like">🔗 فتح مباشر</a>
+    
+    <!-- زر نسخ الرابط -->
+    <button id="copyBtn">📋 نسخ الرابط</button>
     
     <div class="link-box">
-        <p>إذا لم يعمل الزر، انسخ الرابط يدويًا:</p>
+        <p>الرابط المباشر:</p>
         <input type="text" id="botLink" value="https://t.me/AlsouqAlmaftuhiran_bot" readonly>
-        <button id="copyLinkBtn">نسخ الرابط</button>
+        <p class="note">إذا لم تفتح الأزرار، انسخ الرابط والصقه في متصفح آخر (مثل Chrome).</p>
     </div>
 
     <script>
         const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
-        const tg = window.Telegram?.WebApp;
-        const isTelegram = !!tg;
-
-        // الروابط المختلفة للتجربة
         const botUrls = [
             `https://t.me/${BOT_USERNAME}`,
             `tg://resolve?domain=${BOT_USERNAME}`,
             `https://telegram.me/${BOT_USERNAME}`
         ];
 
-        // دالة فتح الرابط بطرق متعددة
-        function openBotUrl(url) {
-            console.log('محاولة فتح:', url);
+        // محاولة فتح الرابط بكل الطرق الممكنة
+        function tryOpenUrl(url) {
             try {
-                if (isTelegram && tg?.openTelegramLink) {
-                    tg.openTelegramLink(url);
-                } else {
-                    // محاولة فتح الرابط في نافذة جديدة
-                    const newWindow = window.open(url, '_blank');
-                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                        // إذا تم حظر النافذة المنبثقة، نحاول فتحه في نفس النافذة
-                        window.location.href = url;
-                    }
+                // محاولة فتح الرابط في نافذة جديدة
+                const newWindow = window.open(url, '_blank');
+                
+                // إذا تم حظر النافذة المنبثقة، نستخدم location.href
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    window.location.href = url;
                 }
             } catch (e) {
-                console.error('خطأ في فتح الرابط:', e);
-                // كملاذ أخير، نستخدم الطريقة القديمة
+                // في حالة الخطأ، نجرب location.href مباشرة
                 window.location.href = url;
             }
         }
 
-        // الزر الأول - يحاول جميع الروابط بالتسلسل
-        document.getElementById('openBotBtn1').addEventListener('click', function() {
-            for (let url of botUrls) {
-                openBotUrl(url);
-            }
+        // الزر الأول: محاولة جميع الروابط
+        document.getElementById('multiTryBtn').addEventListener('click', function() {
+            botUrls.forEach(url => tryOpenUrl(url));
         });
 
-        // الزر الثاني - يستخدم الرابط الأساسي فقط
-        document.getElementById('openBotBtn2').addEventListener('click', function() {
-            openBotUrl(botUrls[0]);
-        });
+        // زر "فتح مباشر" - هو رابط HTML عادي (قد يعمل إذا لم يتم منع الروابط)
+        // لا حاجة لإضافة حدث له.
 
         // نسخ الرابط
-        document.getElementById('copyLinkBtn').addEventListener('click', function() {
+        document.getElementById('copyBtn').addEventListener('click', function() {
             const linkInput = document.getElementById('botLink');
             linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // للهواتف
             document.execCommand('copy');
-            alert('تم نسخ الرابط: ' + linkInput.value);
+            alert('✅ تم نسخ الرابط:\n' + linkInput.value);
         });
     </script>
 </body>
