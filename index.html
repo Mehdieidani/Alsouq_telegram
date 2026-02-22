@@ -153,7 +153,7 @@
             box-shadow: 0 0 10px gold;
         }
 
-        /* MODAL */
+        /* MODAL - صورة واحدة وزر عرض المزيد */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-dark); z-index: 1000; display: none;
@@ -168,80 +168,53 @@
             border: none; cursor: pointer;
         }
 
-        /* Carousel inside modal */
-        .modal-carousel {
+        .modal-image-container {
             width: 100%;
             height: 350px;
             background: #1a1a1a;
             position: relative;
             overflow: hidden;
         }
-        .carousel-inner {
-            display: flex;
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-        .carousel-inner img {
+        .modal-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            flex-shrink: 0;
             cursor: pointer;
-            background-color: #2a2a2a; /* placeholder color */
         }
-        .carousel-nav {
+        .more-images-btn {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            z-index: 20;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .carousel-prev { right: 10px; }
-        .carousel-next { left: 10px; }
-        .carousel-nav:hover { background: var(--primary); }
-        .carousel-indicators {
-            position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 20;
-        }
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            border: 1px solid var(--primary);
+            backdrop-filter: blur(5px);
             cursor: pointer;
+            z-index: 10;
         }
-        .carousel-dot.active { background: var(--primary); transform: scale(1.2); }
-        .carousel-watermark {
+        .more-images-btn i {
+            margin-left: 5px;
+        }
+        .modal-watermark {
             position: absolute;
-            bottom: 15px;
-            right: 15px;
+            bottom: 20px;
+            right: 20px;
             background: rgba(218,165,32,0.7);
             color: white;
             padding: 4px 12px;
             border-radius: 30px;
             backdrop-filter: blur(4px);
-            z-index: 20;
+            z-index: 10;
         }
 
         .modal-content-padding { padding: 20px; }
         .modal-title-main { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
         .modal-sub-text { color: var(--text-gray); font-size: 14px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
 
-        /* Info Rows */
         .info-row {
             display: flex; justify-content: space-between; padding: 15px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px;
@@ -285,6 +258,10 @@
         .btn-call { background: var(--danger); color: white; }
         .btn-wa { background: #25D366; color: white; }
         .btn-telegram { background: #0088cc; color: white; }
+        .btn-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
 
         /* Profile Page */
         .page { display: none; }
@@ -352,12 +329,6 @@
             border-radius: 50px; margin-bottom: 15px; display: none;
         }
         .telegram-warning.show { display: block; }
-
-        /* تحميل الصور */
-        .carousel-inner img {
-            opacity: 1;
-            transition: opacity 0.2s;
-        }
     </style>
 </head>
 <body>
@@ -457,25 +428,23 @@
         </div>
     </div>
 
-    <!-- مودال مشاهده آگهی (با کاروسل و سه دکمه) - بدون بخش هشدار -->
+    <!-- مودال مشاهده آگهی (بدون كاروسل، مع صورة واحدة وزر عرض المزيد) -->
     <div class="modal" id="adModal">
         <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
         
         <div class="modal-body" style="flex:1; overflow-y:auto;">
-            <!-- کاروسل تصاویر -->
-            <div class="modal-carousel" id="modalCarousel">
-                <div class="carousel-inner" id="carouselInner"></div>
-                <div class="carousel-nav carousel-prev" id="carouselPrev"><i class="fas fa-chevron-right"></i></div>
-                <div class="carousel-nav carousel-next" id="carouselNext"><i class="fas fa-chevron-left"></i></div>
-                <div class="carousel-indicators" id="carouselIndicators"></div>
-                <div class="carousel-watermark">J-DAR</div>
+            <!-- حاوية الصورة الواحدة -->
+            <div class="modal-image-container" id="modalImageContainer">
+                <img id="modalMainImage" src="" alt="صورة الإعلان" onclick="openGalleryFromMain()">
+                <div class="more-images-btn" id="moreImagesBtn" onclick="openGalleryFromMain()">
+                    <i class="fas fa-images"></i> <span id="moreImagesText">عرض المزيد</span>
+                </div>
+                <div class="modal-watermark">J-DAR</div>
             </div>
 
             <div class="modal-content-padding">
                 <h1 id="modalTitle" class="modal-title-main">عنوان آگهی</h1>
                 <p id="modalMeta" class="modal-sub-text">دقایقی پیش در تهران</p>
-
-                <!-- تم إزالة قسم safety-box نهائياً -->
 
                 <div class="info-row">
                     <span class="label">قیمت</span>
@@ -543,6 +512,9 @@
         // ========== ثابت‌ها ==========
         const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        // المعرف الخاص الذي نريد تعطيل زر تلجرام له
+        const MY_TELEGRAM_ID = 'Mehdi_E_admin'; // ضع هنا المعرف الذي تريد تعطيل الزر له
+
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let allAds = [];
@@ -569,6 +541,7 @@
                 balance_label: 'موجودی کیف پول:', points_label: 'امتیاز شما:',
                 referral_link_label: 'لینک دعوت', special_badge: 'نردبان شده',
                 negotiable: 'توافقی',
+                more_images: 'عرض المزيد من الصور',
                 categories: {
                     'پزشکی':'پزشکی','گردشگری':'گردشگری','زیارت':'زیارت'
                 }
@@ -587,6 +560,7 @@
                 balance_label: 'رصيد المحفظة:', points_label: 'نقاطك:',
                 referral_link_label: 'رابط الدعوة', special_badge: 'مميز',
                 negotiable: 'قابل للتفاوض',
+                more_images: 'عرض المزيد من الصور',
                 categories: {
                     'پزشکی':'طب','گردشگری':'سياحة','زیارت':'زيارة'
                 }
@@ -605,6 +579,7 @@
                 balance_label: 'Wallet Balance:', points_label: 'Your Points:',
                 referral_link_label: 'Referral Link', special_badge: 'Promoted',
                 negotiable: 'Negotiable',
+                more_images: 'View more images',
                 categories: {
                     'پزشکی':'Medical','گردشگری':'Tourism','زیارت':'Pilgrimage'
                 }
@@ -775,11 +750,11 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         }
 
-        function getImgUrl(ids) {
+        function getImgUrl(ids, index = 0) {
             try {
                 let arr = Array.isArray(ids) ? ids : JSON.parse(ids);
-                return arr.length ? `${API_BASE}/image/${arr[0]}` : 'https://via.placeholder.com/150?text=No+Image';
-            } catch { return 'https://via.placeholder.com/150?text=No+Image'; }
+                return arr.length > index ? `${API_BASE}/image/${arr[index]}` : 'https://via.placeholder.com/400?text=No+Image';
+            } catch { return 'https://via.placeholder.com/400?text=No+Image'; }
         }
 
         function renderAds(ads, containerId) {
@@ -827,18 +802,22 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ========== گالری (تمام‌صفحه) ==========
+        // ========== المتغيرات العامة للصور ==========
         let currentImages = [], currentIdx = 0;
-        window.openGallery = function(idx) {
+
+        // ========== فتح المعرض من الصورة الرئيسية ==========
+        window.openGalleryFromMain = function() {
             if (!currentImages.length) return;
-            currentIdx = idx;
+            currentIdx = 0;
             updateGallery();
             document.getElementById('galleryModal').classList.add('active');
         };
+
         function updateGallery() {
             document.getElementById('galleryImg').src = `${API_BASE}/image/${currentImages[currentIdx]}`;
             document.getElementById('galleryCounter').innerText = t('imageCounter').replace('{current}', currentIdx+1).replace('{total}', currentImages.length);
         }
+
         document.getElementById('galleryBack').addEventListener('click', () => document.getElementById('galleryModal').classList.remove('active'));
         document.getElementById('galleryPrev').addEventListener('click', () => {
             if (currentImages.length) { currentIdx = (currentIdx - 1 + currentImages.length) % currentImages.length; updateGallery(); }
@@ -865,52 +844,23 @@
             const whatsappLink = formattedPhone ? `https://wa.me/${formattedPhone}` : '#';
             
             const tgUsername = ad.telegram_username || '';
+            // رابط التليجرام: إذا كان اسم المستخدم موجوداً نستخدمه، وإذا كان هناك رقم هاتف يمكن استخدامه في التليجرام؟ التليجرام يحتاج معرف وليس رقم عادة.
+            // سنكتفي برابط التليجرام عبر المعرف إذا وجد، وإلا نعرض الرابط مع الرقم ولكن التليجرام لا يدخل بالرقم مباشرة.
+            // بعض التطبيقات تسمح بفتح التليجرام برقم عبر deep link، لكن ليس شائعاً.
             const tgLink = tgUsername ? `https://t.me/${tgUsername}` : (formattedPhone ? `https://t.me/+${formattedPhone}` : '#');
             
             const descHtml = ad.description || 'توضیحاتی ثبت نشده است.';
 
-            // پر کردن کاروسل
-            const carouselInner = document.getElementById('carouselInner');
-            const indicatorsDiv = document.getElementById('carouselIndicators');
-            
-            // بناء HTML للصور مع إضافة onload للتأكد من التحميل
-            if (images.length) {
-                let innerHtml = '';
-                let indHtml = '';
-                for (let i = 0; i < images.length; i++) {
-                    // استخدام window.openGallery بدلاً من openGallery فقط
-                    innerHtml += `<img src="${API_BASE}/image/${images[i]}" onclick="window.openGallery(${i})" onerror="this.src='https://via.placeholder.com/400?text=No+Image';">`;
-                    indHtml += `<span class="carousel-dot" data-index="${i}"></span>`;
-                }
-                carouselInner.innerHTML = innerHtml;
-                indicatorsDiv.innerHTML = indHtml;
+            // عرض الصورة الرئيسية
+            document.getElementById('modalMainImage').src = getImgUrl(ad.image_ids, 0);
+            // تحديث نص زر عرض المزيد
+            const moreBtn = document.getElementById('moreImagesText');
+            if (images.length > 1) {
+                moreBtn.innerText = t('more_images') + ' (' + images.length + ')';
+                document.getElementById('moreImagesBtn').style.display = 'flex';
             } else {
-                carouselInner.innerHTML = `<img src="https://via.placeholder.com/400?text=No+Image">`;
-                indicatorsDiv.innerHTML = '';
+                document.getElementById('moreImagesBtn').style.display = 'none';
             }
-
-            // إعادة تعيين الكاروسيل إلى الصورة الأولى
-            let currentCarouselIdx = 0;
-            const updateCarousel = (index) => {
-                if (images.length === 0) return;
-                if (index < 0) index = images.length - 1;
-                if (index >= images.length) index = 0;
-                currentCarouselIdx = index;
-                carouselInner.style.transform = `translateX(-${index * 100}%)`;
-                document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-            };
-
-            // تعيين المستمعات
-            document.getElementById('carouselPrev').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx - 1); };
-            document.getElementById('carouselNext').onclick = (e) => { e.stopPropagation(); updateCarousel(currentCarouselIdx + 1); };
-            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-                dot.onclick = (e) => { e.stopPropagation(); updateCarousel(i); };
-            });
-
-            // عرض الصورة الأولى
-            updateCarousel(0);
 
             // تحديث باقي العناصر
             document.getElementById('modalTitle').innerText = ad.title;
@@ -921,7 +871,20 @@
             document.getElementById('modalDesc').innerText = descHtml;
             document.getElementById('modalCallBtn').href = `tel:${phone}`;
             document.getElementById('modalWhatsappBtn').href = whatsappLink;
-            document.getElementById('modalTelegramBtn').href = tgLink;
+            
+            // التحكم في زر تلجرام: إذا كان المعرف يساوي MY_TELEGRAM_ID نعطله
+            const tgBtn = document.getElementById('modalTelegramBtn');
+            if (tgUsername && tgUsername === MY_TELEGRAM_ID) {
+                tgBtn.classList.add('btn-disabled');
+                tgBtn.href = '#'; // تعطيل الرابط
+                tgBtn.style.pointerEvents = 'none';
+                tgBtn.style.opacity = '0.4';
+            } else {
+                tgBtn.classList.remove('btn-disabled');
+                tgBtn.href = tgLink;
+                tgBtn.style.pointerEvents = 'auto';
+                tgBtn.style.opacity = '1';
+            }
 
             // نظرات
             let reviewsHtml = '';
@@ -1009,10 +972,9 @@
         // ========== دکمه‌های هدایت به ربات ==========
         function redirectToBot(action) {
             // التأكد من أن الأمر يبدأ بـ / إذا لزم الأمر
-            let command = action;
             // بعض البوتات تتوقع الأمر مع / في البداية
             // يمكن تعديل ذلك حسب البوت
-            const url = `https://t.me/${BOT_USERNAME}?start=${command}`;
+            const url = `https://t.me/${BOT_USERNAME}?start=${action}`;
             if (tg) {
                 tg.openTelegramLink(url);
             } else {
