@@ -7,6 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* استایل‌های قبلی بدون تغییر باقی می‌مانند */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -1117,8 +1118,8 @@
             telegramWarning.classList.add('show');
         }
 
-        // ========== آدرس Worker خود را اینجا وارد کنید ==========
-        const API_BASE = 'https://your-worker.your-subdomain.workers.dev'; // <-- تغییر دهید
+        // ========== آدرس Worker شما ==========
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
 
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
@@ -1130,15 +1131,21 @@
             document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
         }
 
-        // ========== ترجمه‌ها ==========
+        // ========== ترجمه‌های کامل ==========
         const translations = {
             fa: {
-                home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل',
-                post_ad: 'ثبت آگهی', vip_subscription: 'اشتراک ویژه',
-                charge: 'شارژ', convert_points: 'تبدیل امتیاز',
+                home: 'خانه',
+                favorites: 'علاقه‌مندی',
+                profile: 'پروفایل',
+                post_ad: 'ثبت آگهی',
+                vip_subscription: 'اشتراک ویژه',
+                charge: 'شارژ',
+                convert_points: 'تبدیل امتیاز',
                 searchPlaceholder: 'جستجو در آگهی‌ها...',
-                categories: 'دسته‌بندی‌ها', all: 'همه',
-                latest_ads: 'جدیدترین آگهی‌ها', more: 'بیشتر',
+                categories: 'دسته‌بندی‌ها',
+                all: 'همه',
+                latest_ads: 'جدیدترین آگهی‌ها',
+                more: 'بیشتر',
                 balance: '💰 موجودی کیف پول:',
                 no_ads: '📭 آگهی‌ای یافت نشد.',
                 special_badge: 'ویژه',
@@ -1154,15 +1161,63 @@
                 warningTitle: '⚠️ نکات ایمنی قبل از معامله',
                 contactInfo: 'اطلاعات تماس',
                 chat: 'چت',
-                imageCounter: '{current}/{total}'
+                search: 'جستجو',
+                imageCounter: '{current}/{total}',
+                categories_list: {
+                    'پزشکی': 'پزشکی',
+                    'پزشک عمومی': 'پزشک عمومی',
+                    'متخصص': 'متخصص',
+                    'دندانپزشک': 'دندانپزشک',
+                    'داروخانه': 'داروخانه',
+                    'آزمایشگاه': 'آزمایشگاه',
+                    'بیمارستان': 'بیمارستان',
+                    'خدمات پرستاری': 'خدمات پرستاری',
+                    'تجهیزات پزشکی': 'تجهیزات پزشکی',
+                    'چشم‌پزشکی': 'چشم‌پزشکی',
+                    'کاشت مو': 'کاشت مو',
+                    'زیبایی': 'زیبایی',
+                    'لیزر': 'لیزر',
+                    'پوست و مو': 'پوست و مو',
+                    'گردشگری': 'گردشگری',
+                    'تور داخلی': 'تور داخلی',
+                    'تور خارجی': 'تور خارجی',
+                    'راهنما': 'راهنما',
+                    'اقامتگاه': 'اقامتگاه',
+                    'حمل و نقل': 'حمل و نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شاندیز',
+                    'سرعین': 'سرعین',
+                    'کیش': 'کیش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'اصفهان',
+                    'شیراز': 'شیراز',
+                    'زیارت': 'زیارت',
+                    'عتبات عالیات': 'عتبات عالیات',
+                    'سوریه': 'سوریه',
+                    'کربلا': 'کربلا',
+                    'نجف': 'نجف',
+                    'کاظمین': 'کاظمین',
+                    'سامرا': 'سامرا',
+                    'عمره': 'عمره',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمکران',
+                    'شاه چراغ': 'شاه چراغ'
+                }
             },
             ar: {
-                home: 'الرئيسية', favorites: 'المفضلة', profile: 'الملف',
-                post_ad: 'إعلان', vip_subscription: 'اشتراك VIP',
-                charge: 'شحن', convert_points: 'تحويل النقاط',
+                home: 'الرئيسية',
+                favorites: 'المفضلة',
+                profile: 'الملف',
+                post_ad: 'إعلان',
+                vip_subscription: 'اشتراك VIP',
+                charge: 'شحن',
+                convert_points: 'تحويل النقاط',
                 searchPlaceholder: 'ابحث في الإعلانات...',
-                categories: 'الفئات', all: 'الكل',
-                latest_ads: 'أحدث الإعلانات', more: 'المزيد',
+                categories: 'الفئات',
+                all: 'الكل',
+                latest_ads: 'أحدث الإعلانات',
+                more: 'المزيد',
                 balance: '💰 رصيد المحفظة:',
                 no_ads: '📭 لا توجد إعلانات.',
                 special_badge: 'مميز',
@@ -1178,15 +1233,63 @@
                 warningTitle: '⚠️ نصائح الأمان قبل الصفقة',
                 contactInfo: 'معلومات الاتصال',
                 chat: 'دردشة',
-                imageCounter: '{current}/{total}'
+                search: 'بحث',
+                imageCounter: '{current}/{total}',
+                categories_list: {
+                    'پزشکی': 'طب',
+                    'پزشک عمومی': 'طبيب عام',
+                    'متخصص': 'أخصائي',
+                    'دندانپزشک': 'طبيب أسنان',
+                    'داروخانه': 'صيدلية',
+                    'آزمایشگاه': 'مختبر',
+                    'بیمارستان': 'مستشفى',
+                    'خدمات پرستاری': 'تمريض',
+                    'تجهیزات پزشکی': 'معدات طبية',
+                    'چشم‌پزشکی': 'طب عيون',
+                    'کاشت مو': 'زراعة شعر',
+                    'زیبایی': 'تجميل',
+                    'لیزر': 'ليزر',
+                    'پوست و مو': 'جلد وشعر',
+                    'گردشگری': 'سياحة',
+                    'تور داخلی': 'جولة داخلية',
+                    'تور خارجی': 'جولة خارجية',
+                    'راهنما': 'مرشد',
+                    'اقامتگاه': 'مبيت',
+                    'حمل و نقل': 'نقل',
+                    'خدمات سفر': 'خدمات سفر',
+                    'شاندیز': 'شانديز',
+                    'سرعین': 'سرعين',
+                    'کیش': 'كيش',
+                    'مشهد': 'مشهد',
+                    'اصفهان': 'أصفهان',
+                    'شیراز': 'شيراز',
+                    'زیارت': 'زيارة',
+                    'عتبات عالیات': 'عتبات',
+                    'سوریه': 'سوريا',
+                    'کربلا': 'كربلاء',
+                    'نجف': 'النجف',
+                    'کاظمین': 'كاظمين',
+                    'سامرا': 'سامراء',
+                    'عمره': 'عمرة',
+                    'حج': 'حج',
+                    'قم': 'قم',
+                    'جمکران': 'جمكران',
+                    'شاه چراغ': 'شاه جراغ'
+                }
             },
             en: {
-                home: 'Home', favorites: 'Favorites', profile: 'Profile',
-                post_ad: 'Post Ad', vip_subscription: 'VIP',
-                charge: 'Charge', convert_points: 'Convert Points',
+                home: 'Home',
+                favorites: 'Favorites',
+                profile: 'Profile',
+                post_ad: 'Post Ad',
+                vip_subscription: 'VIP',
+                charge: 'Charge',
+                convert_points: 'Convert Points',
                 searchPlaceholder: 'Search ads...',
-                categories: 'Categories', all: 'All',
-                latest_ads: 'Latest Ads', more: 'More',
+                categories: 'Categories',
+                all: 'All',
+                latest_ads: 'Latest Ads',
+                more: 'More',
                 balance: '💰 Wallet Balance:',
                 no_ads: '📭 No ads found.',
                 special_badge: 'Promoted',
@@ -1202,23 +1305,72 @@
                 warningTitle: '⚠️ Safety tips before transaction',
                 contactInfo: 'Contact Info',
                 chat: 'Chat',
-                imageCounter: '{current}/{total}'
+                search: 'Search',
+                imageCounter: '{current}/{total}',
+                categories_list: {
+                    'پزشکی': 'Medical',
+                    'پزشک عمومی': 'General Practitioner',
+                    'متخصص': 'Specialist',
+                    'دندانپزشک': 'Dentist',
+                    'داروخانه': 'Pharmacy',
+                    'آزمایشگاه': 'Laboratory',
+                    'بیمارستان': 'Hospital',
+                    'خدمات پرستاری': 'Nursing',
+                    'تجهیزات پزشکی': 'Medical Equipment',
+                    'چشم‌پزشکی': 'Ophthalmology',
+                    'کاشت مو': 'Hair Transplant',
+                    'زیبایی': 'Cosmetic',
+                    'لیزر': 'Laser',
+                    'پوست و مو': 'Skin & Hair',
+                    'گردشگری': 'Tourism',
+                    'تور داخلی': 'Domestic Tour',
+                    'تور خارجی': 'International Tour',
+                    'راهنما': 'Guide',
+                    'اقامتگاه': 'Accommodation',
+                    'حمل و نقل': 'Transport',
+                    'خدمات سفر': 'Travel Services',
+                    'شاندیز': 'Shandiz',
+                    'سرعین': 'Sareyn',
+                    'کیش': 'Kish',
+                    'مشهد': 'Mashhad',
+                    'اصفهان': 'Isfahan',
+                    'شیراز': 'Shiraz',
+                    'زیارت': 'Pilgrimage',
+                    'عتبات عالیات': 'Atabat',
+                    'سوریه': 'Syria',
+                    'کربلا': 'Karbala',
+                    'نجف': 'Najaf',
+                    'کاظمین': 'Kadhimayn',
+                    'سامرا': 'Samarra',
+                    'عمره': 'Umrah',
+                    'حج': 'Hajj',
+                    'قم': 'Qom',
+                    'جمکران': 'Jamkaran',
+                    'شاه چراغ': 'Shah Cheragh'
+                }
             }
         };
 
-        function t(key) {
+        function t(key, catKey = null) {
+            if (catKey) {
+                return translations[currentLang]?.categories_list?.[catKey] || catKey;
+            }
             return translations[currentLang]?.[key] || key;
         }
 
         function updateUILanguage() {
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (key) el.textContent = t(key);
+                if (key) {
+                    el.textContent = t(key);
+                }
             });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = (currentLang === 'fa' || currentLang === 'ar') ? 'rtl' : 'ltr';
             renderCategories();
             renderAds(allAds, 'adsGrid');
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
@@ -1226,7 +1378,7 @@
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
             tg?.showPopup({
-                title: 'انتخاب زبان',
+                title: 'انتخاب زبان / اختر اللغة / Select Language',
                 message: 'زبان مورد نظر را انتخاب کنید:',
                 buttons: [
                     { id: 'fa', type: 'default', text: '🇮🇷 فارسی' },
@@ -1237,8 +1389,6 @@
                 if (btnId && ['fa','ar','en'].includes(btnId)) {
                     currentLang = btnId;
                     localStorage.setItem('jedar_lang', btnId);
-                    document.documentElement.lang = btnId;
-                    document.documentElement.dir = (btnId === 'fa' || btnId === 'ar') ? 'rtl' : 'ltr';
                     updateUILanguage();
                 }
             });
@@ -1267,7 +1417,7 @@
         function renderCategories() {
             const mainContainer = document.getElementById('mainCategoryList');
             mainContainer.innerHTML = mainCategories.map(cat => 
-                `<span class="category-chip ${cat === currentMainCat ? 'active' : ''}" data-maincat="${cat}">${cat}</span>`
+                `<span class="category-chip ${cat === currentMainCat ? 'active' : ''}" data-maincat="${cat}">${t('categories_list', cat)}</span>`
             ).join('');
             document.querySelectorAll('[data-maincat]').forEach(el => {
                 el.addEventListener('click', () => {
@@ -1286,7 +1436,8 @@
             const subs = subCategories[mainCat] || [];
             let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">${t('all')}</span>`;
             subs.forEach(sub => {
-                html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${sub}</span>`;
+                const translated = t('categories_list', sub);
+                html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${translated}</span>`;
             });
             subContainer.innerHTML = html;
             document.querySelectorAll('[data-subcat]').forEach(el => {
@@ -1303,11 +1454,20 @@
         function getRelativeTime(timestamp) {
             const now = Math.floor(Date.now() / 1000);
             const diff = now - timestamp;
-            if (diff < 60) return 'چند لحظه پیش';
-            if (diff < 3600) return `${Math.floor(diff / 60)} دقیقه پیش`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)} ساعت پیش`;
-            if (diff < 604800) return `${Math.floor(diff / 86400)} روز پیش`;
-            return 'قدیمی';
+            if (diff < 60) return currentLang === 'fa' ? 'چند لحظه پیش' : (currentLang === 'ar' ? 'منذ لحظات' : 'just now');
+            if (diff < 3600) {
+                const m = Math.floor(diff / 60);
+                return currentLang === 'fa' ? `${m} دقیقه پیش` : (currentLang === 'ar' ? `منذ ${m} دقيقة` : `${m} minutes ago`);
+            }
+            if (diff < 86400) {
+                const h = Math.floor(diff / 3600);
+                return currentLang === 'fa' ? `${h} ساعت پیش` : (currentLang === 'ar' ? `منذ ${h} ساعة` : `${h} hours ago`);
+            }
+            if (diff < 604800) {
+                const d = Math.floor(diff / 86400);
+                return currentLang === 'fa' ? `${d} روز پیش` : (currentLang === 'ar' ? `منذ ${d} يوم` : `${d} days ago`);
+            }
+            return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
         }
 
         async function loadAds() {
@@ -1318,7 +1478,6 @@
                 renderAds(allAds, 'adsGrid');
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
             } catch { 
-                // نمونه آگهی برای نمایش آموزشی
                 allAds = [
                     { id: 1, title: 'نمونه آگهی پزشکی', price: '۵۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'تهران', created_at: Math.floor(Date.now()/1000)-3600, image_ids: [], ad_type: 'normal' },
                     { id: 2, title: 'تور مشهد ویژه', price: '۱۲۰,۰۰۰', currency: 'تومان', category: 'گردشگری', city: 'مشهد', created_at: Math.floor(Date.now()/1000)-7200, image_ids: [], ad_type: 'special' },
@@ -1584,4 +1743,4 @@
         loadUserProfile();
     </script>
 </body>
-                </html>
+    </html>
