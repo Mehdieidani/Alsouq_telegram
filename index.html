@@ -529,6 +529,11 @@
             max-height: 250px;
             object-fit: cover;
             cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .modal-image:hover {
+            transform: scale(1.02);
         }
 
         .modal-content-scroll {
@@ -903,7 +908,6 @@
         .step-text { flex: 1; text-align: right; }
         .help-close { background: #daa520; border: none; border-radius: 60px; padding: 12px 30px; color: white; font-weight: bold; cursor: pointer; }
 
-        /* مودال ثبت نظر */
         .review-form-modal {
             background: rgba(20, 25, 45, 0.95);
             backdrop-filter: blur(20px);
@@ -1055,7 +1059,7 @@
         </div>
     </div>
 
-    <!-- مودال آگهی (طراحی جدید) -->
+    <!-- مودال آگهی -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
@@ -1092,11 +1096,11 @@
     <!-- مودال ثبت نظر -->
     <div class="modal" id="reviewFormModal">
         <div class="modal-content review-form-modal">
-            <h2 style="color:#daa520; margin-bottom:20px;">ثبت نظر</h2>
-            <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1 تا 5)">
-            <textarea id="newComment" placeholder="نظر شما..." rows="3"></textarea>
-            <button id="submitReviewBtn">ارسال نظر</button>
-            <button id="cancelReviewBtn" style="background:transparent; border:1px solid #daa520; margin-top:10px;">انصراف</button>
+            <h2 style="color:#daa520; margin-bottom:20px;" data-i18n="submitReview">ثبت نظر</h2>
+            <input type="number" id="newRating" min="1" max="5" data-i18n-placeholder="ratingPlaceholder" placeholder="امتیاز (1 تا 5)">
+            <textarea id="newComment" data-i18n-placeholder="commentPlaceholder" placeholder="نظر شما..." rows="3"></textarea>
+            <button id="submitReviewBtn" data-i18n="sendReview">ارسال نظر</button>
+            <button id="cancelReviewBtn" style="background:transparent; border:1px solid #daa520; margin-top:10px;" data-i18n="cancel">انصراف</button>
         </div>
     </div>
 
@@ -1172,6 +1176,11 @@
                 call: 'تماس',
                 reviewsCount: 'نظر',
                 reviewBtn: '★ {avg} ({count})',
+                submitReview: 'ثبت نظر',
+                ratingPlaceholder: 'امتیاز (1 تا 5)',
+                commentPlaceholder: 'نظر شما...',
+                sendReview: 'ارسال نظر',
+                cancel: 'انصراف',
                 categories_list: {
                     'پزشکی': 'پزشکی',
                     'پزشک عمومی': 'پزشک عمومی',
@@ -1254,6 +1263,11 @@
                 call: 'اتصال',
                 reviewsCount: 'تعليق',
                 reviewBtn: '★ {avg} ({count})',
+                submitReview: 'إضافة تقييم',
+                ratingPlaceholder: 'التقييم (1-5)',
+                commentPlaceholder: 'تعليقك...',
+                sendReview: 'إرسال',
+                cancel: 'إلغاء',
                 categories_list: {
                     'پزشکی': 'طب',
                     'پزشک عمومی': 'طبيب عام',
@@ -1336,6 +1350,11 @@
                 call: 'Call',
                 reviewsCount: 'review',
                 reviewBtn: '★ {avg} ({count})',
+                submitReview: 'Submit Review',
+                ratingPlaceholder: 'Rating (1-5)',
+                commentPlaceholder: 'Your comment...',
+                sendReview: 'Send',
+                cancel: 'Cancel',
                 categories_list: {
                     'پزشکی': 'Medical',
                     'پزشک عمومی': 'General Practitioner',
@@ -1403,6 +1422,19 @@
             renderCategories();
             renderAds(allAds, 'adsGrid');
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+            // اگر مودال آگهی باز است، محتوای آن را به‌روزرسانی کن
+            if (document.getElementById('adModal').classList.contains('active') && currentAdId) {
+                showAd(currentAdId);
+            }
+            // به‌روزرسانی مودال ثبت نظر
+            document.querySelectorAll('#reviewFormModal [data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key) el.textContent = t(key);
+            });
+            document.querySelectorAll('#reviewFormModal [data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = t(key);
+            });
         }
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
@@ -1726,7 +1758,6 @@
         // نمایش مودال ثبت نظر
         function showReviewForm(adId) {
             document.getElementById('reviewFormModal').classList.add('active');
-            // ذخیره adId در دیتای مودال
             document.getElementById('reviewFormModal').dataset.adId = adId;
         }
 
@@ -1757,7 +1788,6 @@
                     document.getElementById('reviewFormModal').classList.remove('active');
                     document.getElementById('newRating').value = '';
                     document.getElementById('newComment').value = '';
-                    // به‌روزرسانی آگهی فعلی
                     if (currentAdId) showAd(currentAdId);
                 } else {
                     tg?.showPopup({ title: '❌', message: data.error || 'خطا در ثبت نظر' });
@@ -1918,4 +1948,4 @@
         loadUserProfile();
     </script>
 </body>
-    </html>
+                                                                                                                       </html>
