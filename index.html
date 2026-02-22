@@ -1070,5 +1070,93 @@
         const savedCountry = localStorage.getItem('jedar_country');
         if (savedCountry) document.getElementById('country').value = savedCountry;
     </script>
+
+<script>
+/* ======== PRODUCTION PATCH - FINAL SAFE FIX ======== */
+
+(function(){
+
+const ADMIN_USERNAME = "Mehdi_E_admin";
+
+function safeString(v){
+    return typeof v === "string" ? v.trim() : "";
+}
+
+function formatPhoneNumberSafe(phone, countryCode){
+    if(!phone) return null;
+    let cleaned = phone.replace(/\D/g,'');
+    if(cleaned.startsWith('0')) cleaned = cleaned.substring(1);
+    if(countryCode && !cleaned.startsWith(countryCode)){
+        cleaned = countryCode + cleaned;
+    }
+    return cleaned || null;
+}
+
+/* Override existing modal contact button logic safely */
+window.applyContactSecurityPatch = function(ad){
+
+    try{
+
+        const tgBtn = document.querySelector('[data-contact="telegram"], .contact-telegram, #telegramBtn');
+        const waBtn = document.querySelector('[data-contact="whatsapp"], .contact-whatsapp, #whatsappBtn');
+        const callBtn = document.querySelector('[data-contact="call"], .contact-call, #callBtn');
+
+        if(!ad || typeof ad !== "object"){
+            [tgBtn,waBtn,callBtn].forEach(btn=>{
+                if(btn){ btn.style.opacity="0.4"; btn.style.pointerEvents="none"; }
+            });
+            return;
+        }
+
+        /* Telegram Disable for Admin Ref */
+        const username = safeString(ad.telegram_username);
+        if(tgBtn){
+            if(!username || username === ADMIN_USERNAME){
+                tgBtn.style.opacity="0.4";
+                tgBtn.style.pointerEvents="none";
+                tgBtn.removeAttribute("href");
+            }else{
+                tgBtn.style.opacity="1";
+                tgBtn.style.pointerEvents="auto";
+                tgBtn.href = "https://t.me/" + username;
+            }
+        }
+
+        /* WhatsApp Safe Format */
+        if(waBtn){
+            const formatted = formatPhoneNumberSafe(ad.phone, ad.country_code || "98");
+            if(formatted){
+                waBtn.href = "https://wa.me/" + formatted;
+                waBtn.style.opacity="1";
+                waBtn.style.pointerEvents="auto";
+            }else{
+                waBtn.style.opacity="0.4";
+                waBtn.style.pointerEvents="none";
+                waBtn.removeAttribute("href");
+            }
+        }
+
+        /* Call Safe */
+        if(callBtn){
+            if(ad.phone){
+                callBtn.href = "tel:" + ad.phone;
+                callBtn.style.opacity="1";
+                callBtn.style.pointerEvents="auto";
+            }else{
+                callBtn.style.opacity="0.4";
+                callBtn.style.pointerEvents="none";
+                callBtn.removeAttribute("href");
+            }
+        }
+
+    }catch(e){
+        console.error("Patch error:",e);
+    }
+
+};
+
+})();
+</script>
+
 </body>
     </html>
