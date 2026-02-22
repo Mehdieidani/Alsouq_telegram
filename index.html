@@ -563,22 +563,31 @@
             pointer-events: none;
         }
 
-        .modal-exchange {
+        .modal-specs {
+            background: rgba(255,255,255,0.03);
+            border-radius: 30px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .modal-spec-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 10px 10px;
-            padding: 10px 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 30px;
-            font-size: 16px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .modal-exchange span:first-child {
+        .modal-spec-row:last-child {
+            border-bottom: none;
+        }
+
+        .modal-spec-label {
             color: #aaa;
+            font-size: 15px;
         }
 
-        .modal-exchange span:last-child {
+        .modal-spec-value {
             color: #fff;
             font-weight: 500;
         }
@@ -587,7 +596,26 @@
             font-size: 32px;
             color: #daa520;
             font-weight: bold;
-            margin: 5px 10px 20px;
+            margin: 5px 10px 10px;
+        }
+
+        .modal-price-note {
+            font-size: 14px;
+            color: #aaa;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-description {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 40px;
+            padding: 15px;
+            margin: 15px 10px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #ddd;
+            white-space: pre-wrap;
         }
 
         .modal-actions {
@@ -612,13 +640,25 @@
             border: none;
         }
 
-        .contact-btn {
+        .chat-btn {
             background: #daa520;
             color: white;
         }
 
-        .contact-btn:hover {
+        .chat-btn:hover {
             opacity: 0.9;
+        }
+
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid #daa520 !important;
+            color: #fff;
+        }
+
+        .contact-btn:hover {
+            background: #daa520;
+            color: white;
         }
 
         .page { display: none; }
@@ -933,7 +973,7 @@
         </div>
     </div>
 
-    <!-- مودال آگهی (طراحی جدید مشابه دیوار) -->
+    <!-- مودال آگهی (طراحی جدید مشابه تصویر مانتو) -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
@@ -1025,9 +1065,12 @@
                 pointsLabel: 'امتیاز شما:',
                 referralLinkLabel: 'لینک دعوت',
                 contactInfo: 'اطلاعات تماس',
-                exchangeStatus: 'وضعیت معاوضه',
-                notWilling: 'مایل نیستم',
-                willing: 'مایل هستم',
+                chat: 'چت',
+                condition: 'وضعیت',
+                clothingType: 'نوع لباس',
+                likeNew: 'در حد نو',
+                priceNote: '(مقطوع)',
+                description: 'توضیحات',
                 search: 'جستجو',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1098,9 +1141,12 @@
                 pointsLabel: 'نقاطك:',
                 referralLinkLabel: 'رابط الدعوة',
                 contactInfo: 'معلومات الاتصال',
-                exchangeStatus: 'حالة المقايضة',
-                notWilling: 'غير راغب',
-                willing: 'راغب',
+                chat: 'دردشة',
+                condition: 'الحالة',
+                clothingType: 'نوع الملابس',
+                likeNew: 'كالجديد',
+                priceNote: '(مقطوع)',
+                description: 'الوصف',
                 search: 'بحث',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1171,9 +1217,12 @@
                 pointsLabel: 'Your Points:',
                 referralLinkLabel: 'Referral Link',
                 contactInfo: 'Contact Info',
-                exchangeStatus: 'Exchange status',
-                notWilling: 'Not willing',
-                willing: 'Willing',
+                chat: 'Chat',
+                condition: 'Condition',
+                clothingType: 'Clothing Type',
+                likeNew: 'Like New',
+                priceNote: '(Fixed)',
+                description: 'Description',
                 search: 'Search',
                 imageCounter: '{current}/{total}',
                 categories_list: {
@@ -1348,8 +1397,34 @@
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
             } catch { 
                 allAds = [
-                    { id: 1, title: 'جاکفشی، کمد، دراور', price: '۵,۵۰۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'اهواز، دغاغله، جاده دغاغله', created_at: Math.floor(Date.now()/1000)-120, image_ids: [], ad_type: 'normal' },
-                    { id: 2, title: 'کمد، کابینت، جاکفشی، تی وی وال', price: '۵,۵۰۰,۰۰۰', currency: 'تومان', category: 'گردشگری', city: 'اهواز، دغاغله، جاده دغاغله', created_at: Math.floor(Date.now()/1000)-300, image_ids: [], ad_type: 'special' },
+                    { 
+                        id: 1, 
+                        title: 'مانتو', 
+                        price: '۹۰۰,۰۰۰', 
+                        currency: 'تومان', 
+                        category: 'پزشکی', 
+                        city: 'اهواز، فاز ۲ پاداشهر، خیابان ۴ فاز ۲', 
+                        created_at: Math.floor(Date.now()/1000)-900, 
+                        image_ids: [], 
+                        ad_type: 'normal',
+                        description: 'مانتو مشکی نوقط یکبار استفاده شده سایز ۴۶ قیمت ۹۰۰,۰۰۰ تومان\nمانتو سبز فقط یکبار استفاده شده سایز ۴۶ قیمت ۳۰۰,۰۰۰',
+                        condition: 'در حد نو',
+                        clothing_type: 'مانتو'
+                    },
+                    { 
+                        id: 2, 
+                        title: 'مانتو', 
+                        price: '۹۰۰,۰۰۰', 
+                        currency: 'تومان', 
+                        category: 'گردشگری', 
+                        city: 'اهواز، فاز ۲ پاداشهر، خیابان ۴ فاز ۲', 
+                        created_at: Math.floor(Date.now()/1000)-1800, 
+                        image_ids: [], 
+                        ad_type: 'special',
+                        description: 'مانتو مشکی نوقط یکبار استفاده شده سایز ۴۶ قیمت ۹۰۰,۰۰۰ تومان\nمانتو سبز فقط یکبار استفاده شده سایز ۴۶ قیمت ۳۰۰,۰۰۰',
+                        condition: 'در حد نو',
+                        clothing_type: 'مانتو'
+                    },
                 ];
                 renderAds(allAds, 'adsGrid');
                 renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
@@ -1409,7 +1484,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ========== نمایش آگهی (طراحی جدید مشابه دیوار) ==========
+        // ========== نمایش آگهی (طراحی جدید مشابه تصویر مانتو) ==========
         window.showAd = async (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
@@ -1420,13 +1495,22 @@
             const locationStr = ad.city || '';
             const locationTime = `${timeStr} ${locationStr ? 'در ' + locationStr : ''}`;
             const phone = ad.phone || '';
+            const telegramUsername = ad.telegram_username || '';
 
-            const exchangeHtml = `
-                <div class="modal-exchange">
-                    <span>${t('exchangeStatus')}:</span>
-                    <span>${t('notWilling')}</span>
+            const specsHtml = `
+                <div class="modal-specs">
+                    <div class="modal-spec-row">
+                        <span class="modal-spec-label">${t('condition')}:</span>
+                        <span class="modal-spec-value">${t('likeNew')}</span>
+                    </div>
+                    <div class="modal-spec-row">
+                        <span class="modal-spec-label">${t('clothingType')}:</span>
+                        <span class="modal-spec-value">مانتو</span>
+                    </div>
                 </div>
             `;
+
+            const descriptionHtml = ad.description ? `<div class="modal-description">${ad.description}</div>` : '';
 
             const imageHtml = images.length > 0 
                 ? `<div class="modal-image-container">
@@ -1441,10 +1525,13 @@
                 <div class="modal-title">${ad.title}</div>
                 <div class="modal-location-time">${locationTime}</div>
                 ${imageHtml}
-                ${exchangeHtml}
+                ${specsHtml}
                 <div class="modal-price">💰 ${ad.price} ${ad.currency}</div>
+                <div class="modal-price-note">${t('priceNote')}</div>
+                ${descriptionHtml}
                 <div class="modal-actions">
                     <button class="contact-btn" onclick="showContact('${phone}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
+                    <a href="https://t.me/${telegramUsername}" target="_blank" class="chat-btn"><i class="fas fa-comment-dots"></i> ${t('chat')}</a>
                 </div>
             `;
             document.getElementById('adModal').classList.add('active');
@@ -1616,4 +1703,4 @@
         loadUserProfile();
     </script>
 </body>
-    </html>
+            </html>
