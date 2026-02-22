@@ -496,7 +496,7 @@
             color: white;
         }
 
-        /* مودال جزئیات آگهی تمام‌صفحه با اسکرول عکس */
+        /* مودال جزئیات آگهی تمام‌صفحه با عکس متحرک */
         .modal {
             display: none;
             position: fixed;
@@ -673,6 +673,51 @@
         .review-item .date {
             font-size: 11px;
             color: #aaa;
+        }
+
+        /* فرم ثبت نظر */
+        .review-input {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .review-input input,
+        .review-input textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 14px 20px;
+            color: white;
+            width: 100%;
+            resize: none;
+            font-family: 'Vazir', sans-serif;
+        }
+
+        .review-input input::placeholder,
+        .review-input textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .review-input button {
+            background: #7b5aff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .review-input button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
         .modal-footer {
@@ -902,35 +947,6 @@
         .step-number { background: #7b5aff; width: 30px; height: 30px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .help-close { background: #7b5aff; border: none; border-radius: 30px; padding: 12px 30px; color: white; font-weight: bold; cursor: pointer; }
 
-        .review-form-modal {
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .review-form-modal input,
-        .review-form-modal textarea {
-            width: 100%;
-            padding: 14px 20px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 30px;
-            color: white;
-            margin: 10px 0;
-        }
-        .review-form-modal button {
-            background: #7b5aff;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-
         .notice-edit-modal {
             background: rgba(15, 15, 20, 0.95);
             backdrop-filter: blur(20px);
@@ -1084,11 +1100,9 @@
         </div>
     </div>
 
-    <!-- مودال آگهی تمام‌صفحه با عکس متحرک -->
+    <!-- مودال آگهی تمام‌صفحه -->
     <div class="modal" id="adModal">
-        <div class="modal-content" id="modalContent">
-            <!-- محتوا توسط جاوااسکریپت پر می‌شود -->
-        </div>
+        <div class="modal-content" id="modalContent"></div>
     </div>
 
     <!-- مودال گالری -->
@@ -1116,17 +1130,6 @@
                 <div class="step"><span class="step-number">5</span><span class="step-text" data-i18n="helpStep5">تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.</span></div>
             </div>
             <button class="help-close" id="helpClose" data-i18n="gotIt">متوجه شدم</button>
-        </div>
-    </div>
-
-    <!-- مودال ثبت نظر -->
-    <div class="modal" id="reviewFormModal">
-        <div class="modal-content review-form-modal">
-            <h2 style="color:#a58aff;" data-i18n="submitReview">ثبت نظر</h2>
-            <input type="number" id="newRating" min="1" max="5" data-i18n-placeholder="ratingPlaceholder" placeholder="امتیاز (1 تا 5)">
-            <textarea id="newComment" data-i18n-placeholder="commentPlaceholder" placeholder="نظر شما..." rows="3"></textarea>
-            <button id="submitReviewBtn" data-i18n="sendReview">ارسال نظر</button>
-            <button id="cancelReviewBtn" style="background:transparent; border:1px solid #7b5aff; margin-top:10px;" data-i18n="cancel">انصراف</button>
         </div>
     </div>
 
@@ -1652,7 +1655,6 @@
                 const time = getRelativeTime(ad.created_at);
                 const location = ad.city || '';
                 const priceDisplay = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency}` : t('negotiable');
-                // شبیه‌سازی لایک و بازدید
                 const likes = ad.likes || Math.floor(Math.random()*1000);
                 const views = ad.views || Math.floor(Math.random()*10000);
                 return `<div class="ad-card" data-id="${ad.id}">
@@ -1687,7 +1689,7 @@
             renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
         };
 
-        // ========== نمایش آگهی تمام‌صفحه با عکس متحرک ==========
+        // ========== نمایش آگهی تمام‌صفحه با عکس متحرک و نظرات فعال ==========
         let currentAdId = null;
         let currentAdImages = [];
 
@@ -1744,7 +1746,12 @@
                             <span class="stars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
                             <span class="count">(${reviewCount} ${t('reviewsCount')})</span>
                         </div>
-                        ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
+                        ${reviewsHtml || '<p style="color:#aaa;">' + t('no_reviews') + '</p>'}
+                        <div class="review-input">
+                            <input type="number" id="newRating" min="1" max="5" placeholder="${t('ratingPlaceholder')}">
+                            <textarea id="newComment" placeholder="${t('commentPlaceholder')}" rows="2"></textarea>
+                            <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ${t('sendReview')}</button>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1754,6 +1761,35 @@
             `;
             document.getElementById('modalContent').innerHTML = modalHtml;
             document.getElementById('adModal').classList.add('active');
+        };
+
+        window.submitReview = async (adId) => {
+            const rating = parseInt(document.getElementById('newRating').value);
+            const comment = document.getElementById('newComment').value;
+            if (!rating || rating < 1 || rating > 5) {
+                tg?.showPopup({ title: '❌', message: t('rating_required') || 'امتیاز باید بین 1 تا 5 باشد' });
+                return;
+            }
+            if (!userId) {
+                tg?.showPopup({ title: '❌', message: t('login_required') || 'ابتدا وارد شوید' });
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/api/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adId, userId, rating, comment })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    tg?.showPopup({ title: '✅', message: t('review_submitted') || 'نظر شما ثبت شد' });
+                    showAd(adId); // به‌روزرسانی نظرات
+                } else {
+                    tg?.showPopup({ title: '❌', message: data.error || 'خطا در ثبت نظر' });
+                }
+            } catch {
+                tg?.showPopup({ title: '❌', message: t('server_error') || 'خطا در ارتباط با سرور' });
+            }
         };
 
         function showContact(phone) {
@@ -1781,7 +1817,7 @@
 
         window.openGallery = (index) => {
             if (!currentAdImages.length) return;
-            // در این نسخه ساده شده، می‌توانید گالری را تکمیل کنید
+            // گالری ساده
         };
 
         // ========== ناوبری ==========
@@ -1899,4 +1935,4 @@
         loadNotice();
     </script>
 </body>
-            </html>
+    </html>
