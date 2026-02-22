@@ -3,253 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جدار | J-DAR · سوپر اپلیکیشن هوشمند</title>
-    
-    <link rel="manifest" href="data:application/manifest+json,{
-        &quot;name&quot;: &quot;J-DAR&quot;,
-        &quot;short_name&quot;: &quot;جدار&quot;,
-        &quot;start_url&quot;: &quot;/&quot;,
-        &quot;display&quot;: &quot;standalone&quot;,
-        &quot;background_color&quot;: &quot;#0c0f1c&quot;,
-        &quot;theme_color&quot;: &quot;#daa520&quot;
-    }">
+    <title>اختبار فتح البوت</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        /* جميع الأنماط السابقة مع بعض التبسيط */
-        :root {
-            --primary: #daa520;
-            --primary-dark: #b8860b;
-            --bg-dark: #0c0f1c;
-            --card-bg: rgba(20, 25, 45, 0.7);
-            --text-white: #ffffff;
-            --text-gray: #aaaaaa;
-            --danger: #e6123d;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-white);
-            line-height: 1.6;
-            overflow-x: hidden;
-            direction: rtl;
-        }
-
-        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-
-        .container { max-width: 500px; margin: 0 auto; padding: 15px 15px 100px; }
-
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(20, 25, 45, 0.8);
-            backdrop-filter: blur(15px);
-            padding: 12px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(218, 165, 32, 0.3);
-            margin-bottom: 25px;
-            position: sticky;
-            top: 10px;
-            z-index: 100;
-        }
-
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-circle { width: 40px; height: 40px; background: linear-gradient(45deg, var(--primary-dark), var(--primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 0 15px var(--primary); }
-        .logo-text { font-weight: 800; font-size: 22px; color: var(--primary); letter-spacing: 1px; }
-
-        .header-left { display: flex; gap: 10px; align-items: center; }
-        .header-left .icon-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(218,165,32,0.2); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
-        }
-        .header-left .icon-btn:hover { border-color: var(--primary); }
-
-        .wallet-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(218, 165, 32, 0.2);
-            border-radius: 30px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .balance-label { color: var(--text-gray); font-size: 13px; }
-        .balance-value { font-size: 24px; font-weight: bold; color: var(--primary); }
-
-        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 30px; }
-        .action-btn { 
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); 
-            border-radius: 20px; padding: 15px 5px; text-align: center; cursor: pointer;
-            transition: 0.3s;
-        }
-        .action-btn:hover { border-color: var(--primary); transform: translateY(-3px); }
-        .action-btn i { font-size: 24px; color: var(--primary); margin-bottom: 8px; display: block; }
-        .action-btn span { font-size: 11px; font-weight: 600; }
-
-        .search-bar {
-            background: rgba(255,255,255,0.05); border-radius: 15px; padding: 12px 20px;
-            display: flex; align-items: center; margin-bottom: 25px; border: 1px solid rgba(218,165,32,0.1);
-        }
-        .search-bar input { background: transparent; border: none; color: white; flex: 1; outline: none; margin-right: 10px; }
-
-        .category-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-        .cat-chip { background: var(--card-bg); padding: 8px 18px; border-radius: 50px; white-space: nowrap; border: 1px solid rgba(218,165,32,0.2); cursor: pointer; }
-        .cat-chip.active { background: var(--primary); color: black; font-weight: bold; }
-
-        .ad-card {
-            background: var(--card-bg); border-radius: 20px; overflow: hidden;
-            display: flex; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);
-            height: 130px; position: relative; cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .ad-card.special-ad {
-            border: 2px solid var(--primary);
-            box-shadow: 0 0 20px rgba(218,165,32,0.5);
-            background: linear-gradient(145deg, rgba(20,25,45,0.9), rgba(30,35,55,0.9));
-        }
-        .ad-card.special-ad::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #daa520, #f5e56b, #daa520);
-            border-radius: 22px;
-            z-index: -1;
-            animation: goldPulse 2s infinite;
-        }
-        @keyframes goldPulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-        .ad-card .favorite {
-            position: absolute; top: 10px; left: 10px; width: 36px; height: 36px;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            border: 1px solid rgba(218,165,32,0.4); z-index: 10;
-        }
-        .ad-card .favorite:hover { background: var(--primary); }
-        .ad-img { width: 130px; height: 100%; object-fit: cover; }
-        .ad-info { padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .ad-title { font-weight: bold; font-size: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .ad-price { color: var(--primary); font-weight: bold; font-size: 16px; }
-        .ad-meta { font-size: 11px; color: var(--text-gray); }
-        .special-badge {
-            position: absolute; top: 10px; right: 10px; background: var(--primary); color: black;
-            padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: bold; z-index: 5;
-            box-shadow: 0 0 10px gold;
-        }
-
-        /* بقية الأنماط محذوفة للاختصار، ولكنها موجودة في الكود الكامل */
-        /* ... */
+        body { background: #0c0f1c; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; direction: rtl; }
+        button { background: #daa520; border: none; border-radius: 30px; padding: 15px 25px; margin: 10px; font-size: 18px; font-weight: bold; color: black; cursor: pointer; width: 250px; }
+        .link-box { background: #1e1e2f; padding: 15px; border-radius: 10px; margin-top: 30px; width: 100%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 10px; border-radius: 5px; border: none; margin: 10px 0; }
     </style>
 </head>
 <body>
-
-    <canvas id="particles"></canvas>
-
-    <div class="container">
-        <div class="telegram-warning" id="telegramWarning">
-            ⚠️ للعمليات المتقدمة، يرجى فتح البوت مباشرة
-        </div>
-
-        <header class="app-header">
-            <div class="logo-box">
-                <div class="logo-circle"><i class="fas fa-bolt"></i></div>
-                <div class="logo-text">J-DAR</div>
-            </div>
-            <div class="header-left">
-                <div class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></div>
-                <div class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></div>
-            </div>
-        </header>
-
-        <div id="homePage" class="page active">
-            <div class="wallet-card">
-                <div>
-                    <div class="balance-label" data-i18n="balance">موجودی کیف پول</div>
-                    <div class="balance-value"><span id="walletBalance">0</span> <small style="font-size: 12px;">تومان</small></div>
-                </div>
-                <div style="text-align: left;">
-                    <div class="balance-label" data-i18n="points">امتیاز وفاداری</div>
-                    <div style="font-weight: bold; color: #fff;"><i class="fas fa-star" style="color: gold;"></i> <span id="userPoints">0</span></div>
-                </div>
-            </div>
-
-            <div class="action-grid">
-                <div class="action-btn" id="postAdBtn"><i class="fas fa-plus-circle"></i><span data-i18n="post_ad">ثبت آگهی</span></div>
-                <div class="action-btn" id="vipBtn"><i class="fas fa-crown"></i><span data-i18n="vip_subscription">VIP</span></div>
-                <div class="action-btn" id="chargeBtn"><i class="fas fa-wallet"></i><span data-i18n="charge">شارژ</span></div>
-                <div class="action-btn" id="convertPointsBtn"><i class="fas fa-gift"></i><span data-i18n="convert_points">تبدیل</span></div>
-            </div>
-
-            <div class="search-bar">
-                <i class="fas fa-search" style="color: var(--primary);"></i>
-                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="جستجو در خدمات و کالاها...">
-            </div>
-
-            <div class="category-scroll" id="mainCategoryList"></div>
-
-            <h3 style="margin-bottom: 15px; font-size: 18px;" data-i18n="latest_ads">جدیدترین‌ها</h3>
-            <div id="adsGrid"></div>
-        </div>
-
-        <!-- الصفحات الأخرى محذوفة للاختصار -->
-    </div>
-
-    <!-- نافذة البوت المنبثقة (Modal) للتأكيد -->
-    <div id="botModal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
-        <div style="background:var(--card-bg); padding:30px; border-radius:20px; text-align:center; max-width:300px;">
-            <i class="fas fa-robot" style="font-size:50px; color:var(--primary); margin-bottom:15px;"></i>
-            <h3 style="margin-bottom:10px;">فتح البوت</h3>
-            <p style="margin-bottom:20px;">سيتم نقلك إلى البوت. هل تريد المتابعة؟</p>
-            <div style="display:flex; gap:10px;">
-                <button id="confirmBotBtn" style="flex:1; background:var(--primary); border:none; padding:10px; border-radius:10px; color:black; font-weight:bold;">نعم</button>
-                <button id="cancelBotBtn" style="flex:1; background:gray; border:none; padding:10px; border-radius:10px; color:white;">لا</button>
-            </div>
-        </div>
+    <h1>اختبار فتح البوت</h1>
+    <button id="openBotBtn1">فتح البوت (طريقة 1)</button>
+    <button id="openBotBtn2">فتح البوت (طريقة 2)</button>
+    
+    <div class="link-box">
+        <p>إذا لم يعمل الزر، انسخ الرابط يدويًا:</p>
+        <input type="text" id="botLink" value="https://t.me/AlsouqAlmaftuhiran_bot" readonly>
+        <button id="copyLinkBtn">نسخ الرابط</button>
     </div>
 
     <script>
-        (function() {
-            // ========== التأكد من وجود العناصر ==========
-            console.log('الصفحة تحمّلت');
-            const tg = window.Telegram?.WebApp;
-            const isTelegram = !!tg;
-            const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
-            const botUrl = `https://t.me/${BOT_USERNAME}`;
+        const BOT_USERNAME = 'AlsouqAlmaftuhiran_bot';
+        const tg = window.Telegram?.WebApp;
+        const isTelegram = !!tg;
 
-            // ========== وظيفة فتح البوت ==========
-            function openBot() {
-                console.log('محاولة فتح البوت:', botUrl);
-                if (isTelegram) {
-                    // داخل تيليجرام
-                    tg.openTelegramLink(botUrl);
+        // الروابط المختلفة للتجربة
+        const botUrls = [
+            `https://t.me/${BOT_USERNAME}`,
+            `tg://resolve?domain=${BOT_USERNAME}`,
+            `https://telegram.me/${BOT_USERNAME}`
+        ];
+
+        // دالة فتح الرابط بطرق متعددة
+        function openBotUrl(url) {
+            console.log('محاولة فتح:', url);
+            try {
+                if (isTelegram && tg?.openTelegramLink) {
+                    tg.openTelegramLink(url);
                 } else {
-                    // خارج تيليجرام (متصفح)
-                    // استخدام window.location.href بدلاً من window.open لتجنب حظر المنبثقات
-                    window.location.href = botUrl;
+                    // محاولة فتح الرابط في نافذة جديدة
+                    const newWindow = window.open(url, '_blank');
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                        // إذا تم حظر النافذة المنبثقة، نحاول فتحه في نفس النافذة
+                        window.location.href = url;
+                    }
                 }
+            } catch (e) {
+                console.error('خطأ في فتح الرابط:', e);
+                // كملاذ أخير، نستخدم الطريقة القديمة
+                window.location.href = url;
             }
+        }
 
-            // ========== ربط الأزرار مباشرة ==========
-            document.getElementById('postAdBtn').addEventListener('click', openBot);
-            document.getElementById('vipBtn').addEventListener('click', openBot);
-            document.getElementById('chargeBtn').addEventListener('click', openBot);
-            document.getElementById('convertPointsBtn').addEventListener('click', openBot);
+        // الزر الأول - يحاول جميع الروابط بالتسلسل
+        document.getElementById('openBotBtn1').addEventListener('click', function() {
+            for (let url of botUrls) {
+                openBotUrl(url);
+            }
+        });
 
-            // ========== باقي وظائف التطبيق الأساسية (مثال بسيط) ==========
-            // يمكن إضافة باقي الكود لاحقاً، ولكن المهم أن الأزرار تعمل الآن.
+        // الزر الثاني - يستخدم الرابط الأساسي فقط
+        document.getElementById('openBotBtn2').addEventListener('click', function() {
+            openBotUrl(botUrls[0]);
+        });
 
-            // مؤقت للتحقق
-            alert('الأزرار تعمل الآن! اضغط على أي زر لفتح البوت.');
-        })();
+        // نسخ الرابط
+        document.getElementById('copyLinkBtn').addEventListener('click', function() {
+            const linkInput = document.getElementById('botLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('تم نسخ الرابط: ' + linkInput.value);
+        });
     </script>
 </body>
 </html>
