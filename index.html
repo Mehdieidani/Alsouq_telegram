@@ -33,7 +33,6 @@
             overflow-x: hidden;
         }
 
-        /* پس‌زمینه ملایم */
         body::before {
             content: '';
             position: fixed;
@@ -369,7 +368,6 @@
             color: white;
         }
 
-        /* گرید آگهی‌ها دو ستونه */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -510,7 +508,6 @@
             color: white;
         }
 
-        /* مودال جزئیات آگهی تمام‌صفحه */
         .modal {
             display: none;
             position: fixed;
@@ -565,7 +562,6 @@
             padding: 20px 20px 100px 20px;
         }
 
-        /* حاوی تصویر با کنترل‌ها */
         .image-gallery {
             margin-bottom: 20px;
         }
@@ -630,13 +626,12 @@
         }
 
         .modal-price {
-            font-size: 20px; /* تم تصغيره جداً */
+            font-size: 20px;
             font-weight: 600;
             color: #7b5aff;
             margin: 10px 0 10px;
         }
 
-        /* الوصف مع زر "اظهار المزيد" */
         .modal-description {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -655,7 +650,7 @@
 
         .description-text.truncated {
             display: -webkit-box;
-            -webkit-line-clamp: 3; /* عدد الأسطر قبل القص */
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
         }
 
@@ -1230,6 +1225,7 @@
         const telegramWarning = document.getElementById('telegramWarning');
         if (!isTelegramEnvironment) telegramWarning.classList.add('show');
 
+        // ===== آدرس API worker خود را در اینجا قرار دهید =====
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const SUPER_ADMIN_ID = '6522877528';
 
@@ -1774,12 +1770,11 @@
                 }).join('');
             } catch (e) { console.error('خطا در دریافت نظرات', e); }
 
-            // إنشاء HTML للصور مع أزرار التنقل
             let galleryHtml = '';
             if (images.length > 0) {
                 galleryHtml = `
                     <div class="image-gallery">
-                        <img src="${API_BASE}/image/${images[0]}" class="modal-image" id="mainImage" onclick="openGallery(0)" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                        <img src="${API_BASE}/image/${images[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
                         ${images.length > 1 ? `
                         <div class="gallery-controls">
                             <button id="prevImage"><i class="fas fa-chevron-right"></i></button>
@@ -1793,7 +1788,6 @@
                 galleryHtml = `<img src="https://via.placeholder.com/400x400?text=J-DAR" class="modal-image">`;
             }
 
-            // معالجة النص الطويل مع زر "اظهار المزيد"
             const description = ad.description || '';
             const descriptionId = 'desc_' + ad.id;
             const readMoreId = 'readmore_' + ad.id;
@@ -1840,7 +1834,6 @@
             document.getElementById('adModal').classList.add('active');
             if (tg) tg.BackButton.show();
 
-            // إضافة مستمعي الأحداث لأزرار التنقل بين الصور إذا وجدت
             if (images.length > 1) {
                 let currentIndex = 0;
                 const mainImage = document.getElementById('mainImage');
@@ -1863,7 +1856,6 @@
             }
         };
 
-        // دالة لتبديل حالة النص بين المختصر والكامل
         window.toggleReadMore = function(descId, btnId) {
             const descEl = document.getElementById(descId);
             const btnEl = document.getElementById(btnId);
@@ -1942,10 +1934,6 @@
             if (!username) { tg?.showPopup({ title: '💬', message: t('noUsername') }); return; }
             tg?.openTelegramLink(`https://t.me/${username}`);
         }
-
-        window.openGallery = (index) => {
-            // يمكن تركها للاستخدام المستقبلي
-        };
 
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
