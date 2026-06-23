@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== استایل‌های کامل ===== */
+        /* ===== استایل‌های کامل (همانند قبل) ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -660,26 +660,25 @@
 
     <script>
         // ================================================================
-        // 🚀 J-DAR - مینی‌اپ کامل با هماهنگی Worker
+        // 🚀 J-DAR - فقط HTML با مسیرهای درست برای Worker
         // ================================================================
 
         // ===== تنظیمات =====
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const ADMIN_PHONE = '09332356547';
-        const ADMIN_PASSWORD = 'Mehdi13721##Mehdi13721##';
 
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand();
             tg.enableClosingConfirmation(); }
 
-        // ===== حالت‌های برنامه =====
+        // ===== حالت‌ها =====
         let currentUser = null;
         let authToken = localStorage.getItem('jedar_token');
-        let authMode = 'register'; // 'register' | 'login'
+        let authMode = 'register';
         let pendingPhone = null;
         let pendingCode = null;
 
-        // ===== داده‌های محلی (برای fallback در صورت خطای Worker) =====
+        // ===== داده‌های محلی =====
         let allAds = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let noticeText = localStorage.getItem('jedar_notice') ||
@@ -852,15 +851,19 @@
             return String(Math.floor(100000 + Math.random() * 900000));
         }
 
-        // ===== API Helper =====
+        // ===== API Helper با مسیرهای استاندارد =====
         async function apiCall(endpoint, options = {}) {
             const url = API_BASE + endpoint;
             const headers = {
                 'Content-Type': 'application/json',
                 ...options.headers
             };
-            if (authToken) {
+            if (authToken && !endpoint.includes('/admin/')) {
                 headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            // برای مسیرهای ادمین از هدر مخصوص استفاده می‌کنیم
+            if (endpoint.includes('/admin/') && !headers['X-Admin-ID']) {
+                headers['X-Admin-ID'] = ADMIN_PHONE;
             }
             try {
                 const res = await fetch(url, { ...options, headers });
@@ -876,7 +879,7 @@
         }
 
         // ============================================================
-        // 🔐 احراز هویت
+        // 🔐 احراز هویت (مسیرهای استاندارد)
         // ============================================================
 
         function toggleAuthMode() {
@@ -951,6 +954,7 @@
                         authToken = data.token;
                         localStorage.setItem('jedar_token', authToken);
                         currentUser = data.user;
+                        localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
                         showToast('ورود موفق', 'success');
                         showApp();
                     }
@@ -977,6 +981,7 @@
                     authToken = data.token;
                     localStorage.setItem('jedar_token', authToken);
                     currentUser = data.user;
+                    localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
                     showToast('✅ حساب شما با موفقیت تایید شد!', 'success');
                     showApp();
                 }
@@ -1019,6 +1024,7 @@
                 const data = await apiCall('/api/me');
                 if (data.success) {
                     currentUser = data.user;
+                    localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
                     showApp();
                 } else {
                     localStorage.removeItem('jedar_token');
@@ -1065,29 +1071,28 @@
 
         async function loadAppData() {
             try {
-                // دریافت آگهی‌ها
                 const adsData = await apiCall('/api/ads');
                 if (adsData.success) {
                     allAds = adsData.ads || [];
                     localStorage.setItem('jedar_ads', JSON.stringify(allAds));
                 }
 
-                // دریافت اطلاعیه
                 const noticeData = await apiCall('/api/notice');
                 if (noticeData.success) {
                     noticeText = noticeData.notice;
                     localStorage.setItem('jedar_notice', noticeText);
                 }
 
-                // دریافت اطلاعات کاربر
-                const meData = await apiCall('/api/me');
-                if (meData.success) {
-                    currentUser = meData.user;
-                    localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
+                if (authToken) {
+                    const meData = await apiCall('/api/me');
+                    if (meData.success) {
+                        currentUser = meData.user;
+                        localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
+                        updateUserUI();
+                    }
                 }
             } catch (err) {
                 console.warn('خطا در بارگذاری داده‌ها، استفاده از داده‌های محلی:', err);
-                // استفاده از داده‌های محلی
             }
 
             document.getElementById('noticeText').textContent = noticeText;
@@ -1536,7 +1541,7 @@
         }
 
         // ============================================================
-        // 📄 جزییات آگهی
+        // 📄 جزییات آگهی + نظرات
         // ============================================================
 
         window.showAd = (id) => {
@@ -1597,7 +1602,6 @@
             document.getElementById('modalContent').innerHTML = modalHtml;
             openModal('adModal');
 
-            // بارگذاری نظرات
             loadReviews(ad.id);
 
             if (images.length > 1) {
@@ -1737,14 +1741,13 @@
         });
 
         // ============================================================
-        // 🛡️ پنل ادمین
+        // 🛡️ پنل ادمین (با مسیرهای استاندارد)
         // ============================================================
 
         async function renderAdminPanel() {
             if (!currentUser || currentUser.phone !== ADMIN_PHONE) return;
 
             try {
-                // دریافت کاربران
                 const usersData = await apiCall('/api/admin/users', {
                     headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
@@ -1767,7 +1770,6 @@
                     `).join('');
                 }
 
-                // دریافت آگهی‌ها
                 const adsData = await apiCall('/api/admin/ads', {
                     headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
@@ -1791,7 +1793,6 @@
                     `).join('');
                 }
 
-                // دریافت درخواست‌های شارژ
                 const chargesData = await apiCall('/api/admin/charges', {
                     headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
@@ -1824,7 +1825,8 @@
             try {
                 const data = await apiCall('/api/admin/user/approve', {
                     method: 'POST',
-                    body: JSON.stringify({ user_id: phone, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ user_id: phone }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('کاربر تایید شد', 'success');
@@ -1837,7 +1839,8 @@
             try {
                 const data = await apiCall('/api/admin/user/reject', {
                     method: 'POST',
-                    body: JSON.stringify({ user_id: phone, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ user_id: phone }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('کاربر رد شد', 'warning');
@@ -1850,7 +1853,8 @@
             try {
                 const data = await apiCall('/api/admin/ad/approve', {
                     method: 'POST',
-                    body: JSON.stringify({ ad_id: id, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ ad_id: id }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('آگهی تایید شد', 'success');
@@ -1864,7 +1868,8 @@
             try {
                 const data = await apiCall('/api/admin/ad/reject', {
                     method: 'POST',
-                    body: JSON.stringify({ ad_id: id, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ ad_id: id }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('آگهی رد شد', 'warning');
@@ -1893,7 +1898,8 @@
             try {
                 const data = await apiCall('/api/admin/charge/approve', {
                     method: 'POST',
-                    body: JSON.stringify({ charge_id: id, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ charge_id: id }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('شارژ تایید شد', 'success');
@@ -1907,7 +1913,8 @@
             try {
                 const data = await apiCall('/api/admin/charge/reject', {
                     method: 'POST',
-                    body: JSON.stringify({ charge_id: id, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ charge_id: id }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     showToast('شارژ رد شد', 'warning');
@@ -1942,7 +1949,8 @@
             try {
                 const data = await apiCall('/api/notice', {
                     method: 'POST',
-                    body: JSON.stringify({ notice: txt, admin_id: ADMIN_PHONE })
+                    body: JSON.stringify({ notice: txt }),
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
                 });
                 if (data.success) {
                     noticeText = txt;
@@ -2014,18 +2022,17 @@
         }
 
         // ============================================================
-        // 🚀 شروع برنامه
+        // 🚀 شروع
         // ============================================================
 
         if (!tg) document.getElementById('telegramWarning').classList.add('show');
 
         checkAuth();
 
-        console.log('✅ J-DAR با هماهنگی Worker بارگذاری شد.');
+        console.log('✅ J-DAR با مسیرهای استاندارد بارگذاری شد.');
         console.log('📡 API:', API_BASE);
         console.log('👤 کاربر:', currentUser?.phone || 'ناشناس');
         console.log('👑 ادمین:', currentUser?.phone === ADMIN_PHONE ? 'بله' : 'خیر');
-        console.log('📦 تعداد آگهی‌ها:', allAds.length);
     </script>
 </body>
-    </html>
+            </html>
