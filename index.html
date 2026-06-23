@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== تمام استایل‌های قبلی ===== */
+        /* ===== استایل‌های کامل ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -273,12 +273,77 @@
         .lang-modal-content .lang-btn { display:block; width:100%; padding:14px; margin-bottom:12px; border:none; border-radius:30px; font-size:18px; font-weight:bold; cursor:pointer; transition:0.2s; }
         .lang-modal-content .lang-btn:hover { transform:scale(1.02); }
 
+        /* صفحه ثبت‌نام و ورود */
+        .auth-page {
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:30px 20px;
+            max-width:400px;
+            margin:0 auto;
+        }
+        .auth-page .logo {
+            margin-bottom:40px;
+        }
+        .auth-page .auth-box {
+            width:100%;
+            background:rgba(20,20,30,0.6);
+            backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,0.05);
+            border-radius:40px;
+            padding:30px 24px;
+        }
+        .auth-page .auth-box h2 {
+            color:#a58aff;
+            margin-bottom:25px;
+            text-align:center;
+        }
+        .auth-page .auth-box .form-group {
+            margin-bottom:20px;
+        }
+        .auth-page .auth-box .form-btn {
+            margin-top:10px;
+        }
+        .auth-page .auth-switch {
+            text-align:center;
+            margin-top:20px;
+            color:#aaa;
+            cursor:pointer;
+        }
+        .auth-page .auth-switch span {
+            color:#7b5aff;
+            font-weight:bold;
+        }
+        .auth-page .auth-code-display {
+            background:rgba(123,90,255,0.15);
+            border:1px solid rgba(123,90,255,0.3);
+            border-radius:30px;
+            padding:20px;
+            text-align:center;
+            margin:15px 0;
+        }
+        .auth-page .auth-code-display .code {
+            font-size:32px;
+            font-weight:800;
+            color:#7b5aff;
+            letter-spacing:4px;
+            direction:ltr;
+        }
+        .auth-page .auth-code-display .hint {
+            font-size:13px;
+            color:#aaa;
+            margin-top:8px;
+        }
+
         @media (max-width:480px) {
             .form-row { grid-template-columns:1fr; }
             .action-grid { grid-template-columns:repeat(2,1fr); }
             .ads-grid { grid-template-columns:1fr 1fr; gap:12px; }
             .wallet-info .amount { font-size:24px; }
             .modal-title { font-size:22px; }
+            .auth-page { padding:20px 16px; }
         }
     </style>
 </head>
@@ -287,123 +352,175 @@
     <!-- Toast -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="container">
-        <div class="telegram-warning" id="telegramWarning">⚠️ این صفحه در تلگرام باز نشده است، اما همچنان کار می‌کند.</div>
-
-        <!-- PWA Install -->
-        <div class="pwa-install" id="pwaInstall">
-            <div class="pwa-icon"><i class="fas fa-mobile-alt"></i></div>
-            <div class="pwa-text"><strong>نصب J-DAR</strong><span>اپلیکیشن را روی دستگاه خود نصب کنید</span></div>
-            <button id="pwaInstallBtn">نصب</button>
+    <!-- ===== صفحه‌ی احراز هویت (ثبت‌نام و ورود) ===== -->
+    <div id="authPage" class="auth-page" style="display:none;">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <span class="logo-text">J-DAR</span>
         </div>
-
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">
-                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
-                <span class="logo-text">J-DAR</span>
-            </div>
-            <div class="header-left">
-                <button class="icon-btn admin" id="adminBtn" style="display:none;"><i class="fas fa-user-shield"></i></button>
-                <button class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
-                <button class="icon-btn" id="helpBtn"><i class="fas fa-question"></i></button>
-                <button class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
-            </div>
-        </div>
-
-        <!-- Home Page -->
-        <div id="homePage" class="page active">
-            <div class="wallet-card">
-                <div class="wallet-row">
-                    <div class="wallet-info">
-                        <h4>💰 موجودی کیف پول</h4>
-                        <div class="amount"><span id="walletBalance">۰</span> <small>تومان</small></div>
+        <div class="auth-box" id="authBox">
+            <h2 id="authTitle">ثبت‌نام / ورود</h2>
+            <div id="authForm">
+                <div class="form-group">
+                    <label>شماره موبایل <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="authPhone" placeholder="مثلا ۰۹۱۲۳۴۵۶۷۸۹">
+                </div>
+                <div class="form-group" id="nameField">
+                    <label>نام کامل <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="authName" placeholder="نام و نام خانوادگی">
+                </div>
+                <div class="form-group" id="usernameField">
+                    <label>نام کاربری تلگرام (اختیاری)</label>
+                    <input type="text" class="form-control" id="authTgUsername" placeholder="بدون @">
+                </div>
+                <div id="codeField" style="display:none;">
+                    <div class="auth-code-display">
+                        <div class="code" id="authCodeDisplay">------</div>
+                        <div class="hint">این کد را برای مدیر ارسال کنید تا حساب شما تایید شود</div>
                     </div>
-                    <div class="wallet-points">
-                        <i class="fas fa-star"></i>
-                        <span class="points-num" id="userPoints">۰</span>
+                    <button class="form-btn form-btn-gold" onclick="sendCodeToAdmin()">
+                        <i class="fab fa-telegram"></i> ارسال کد به مدیر
+                    </button>
+                    <div style="margin-top:12px; text-align:center; color:#aaa; font-size:13px;">
+                        پس از تایید مدیر، دکمه ورود را بزنید
                     </div>
                 </div>
+                <button class="form-btn form-btn-primary" id="authSubmitBtn" onclick="handleAuth()">
+                    <i class="fas fa-paper-plane"></i> <span id="authBtnText">ثبت‌نام</span>
+                </button>
+                <div class="auth-switch" onclick="toggleAuthMode()">
+                    <span id="authSwitchText">قبلاً ثبت‌نام کرده‌اید؟ وارد شوید</span>
+                </div>
             </div>
-
-            <div class="notice-card">
-                <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
-                <div class="notice-text" id="noticeText"></div>
-                <div class="notice-edit" id="noticeEditBtn" style="display:none;"><i class="fas fa-pencil-alt"></i></div>
-            </div>
-
-            <!-- پنل ادمین -->
-            <div id="adminPanel" style="display:none;" class="admin-panel">
-                <h4><i class="fas fa-user-shield"></i> پنل مدیریت</h4>
-                <div id="adminAdsList"></div>
-                <div id="adminChargesList" style="margin-top:15px;"></div>
-            </div>
-
-            <div class="action-grid">
-                <div class="action-item" id="postAdBtn"><i class="fas fa-plus-circle"></i><span>ثبت آگهی</span></div>
-                <div class="action-item" id="vipBtn"><i class="fas fa-crown"></i><span>ویژه</span></div>
-                <div class="action-item" id="chargeBtn"><i class="fas fa-wallet"></i><span>شارژ</span></div>
-                <div class="action-item" id="convertPointsBtn"><i class="fas fa-gift"></i><span>تبدیل</span></div>
-            </div>
-
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
-                <button id="searchBtn">جستجو</button>
-            </div>
-
-            <div class="section-title"><h3>دسته‌بندی‌ها</h3><a id="allCategoriesLink">همه</a></div>
-            <div class="categories" id="mainCategoryList"></div>
-            <div class="categories" id="subCategoryList"></div>
-
-            <div class="section-title"><h3>جدیدترین آگهی‌ها</h3><a id="moreAdsLink">بیشتر</a></div>
-            <div class="ads-grid" id="adsGrid"></div>
         </div>
+    </div>
 
-        <!-- Favorites Page -->
-        <div id="favoritesPage" class="page">
-            <h3 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-heart"></i> علاقه‌مندی‌ها</h3>
-            <div class="ads-grid" id="favoritesGrid"></div>
-        </div>
+    <!-- ===== برنامه‌ی اصلی (پس از ورود) ===== -->
+    <div id="appContainer" style="display:none;">
+        <div class="container">
+            <div class="telegram-warning" id="telegramWarning">⚠️ این صفحه در تلگرام باز نشده است، اما همچنان کار می‌کند.</div>
 
-        <!-- Profile Page -->
-        <div id="profilePage" class="page">
-            <div class="profile-section">
-                <div class="profile-field">
-                    <label><i class="fas fa-user"></i> نام کاربری تلگرام</label>
-                    <input type="text" id="tgUsername" readonly>
+            <!-- PWA Install -->
+            <div class="pwa-install" id="pwaInstall">
+                <div class="pwa-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="pwa-text"><strong>نصب J-DAR</strong><span>اپلیکیشن را روی دستگاه خود نصب کنید</span></div>
+                <button id="pwaInstallBtn">نصب</button>
+            </div>
+
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                    <span class="logo-text">J-DAR</span>
                 </div>
-                <div class="profile-field">
-                    <label>نام نمایشی</label>
-                    <input type="text" id="displayName" placeholder="نام شما">
+                <div class="header-left">
+                    <button class="icon-btn admin" id="adminBtn" style="display:none;"><i class="fas fa-user-shield"></i></button>
+                    <button class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
+                    <button class="icon-btn" id="helpBtn"><i class="fas fa-question"></i></button>
+                    <button class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
                 </div>
-                <div class="profile-field">
-                    <label>کشور</label>
-                    <select id="country"><option value="IR">🇮🇷 ایران</option><option value="IQ">🇮🇶 عراق</option></select>
-                </div>
-                <div class="profile-field">
-                    <label>موجودی کیف پول:</label>
-                    <span id="profileBalance">۰</span> تومان
-                </div>
-                <div class="profile-field">
-                    <label>امتیاز شما:</label>
-                    <span id="profilePoints">۰</span>
-                </div>
-                <div class="profile-field">
-                    <label>لینک دعوت</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="referralLink" readonly>
-                        <button id="copyReferral" class="icon-btn" style="width:50px; flex-shrink:0;"><i class="fas fa-copy"></i></button>
+            </div>
+
+            <!-- Home Page -->
+            <div id="homePage" class="page active">
+                <div class="wallet-card">
+                    <div class="wallet-row">
+                        <div class="wallet-info">
+                            <h4>💰 موجودی کیف پول</h4>
+                            <div class="amount"><span id="walletBalance">۰</span> <small>تومان</small></div>
+                        </div>
+                        <div class="wallet-points">
+                            <i class="fas fa-star"></i>
+                            <span class="points-num" id="userPoints">۰</span>
+                        </div>
                     </div>
                 </div>
-                <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> ذخیره تغییرات</button>
+
+                <div class="notice-card">
+                    <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
+                    <div class="notice-text" id="noticeText"></div>
+                    <div class="notice-edit" id="noticeEditBtn" style="display:none;"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+
+                <!-- پنل ادمین -->
+                <div id="adminPanel" style="display:none;" class="admin-panel">
+                    <h4><i class="fas fa-user-shield"></i> پنل مدیریت</h4>
+                    <div id="adminUsersList" style="margin-bottom:15px;"></div>
+                    <div id="adminAdsList"></div>
+                    <div id="adminChargesList" style="margin-top:15px;"></div>
+                </div>
+
+                <div class="action-grid">
+                    <div class="action-item" id="postAdBtn"><i class="fas fa-plus-circle"></i><span>ثبت آگهی</span></div>
+                    <div class="action-item" id="vipBtn"><i class="fas fa-crown"></i><span>ویژه</span></div>
+                    <div class="action-item" id="chargeBtn"><i class="fas fa-wallet"></i><span>شارژ</span></div>
+                    <div class="action-item" id="convertPointsBtn"><i class="fas fa-gift"></i><span>تبدیل</span></div>
+                </div>
+
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
+                    <button id="searchBtn">جستجو</button>
+                </div>
+
+                <div class="section-title"><h3>دسته‌بندی‌ها</h3><a id="allCategoriesLink">همه</a></div>
+                <div class="categories" id="mainCategoryList"></div>
+                <div class="categories" id="subCategoryList"></div>
+
+                <div class="section-title"><h3>جدیدترین آگهی‌ها</h3><a id="moreAdsLink">بیشتر</a></div>
+                <div class="ads-grid" id="adsGrid"></div>
+            </div>
+
+            <!-- Favorites Page -->
+            <div id="favoritesPage" class="page">
+                <h3 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-heart"></i> علاقه‌مندی‌ها</h3>
+                <div class="ads-grid" id="favoritesGrid"></div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profilePage" class="page">
+                <div class="profile-section">
+                    <div class="profile-field">
+                        <label><i class="fas fa-user"></i> نام کاربری</label>
+                        <input type="text" id="profileDisplayName" placeholder="نام شما">
+                    </div>
+                    <div class="profile-field">
+                        <label>شماره موبایل</label>
+                        <input type="text" id="profilePhone" readonly>
+                    </div>
+                    <div class="profile-field">
+                        <label>نام کاربری تلگرام</label>
+                        <input type="text" id="profileTgUsername" placeholder="بدون @">
+                    </div>
+                    <div class="profile-field">
+                        <label>کشور</label>
+                        <select id="profileCountry"><option value="IR">🇮🇷 ایران</option><option value="IQ">🇮🇶 عراق</option></select>
+                    </div>
+                    <div class="profile-field">
+                        <label>موجودی کیف پول:</label>
+                        <span id="profileBalance">۰</span> تومان
+                    </div>
+                    <div class="profile-field">
+                        <label>امتیاز شما:</label>
+                        <span id="profilePoints">۰</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>لینک دعوت</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" id="profileReferralLink" readonly>
+                            <button id="copyReferral" class="icon-btn" style="width:50px; flex-shrink:0;"><i class="fas fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> ذخیره تغییرات</button>
+                    <button class="save-profile" style="background:#ff5e7c; margin-top:10px;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ===== مودال‌ها ===== -->
 
-    <!-- مودال انتخاب زبان (جدید) -->
+    <!-- مودال انتخاب زبان -->
     <div class="modal" id="langModal">
         <div class="modal-content lang-modal-content">
             <h2><i class="fas fa-globe"></i> انتخاب زبان</h2>
@@ -567,10 +684,10 @@
         <div class="modal-content help-modal">
             <h2><i class="fas fa-graduation-cap"></i> راهنمای J-DAR</h2>
             <div class="help-steps">
-                <div class="step"><span class="step-number">1</span><span>ثبت آگهی: دکمه «ثبت آگهی» را بزنید و فرم را تکمیل کنید. آگهی پس از تایید مدیر منتشر می‌شود.</span></div>
-                <div class="step"><span class="step-number">2</span><span>شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید. پس از تایید مدیر، موجودی افزایش می‌یابد.</span></div>
-                <div class="step"><span class="step-number">3</span><span>تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.</span></div>
-                <div class="step"><span class="step-number">4</span><span>علاقه‌مندی‌ها: با کلیک روی قلب بالای هر آگهی، آن را ذخیره کنید.</span></div>
+                <div class="step"><span class="step-number">1</span><span>ثبت‌نام: شماره موبایل و نام را وارد کنید. کد تایید دریافت می‌کنید و برای مدیر ارسال می‌کنید.</span></div>
+                <div class="step"><span class="step-number">2</span><span>پس از تایید مدیر، وارد شوید و آگهی ثبت کنید.</span></div>
+                <div class="step"><span class="step-number">3</span><span>شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید.</span></div>
+                <div class="step"><span class="step-number">4</span><span>تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.</span></div>
                 <div class="step"><span class="step-number">5</span><span>تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.</span></div>
             </div>
             <button class="help-close" id="helpClose">متوجه شدم</button>
@@ -588,7 +705,7 @@
     </div>
 
     <!-- ناوبری پایین -->
-    <div class="bottom-nav">
+    <div class="bottom-nav" id="bottomNav">
         <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span>خانه</span></div>
         <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span>علاقه‌مندی</span></div>
         <div class="nav-item" data-page="profile"><i class="fas fa-user"></i><span>پروفایل</span></div>
@@ -596,42 +713,18 @@
 
     <script>
         // ============================================================
-        //  همه‌چیز در localStorage بدون سرور + مودال زبان
+        //  پیکربندی
         // ============================================================
+        // آدرس Worker خود را در اینجا قرار دهید
+        const API_BASE = 'https://your-worker.workers.dev'; // <-- تغییر دهید
 
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand();
             tg.enableClosingConfirmation(); }
 
-        const tgUser = tg?.initDataUnsafe?.user;
-        const userId = tgUser?.id?.toString() || 'user_' + Math.random().toString(36).substr(2, 9);
-        const isAdmin = (userId === '6522877528');
-
-        // ===== ذخیره‌سازی =====
-        function loadData(key, def) { try { return JSON.parse(localStorage.getItem('jedar_' + key)) || def; } catch { return def; } }
-
-        function saveData(key, data) { localStorage.setItem('jedar_' + key, JSON.stringify(data)); }
-
-        let allAds = loadData('ads', []);
-        let charges = loadData('charges', []);
-        let reviews = loadData('reviews', []);
-        let favorites = loadData('favorites', []);
-        let users = loadData('users', {});
-        let noticeText = loadData('notice',
-            'تنها حمایت شما از این پلتفرم، معرفی آن به دوستان و آشنایانتان است. با تشکر از همراهی شما.');
-
-        if (!users[userId]) {
-            users[userId] = {
-                id: userId,
-                displayName: tgUser?.username || '',
-                country: 'IR',
-                balance: 0,
-                points: 0,
-                referralCode: 'REF-' + Date.now().toString(36).toUpperCase(),
-                createdAt: Date.now()
-            };
-            saveData('users', users);
-        }
+        // ===== وضعیت احراز هویت =====
+        let authToken = localStorage.getItem('jedar_token');
+        let currentUser = null;
 
         // ===== زبان =====
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
@@ -661,10 +754,10 @@
                 search: 'جستجو',
                 reviewsCount: 'نظر',
                 helpTitle: 'راهنمای J-DAR',
-                helpStep1: 'ثبت آگهی: دکمه «ثبت آگهی» را بزنید و فرم را تکمیل کنید. آگهی پس از تایید مدیر منتشر می‌شود.',
-                helpStep2: 'شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید. پس از تایید مدیر، موجودی افزایش می‌یابد.',
-                helpStep3: 'تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.',
-                helpStep4: 'علاقه‌مندی‌ها: با کلیک روی قلب بالای هر آگهی، آن را ذخیره کنید.',
+                helpStep1: 'ثبت‌نام: شماره موبایل و نام را وارد کنید. کد تایید دریافت می‌کنید و برای مدیر ارسال می‌کنید.',
+                helpStep2: 'پس از تایید مدیر، وارد شوید و آگهی ثبت کنید.',
+                helpStep3: 'شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید.',
+                helpStep4: 'تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.',
                 helpStep5: 'تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.',
                 gotIt: 'متوجه شدم',
                 submit: 'ارسال', cancel: 'انصراف',
@@ -711,10 +804,10 @@
                 search: 'بحث',
                 reviewsCount: 'تعليق',
                 helpTitle: 'دليل J-DAR',
-                helpStep1: 'إعلان: استخدم زر "إعلان" واملأ النموذج. يتم نشر الإعلان بعد موافقة المدير.',
-                helpStep2: 'شحن: انقر "شحن" واختر المبلغ وأرفق إيصال الدفع. بعد الموافقة، سيتم زيادة رصيدك.',
-                helpStep3: 'تحويل النقاط: حوّل نقاطك إلى إعلان مميز أو تومان.',
-                helpStep4: 'المفضلة: انقر على القلب أعلى كل إعلان لحفظه.',
+                helpStep1: 'التسجيل: أدخل رقم الهاتف والاسم. ستحصل على رمز تأكيد وترسله إلى المدير.',
+                helpStep2: 'بعد موافقة المدير، سجل الدخول وانشر إعلانك.',
+                helpStep3: 'شحن: انقر "شحن" واختر المبلغ وأرفق إيصال الدفع.',
+                helpStep4: 'تحويل النقاط: حوّل نقاطك إلى إعلان مميز أو تومان.',
                 helpStep5: 'تغيير اللغة: استخدم زر الكرة الأرضية في الرأس.',
                 gotIt: 'فهمت',
                 submit: 'إرسال', cancel: 'إلغاء',
@@ -761,10 +854,10 @@
                 search: 'Search',
                 reviewsCount: 'review',
                 helpTitle: 'J-DAR Guide',
-                helpStep1: 'Post Ad: Click "Post Ad" and fill the form. Ad will be published after admin approval.',
-                helpStep2: 'Charge: Click "Charge", select amount and upload receipt. After admin approval, balance increases.',
-                helpStep3: 'Convert points: Convert your points to special ad or Toman.',
-                helpStep4: 'Favorites: Click heart on ads to save them.',
+                helpStep1: 'Register: Enter phone and name. You\'ll get a code to send to admin.',
+                helpStep2: 'After admin approval, login and post your ad.',
+                helpStep3: 'Charge: Click "Charge", select amount and upload receipt.',
+                helpStep4: 'Convert points: Convert points to special ad or Toman.',
                 helpStep5: 'Change language: Use globe button in header.',
                 gotIt: 'Got it',
                 submit: 'Submit', cancel: 'Cancel',
@@ -817,9 +910,207 @@
             }
         }
 
-        // ===== دکمه زبان (حالا هم در تلگرام و هم مرورگر کار می‌کند) =====
+        // ===== API Helper =====
+        async function apiCall(endpoint, options = {}) {
+            const url = API_BASE + endpoint;
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            const res = await fetch(url, { ...options, headers });
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || 'خطا در ارتباط با سرور');
+            }
+            return data;
+        }
+
+        // ===== احراز هویت =====
+        let authMode = 'register'; // 'register' | 'login'
+        let pendingCode = null;
+        let pendingPhone = null;
+
+        function toggleAuthMode() {
+            authMode = (authMode === 'register') ? 'login' : 'register';
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const title = document.getElementById('authTitle');
+            const btnText = document.getElementById('authBtnText');
+            const switchText = document.getElementById('authSwitchText');
+            const nameField = document.getElementById('nameField');
+            const usernameField = document.getElementById('usernameField');
+            const codeField = document.getElementById('codeField');
+
+            if (authMode === 'register') {
+                title.textContent = 'ثبت‌نام جدید';
+                btnText.textContent = 'ثبت‌نام';
+                switchText.textContent = 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید';
+                nameField.style.display = 'block';
+                usernameField.style.display = 'block';
+                codeField.style.display = 'none';
+            } else {
+                title.textContent = 'ورود به حساب';
+                btnText.textContent = 'ورود';
+                switchText.textContent = 'حساب ندارید؟ ثبت‌نام کنید';
+                nameField.style.display = 'none';
+                usernameField.style.display = 'none';
+                codeField.style.display = 'none';
+            }
+        }
+
+        async function handleAuth() {
+            const phone = document.getElementById('authPhone').value.trim();
+            if (!phone) { showToast('شماره موبایل را وارد کنید', 'error'); return; }
+
+            const btn = document.getElementById('authSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
+
+            try {
+                if (authMode === 'register') {
+                    // ثبت‌نام
+                    const name = document.getElementById('authName').value.trim();
+                    if (!name) { showToast('نام کامل را وارد کنید', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="authBtnText">ثبت‌نام</span>'; return; }
+                    const tgUsername = document.getElementById('authTgUsername').value.trim();
+
+                    const data = await apiCall('/api/register', {
+                        method: 'POST',
+                        body: JSON.stringify({ phone, name, tg_username: tgUsername })
+                    });
+
+                    if (data.success) {
+                        pendingCode = data.code;
+                        pendingPhone = phone;
+                        document.getElementById('authCodeDisplay').textContent = data.code;
+                        document.getElementById('codeField').style.display = 'block';
+                        showToast('کد تایید صادر شد. آن را برای مدیر ارسال کنید.', 'success');
+                        // دکمه ثبت‌نام را به "ارسال کد" تغییر دهید یا همان را نگه دارید
+                        document.getElementById('authBtnText').textContent = 'ارسال کد به مدیر';
+                        // اما ما دکمه جداگانه برای ارسال کد داریم
+                    } else {
+                        showToast(data.error || 'خطا در ثبت‌نام', 'error');
+                    }
+                } else {
+                    // ورود
+                    const data = await apiCall('/api/login', {
+                        method: 'POST',
+                        body: JSON.stringify({ phone })
+                    });
+                    if (data.success) {
+                        authToken = data.token;
+                        localStorage.setItem('jedar_token', authToken);
+                        currentUser = data.user;
+                        showToast('ورود موفق', 'success');
+                        showApp();
+                    } else {
+                        showToast(data.error || 'خطا در ورود', 'error');
+                    }
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="authBtnText">' + (authMode === 'register' ? 'ثبت‌نام' :
+                'ورود') + '</span>';
+        }
+
+        function sendCodeToAdmin() {
+            if (!pendingCode) { showToast('ابتدا ثبت‌نام کنید', 'error'); return; }
+            const msg = `🚀 کد تایید جدید:\n\nکد: ${pendingCode}\nشماره: ${pendingPhone}`;
+            const url = `https://t.me/Mehdi_E_admin?text=${encodeURIComponent(msg)}`;
+            if (tg) {
+                tg.openTelegramLink(url);
+            } else {
+                window.open(url, '_blank');
+            }
+            showToast('پیام برای مدیر ارسال شد. منتظر تایید باشید.', 'success');
+        }
+
+        // ===== نمایش/مخفی کردن برنامه =====
+        function showApp() {
+            document.getElementById('authPage').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            loadAppData();
+        }
+
+        function showAuth() {
+            document.getElementById('authPage').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            updateAuthUI();
+        }
+
+        function logout() {
+            localStorage.removeItem('jedar_token');
+            authToken = null;
+            currentUser = null;
+            showAuth();
+            showToast('خارج شدید', 'info');
+        }
+
+        // ===== بررسی توکن ذخیره‌شده =====
+        async function checkAuth() {
+            if (!authToken) {
+                showAuth();
+                return;
+            }
+            try {
+                const data = await apiCall('/api/me');
+                if (data.success) {
+                    currentUser = data.user;
+                    showApp();
+                } else {
+                    localStorage.removeItem('jedar_token');
+                    authToken = null;
+                    showAuth();
+                }
+            } catch (err) {
+                localStorage.removeItem('jedar_token');
+                authToken = null;
+                showAuth();
+            }
+        }
+
+        // ===== بارگذاری داده‌ها پس از ورود =====
+        async function loadAppData() {
+            try {
+                const [profile, ads, notice] = await Promise.all([
+                    apiCall('/api/me'),
+                    apiCall('/api/ads'),
+                    apiCall('/api/notice')
+                ]);
+                if (profile.success) currentUser = profile.user;
+                if (ads.success) allAds = ads.ads || [];
+                if (notice.success) document.getElementById('noticeText').textContent = notice.notice || '';
+
+                // بارگذاری علاقه‌مندی‌ها
+                favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
+
+                updateUI();
+                updateUserUI();
+                renderAds(allAds, 'adsGrid');
+                renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
+                renderCategories();
+
+                // پنل ادمین
+                if (currentUser?.is_admin) {
+                    document.getElementById('adminBtn').style.display = 'flex';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    loadAdminPanel();
+                }
+            } catch (err) {
+                showToast('خطا در بارگذاری داده‌ها', 'error');
+            }
+        }
+
+        // ===== زبان =====
         document.getElementById('langMainBtn').addEventListener('click', () => {
-            // اگر در تلگرام هستیم و popup در دسترس است، از آن استفاده کن
             if (tg && typeof tg.showPopup === 'function') {
                 tg.showPopup({
                     title: 'انتخاب زبان',
@@ -830,17 +1121,13 @@
                         { id: 'en', type: 'default', text: '🇬🇧 English' }
                     ]
                 }, (btnId) => {
-                    if (btnId && ['fa', 'ar', 'en'].includes(btnId)) {
-                        setLanguage(btnId);
-                    }
+                    if (btnId && ['fa', 'ar', 'en'].includes(btnId)) setLanguage(btnId);
                 });
             } else {
-                // در غیر این صورت مودال سفارشی را باز کن
                 openModal('langModal');
             }
         });
 
-        // تابع تنظیم زبان
         function setLanguage(lang) {
             if (!['fa', 'ar', 'en'].includes(lang)) return;
             currentLang = lang;
@@ -850,12 +1137,6 @@
             showToast('زبان تغییر کرد', 'success');
         }
 
-        // ===== بقیه توابع (همان‌های قبلی) =====
-        // ... (بقیه کد مثل قبل، فقط تابع updateUI و بقیه)
-        // برای جلوگیری از طولانی شدن بیش از حد، بقیه کد را از نسخه قبلی کپی کنید.
-        // اما در اینجا همه‌چیز کامل است.
-
-        // ===== مقداردهی اولیه =====
         function updateUI() {
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
@@ -871,13 +1152,826 @@
             renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
         }
 
-        // ===== بقیه کد (توابع قبلی) =====
-        // ... (همان کدهای قبلی برای رندر، ثبت، شارژ، VIP، تبدیل، پنل ادمین و ...)
-        // به دلیل محدودیت فضا، تمام کدهای قبلی را اینجا قرار می‌دهم اما در پاسخ نهایی به صورت کامل ارائه می‌شود.
+        // ===== دسته‌بندی‌ها =====
+        const mainCats = ['پزشکی', 'گردشگری', 'زیارت'];
+        const subCats = {
+            'پزشکی': ['پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان', 'خدمات پرستاری', 'تجهیزات پزشکی',
+                'چشم‌پزشکی', 'کاشت مو', 'زیبایی', 'لیزر', 'پوست و مو'
+            ],
+            'گردشگری': ['تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر', 'شاندیز', 'سرعین', 'کیش',
+                'مشهد', 'اصفهان', 'شیراز'
+            ],
+            'زیارت': ['عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج', 'قم', 'جمکران',
+                'شاه چراغ'
+            ]
+        };
+        let currentMain = 'پزشکی';
+        let currentSub = '';
+        let allAds = [];
+        let favorites = [];
 
-        console.log('✅ J-DAR PWA با مودال زبان بارگذاری شد.');
-        console.log('👤 کاربر:', userId);
-        console.log('👑 ادمین:', isAdmin ? 'بله' : 'خیر');
+        function renderCategories() {
+            const mc = document.getElementById('mainCategoryList');
+            mc.innerHTML = mainCats.map(c =>
+                `<span class="category-chip ${c===currentMain?'active':''}" data-main="${c}">${t('categories_list', c)}</span>`
+            ).join('');
+            document.querySelectorAll('[data-main]').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentMain = el.dataset.main;
+                    currentSub = '';
+                    renderCategories();
+                    renderSubs(currentMain);
+                    filterAds();
+                });
+            });
+            renderSubs(currentMain);
+        }
+
+        function renderSubs(main) {
+            const sc = document.getElementById('subCategoryList');
+            const subs = subCats[main] || [];
+            let html = `<span class="category-chip ${currentSub===''?'active':''}" data-sub="">${t('all')}</span>`;
+            subs.forEach(s => {
+                html +=
+                    `<span class="category-chip ${s===currentSub?'active':''}" data-sub="${s}">${t('categories_list', s)}</span>`;
+            });
+            sc.innerHTML = html;
+            document.querySelectorAll('[data-sub]').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentSub = el.dataset.sub || '';
+                    document.querySelectorAll('[data-sub]').forEach(c => c.classList.remove('active'));
+                    el.classList.add('active');
+                    filterAds();
+                });
+            });
+        }
+
+        function filterAds() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAds.filter(ad => {
+                const matchMain = currentMain ? ad.category?.includes(currentMain) : true;
+                const matchSub = currentSub ? ad.category?.includes(currentSub) : true;
+                const matchTerm = ad.title?.toLowerCase().includes(term) || ad.description?.toLowerCase().includes(term);
+                return matchMain && matchSub && matchTerm;
+            });
+            renderAds(filtered, 'adsGrid');
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', filterAds);
+        document.getElementById('searchInput').addEventListener('keyup', filterAds);
+
+        // ===== رندر آگهی‌ها =====
+        function getRelativeTime(ts) {
+            const diff = Math.floor(Date.now() / 1000) - ts;
+            if (diff < 60) return 'چند لحظه پیش';
+            if (diff < 3600) return Math.floor(diff / 60) + ' دقیقه پیش';
+            if (diff < 86400) return Math.floor(diff / 3600) + ' ساعت پیش';
+            if (diff < 604800) return Math.floor(diff / 86400) + ' روز پیش';
+            return 'قدیمی';
+        }
+
+        function isNumericPrice(str) { return /^[\d,]+$/.test(str); }
+
+        function getImgUrl(imgIds) {
+            if (!imgIds || !imgIds.length) return 'https://via.placeholder.com/400x400?text=J-DAR';
+            return imgIds[0];
+        }
+
+        function renderAds(ads, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!ads.length) {
+                container.innerHTML = `<div style="text-align:center; color:#aaa; padding:20px;">${t('no_ads')}</div>`;
+                return;
+            }
+            container.innerHTML = ads.map(ad => {
+                const img = getImgUrl(ad.image_ids);
+                const isFav = favorites.includes(ad.id);
+                const time = getRelativeTime(ad.created_at);
+                const price = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency||'تومان'}` : t('negotiable');
+                const special = ad.ad_type === 'special' ?
+                    `<span class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</span>` : '';
+                const statusMap = {
+                    pending: `<span class="status-badge">${t('pending')}</span>`,
+                    approved: `<span class="status-badge approved">${t('approved')}</span>`,
+                    rejected: `<span class="status-badge rejected">${t('rejected')}</span>`
+                };
+                return `<div class="ad-card" data-id="${ad.id}">
+                    <div class="ad-card-image">
+                        <img src="${img}" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                        <div class="watermark">J-DAR</div>
+                        ${statusMap[ad.status] || ''}
+                    </div>
+                    <div class="ad-card-content">
+                        <div class="ad-card-title">${ad.title}</div>
+                        <div class="ad-card-price">💰 ${price}</div>
+                        <div class="ad-card-meta">
+                            ${special ? special + ' | ' : ''}
+                            <i class="fas fa-clock"></i> ${time}
+                            ${ad.city ? ' 📌 ' + ad.city : ''}
+                        </div>
+                    </div>
+                    <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
+                </div>`;
+            }).join('');
+            document.querySelectorAll(`#${containerId} .ad-card`).forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('.favorite')) showAd(card.dataset.id);
+                });
+            });
+        }
+
+        window.toggleFavorite = (e, id) => {
+            e.stopPropagation();
+            const idx = favorites.indexOf(id);
+            if (idx === -1) favorites.push(id);
+            else favorites.splice(idx, 1);
+            localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
+            renderAds(allAds, 'adsGrid');
+            renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
+        };
+
+        // ===== ثبت آگهی =====
+        let uploadedImages = [];
+
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            uploadedImages = [];
+            document.getElementById('imagePreviewGrid').innerHTML = '';
+            document.getElementById('postAdForm').reset();
+            updateSubCategories();
+            openModal('postAdModal');
+        });
+
+        function updateSubCategories() {
+            const main = document.getElementById('adMainCategory').value;
+            const subs = subCats[main] || [];
+            const sel = document.getElementById('adSubCategory');
+            sel.innerHTML = '<option value="">انتخاب کنید</option>';
+            subs.forEach(s => sel.innerHTML += `<option value="${s}">${t('categories_list', s)}</option>`);
+        }
+        document.getElementById('adMainCategory').addEventListener('change', updateSubCategories);
+        updateSubCategories();
+
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            const grid = document.getElementById('imagePreviewGrid');
+            for (const file of files) {
+                if (uploadedImages.length >= 4) { showToast('حداکثر ۴ تصویر', 'warning'); break; }
+                uploadedImages.push(file);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.innerHTML =
+                        `<img src="${ev.target.result}"><button class="remove-img" onclick="removeImage(${uploadedImages.length-1})"><i class="fas fa-times"></i></button>`;
+                    grid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        }
+
+        window.removeImage = (idx) => {
+            uploadedImages.splice(idx, 1);
+            const grid = document.getElementById('imagePreviewGrid');
+            grid.innerHTML = '';
+            uploadedImages.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.innerHTML =
+                        `<img src="${ev.target.result}"><button class="remove-img" onclick="removeImage(${i})"><i class="fas fa-times"></i></button>`;
+                    grid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        async function submitAd(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitAdBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
+
+            try {
+                const title = document.getElementById('adTitle').value.trim();
+                const price = document.getElementById('adPrice').value.trim();
+                const currency = document.getElementById('adCurrency').value;
+                const main = document.getElementById('adMainCategory').value;
+                const sub = document.getElementById('adSubCategory').value;
+                const city = document.getElementById('adCity').value.trim();
+                const adType = document.getElementById('adType').value;
+                const desc = document.getElementById('adDescription').value.trim();
+                const phone = document.getElementById('adPhone').value.trim();
+                const telegram = document.getElementById('adTelegram').value.trim();
+
+                if (!title || !price || !desc) { showToast('لطفاً تمام فیلدهای ضروری را پر کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال آگهی'; return; }
+
+                // تبدیل تصاویر به Base64
+                const imagePromises = uploadedImages.map(file => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => resolve(ev.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                });
+                const imageData = await Promise.all(imagePromises);
+
+                const adData = {
+                    title,
+                    price,
+                    currency,
+                    category: sub || main,
+                    city,
+                    ad_type: adType,
+                    description: desc,
+                    phone,
+                    telegram_username: telegram,
+                    image_ids: imageData,
+                    status: 'pending'
+                };
+
+                const data = await apiCall('/api/ads', {
+                    method: 'POST',
+                    body: JSON.stringify(adData)
+                });
+
+                if (data.success) {
+                    showToast('آگهی با موفقیت ثبت شد و در انتظار تایید است', 'success');
+                    closeModal('postAdModal');
+                    loadAppData();
+                } else {
+                    showToast(data.error || 'خطا در ثبت آگهی', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال آگهی';
+        }
+
+        // ===== شارژ =====
+        let receiptBase64 = null;
+
+        document.getElementById('chargeBtn').addEventListener('click', () => {
+            receiptBase64 = null;
+            document.getElementById('receiptPreview').style.display = 'none';
+            document.getElementById('chargeAmount').value = '';
+            document.querySelectorAll('.amount-option').forEach(el => el.classList.remove('active'));
+            openModal('chargeModal');
+        });
+
+        document.querySelectorAll('.amount-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.amount-option').forEach(e => e.classList.remove('active'));
+                el.classList.add('active');
+                const amt = el.dataset.amount;
+                if (amt === 'custom') { document.getElementById('chargeAmount').value = '';
+                    document.getElementById('chargeAmount').focus(); } else document.getElementById('chargeAmount')
+                    .value = amt;
+            });
+        });
+
+        function handleReceiptUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                receiptBase64 = ev.target.result;
+                document.getElementById('receiptPreview').style.display = 'block';
+                document.getElementById('receiptPreviewImg').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitCharge(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitChargeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
+
+            try {
+                const amount = parseInt(document.getElementById('chargeAmount').value.trim());
+                if (!amount || amount <= 0) { showToast('مبلغ معتبر وارد کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ'; return; }
+                if (!receiptBase64) { showToast('تصویر رسید را آپلود کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ'; return; }
+
+                const data = await apiCall('/api/charge', {
+                    method: 'POST',
+                    body: JSON.stringify({ amount, receipt: receiptBase64 })
+                });
+
+                if (data.success) {
+                    showToast('درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی افزایش می‌یابد.', 'success');
+                    closeModal('chargeModal');
+                    loadAppData();
+                } else {
+                    showToast(data.error || 'خطا در درخواست شارژ', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ';
+        }
+
+        // ===== VIP =====
+        document.getElementById('vipBtn').addEventListener('click', () => openModal('vipModal'));
+
+        async function subscribeVip(days, amount) {
+            try {
+                const data = await apiCall('/api/vip/subscribe', {
+                    method: 'POST',
+                    body: JSON.stringify({ days, amount })
+                });
+                if (data.success) {
+                    showToast('اشتراک ویژه با موفقیت فعال شد', 'success');
+                    closeModal('vipModal');
+                    loadAppData();
+                } else {
+                    showToast(data.error || 'خطا در فعال‌سازی اشتراک ویژه', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // ===== تبدیل امتیاز =====
+        document.getElementById('convertPointsBtn').addEventListener('click', () => {
+            document.getElementById('convertPointsBalance').textContent = currentUser?.points || 0;
+            openModal('convertPointsModal');
+        });
+
+        async function convertPoints(type) {
+            try {
+                const data = await apiCall('/api/points/convert', {
+                    method: 'POST',
+                    body: JSON.stringify({ type })
+                });
+                if (data.success) {
+                    showToast('امتیاز با موفقیت تبدیل شد', 'success');
+                    closeModal('convertPointsModal');
+                    loadAppData();
+                } else {
+                    showToast(data.error || 'خطا در تبدیل امتیاز', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // ===== جزییات آگهی =====
+        let currentAdImages = [];
+
+        window.showAd = (id) => {
+            const ad = allAds.find(a => a.id == id);
+            if (!ad) return;
+            currentAdImages = ad.image_ids || [];
+            const price = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency||'تومان'}` : t('negotiable');
+            const time = getRelativeTime(ad.created_at);
+
+            // دریافت نظرات از سرور
+            let reviewsHtml = '';
+            let avgRating = '0';
+            let reviewCount = 0;
+
+            // برای سادگی، نظرات را از allAds نمی‌گیریم، از API می‌گیریم
+            apiCall(`/api/reviews?adId=${id}`).then(data => {
+                if (data.success) {
+                    const reviews = data.reviews || [];
+                    reviewCount = reviews.length;
+                    if (reviewCount > 0) {
+                        const sum = reviews.reduce((a, b) => a + b.rating, 0);
+                        avgRating = (sum / reviewCount).toFixed(1);
+                    }
+                    const stars = '★'.repeat(Math.round(parseFloat(avgRating))) + '☆'.repeat(5 - Math.round(parseFloat(
+                    avgRating)));
+                    reviewsHtml = reviews.map(r => {
+                        const s = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                        return `<div class="review-item"><div class="user"><i class="fas fa-user-circle"></i><span class="user-name">${r.user_name || 'کاربر'}</span></div>
+                                <div class="rating-stars">${s}</div><div class="comment">${r.comment || ''}</div>
+                                <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div></div>`;
+                    }).join('');
+                    updateModalReviews(avgRating, stars, reviewCount, reviewsHtml);
+                }
+            }).catch(() => {});
+
+            const gallery = currentAdImages.length ? `
+                <div class="image-gallery">
+                    <img src="${currentAdImages[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                    ${currentAdImages.length > 1 ? `
+                    <div class="gallery-controls">
+                        <button id="prevImage"><i class="fas fa-chevron-right"></i></button>
+                        <span class="gallery-counter" id="imageCounter">1/${currentAdImages.length}</span>
+                        <button id="nextImage"><i class="fas fa-chevron-left"></i></button>
+                    </div>` : ''}
+                </div>` :
+                `<img src="https://via.placeholder.com/400x400?text=J-DAR" class="modal-image">`;
+
+            const desc = ad.description || '';
+            const descId = 'desc_' + ad.id;
+            const moreId = 'more_' + ad.id;
+            const descHtml = desc.length > 100 ?
+                `<div class="modal-description"><div class="description-text truncated" id="${descId}">${desc}</div>
+                <button class="read-more-btn" id="${moreId}" onclick="toggleReadMore('${descId}','${moreId}')">${t('readMore')}</button></div>` :
+                `<div class="modal-description">${desc}</div>`;
+
+            const modalHtml = `
+                <button class="modal-back" onclick="closeModal('adModal')"><i class="fas fa-arrow-right"></i></button>
+                <div class="modal-content-scroll">
+                    ${gallery}
+                    <div class="modal-title">${ad.title}</div>
+                    <div class="modal-location-time">${time} در ${ad.city || ''}</div>
+                    <div class="modal-price">💰 ${price}</div>
+                    ${descHtml}
+                    <div class="review-section">
+                        <div class="review-header" id="reviewHeader">
+                            <span class="avg"><i class="fas fa-star"></i> <span id="reviewAvg">${avgRating}</span></span>
+                            <span class="stars" id="reviewStars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
+                            <span class="count">(<span id="reviewCount">${reviewCount}</span> ${t('reviewsCount')})</span>
+                        </div>
+                        <div id="reviewsContainer">${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}</div>
+                        <div class="review-input">
+                            <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
+                            <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
+                            <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ارسال نظر</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="contact-btn" onclick="showContact('${ad.phone||''}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
+                    <button class="chat-btn" onclick="showChat('${ad.telegram_username||''}')"><i class="fas fa-comment-dots"></i> ${t('chat')}</button>
+                    <button class="contact-btn" style="border-color:#25D366!important;" onclick="showWhatsApp('${ad.phone||''}')"><i class="fab fa-whatsapp"></i> واتساپ</button>
+                </div>
+            `;
+            document.getElementById('modalContent').innerHTML = modalHtml;
+            openModal('adModal');
+
+            if (currentAdImages.length > 1) {
+                let idx = 0;
+                const img = document.getElementById('mainImage');
+                const prev = document.getElementById('prevImage');
+                const next = document.getElementById('nextImage');
+                const counter = document.getElementById('imageCounter');
+                if (prev && next) {
+                    prev.addEventListener('click', () => { idx = (idx - 1 + currentAdImages.length) % currentAdImages
+                            .length;
+                        img.src = currentAdImages[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + currentAdImages.length; });
+                    next.addEventListener('click', () => { idx = (idx + 1) % currentAdImages.length;
+                        img.src = currentAdImages[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + currentAdImages.length; });
+                }
+            }
+        };
+
+        function updateModalReviews(avg, stars, count, html) {
+            const avgEl = document.getElementById('reviewAvg');
+            const starsEl = document.getElementById('reviewStars');
+            const countEl = document.getElementById('reviewCount');
+            const container = document.getElementById('reviewsContainer');
+            if (avgEl) avgEl.textContent = avg;
+            if (starsEl) starsEl.textContent = stars;
+            if (countEl) countEl.textContent = count;
+            if (container) container.innerHTML = html || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>';
+        }
+
+        window.toggleReadMore = (id, btnId) => {
+            const el = document.getElementById(id);
+            const btn = document.getElementById(btnId);
+            if (el.classList.contains('truncated')) { el.classList.remove('truncated');
+                btn.textContent = t('readLess'); } else { el.classList.add('truncated');
+                btn.textContent = t('readMore'); }
+        };
+
+        window.submitReview = async (adId) => {
+            const rating = parseInt(document.getElementById('newRating').value);
+            const comment = document.getElementById('newComment').value.trim();
+            if (!rating || rating < 1 || rating > 5) { showToast('امتیاز بین 1 تا 5', 'error'); return; }
+            try {
+                const data = await apiCall('/api/review', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: adId, rating, comment })
+                });
+                if (data.success) {
+                    showToast('نظر شما ثبت شد', 'success');
+                    showAd(adId);
+                } else {
+                    showToast(data.error || 'خطا در ثبت نظر', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+        };
+
+        function showContact(phone) {
+            if (!phone) { showToast(t('noPhone'), 'warning'); return; }
+            tg?.showPopup({
+                title: '📞 تماس',
+                message: phone,
+                buttons: [{ id: 'call', type: 'default', text: t('call') }, { id: 'copy', type: 'default',
+                        text: t('copyHint') }, { type: 'cancel' }]
+            }, (btn) => {
+                if (btn === 'call') window.location.href = `tel:${phone}`;
+                else if (btn === 'copy') navigator.clipboard.writeText(phone).then(() => showToast(t('copyHint'),
+                    'success'));
+            });
+        }
+
+        function showChat(username) {
+            if (!username) { showToast(t('noUsername'), 'warning'); return; }
+            tg?.openTelegramLink(`https://t.me/${username}`);
+        }
+
+        function showWhatsApp(phone) {
+            if (!phone) { showToast('شماره تماس ثبت نشده', 'warning'); return; }
+            const clean = phone.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${clean}`, '_blank');
+        }
+
+        // ===== پروفایل =====
+        function updateUserUI() {
+            if (!currentUser) return;
+            document.getElementById('walletBalance').textContent = (currentUser.balance || 0).toLocaleString();
+            document.getElementById('userPoints').textContent = currentUser.points || 0;
+            document.getElementById('profileBalance').textContent = (currentUser.balance || 0).toLocaleString();
+            document.getElementById('profilePoints').textContent = currentUser.points || 0;
+            document.getElementById('profileDisplayName').value = currentUser.display_name || '';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+            document.getElementById('profileTgUsername').value = currentUser.tg_username || '';
+            document.getElementById('profileCountry').value = currentUser.country || 'IR';
+            document.getElementById('profileReferralLink').value = currentUser.referral_code ?
+                `https://t.me/your_bot?start=${currentUser.referral_code}` : 'کد دعوت موجود نیست';
+        }
+
+        document.getElementById('saveProfile').addEventListener('click', async () => {
+            const display_name = document.getElementById('profileDisplayName').value.trim();
+            const tg_username = document.getElementById('profileTgUsername').value.trim();
+            const country = document.getElementById('profileCountry').value;
+            try {
+                const data = await apiCall('/api/user/profile', {
+                    method: 'POST',
+                    body: JSON.stringify({ display_name, tg_username, country })
+                });
+                if (data.success) {
+                    showToast(t('save'), 'success');
+                    currentUser = data.user;
+                    updateUserUI();
+                } else {
+                    showToast(data.error || 'خطا در ذخیره', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
+            }
+        });
+
+        document.getElementById('copyReferral').addEventListener('click', () => {
+            const link = document.getElementById('profileReferralLink');
+            navigator.clipboard.writeText(link.value).then(() => showToast(t('copyHint'), 'success'));
+        });
+
+        // ===== پنل ادمین =====
+        async function loadAdminPanel() {
+            try {
+                const [usersData, adsData, chargesData] = await Promise.all([
+                    apiCall('/api/admin/users'),
+                    apiCall('/api/admin/ads'),
+                    apiCall('/api/admin/charges')
+                ]);
+
+                // کاربران در انتظار
+                const pendingUsers = (usersData.users || []).filter(u => u.status === 'pending');
+                const usersList = document.getElementById('adminUsersList');
+                if (!pendingUsers.length) {
+                    usersList.innerHTML = '<p style="color:#aaa;">هیچ کاربر در انتظار تاییدی نیست.</p>';
+                } else {
+                    usersList.innerHTML = pendingUsers.map(u => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${u.display_name || u.phone}</div>
+                                <div class="sub">${u.phone} | کد: ${u.verification_code}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveUser('${u.id}')">✓</button>
+                                <button class="reject" onclick="adminRejectUser('${u.id}')">✗</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // آگهی‌های در انتظار
+                const pendingAds = (adsData.ads || []).filter(a => a.status === 'pending');
+                const adsList = document.getElementById('adminAdsList');
+                if (!pendingAds.length) {
+                    adsList.innerHTML = '<p style="color:#aaa;">هیچ آگهی در انتظار تاییدی نیست.</p>';
+                } else {
+                    adsList.innerHTML = pendingAds.map(ad => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">${ad.category} | ${ad.city || ''}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveAd(${ad.id})">✓</button>
+                                <button class="reject" onclick="adminRejectAd(${ad.id})">✗</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // درخواست‌های شارژ
+                const pendingCharges = (chargesData.charges || []).filter(c => c.status === 'pending');
+                const chargesList = document.getElementById('adminChargesList');
+                if (!pendingCharges.length) {
+                    chargesList.innerHTML = '<p style="color:#aaa;">هیچ درخواست شارژی در انتظار نیست.</p>';
+                } else {
+                    chargesList.innerHTML = pendingCharges.map(c => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${c.amount.toLocaleString()} تومان</div>
+                                <div class="sub">کاربر: ${c.user_phone || c.user_id}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveCharge(${c.id})">✓</button>
+                                <button class="reject" onclick="adminRejectCharge(${c.id})">✗</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                showToast('خطا در بارگذاری پنل ادمین', 'error');
+            }
+        }
+
+        window.adminApproveUser = async (userId) => {
+            try {
+                const data = await apiCall('/api/admin/user/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId })
+                });
+                if (data.success) { showToast('کاربر تایید شد', 'success');
+                    loadAdminPanel(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        window.adminRejectUser = async (userId) => {
+            try {
+                const data = await apiCall('/api/admin/user/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId })
+                });
+                if (data.success) { showToast('کاربر رد شد', 'warning');
+                    loadAdminPanel(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        window.adminApproveAd = async (adId) => {
+            try {
+                const data = await apiCall('/api/admin/ad/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: adId })
+                });
+                if (data.success) { showToast('آگهی تایید شد', 'success');
+                    loadAdminPanel();
+                    loadAppData(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        window.adminRejectAd = async (adId) => {
+            try {
+                const data = await apiCall('/api/admin/ad/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: adId })
+                });
+                if (data.success) { showToast('آگهی رد شد', 'warning');
+                    loadAdminPanel();
+                    loadAppData(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        window.adminApproveCharge = async (chargeId) => {
+            try {
+                const data = await apiCall('/api/admin/charge/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ charge_id: chargeId })
+                });
+                if (data.success) { showToast('شارژ تایید شد', 'success');
+                    loadAdminPanel();
+                    loadAppData(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        window.adminRejectCharge = async (chargeId) => {
+            try {
+                const data = await apiCall('/api/admin/charge/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ charge_id: chargeId })
+                });
+                if (data.success) { showToast('شارژ رد شد', 'warning');
+                    loadAdminPanel(); } else showToast(data.error, 'error');
+            } catch (err) { showToast(err.message, 'error'); }
+        };
+
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            if (panel.style.display === 'block') loadAdminPanel();
+        });
+
+        // ===== ناوبری =====
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+                const page = item.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page + 'Page').classList.add('active');
+                if (page === 'favorites') renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
+                else if (page === 'profile') updateUserUI();
+            });
+        });
+
+        // ===== راهنما =====
+        document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
+        document.getElementById('helpClose').addEventListener('click', () => closeModal('helpModal'));
+        document.getElementById('supportBtn').addEventListener('click', () => {
+            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
+        });
+
+        // ===== اطلاعیه =====
+        if (currentUser?.is_admin) {
+            document.getElementById('noticeEditBtn').style.display = 'flex';
+        }
+
+        document.getElementById('noticeEditBtn').addEventListener('click', () => {
+            document.getElementById('noticeEditText').value = document.getElementById('noticeText').textContent;
+            openModal('noticeEditModal');
+        });
+
+        document.getElementById('noticeSaveBtn').addEventListener('click', async () => {
+            const txt = document.getElementById('noticeEditText').value.trim();
+            if (!txt) return;
+            try {
+                const data = await apiCall('/api/notice', {
+                    method: 'POST',
+                    body: JSON.stringify({ notice: txt })
+                });
+                if (data.success) {
+                    document.getElementById('noticeText').textContent = txt;
+                    closeModal('noticeEditModal');
+                    showToast('اطلاعیه به‌روز شد', 'success');
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+        document.getElementById('noticeCancelBtn').addEventListener('click', () => closeModal('noticeEditModal'));
+
+        // ===== PWA =====
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaInstall').classList.add('show');
+        });
+        document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') { document.getElementById('pwaInstall').classList.remove('show');
+                    showToast('J-DAR نصب شد!', 'success'); }
+                deferredPrompt = null;
+            }
+        });
+
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                const CACHE='jedar-v3';
+                const URLS=['.','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2'];
+                self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS))));
+                self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+                self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
+            `)).catch(() => {});
+        }
+
+        // ===== مقداردهی اولیه =====
+        if (!tg) document.getElementById('telegramWarning').classList.add('show');
+
+        // بررسی احراز هویت
+        checkAuth();
+
+        console.log('✅ J-DAR PWA بارگذاری شد.');
+        console.log('👤 کاربر:', currentUser?.phone || 'ناشناس');
+        console.log('👑 ادمین:', currentUser?.is_admin ? 'بله' : 'خیر');
     </script>
 </body>
-    </html>
+        </html>
