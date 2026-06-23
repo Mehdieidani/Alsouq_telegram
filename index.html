@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== استایل‌های کامل (همانند قبل) ===== */
+        /* ===== استایل‌های کامل ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -295,6 +295,9 @@
         .auth-page .auth-code-input { display:flex; gap:10px; margin-top:10px; }
         .auth-page .auth-code-input input { flex:1; text-align:center; font-size:24px; letter-spacing:8px; }
         .auth-page .auth-code-input button { flex-shrink:0; padding:10px 20px; }
+
+        .admin-login-box { background:rgba(255,215,0,0.1); border:1px solid #daa520; border-radius:30px; padding:20px; margin-bottom:20px; }
+        .admin-login-box h4 { color:#daa520; margin-bottom:15px; }
 
         @media (max-width:480px) {
             .form-row { grid-template-columns:1fr; }
@@ -656,32 +659,31 @@
     </div>
 
     <script>
-        // ============================================================
-        // سیستم احراز هویت با کد تایید در خود صفحه (بدون ربات)
-        // ============================================================
+        // ================================================================
+        // 🚀 J-DAR - مینی‌اپ کامل با هماهنگی Worker
+        // ================================================================
+
+        // ===== تنظیمات =====
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        const ADMIN_PHONE = '09332356547';
+        const ADMIN_PASSWORD = 'Mehdi13721##Mehdi13721##';
 
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand();
             tg.enableClosingConfirmation(); }
 
-        // ===== وضعیت =====
+        // ===== حالت‌های برنامه =====
         let currentUser = null;
         let authToken = localStorage.getItem('jedar_token');
+        let authMode = 'register'; // 'register' | 'login'
         let pendingPhone = null;
         let pendingCode = null;
-        let authMode = 'register'; // 'register' | 'login'
 
-        // ===== داده‌های ذخیره‌شده در localStorage =====
-        let users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
+        // ===== داده‌های محلی (برای fallback در صورت خطای Worker) =====
         let allAds = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-        let charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
-        let reviews = JSON.parse(localStorage.getItem('jedar_reviews') || '[]');
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let noticeText = localStorage.getItem('jedar_notice') ||
             'تنها حمایت شما از این پلتفرم، معرفی آن به دوستان و آشنایانتان است. با تشکر از همراهی شما.';
-
-        // شناسه ادمین (شماره موبایل مدیر)
-        const ADMIN_PHONE = '09123456789'; // <-- شماره مدیر را اینجا قرار دهید
 
         // ===== زبان =====
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
@@ -850,8 +852,31 @@
             return String(Math.floor(100000 + Math.random() * 900000));
         }
 
+        // ===== API Helper =====
+        async function apiCall(endpoint, options = {}) {
+            const url = API_BASE + endpoint;
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            try {
+                const res = await fetch(url, { ...options, headers });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || 'خطا در ارتباط با سرور');
+                }
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
         // ============================================================
-        // احراز هویت با کد تایید در خود صفحه
+        // 🔐 احراز هویت
         // ============================================================
 
         function toggleAuthMode() {
@@ -886,127 +911,125 @@
             }
         }
 
-        function handleAuth() {
+        async function handleAuth() {
             const phone = document.getElementById('authPhone').value.trim();
             if (!phone) { showToast('شماره موبایل را وارد کنید', 'error'); return; }
 
-            if (authMode === 'register') {
-                // ثبت‌نام
-                const name = document.getElementById('authName').value.trim();
-                if (!name) { showToast('نام کامل را وارد کنید', 'error'); return; }
-                const tgUsername = document.getElementById('authTgUsername').value.trim();
+            const btn = document.getElementById('authSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
 
-                // بررسی تکراری نبودن شماره
-                if (users[phone]) {
-                    showToast('این شماره قبلاً ثبت شده است. وارد شوید.', 'warning');
-                    return;
+            try {
+                if (authMode === 'register') {
+                    const name = document.getElementById('authName').value.trim();
+                    if (!name) { showToast('نام کامل را وارد کنید', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="authBtnText">ثبت‌نام</span>'; return; }
+                    const tgUsername = document.getElementById('authTgUsername').value.trim();
+
+                    const data = await apiCall('/api/register', {
+                        method: 'POST',
+                        body: JSON.stringify({ phone, name, tg_username: tgUsername })
+                    });
+
+                    if (data.success) {
+                        pendingPhone = phone;
+                        pendingCode = data.code;
+                        document.getElementById('authCodeDisplay').textContent = data.code;
+                        document.getElementById('codeField').style.display = 'block';
+                        document.getElementById('authSubmitBtn').style.display = 'none';
+                        showToast('کد تایید صادر شد. لطفاً آن را در زیر وارد کنید.', 'success');
+                    }
+                } else {
+                    // ورود
+                    const data = await apiCall('/api/login', {
+                        method: 'POST',
+                        body: JSON.stringify({ phone })
+                    });
+
+                    if (data.success) {
+                        authToken = data.token;
+                        localStorage.setItem('jedar_token', authToken);
+                        currentUser = data.user;
+                        showToast('ورود موفق', 'success');
+                        showApp();
+                    }
                 }
-
-                // تولید کد تایید
-                pendingPhone = phone;
-                pendingCode = generateCode();
-                document.getElementById('authCodeDisplay').textContent = pendingCode;
-
-                // ذخیره موقت کاربر با وضعیت pending
-                users[phone] = {
-                    phone: phone,
-                    display_name: name,
-                    tg_username: tgUsername,
-                    country: 'IR',
-                    balance: 0,
-                    points: 0,
-                    referral_code: 'REF-' + Date.now().toString(36).toUpperCase(),
-                    status: 'pending',
-                    verification_code: pendingCode,
-                    created_at: Date.now()
-                };
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-
-                document.getElementById('codeField').style.display = 'block';
-                document.getElementById('authSubmitBtn').style.display = 'none';
-                showToast('کد تایید صادر شد. لطفاً آن را در زیر وارد کنید.', 'success');
-            } else {
-                // ورود
-                if (!users[phone]) {
-                    showToast('کاربری با این شماره یافت نشد. ثبت‌نام کنید.', 'error');
-                    return;
-                }
-                if (users[phone].status !== 'approved') {
-                    showToast('حساب شما هنوز تایید نشده است. با ادمین تماس بگیرید.', 'warning');
-                    return;
-                }
-                // ورود موفق
-                currentUser = users[phone];
-                authToken = 'token_' + Date.now();
-                localStorage.setItem('jedar_token', authToken);
-                localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
-                showToast('ورود موفق', 'success');
-                showApp();
+            } catch (err) {
+                showToast(err.message || 'خطا در ارتباط با سرور', 'error');
             }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span id="authBtnText">' + (authMode === 'register' ? 'ثبت‌نام' :
+                'ورود') + '</span>';
         }
 
-        function verifyCode() {
+        async function verifyCode() {
             const input = document.getElementById('authCodeInput').value.trim();
             if (!input) { showToast('کد را وارد کنید', 'error'); return; }
 
-            if (input !== pendingCode) {
-                showToast('کد اشتباه است. دوباره تلاش کنید.', 'error');
+            try {
+                const data = await apiCall('/api/verify', {
+                    method: 'POST',
+                    body: JSON.stringify({ phone: pendingPhone, code: input })
+                });
+
+                if (data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('jedar_token', authToken);
+                    currentUser = data.user;
+                    showToast('✅ حساب شما با موفقیت تایید شد!', 'success');
+                    showApp();
+                }
+            } catch (err) {
+                showToast(err.message || 'کد اشتباه است', 'error');
+            }
+        }
+
+        async function generateNewCode() {
+            if (!pendingPhone) { showToast('لطفاً ابتدا ثبت‌نام کنید', 'error'); return; }
+            try {
+                const data = await apiCall('/api/register', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        phone: pendingPhone,
+                        name: document.getElementById('authName').value.trim(),
+                        tg_username: document.getElementById('authTgUsername').value.trim()
+                    })
+                });
+                if (data.success) {
+                    pendingCode = data.code;
+                    document.getElementById('authCodeDisplay').textContent = data.code;
+                    showToast('کد جدید صادر شد', 'success');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 👤 مدیریت کاربر
+        // ============================================================
+
+        async function checkAuth() {
+            if (!authToken) {
+                showAuth();
                 return;
             }
-
-            // تایید کاربر
-            if (users[pendingPhone]) {
-                users[pendingPhone].status = 'approved';
-                users[pendingPhone].verified_at = Date.now();
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-
-                showToast('✅ حساب شما با موفقیت تایید شد! حالا می‌توانید وارد شوید.', 'success');
-
-                // پنهان کردن بخش کد و نمایش دکمه ورود
-                document.getElementById('codeField').style.display = 'none';
-                document.getElementById('authSubmitBtn').style.display = 'block';
-                document.getElementById('authBtnText').textContent = 'ورود';
-                authMode = 'login';
-                updateAuthUI();
-
-                // پر کردن شماره
-                document.getElementById('authPhone').value = pendingPhone;
-
-                // پاک کردن داده‌های موقت
-                pendingCode = null;
-                pendingPhone = null;
+            try {
+                const data = await apiCall('/api/me');
+                if (data.success) {
+                    currentUser = data.user;
+                    showApp();
+                } else {
+                    localStorage.removeItem('jedar_token');
+                    authToken = null;
+                    showAuth();
+                }
+            } catch (err) {
+                localStorage.removeItem('jedar_token');
+                authToken = null;
+                showAuth();
             }
-        }
-
-        function generateNewCode() {
-            if (!pendingPhone) { showToast('لطفاً ابتدا ثبت‌نام کنید', 'error'); return; }
-            pendingCode = generateCode();
-            document.getElementById('authCodeDisplay').textContent = pendingCode;
-            // بروزرسانی در users
-            if (users[pendingPhone]) {
-                users[pendingPhone].verification_code = pendingCode;
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-            }
-            showToast('کد جدید صادر شد', 'success');
-        }
-
-        // ============================================================
-        // ورود با توکن ذخیره‌شده
-        // ============================================================
-
-        function checkAuth() {
-            const savedUser = localStorage.getItem('jedar_current_user');
-            if (savedUser) {
-                try {
-                    const user = JSON.parse(savedUser);
-                    if (user && user.status === 'approved') {
-                        currentUser = user;
-                        showApp();
-                        return;
-                    }
-                } catch (e) {}
-            }
-            showAuth();
         }
 
         function showApp() {
@@ -1014,7 +1037,6 @@
             document.getElementById('appContainer').style.display = 'block';
             loadAppData();
             updateUserUI();
-            // اگر ادمین است، پنل ادمین را نشان بده
             if (currentUser && currentUser.phone === ADMIN_PHONE) {
                 document.getElementById('adminBtn').style.display = 'flex';
                 document.getElementById('adminPanel').style.display = 'block';
@@ -1031,29 +1053,56 @@
         function logout() {
             localStorage.removeItem('jedar_token');
             localStorage.removeItem('jedar_current_user');
+            authToken = null;
             currentUser = null;
             showAuth();
             showToast('خارج شدید', 'info');
         }
 
         // ============================================================
-        // بارگذاری داده‌ها
+        // 📊 بارگذاری داده‌ها
         // ============================================================
 
-        function loadAppData() {
+        async function loadAppData() {
+            try {
+                // دریافت آگهی‌ها
+                const adsData = await apiCall('/api/ads');
+                if (adsData.success) {
+                    allAds = adsData.ads || [];
+                    localStorage.setItem('jedar_ads', JSON.stringify(allAds));
+                }
+
+                // دریافت اطلاعیه
+                const noticeData = await apiCall('/api/notice');
+                if (noticeData.success) {
+                    noticeText = noticeData.notice;
+                    localStorage.setItem('jedar_notice', noticeText);
+                }
+
+                // دریافت اطلاعات کاربر
+                const meData = await apiCall('/api/me');
+                if (meData.success) {
+                    currentUser = meData.user;
+                    localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
+                }
+            } catch (err) {
+                console.warn('خطا در بارگذاری داده‌ها، استفاده از داده‌های محلی:', err);
+                // استفاده از داده‌های محلی
+            }
+
             document.getElementById('noticeText').textContent = noticeText;
             renderCategories();
             renderAds(allAds, 'adsGrid');
             renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
             updateUserUI();
-            // ادمین
+
             if (currentUser && currentUser.phone === ADMIN_PHONE) {
                 renderAdminPanel();
             }
         }
 
         // ============================================================
-        // زبان
+        // 🌐 زبان
         // ============================================================
 
         document.getElementById('langMainBtn').addEventListener('click', () => {
@@ -1099,7 +1148,7 @@
         }
 
         // ============================================================
-        // دسته‌بندی‌ها
+        // 📂 دسته‌بندی‌ها
         // ============================================================
 
         const mainCats = ['پزشکی', 'گردشگری', 'زیارت'];
@@ -1168,7 +1217,7 @@
         document.getElementById('searchInput').addEventListener('keyup', filterAds);
 
         // ============================================================
-        // رندر آگهی‌ها
+        // 📋 رندر آگهی‌ها
         // ============================================================
 
         function getRelativeTime(ts) {
@@ -1242,7 +1291,7 @@
         };
 
         // ============================================================
-        // ثبت آگهی
+        // 📝 ثبت آگهی
         // ============================================================
 
         let uploadedImages = [];
@@ -1334,38 +1383,36 @@
                 });
                 const imageData = await Promise.all(imagePromises);
 
-                const newAd = {
-                    id: Date.now() + Math.random(),
-                    user_id: currentUser.phone,
-                    title,
-                    price,
-                    currency,
-                    category: sub || main,
-                    city,
-                    ad_type: adType,
-                    description: desc,
-                    phone,
-                    telegram_username: telegram,
-                    image_ids: imageData,
-                    status: 'pending',
-                    created_at: Math.floor(Date.now() / 1000),
-                    rating_avg: 0,
-                    rating_count: 0
-                };
-                allAds.push(newAd);
-                localStorage.setItem('jedar_ads', JSON.stringify(allAds));
-                showToast('آگهی ثبت شد و در انتظار تایید است', 'success');
-                closeModal('postAdModal');
-                renderAds(allAds, 'adsGrid');
-                if (currentUser.phone === ADMIN_PHONE) renderAdminPanel();
-            } catch (err) { showToast('خطا در ثبت آگهی', 'error');
-                console.error(err); }
+                const data = await apiCall('/api/ads', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        price,
+                        currency,
+                        category: sub || main,
+                        city,
+                        ad_type: adType,
+                        description: desc,
+                        phone,
+                        telegram_username: telegram,
+                        image_ids: imageData
+                    })
+                });
+
+                if (data.success) {
+                    showToast('آگهی ثبت شد و در انتظار تایید است', 'success');
+                    closeModal('postAdModal');
+                    loadAppData();
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ثبت آگهی', 'error');
+            }
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال';
         }
 
         // ============================================================
-        // شارژ
+        // 💰 شارژ
         // ============================================================
 
         let receiptBase64 = null;
@@ -1418,27 +1465,25 @@
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال'; return; }
 
-                const newCharge = {
-                    id: Date.now() + Math.random(),
-                    user_id: currentUser.phone,
-                    amount,
-                    receipt: receiptBase64,
-                    status: 'pending',
-                    created_at: Math.floor(Date.now() / 1000)
-                };
-                charges.push(newCharge);
-                localStorage.setItem('jedar_charges', JSON.stringify(charges));
-                showToast('درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی افزایش می‌یابد.', 'success');
-                closeModal('chargeModal');
-                if (currentUser.phone === ADMIN_PHONE) renderAdminPanel();
-            } catch (err) { showToast('خطا در درخواست شارژ', 'error');
-                console.error(err); }
+                const data = await apiCall('/api/charge', {
+                    method: 'POST',
+                    body: JSON.stringify({ amount, receipt: receiptBase64 })
+                });
+
+                if (data.success) {
+                    showToast('درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی افزایش می‌یابد.', 'success');
+                    closeModal('chargeModal');
+                    loadAppData();
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در درخواست شارژ', 'error');
+            }
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال';
         }
 
         // ============================================================
-        // VIP
+        // 👑 VIP
         // ============================================================
 
         document.getElementById('vipBtn').addEventListener('click', () => {
@@ -1446,22 +1491,25 @@
             openModal('vipModal');
         });
 
-        function subscribeVip(days, amount) {
+        async function subscribeVip(days, amount) {
             if (!currentUser) { showToast('لطفاً وارد شوید', 'warning'); return; }
-            if (currentUser.balance < amount) { showToast('موجودی کافی نیست', 'error'); return; }
-            currentUser.balance -= amount;
-            if (!currentUser.vip) currentUser.vip = [];
-            currentUser.vip.push({ days, start: Date.now(), end: Date.now() + days * 24 * 60 * 60 * 1000 });
-            users[currentUser.phone] = currentUser;
-            localStorage.setItem('jedar_users', JSON.stringify(users));
-            localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
-            showToast('اشتراک ویژه فعال شد', 'success');
-            closeModal('vipModal');
-            updateUserUI();
+            try {
+                const data = await apiCall('/api/vip/subscribe', {
+                    method: 'POST',
+                    body: JSON.stringify({ days, amount })
+                });
+                if (data.success) {
+                    showToast('اشتراک ویژه فعال شد', 'success');
+                    closeModal('vipModal');
+                    loadAppData();
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در فعال‌سازی اشتراک', 'error');
+            }
         }
 
         // ============================================================
-        // تبدیل امتیاز
+        // 🎁 تبدیل امتیاز
         // ============================================================
 
         document.getElementById('convertPointsBtn').addEventListener('click', () => {
@@ -1470,36 +1518,25 @@
             openModal('convertPointsModal');
         });
 
-        function convertPoints(type) {
+        async function convertPoints(type) {
             if (!currentUser) { showToast('لطفاً وارد شوید', 'warning'); return; }
-            let needed = 0,
-                reward = 0,
-                rewardType = '';
-            if (type === 'money') { needed = 100;
-                reward = 1000;
-                rewardType = 'balance'; } else if (type === 'vip') { needed = 50;
-                reward = 1;
-                rewardType = 'vip_days'; } else { showToast('نوع نامعتبر', 'error'); return; }
-
-            if (currentUser.points < needed) { showToast('امتیاز کافی نیست', 'error'); return; }
-
-            currentUser.points -= needed;
-            if (rewardType === 'balance') currentUser.balance += reward;
-            else if (rewardType === 'vip_days') {
-                if (!currentUser.vip) currentUser.vip = [];
-                currentUser.vip.push({ days: reward, start: Date.now(), end: Date.now() + reward * 24 * 60 * 60 * 1000 });
+            try {
+                const data = await apiCall('/api/points/convert', {
+                    method: 'POST',
+                    body: JSON.stringify({ type })
+                });
+                if (data.success) {
+                    showToast('امتیاز تبدیل شد', 'success');
+                    closeModal('convertPointsModal');
+                    loadAppData();
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در تبدیل امتیاز', 'error');
             }
-            users[currentUser.phone] = currentUser;
-            localStorage.setItem('jedar_users', JSON.stringify(users));
-            localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
-            showToast('امتیاز تبدیل شد', 'success');
-            closeModal('convertPointsModal');
-            updateUserUI();
-            document.getElementById('convertPointsBalance').textContent = currentUser.points;
         }
 
         // ============================================================
-        // جزییات آگهی
+        // 📄 جزییات آگهی
         // ============================================================
 
         window.showAd = (id) => {
@@ -1507,18 +1544,6 @@
             if (!ad) return;
             const price = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency||'تومان'}` : t('negotiable');
             const time = getRelativeTime(ad.created_at);
-
-            const adReviews = reviews.filter(r => r.ad_id == id);
-            const avg = adReviews.length ? (adReviews.reduce((a, b) => a + b.rating, 0) / adReviews.length).toFixed(1) :
-                '0';
-            const stars = '★'.repeat(Math.round(parseFloat(avg))) + '☆'.repeat(5 - Math.round(parseFloat(avg)));
-
-            const reviewsHtml = adReviews.map(r => {
-                const s = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-                return `<div class="review-item"><div class="user"><i class="fas fa-user-circle"></i><span class="user-name">${r.user_name || 'کاربر'}</span></div>
-                        <div class="rating-stars">${s}</div><div class="comment">${r.comment || ''}</div>
-                        <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div></div>`;
-            }).join('');
 
             const images = ad.image_ids || [];
             const gallery = images.length ? `
@@ -1551,11 +1576,11 @@
                     ${descHtml}
                     <div class="review-section">
                         <div class="review-header">
-                            <span class="avg"><i class="fas fa-star"></i> ${avg}</span>
-                            <span class="stars">${stars}</span>
-                            <span class="count">(${adReviews.length} ${t('reviewsCount')})</span>
+                            <span class="avg"><i class="fas fa-star"></i> ${ad.rating_avg || 0}</span>
+                            <span class="stars">${'★'.repeat(Math.round(ad.rating_avg || 0))}${'☆'.repeat(5 - Math.round(ad.rating_avg || 0))}</span>
+                            <span class="count">(${ad.rating_count || 0} ${t('reviewsCount')})</span>
                         </div>
-                        ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
+                        <div id="reviewsContainer"><p style="color:#aaa;">نظرات در حال بارگذاری...</p></div>
                         <div class="review-input">
                             <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
                             <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
@@ -1571,6 +1596,9 @@
             `;
             document.getElementById('modalContent').innerHTML = modalHtml;
             openModal('adModal');
+
+            // بارگذاری نظرات
+            loadReviews(ad.id);
 
             if (images.length > 1) {
                 let idx = 0;
@@ -1589,6 +1617,29 @@
             }
         };
 
+        async function loadReviews(adId) {
+            try {
+                const data = await apiCall(`/api/reviews?adId=${adId}`);
+                if (data.success && data.reviews) {
+                    const container = document.getElementById('reviewsContainer');
+                    if (data.reviews.length) {
+                        container.innerHTML = data.reviews.map(r => `
+                            <div class="review-item">
+                                <div class="user"><i class="fas fa-user-circle"></i><span class="user-name">${r.user_name || 'کاربر'}</span></div>
+                                <div class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                                <div class="comment">${r.comment || ''}</div>
+                                <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>';
+                    }
+                }
+            } catch (err) {
+                console.warn('خطا در بارگذاری نظرات:', err);
+            }
+        }
+
         window.toggleReadMore = (id, btnId) => {
             const el = document.getElementById(id);
             const btn = document.getElementById(btnId);
@@ -1597,32 +1648,23 @@
                 btn.textContent = t('readMore'); }
         };
 
-        window.submitReview = (adId) => {
+        window.submitReview = async (adId) => {
             if (!currentUser) { showToast('لطفاً وارد شوید', 'warning'); return; }
             const rating = parseInt(document.getElementById('newRating').value);
             const comment = document.getElementById('newComment').value.trim();
             if (!rating || rating < 1 || rating > 5) { showToast('امتیاز بین 1 تا 5', 'error'); return; }
-            const newReview = {
-                id: Date.now() + Math.random(),
-                ad_id: adId,
-                user_id: currentUser.phone,
-                user_name: currentUser.display_name || 'کاربر',
-                rating,
-                comment,
-                created_at: Math.floor(Date.now() / 1000)
-            };
-            reviews.push(newReview);
-            localStorage.setItem('jedar_reviews', JSON.stringify(reviews));
-
-            const ad = allAds.find(a => a.id == adId);
-            if (ad) {
-                const adRev = reviews.filter(r => r.ad_id == adId);
-                ad.rating_avg = adRev.length ? (adRev.reduce((a, b) => a + b.rating, 0) / adRev.length) : 0;
-                ad.rating_count = adRev.length;
-                localStorage.setItem('jedar_ads', JSON.stringify(allAds));
+            try {
+                const data = await apiCall('/api/review', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: adId, rating, comment })
+                });
+                if (data.success) {
+                    showToast('نظر شما ثبت شد', 'success');
+                    loadReviews(adId);
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ثبت نظر', 'error');
             }
-            showToast('نظر شما ثبت شد', 'success');
-            showAd(adId);
         };
 
         function showContact(phone) {
@@ -1651,7 +1693,7 @@
         }
 
         // ============================================================
-        // پروفایل
+        // 👤 پروفایل
         // ============================================================
 
         function updateUserUI() {
@@ -1668,16 +1710,25 @@
                 `https://t.me/your_bot?start=${currentUser.referral_code}` : 'کد دعوت موجود نیست';
         }
 
-        document.getElementById('saveProfile').addEventListener('click', () => {
+        document.getElementById('saveProfile').addEventListener('click', async () => {
             if (!currentUser) { showToast('لطفاً وارد شوید', 'warning'); return; }
-            currentUser.display_name = document.getElementById('profileDisplayName').value.trim();
-            currentUser.tg_username = document.getElementById('profileTgUsername').value.trim();
-            currentUser.country = document.getElementById('profileCountry').value;
-            users[currentUser.phone] = currentUser;
-            localStorage.setItem('jedar_users', JSON.stringify(users));
-            localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
-            showToast(t('save'), 'success');
-            updateUserUI();
+            const display_name = document.getElementById('profileDisplayName').value.trim();
+            const tg_username = document.getElementById('profileTgUsername').value.trim();
+            const country = document.getElementById('profileCountry').value;
+            try {
+                const data = await apiCall('/api/user/profile', {
+                    method: 'POST',
+                    body: JSON.stringify({ display_name, tg_username, country })
+                });
+                if (data.success) {
+                    showToast(t('save'), 'success');
+                    currentUser = data.user;
+                    localStorage.setItem('jedar_current_user', JSON.stringify(currentUser));
+                    updateUserUI();
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا در ذخیره', 'error');
+            }
         });
 
         document.getElementById('copyReferral').addEventListener('click', () => {
@@ -1686,141 +1737,183 @@
         });
 
         // ============================================================
-        // پنل ادمین
+        // 🛡️ پنل ادمین
         // ============================================================
 
-        function renderAdminPanel() {
+        async function renderAdminPanel() {
             if (!currentUser || currentUser.phone !== ADMIN_PHONE) return;
 
-            // کاربران در انتظار
-            const pendingUsers = Object.values(users).filter(u => u.status === 'pending');
-            const usersList = document.getElementById('adminUsersList');
-            if (!pendingUsers.length) {
-                usersList.innerHTML = '<p style="color:#aaa;">هیچ کاربر در انتظار تاییدی نیست.</p>';
-            } else {
-                usersList.innerHTML = pendingUsers.map(u => `
-                    <div class="admin-item">
-                        <div class="info">
-                            <div class="title">${u.display_name || u.phone}</div>
-                            <div class="sub">${u.phone} | کد: ${u.verification_code}</div>
+            try {
+                // دریافت کاربران
+                const usersData = await apiCall('/api/admin/users', {
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
+                });
+                const pendingUsers = (usersData.users || []).filter(u => u.status === 'pending');
+                const usersList = document.getElementById('adminUsersList');
+                if (!pendingUsers.length) {
+                    usersList.innerHTML = '<p style="color:#aaa;">هیچ کاربر در انتظار تاییدی نیست.</p>';
+                } else {
+                    usersList.innerHTML = pendingUsers.map(u => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${u.display_name || u.phone}</div>
+                                <div class="sub">${u.phone}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveUser('${u.phone}')">✓</button>
+                                <button class="reject" onclick="adminRejectUser('${u.phone}')">✗</button>
+                            </div>
                         </div>
-                        <div class="actions">
-                            <button class="approve" onclick="adminApproveUser('${u.phone}')">✓</button>
-                            <button class="reject" onclick="adminRejectUser('${u.phone}')">✗</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
+                    `).join('');
+                }
 
-            // آگهی‌های در انتظار
-            const pendingAds = allAds.filter(a => a.status === 'pending');
-            const adsList = document.getElementById('adminAdsList');
-            if (!pendingAds.length) {
-                adsList.innerHTML = '<p style="color:#aaa;">هیچ آگهی در انتظار تاییدی نیست.</p>';
-            } else {
-                adsList.innerHTML = pendingAds.map(ad => `
-                    <div class="admin-item">
-                        <div class="info">
-                            <div class="title">${ad.title}</div>
-                            <div class="sub">${ad.category} | ${ad.city || ''} | ${ad.user_id}</div>
+                // دریافت آگهی‌ها
+                const adsData = await apiCall('/api/admin/ads', {
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
+                });
+                const pendingAds = (adsData.ads || []).filter(a => a.status === 'pending');
+                const adsList = document.getElementById('adminAdsList');
+                if (!pendingAds.length) {
+                    adsList.innerHTML = '<p style="color:#aaa;">هیچ آگهی در انتظار تاییدی نیست.</p>';
+                } else {
+                    adsList.innerHTML = pendingAds.map(ad => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">${ad.category} | ${ad.city || ''} | ${ad.user_id}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveAd(${ad.id})">✓</button>
+                                <button class="reject" onclick="adminRejectAd(${ad.id})">✗</button>
+                                <button class="delete" onclick="adminDeleteAd(${ad.id})">🗑</button>
+                            </div>
                         </div>
-                        <div class="actions">
-                            <button class="approve" onclick="adminApproveAd(${ad.id})">✓</button>
-                            <button class="reject" onclick="adminRejectAd(${ad.id})">✗</button>
-                            <button class="delete" onclick="adminDeleteAd(${ad.id})">🗑</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
+                    `).join('');
+                }
 
-            // درخواست‌های شارژ
-            const pendingCharges = charges.filter(c => c.status === 'pending');
-            const chargesList = document.getElementById('adminChargesList');
-            if (!pendingCharges.length) {
-                chargesList.innerHTML = '<p style="color:#aaa;">هیچ درخواست شارژی در انتظار نیست.</p>';
-            } else {
-                chargesList.innerHTML = pendingCharges.map(c => `
-                    <div class="admin-item">
-                        <div class="info">
-                            <div class="title">${c.amount.toLocaleString()} تومان</div>
-                            <div class="sub">کاربر: ${c.user_id}</div>
+                // دریافت درخواست‌های شارژ
+                const chargesData = await apiCall('/api/admin/charges', {
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
+                });
+                const pendingCharges = (chargesData.charges || []).filter(c => c.status === 'pending');
+                const chargesList = document.getElementById('adminChargesList');
+                if (!pendingCharges.length) {
+                    chargesList.innerHTML = '<p style="color:#aaa;">هیچ درخواست شارژی در انتظار نیست.</p>';
+                } else {
+                    chargesList.innerHTML = pendingCharges.map(c => `
+                        <div class="admin-item">
+                            <div class="info">
+                                <div class="title">${c.amount.toLocaleString()} تومان</div>
+                                <div class="sub">کاربر: ${c.user_id}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="approve" onclick="adminApproveCharge(${c.id})">✓</button>
+                                <button class="reject" onclick="adminRejectCharge(${c.id})">✗</button>
+                            </div>
                         </div>
-                        <div class="actions">
-                            <button class="approve" onclick="adminApproveCharge(${c.id})">✓</button>
-                            <button class="reject" onclick="adminRejectCharge(${c.id})">✗</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
+            } catch (err) {
+                showToast('خطا در بارگذاری پنل ادمین', 'error');
             }
         }
 
-        window.adminApproveUser = (phone) => {
-            if (users[phone]) {
-                users[phone].status = 'approved';
-                users[phone].verified_at = Date.now();
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                showToast('کاربر تایید شد', 'success');
-                renderAdminPanel();
-            }
+        // ===== توابع مدیریت =====
+
+        window.adminApproveUser = async (phone) => {
+            try {
+                const data = await apiCall('/api/admin/user/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: phone, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('کاربر تایید شد', 'success');
+                    renderAdminPanel();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminRejectUser = (phone) => {
-            if (users[phone]) {
-                users[phone].status = 'rejected';
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                showToast('کاربر رد شد', 'warning');
-                renderAdminPanel();
-            }
+        window.adminRejectUser = async (phone) => {
+            try {
+                const data = await apiCall('/api/admin/user/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: phone, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('کاربر رد شد', 'warning');
+                    renderAdminPanel();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminApproveAd = (id) => {
-            const ad = allAds.find(a => a.id == id);
-            if (ad) { ad.status = 'approved';
-                localStorage.setItem('jedar_ads', JSON.stringify(allAds));
-                showToast('آگهی تایید شد', 'success');
-                renderAdminPanel();
-                renderAds(allAds, 'adsGrid'); }
+        window.adminApproveAd = async (id) => {
+            try {
+                const data = await apiCall('/api/admin/ad/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: id, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('آگهی تایید شد', 'success');
+                    renderAdminPanel();
+                    loadAppData();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminRejectAd = (id) => {
-            const ad = allAds.find(a => a.id == id);
-            if (ad) { ad.status = 'rejected';
-                localStorage.setItem('jedar_ads', JSON.stringify(allAds));
-                showToast('آگهی رد شد', 'warning');
-                renderAdminPanel();
-                renderAds(allAds, 'adsGrid'); }
+        window.adminRejectAd = async (id) => {
+            try {
+                const data = await apiCall('/api/admin/ad/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ ad_id: id, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('آگهی رد شد', 'warning');
+                    renderAdminPanel();
+                    loadAppData();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminDeleteAd = (id) => {
+        window.adminDeleteAd = async (id) => {
             if (!confirm('آیا از حذف این آگهی مطمئن هستید؟')) return;
-            allAds = allAds.filter(a => a.id != id);
-            localStorage.setItem('jedar_ads', JSON.stringify(allAds));
-            showToast('آگهی حذف شد', 'warning');
-            renderAdminPanel();
-            renderAds(allAds, 'adsGrid');
+            try {
+                const data = await apiCall(`/api/admin/ad/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Admin-ID': ADMIN_PHONE }
+                });
+                if (data.success) {
+                    showToast('آگهی حذف شد', 'warning');
+                    renderAdminPanel();
+                    loadAppData();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminApproveCharge = (id) => {
-            const charge = charges.find(c => c.id == id);
-            if (charge) {
-                charge.status = 'approved';
-                charge.approved_at = Date.now();
-                const user = users[charge.user_id];
-                if (user) { user.balance += charge.amount;
-                    localStorage.setItem('jedar_users', JSON.stringify(users)); }
-                localStorage.setItem('jedar_charges', JSON.stringify(charges));
-                showToast('شارژ تایید شد', 'success');
-                renderAdminPanel();
-                if (currentUser && currentUser.phone === charge.user_id) updateUserUI();
-            }
+        window.adminApproveCharge = async (id) => {
+            try {
+                const data = await apiCall('/api/admin/charge/approve', {
+                    method: 'POST',
+                    body: JSON.stringify({ charge_id: id, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('شارژ تایید شد', 'success');
+                    renderAdminPanel();
+                    loadAppData();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
-        window.adminRejectCharge = (id) => {
-            const charge = charges.find(c => c.id == id);
-            if (charge) { charge.status = 'rejected';
-                localStorage.setItem('jedar_charges', JSON.stringify(charges));
-                showToast('شارژ رد شد', 'warning');
-                renderAdminPanel(); }
+        window.adminRejectCharge = async (id) => {
+            try {
+                const data = await apiCall('/api/admin/charge/reject', {
+                    method: 'POST',
+                    body: JSON.stringify({ charge_id: id, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    showToast('شارژ رد شد', 'warning');
+                    renderAdminPanel();
+                }
+            } catch (err) { showToast(err.message, 'error'); }
         };
 
         document.getElementById('adminBtn').addEventListener('click', () => {
@@ -1830,7 +1923,7 @@
         });
 
         // ============================================================
-        // اطلاعیه
+        // 📢 اطلاعیه
         // ============================================================
 
         document.getElementById('noticeText').textContent = noticeText;
@@ -1843,19 +1936,29 @@
             openModal('noticeEditModal');
         });
 
-        document.getElementById('noticeSaveBtn').addEventListener('click', () => {
+        document.getElementById('noticeSaveBtn').addEventListener('click', async () => {
             const txt = document.getElementById('noticeEditText').value.trim();
             if (!txt) return;
-            noticeText = txt;
-            localStorage.setItem('jedar_notice', noticeText);
-            document.getElementById('noticeText').textContent = noticeText;
-            closeModal('noticeEditModal');
-            showToast('اطلاعیه به‌روز شد', 'success');
+            try {
+                const data = await apiCall('/api/notice', {
+                    method: 'POST',
+                    body: JSON.stringify({ notice: txt, admin_id: ADMIN_PHONE })
+                });
+                if (data.success) {
+                    noticeText = txt;
+                    localStorage.setItem('jedar_notice', noticeText);
+                    document.getElementById('noticeText').textContent = noticeText;
+                    closeModal('noticeEditModal');
+                    showToast('اطلاعیه به‌روز شد', 'success');
+                }
+            } catch (err) {
+                showToast(err.message || 'خطا', 'error');
+            }
         });
         document.getElementById('noticeCancelBtn').addEventListener('click', () => closeModal('noticeEditModal'));
 
         // ============================================================
-        // ناوبری
+        // 📱 ناوبری
         // ============================================================
 
         document.querySelectorAll('.nav-item').forEach(item => {
@@ -1871,7 +1974,7 @@
         });
 
         // ============================================================
-        // راهنما
+        // ❓ راهنما
         // ============================================================
 
         document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
@@ -1881,7 +1984,7 @@
         });
 
         // ============================================================
-        // PWA
+        // 📲 PWA
         // ============================================================
 
         let deferredPrompt;
@@ -1902,7 +2005,7 @@
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
-                const CACHE='jedar-v4';
+                const CACHE='jedar-v5';
                 const URLS=['.','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2'];
                 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS))));
                 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
@@ -1911,19 +2014,18 @@
         }
 
         // ============================================================
-        // مقداردهی اولیه
+        // 🚀 شروع برنامه
         // ============================================================
 
         if (!tg) document.getElementById('telegramWarning').classList.add('show');
 
-        // بررسی کاربر ذخیره‌شده
         checkAuth();
 
-        console.log('✅ J-DAR با تایید کد در صفحه بارگذاری شد.');
+        console.log('✅ J-DAR با هماهنگی Worker بارگذاری شد.');
+        console.log('📡 API:', API_BASE);
         console.log('👤 کاربر:', currentUser?.phone || 'ناشناس');
         console.log('👑 ادمین:', currentUser?.phone === ADMIN_PHONE ? 'بله' : 'خیر');
         console.log('📦 تعداد آگهی‌ها:', allAds.length);
-        console.log('💰 تعداد درخواست‌های شارژ:', charges.length);
     </script>
 </body>
     </html>
