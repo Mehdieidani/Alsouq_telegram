@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جدار | J-DAR</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkotREFSIiwKICAic2hvcnRfbmFtZSI6ICJKLURBUiIsCiAgImRlc2NyaXB0aW9uIjogIlBsYXRmb3JtIGJlem5pbiB2YSBoZXJmaCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwYTBjIiwKICAidGhlbWVfY29sb3IiOiAiIzdiNWFmZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyByeD0nNTAnIGZpbGw9JyM3YjVhZmYnLz48dGV4dCB4PScyNTYnIHk9JzM0MCcgZm9udC1zaXplPScyODAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZmlsbD0nd2hpdGUnPkokdDwvdGV4dD48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFzayBhbnlsYW5nIgogICAgfQogIF0KfQ==">
-    <meta name="theme-color" content="#7b5aff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="J-DAR">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== استایل‌های کامل (همان کد قبلی) ===== */
+        /* ===== استایل‌های کامل (همون قبلی که کار میکرد) ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -657,7 +652,7 @@
 
     <script>
         // ================================================================
-        // 🚀 J-DAR - مینی‌اپ کامل با همه عملیات در صفحه
+        // 🚀 J-DAR - نسخه‌ی اصلی با هماهنگی کامل ورکر
         // ================================================================
 
         // ===== تنظیمات =====
@@ -680,8 +675,6 @@
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
         let noticeText = localStorage.getItem('jedar_notice') ||
             'تنها حمایت شما از این پلتفرم، معرفی آن به دوستان و آشنایانتان است. با تشکر از همراهی شما.';
-        let charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
-        let reviews = JSON.parse(localStorage.getItem('jedar_reviews') || '[]');
 
         // ===== زبان =====
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
@@ -850,7 +843,7 @@
             return String(Math.floor(100000 + Math.random() * 900000));
         }
 
-        // ===== API Helper (با fallback به localStorage) =====
+        // ===== API Helper =====
         async function apiCall(endpoint, options = {}) {
             const url = API_BASE + endpoint;
             const headers = {
@@ -871,186 +864,9 @@
                 }
                 return data;
             } catch (error) {
-                console.warn('API Error, using localStorage fallback:', error);
-                // Fallback به localStorage
-                return fallbackHandler(endpoint, options);
+                console.warn('API Error:', error);
+                throw error;
             }
-        }
-
-        // ===== Fallback برای زمانی که Worker در دسترس نیست =====
-        function fallbackHandler(endpoint, options) {
-            const method = options.method || 'GET';
-            const body = options.body ? JSON.parse(options.body) : {};
-
-            // ثبت‌نام
-            if (endpoint === '/api/register' && method === 'POST') {
-                const { phone, name, tg_username } = body;
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                if (users[phone]) throw new Error('شماره قبلاً ثبت شده');
-                const code = generateCode();
-                users[phone] = {
-                    phone,
-                    display_name: name,
-                    tg_username: tg_username || '',
-                    balance: 0,
-                    points: 0,
-                    status: 'pending',
-                    verification_code: code
-                };
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                return { success: true, code };
-            }
-
-            // تایید کد
-            if (endpoint === '/api/verify' && method === 'POST') {
-                const { phone, code } = body;
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                const user = users[phone];
-                if (!user || user.verification_code !== code) throw new Error('کد اشتباه');
-                user.status = 'approved';
-                delete user.verification_code;
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                return { success: true, token: 'local_' + Date.now(), user };
-            }
-
-            // ورود
-            if (endpoint === '/api/login' && method === 'POST') {
-                const { phone } = body;
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                const user = users[phone];
-                if (!user) throw new Error('کاربر یافت نشد');
-                if (user.status !== 'approved') throw new Error('حساب تایید نشده');
-                return { success: true, token: 'local_' + Date.now(), user };
-            }
-
-            // دریافت اطلاعات کاربر
-            if (endpoint === '/api/me' && method === 'GET') {
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                const phone = authToken?.replace('local_', '');
-                if (!phone || !users[phone]) throw new Error('کاربر یافت نشد');
-                return { success: true, user: users[phone] };
-            }
-
-            // دریافت آگهی‌ها
-            if (endpoint === '/api/ads' && method === 'GET') {
-                const ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                return { success: true, ads };
-            }
-
-            // ثبت آگهی
-            if (endpoint === '/api/ads' && method === 'POST') {
-                const ad = { ...body, id: Date.now() + Math.random(), status: 'pending', created_at: Math.floor(Date.now() /
-                        1000) };
-                const ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                ads.push(ad);
-                localStorage.setItem('jedar_ads', JSON.stringify(ads));
-                return { success: true, ad };
-            }
-
-            // شارژ
-            if (endpoint === '/api/charge' && method === 'POST') {
-                const charge = { ...body, id: Date.now() + Math.random(), status: 'pending', created_at: Math.floor(Date
-                        .now() / 1000) };
-                const charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
-                charges.push(charge);
-                localStorage.setItem('jedar_charges', JSON.stringify(charges));
-                return { success: true, charge };
-            }
-
-            // دریافت نظرات
-            if (endpoint.startsWith('/api/reviews') && method === 'GET') {
-                const adId = new URLSearchParams(endpoint.split('?')[1]).get('adId');
-                const reviews = JSON.parse(localStorage.getItem('jedar_reviews') || '[]');
-                return { success: true, reviews: reviews.filter(r => r.ad_id == adId) };
-            }
-
-            // ثبت نظر
-            if (endpoint === '/api/review' && method === 'POST') {
-                const review = { ...body, id: Date.now() + Math.random(), created_at: Math.floor(Date.now() / 1000) };
-                const reviews = JSON.parse(localStorage.getItem('jedar_reviews') || '[]');
-                reviews.push(review);
-                localStorage.setItem('jedar_reviews', JSON.stringify(reviews));
-                return { success: true };
-            }
-
-            // اطلاعیه
-            if (endpoint === '/api/notice' && method === 'GET') {
-                return { success: true, notice: localStorage.getItem('jedar_notice') || noticeText };
-            }
-
-            if (endpoint === '/api/notice' && method === 'POST') {
-                const { notice } = body;
-                localStorage.setItem('jedar_notice', notice);
-                return { success: true };
-            }
-
-            // مدیریت - کاربران
-            if (endpoint === '/api/admin/users' && method === 'GET') {
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                return { success: true, users: Object.values(users) };
-            }
-
-            // مدیریت - آگهی‌ها
-            if (endpoint === '/api/admin/ads' && method === 'GET') {
-                const ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                return { success: true, ads };
-            }
-
-            // مدیریت - شارژها
-            if (endpoint === '/api/admin/charges' && method === 'GET') {
-                const charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
-                return { success: true, charges };
-            }
-
-            // مدیریت - تایید کاربر
-            if (endpoint === '/api/admin/user/approve' && method === 'POST') {
-                const { user_id } = body;
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                if (users[user_id]) users[user_id].status = 'approved';
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                return { success: true };
-            }
-
-            // مدیریت - تایید آگهی
-            if (endpoint === '/api/admin/ad/approve' && method === 'POST') {
-                const { ad_id } = body;
-                const ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                const ad = ads.find(a => a.id == ad_id);
-                if (ad) ad.status = 'approved';
-                localStorage.setItem('jedar_ads', JSON.stringify(ads));
-                return { success: true };
-            }
-
-            // مدیریت - رد آگهی
-            if (endpoint === '/api/admin/ad/reject' && method === 'POST') {
-                const { ad_id } = body;
-                const ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                const ad = ads.find(a => a.id == ad_id);
-                if (ad) ad.status = 'rejected';
-                localStorage.setItem('jedar_ads', JSON.stringify(ads));
-                return { success: true };
-            }
-
-            // مدیریت - تایید شارژ
-            if (endpoint === '/api/admin/charge/approve' && method === 'POST') {
-                const { charge_id } = body;
-                const charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
-                const charge = charges.find(c => c.id == charge_id);
-                if (charge) charge.status = 'approved';
-                localStorage.setItem('jedar_charges', JSON.stringify(charges));
-                return { success: true };
-            }
-
-            // مدیریت - حذف آگهی
-            if (endpoint.startsWith('/api/admin/ad/delete/') && method === 'DELETE') {
-                const id = parseFloat(endpoint.split('/').pop());
-                let ads = JSON.parse(localStorage.getItem('jedar_ads') || '[]');
-                ads = ads.filter(a => a.id !== id);
-                localStorage.setItem('jedar_ads', JSON.stringify(ads));
-                return { success: true };
-            }
-
-            throw new Error('مسیر پشتیبانی نمی‌شود');
         }
 
         // ============================================================
@@ -1266,7 +1082,7 @@
                     }
                 }
             } catch (err) {
-                console.warn('خطا در بارگذاری داده‌ها، استفاده از داده‌های محلی:', err);
+                console.warn('خطا در بارگذاری داده‌ها:', err);
             }
 
             document.getElementById('noticeText').textContent = noticeText;
@@ -1673,7 +1489,6 @@
         async function subscribeVip(days, amount) {
             if (!currentUser) { showToast('لطفاً وارد شوید', 'warning'); return; }
             try {
-                // در اینجا باید با API Worker ارتباط برقرار کنید یا در localStorage ذخیره کنید
                 const data = await apiCall('/api/vip/subscribe', {
                     method: 'POST',
                     body: JSON.stringify({ days, amount })
@@ -1684,19 +1499,7 @@
                     loadAppData();
                 }
             } catch (err) {
-                // Fallback: ذخیره در localStorage
-                const user = currentUser;
-                if (user.balance < amount) { showToast('موجودی کافی نیست', 'error'); return; }
-                user.balance -= amount;
-                if (!user.vip) user.vip = [];
-                user.vip.push({ days, start: Date.now(), end: Date.now() + days * 24 * 60 * 60 * 1000 });
-                localStorage.setItem('jedar_current_user', JSON.stringify(user));
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                users[user.phone] = user;
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                showToast('اشتراک ویژه فعال شد (ذخیره محلی)', 'success');
-                closeModal('vipModal');
-                loadAppData();
+                showToast(err.message || 'خطا در فعال‌سازی اشتراک', 'error');
             }
         }
 
@@ -1723,30 +1526,7 @@
                     loadAppData();
                 }
             } catch (err) {
-                // Fallback: تبدیل در localStorage
-                const user = currentUser;
-                let needed = 0,
-                    reward = 0,
-                    rewardType = '';
-                if (type === 'money') { needed = 100;
-                    reward = 1000;
-                    rewardType = 'balance'; } else if (type === 'vip') { needed = 50;
-                    reward = 1;
-                    rewardType = 'vip_days'; } else { showToast('نوع نامعتبر', 'error'); return; }
-                if (user.points < needed) { showToast('امتیاز کافی نیست', 'error'); return; }
-                user.points -= needed;
-                if (rewardType === 'balance') user.balance += reward;
-                else if (rewardType === 'vip_days') {
-                    if (!user.vip) user.vip = [];
-                    user.vip.push({ days: reward, start: Date.now(), end: Date.now() + reward * 24 * 60 * 60 * 1000 });
-                }
-                localStorage.setItem('jedar_current_user', JSON.stringify(user));
-                const users = JSON.parse(localStorage.getItem('jedar_users') || '{}');
-                users[user.phone] = user;
-                localStorage.setItem('jedar_users', JSON.stringify(users));
-                showToast('امتیاز تبدیل شد (ذخیره محلی)', 'success');
-                closeModal('convertPointsModal');
-                loadAppData();
+                showToast(err.message || 'خطا در تبدیل امتیاز', 'error');
             }
         }
 
@@ -2223,7 +2003,7 @@
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
-                const CACHE='jedar-v6';
+                const CACHE='jedar-v7';
                 const URLS=['.','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2'];
                 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS))));
                 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
@@ -2239,10 +2019,10 @@
 
         checkAuth();
 
-        console.log('✅ J-DAR با همه عملیات در صفحه بارگذاری شد.');
+        console.log('✅ J-DAR با هماهنگی کامل ورکر بارگذاری شد.');
         console.log('📡 API:', API_BASE);
         console.log('👤 کاربر:', currentUser?.phone || 'ناشناس');
         console.log('👑 ادمین:', currentUser?.phone === ADMIN_PHONE ? 'بله' : 'خیر');
     </script>
 </body>
-    </html>
+                    </html>
