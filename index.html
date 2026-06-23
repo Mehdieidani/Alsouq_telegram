@@ -22,769 +22,93 @@
             font-weight: bold;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Vazir', 'Inter', sans-serif;
+            font-family: 'Vazir', sans-serif;
             background: #0a0a0c;
             color: #fff;
             min-height: 100vh;
             direction: rtl;
             overflow-x: hidden;
         }
-
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(123, 90, 255, 0.08) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 70%, rgba(255, 100, 150, 0.05) 0%, transparent 60%),
-                        #0a0a0c;
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(123, 90, 255, 0.08) 0%, transparent 60%), #0a0a0c;
             z-index: -1;
         }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px 16px 90px 16px; position: relative; }
+        
+        /* هدر */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .logo { display: flex; align-items: center; gap: 8px; }
+        .logo-icon { width: 44px; height: 44px; background: linear-gradient(145deg, #7b5aff, #a58aff); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; box-shadow: 0 10px 20px -5px rgba(123, 90, 255, 0.4); }
+        .logo-text { font-weight: 800; font-size: 24px; background: linear-gradient(135deg, #fff, #e0d0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-left { display: flex; gap: 8px; }
+        .icon-btn { width: 44px; height: 44px; border-radius: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px 16px 90px 16px;
-            position: relative;
-            z-index: 10;
-        }
+        /* کارت‌ها و المان‌ها */
+        .wallet-card { background: rgba(20, 20, 30, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 32px; padding: 20px; margin-bottom: 25px; }
+        .wallet-row { display: flex; justify-content: space-between; align-items: center; }
+        .amount { font-size: 32px; font-weight: 700; color: #fff; }
+        .wallet-points { background: rgba(123, 90, 255, 0.15); border: 1px solid rgba(123, 90, 255, 0.3); border-radius: 30px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; color: #a58aff; }
+        
+        .notice-card { background: rgba(20, 20, 30, 0.6); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 24px; padding: 15px 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
+        .notice-icon { color: #ffd966; font-size: 20px; }
+        .notice-text { flex: 1; font-size: 14px; color: #ffd966; line-height: 1.6; }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+        /* گرید دکمه‌ها */
+        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 30px; }
+        .action-item { background: rgba(20, 20, 30, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 14px 0; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .action-item:hover { background: rgba(123, 90, 255, 0.2); transform: translateY(-3px); }
+        .action-item i { font-size: 24px; color: #a58aff; }
+        .action-item span { font-size: 11px; opacity: 0.9; }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        /* سرچ و دسته‌بندی */
+        .search-box { background: rgba(20, 20, 30, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 40px; padding: 8px 18px; display: flex; align-items: center; margin-bottom: 25px; }
+        .search-box input { flex: 1; background: transparent; border: none; color: white; outline: none; padding-right: 8px; }
+        .search-box button { background: #7b5aff; border: none; border-radius: 30px; padding: 8px 16px; color: white; cursor: pointer; }
 
-        .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(145deg, #7b5aff, #a58aff);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(123, 90, 255, 0.4);
-        }
+        .categories { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 25px; scrollbar-width: none; }
+        .category-chip { background: rgba(30, 30, 40, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 30px; padding: 8px 18px; white-space: nowrap; color: #ddd; cursor: pointer; font-size: 14px; }
+        .category-chip.active { background: #7b5aff; border-color: #7b5aff; color: white; }
 
-        .logo-text {
-            font-weight: 800;
-            font-size: 24px;
-            background: linear-gradient(135deg, #fff, #e0d0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
+        /* آگهی‌ها */
+        .ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .ad-card { background: rgba(20, 20, 28, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; overflow: hidden; cursor: pointer; transition: 0.2s; position: relative; }
+        .ad-card:hover { transform: translateY(-4px); border-color: #7b5aff; }
+        .ad-card-image { width: 100%; aspect-ratio: 1/1; background: #1a1a24; }
+        .ad-card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .ad-card-content { padding: 12px; }
+        .ad-card-title { font-weight: 600; font-size: 14px; line-height: 1.4; height: 40px; overflow: hidden; }
+        .ad-card-price { color: #7b5aff; font-weight: bold; margin-top: 8px; font-size: 15px; }
 
-        .header-left {
-            display: flex;
-            gap: 8px;
-        }
+        /* ناوبری پایینی */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: rgba(15, 15, 20, 0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.05); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 24px 24px 0 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #aaa; cursor: pointer; font-size: 12px; }
+        .nav-item.active { color: #a58aff; }
+        .nav-item i { font-size: 22px; margin-bottom: 2px; }
 
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .wallet-card {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 35px -20px rgba(0, 0, 0, 0.8);
-        }
-
-        .wallet-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .wallet-info h4 {
-            font-size: 14px;
-            color: #aaa;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .wallet-info .amount {
-            font-size: 32px;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .wallet-info small {
-            font-size: 14px;
-            color: #7b5aff;
-        }
-
-        .wallet-points {
-            background: rgba(123, 90, 255, 0.15);
-            border: 1px solid rgba(123, 90, 255, 0.3);
-            border-radius: 30px;
-            padding: 10px 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #a58aff;
-        }
-
-        .wallet-points i {
-            color: #ffd966;
-            font-size: 20px;
-        }
-
-        .wallet-points .points-num {
-            font-weight: 700;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .notice-card {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 32px;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-        }
-
-        .notice-icon {
-            width: 40px;
-            height: 40px;
-            background: #daa520;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .notice-text {
-            flex: 1;
-            font-size: 14px;
-            color: #ffd966;
-            line-height: 1.6;
-        }
-
-        .notice-edit {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #daa520;
-            font-size: 18px;
-            transition: 0.2s;
-            flex-shrink: 0;
-        }
-
-        .notice-edit:hover {
-            background: #daa520;
-            color: white;
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .action-item {
-            background: rgba(20, 20, 30, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            padding: 14px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #fff;
-        }
-
-        .action-item:hover {
-            background: rgba(123, 90, 255, 0.2);
-            border-color: rgba(123, 90, 255, 0.3);
-            transform: translateY(-4px);
-        }
-
-        .action-item i {
-            font-size: 26px;
-            color: #a58aff;
-        }
-
-        .action-item span {
-            font-size: 11px;
-            font-weight: 500;
-            opacity: 0.8;
-        }
-
-        .search-box {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 40px;
-            padding: 8px 18px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .search-box i {
-            color: #aaa;
-            font-size: 20px;
-            margin-left: 12px;
-        }
-
-        .search-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-box input::placeholder {
-            color: rgba(255,255,255,0.3);
-        }
-
-        .search-box button {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 8px 20px;
-            color: #fff;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 14px;
-        }
-
-        .search-box button:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.2);
-        }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .section-title h3 {
-            font-weight: 600;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .section-title a {
-            color: #aaa;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .section-title a:hover {
-            color: #a58aff;
-        }
-
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-chip {
-            background: rgba(30, 30, 40, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 10px 22px;
-            white-space: nowrap;
-            color: #ddd;
-            font-weight: 500;
-            transition: 0.2s;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .category-chip.active {
-            background: #7b5aff;
-            border-color: #7b5aff;
-            color: white;
-        }
-
-        .ads-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .ad-card {
-            background: rgba(20, 20, 28, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.25s;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ad-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(123, 90, 255, 0.3);
-            box-shadow: 0 20px 30px -15px #7b5aff;
-        }
-
-        .ad-card-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #1a1a24;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ad-card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .ad-card:hover .ad-card-image img {
-            transform: scale(1.05);
-        }
-
-        .ad-card-image .watermark {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            color: white;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
-            z-index: 2;
-        }
-
-        .ad-card-content {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .ad-card-title {
-            font-weight: 600;
-            font-size: 15px;
-            color: #fff;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.5;
-            min-height: 45px;
-        }
-
-        .ad-card-price {
-            font-weight: 700;
-            font-size: 16px;
-            color: #7b5aff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ad-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #aaa;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ad-card-meta i {
-            font-size: 12px;
-            color: #a58aff;
-        }
-
-        .special-badge {
-            background: #daa520;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-
-        .ad-card .favorite {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            transition: 0.2s;
-            z-index: 10;
-            cursor: pointer;
-        }
-
-        .ad-card .favorite:hover {
-            background: #ff5e7c;
-            color: white;
-        }
-
-        /* استایل‌های بخش مودال و فرم‌های مستقل جدید */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 0;
-        }
-
+        /* پاپ آپ ها (مودال‌ها) */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; }
         .modal.active { display: block; }
+        .modal-content { max-width: 500px; margin: 0 auto; background: #0f0f14; min-height: 100vh; padding: 25px 20px 90px; overflow-y: auto; text-align: right; }
+        
+        .profile-field { margin-bottom: 18px; }
+        .profile-field label { display: block; color: #aaa; margin-bottom: 6px; font-size: 14px; }
+        .profile-field input, .profile-field textarea, .profile-field select { width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; color: white; outline: none; font-family: inherit; }
+        
+        .save-profile { background: #7b5aff; border: none; border-radius: 25px; padding: 14px; width: 100%; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-close { background: transparent; border: 1px solid #ff5e7c; color: #ff5e7c; border-radius: 25px; padding: 12px; width: 100%; margin-top: 10px; cursor: pointer; }
 
-        .modal-content {
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: none;
-            border-radius: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .modal-back {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: #7b5aff;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            z-index: 1001;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .modal-back:hover { transform: scale(1.1); }
-
-        .modal-content-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 20px 100px 20px;
-        }
-
-        .image-gallery {
-            margin-bottom: 20px;
-        }
-
-        .modal-image {
-            width: 100%;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
-            display: block;
-        }
-
-        .gallery-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .gallery-controls button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .gallery-controls button:hover {
-            background: #7b5aff;
-            border-color: #7b5aff;
-        }
-
-        .gallery-counter {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        .modal-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: #fff;
-            line-height: 1.3;
-        }
-
-        .modal-location-time {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .modal-price {
-            font-size: 20px;
-            font-weight: 600;
-            color: #7b5aff;
-            margin: 10px 0 10px;
-        }
-
-        .modal-description {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .description-text {
-            color: #ddd;
-            font-size: 15px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            overflow: hidden;
-        }
-
-        .modal-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 16px 20px;
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-footer button, .modal-footer a {
-            flex: 1;
-            padding: 16px 12px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-            font-size: 16px;
-            border: none;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .chat-btn {
-            background: #7b5aff;
-            color: white;
-        }
-
-        .contact-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #7b5aff !important;
-            color: #fff;
-        }
+        /* استایل اختصاصی آپلود عکس بصورت زنده */
+        .upload-area { border: 2px dashed rgba(123, 90, 255, 0.4); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; background: rgba(123, 90, 255, 0.02); }
+        .upload-area i { font-size: 32px; color: #a58aff; margin-bottom: 8px; }
+        .preview-container { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; }
+        .preview-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); }
 
         .page { display: none; }
         .page.active { display: block; }
-
-        .profile-section {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            padding: 24px;
-        }
-
-        .profile-field { margin-bottom: 20px; text-align: right; }
-        .profile-field label { display: block; color: #aaa; margin-bottom: 8px; font-size: 14px; }
-
-        .profile-field input,
-        .profile-field select,
-        .profile-field textarea {
-            width: 100%;
-            padding: 14px 20px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 30px;
-            color: white;
-            outline: none;
-            font-family: 'Vazir', sans-serif;
-        }
-
-        .save-profile {
-            background: #7b5aff;
-            border: none;
-            border-radius: 30px;
-            padding: 16px;
-            width: 100%;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15, 15, 20, 0.85);
-            backdrop-filter: blur(30px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #aaa;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 12px;
-        }
-
-        .nav-item.active {
-            color: #a58aff;
-        }
-
-        .nav-item i {
-            font-size: 24px;
-            margin-bottom: 2px;
-        }
-
-        /* مودال‌های اختصاصی وب مستقل */
-        .help-modal {
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .help-modal h2 { color: #a58aff; margin-bottom: 20px; }
-        .help-close { background: #7b5aff; border: none; border-radius: 30px; padding: 12px 30px; color: white; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -797,217 +121,166 @@
             </div>
             <div class="header-left">
                 <button class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
-                <button class="icon-btn" id="helpBtn"><i class="fas fa-question"></i></button>
-                <button class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
+                <button class="icon-btn" onclick="alert('پشتیبانی آنلاین جدار فعال است.')"><i class="fas fa-headset"></i></button>
             </div>
         </div>
 
         <div id="homePage" class="page active">
             <div class="wallet-card">
                 <div class="wallet-row">
-                    <div class="wallet-info">
+                    <div>
                         <h4 data-i18n="balance">💰 موجودی کیف پول</h4>
-                        <div class="amount"><span id="walletBalance">۰</span> <small>تومان</small></div>
+                        <div class="amount"><span id="walletBalance">۰</span> <small style="font-size:14px;color:#aaa">تومان</small></div>
                     </div>
                     <div class="wallet-points">
-                        <i class="fas fa-star"></i>
-                        <span class="points-num" id="userPoints">۰</span>
+                        <i class="fas fa-star" style="color:#ffd966"></i>
+                        <span id="userPoints">۰</span> امتیاز
                     </div>
                 </div>
             </div>
 
-            <div class="notice-card" id="noticeCard">
+            <div class="notice-card">
                 <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
-                <div class="notice-text" id="noticeText">خوش آمدید</div>
-                <div class="notice-edit" id="noticeEditBtn" style="display: none;"><i class="fas fa-pencil-alt"></i></div>
+                <div class="notice-text" id="noticeText">به پلتفرم مستقل جدار خوش آمدید.</div>
             </div>
 
             <div class="action-grid">
-                <div class="action-item" id="postAdBtn">
-                    <i class="fas fa-plus-circle"></i>
-                    <span data-i18n="post_ad">ثبت آگهی</span>
-                </div>
-                <div class="action-item" id="vipBtn">
-                    <i class="fas fa-crown"></i>
-                    <span data-i18n="vip_subscription">ویژه</span>
-                </div>
-                <div class="action-item" id="chargeBtn">
-                    <i class="fas fa-wallet"></i>
-                    <span data-i18n="charge">شارژ</span>
-                </div>
-                <div class="action-item" id="convertPointsBtn">
-                    <i class="fas fa-gift"></i>
-                    <span data-i18n="convert_points">تبدیل</span>
-                </div>
+                <div class="action-item" id="postAdBtn"><i class="fas fa-plus-circle"></i><span data-i18n="post_ad">ثبت آگهی</span></div>
+                <div class="action-item" id="vipBtn"><i class="fas fa-crown"></i><span data-i18n="vip">حساب ویژه</span></div>
+                <div class="action-item" id="chargeBtn"><i class="fas fa-wallet"></i><span data-i18n="charge">شارژ حساب</span></div>
+                <div class="action-item" onclick="alert('سرویس تبدیل امتیاز موقتاً در دست تعمیر است.')"><i class="fas fa-gift"></i><span data-i18n="convert">تبدیل</span></div>
             </div>
 
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="جستجو در آگهی‌ها...">
-                <button id="searchBtn"><span data-i18n="search">جستجو</span></button>
+                <input type="text" id="searchInput" placeholder="جستجو در جدار...">
+                <button id="searchBtn">جستجو</button>
             </div>
 
-            <div class="section-title">
-                <h3 data-i18n="categories">دسته‌بندی‌ها</h3>
-                <a href="#" id="allCategoriesLink" data-i18n="all">همه</a>
+            <div class="categories" id="categoriesBar">
+                <div class="category-chip active" data-cat="all">همه آگهی‌ها</div>
+                <div class="category-chip" data-cat="tourism">سیاحت و گردشگری</div>
+                <div class="category-chip" data-cat="services">خدمات</div>
+                <div class="category-chip" data-cat="realestate">املاک</div>
             </div>
-            <div class="categories" id="mainCategoryList"></div>
-            <div class="categories" id="subCategoryList"></div>
 
-            <div class="section-title">
-                <h3 data-i18n="latest_ads">جدیدترین آگهی‌ها</h3>
-                <a href="#" id="moreAdsLink" data-i18n="more">بیشتر</a>
-            </div>
-            <div class="ads-grid" id="adsGrid"></div>
+            <div class="ads-grid" id="adsGrid">
+                </div>
         </div>
 
         <div id="favoritesPage" class="page">
-            <h3 style="color:#a58aff; margin-bottom:20px; text-align:right;"><i class="fas fa-heart"></i> <span data-i18n="favorites">علاقه‌مندی‌ها</span></h3>
+            <h3 style="margin-bottom:20px;"><i class="fas fa-heart" style="color:#ff5e7c"></i> آگهی‌های نشان‌شده</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
         <div id="profilePage" class="page">
-            <div class="profile-section">
+            <div style="background:rgba(20,20,30,0.6); padding:20px; border-radius:24px;">
                 <div class="profile-field">
-                    <label data-i18n="tgUsername"><i class="fas fa-id-card"></i> شناسه کاربری (آیدی عددی / شماره)</label>
-                    <input type="text" id="tgUsername" readonly>
+                    <label>شناسه کاربری (تلگرام / وب مستقل)</label>
+                    <input type="text" id="profileUid" readonly style="opacity:0.6">
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="displayNameLabel">نام نمایشی</label>
-                    <input type="text" id="displayName" placeholder="نام شما">
+                    <label>نام و نام خانوادگی</label>
+                    <input type="text" id="profileName" placeholder="نام خود را وارد کنید">
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="countryLabel">کشور</label>
-                    <select id="country">
-                        <option value="IR">🇮🇷 ایران</option>
-                        <option value="IQ">🇮🇶 عراق</option>
-                    </select>
+                    <label>وضعیت حساب</label>
+                    <input type="text" id="profileVipStatus" value="کاربر عادی" readonly style="color:#ffd966; font-weight:bold;">
                 </div>
-                <div class="profile-field">
-                    <label>وضعیت حساب:</label>
-                    <span id="accountStatus" style="color:#ffd966; font-weight:bold;">کاربر عادی</span>
-                </div>
-                <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> <span data-i18n="save">ذخیره تغییرات</span></button>
+                <button class="save-profile" id="saveProfileBtn">ذخیره اطلاعات پروفایل</button>
             </div>
         </div>
+
     </div>
 
-    <div class="modal" id="adModal">
-        <div class="modal-content" id="modalContent"></div>
+    <div class="bottom-nav">
+        <div class="nav-item active" data-target="home"><i class="fas fa-home"></i><span>خانه</span></div>
+        <div class="nav-item" data-target="favorites"><i class="fas fa-heart"></i><span>علاقه‌مندی</span></div>
+        <div class="nav-item" data-target="profile"><i class="fas fa-user"></i><span>پروفایل</span></div>
     </div>
 
     <div class="modal" id="loginModal">
-        <div class="modal-content help-modal" style="justify-content: center; min-height: 100vh;">
-            <h2>🔑 ورود به جدار</h2>
-            <p style="font-size:14px; color:#aaa; margin-bottom:25px; padding:0 20px;">برای ثبت آگهی یا دسترسی به خدمات مالی، لطفا آیدی عددی تلگرام یا شماره موبایل خود را وارد کنید.</p>
-            <div class="profile-field" style="padding:0 20px;">
-                <input type="text" id="loginUserId" placeholder="مثال: 6522877528 یا 09123456789" style="text-align:center;">
+        <div class="modal-content" style="display:flex; flex-direction:column; justify-content:center;">
+            <h2 style="text-align:center; color:#a58aff; margin-bottom:10px;">🔑 ورود به حساب جدار</h2>
+            <p style="text-align:center; font-size:13px; color:#aaa; margin-bottom:25px;">برای ثبت آگهی، شارژ یا استفاده از امکانات کامل، لطفاً شماره تماس یا آیدی عددی تلگرام خود را وارد کنید.</p>
+            <div class="profile-field">
+                <input type="text" id="loginInput" placeholder="مثال: 09123456789 یا 6522877528" style="text-align:center; font-size:16px;">
             </div>
-            <button class="save-profile" id="submitLoginBtn" style="width:calc(100% - 40px); margin:15px auto 0;">ورود امن</button>
+            <button class="save-profile" id="executeLoginBtn">ورود و تایید حساب</button>
         </div>
     </div>
 
     <div class="modal" id="createAdModal">
-        <div class="modal-content help-modal" style="text-align: right; overflow-y: auto; padding: 30px 20px 80px;">
-            <h2 style="text-align: center;"><i class="fas fa-plus-circle"></i> ثبت آگهی مستقل</h2>
+        <div class="modal-content">
+            <h2 style="text-align:center; margin-bottom:20px; color:#a58aff;"><i class="fas fa-plus-circle"></i> ثبت آگهی جدید</h2>
+            
             <div class="profile-field">
                 <label>عنوان آگهی</label>
-                <input type="text" id="adTitle" placeholder="مثال: تور سیاحتی کربلا">
+                <input type="text" id="adTitle" placeholder="مثال: تور لیدر عربی در شیراز">
             </div>
             <div class="profile-field">
-                <label>توضیحات کامل آگهی</label>
-                <textarea id="adDesc" rows="4" placeholder="جزئیات و ویژگی‌های خدمات خود را بنویسید..."></textarea>
+                <label>دسته‌بندی</label>
+                <select id="adCategory">
+                    <option value="tourism">سیاحت و گردشگری</option>
+                    <option value="services">خدمات</option>
+                    <option value="realestate">املاک و مستغلات</option>
+                </select>
+            </div>
+            <div class="profile-field">
+                <label>توضیحات کامل</label>
+                <textarea id="adDesc" rows="4" placeholder="توضیحات، شرایط و خدمات خود را بنویسید..."></textarea>
             </div>
             <div class="profile-field">
                 <label>قیمت (تومان / توافقی)</label>
-                <input type="text" id="adPrice" placeholder="مثال: توافقی یا 2,500,000">
+                <input type="text" id="adPrice" placeholder="مثال: 3,000,000 یا توافقی">
             </div>
             <div class="profile-field">
-                <label>لینک مستقیم چت تلگرام</label>
-                <input type="text" id="adTgLink" placeholder="مثال: t.me/username">
-            </div>
-            <div class="profile-field">
-                <label>شماره تماس مستقیم یا واتساپ</label>
+                <label>شماره تماس / واتساپ مستقیم</label>
                 <input type="text" id="adPhone" placeholder="مثال: 09123456789">
             </div>
-            <button class="save-profile" id="submitNewAdBtn">ارسال جهت بررسی و تایید ادمین</button>
-            <button class="help-close" onclick="document.getElementById('createAdModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; border:1px solid #7b5aff;">انصراف</button>
-        </div>
-    </div>
-
-    <div class="modal" id="buyVipModal">
-        <div class="modal-content help-modal" style="justify-content: center;">
-            <h2>👑 ارتقا به حساب ویژه (VIP)</h2>
-            <p style="color:#aaa; margin-bottom:20px;">با خرید اشتراک ویژه، محدودیت ثبت آگهی شما حذف شده و آگهی‌های شما در بالای لیست نمایش داده می‌شوند.</p>
-            <div style="background:rgba(123,90,255,0.1); border:1px solid #7b5aff; padding:15px; border-radius:20px; margin-bottom:20px;">
-                <h3 style="color:#ffd966;">اشتراک ۳۰ روزه نامحدود</h3>
-                <p style="margin-top:10px; font-size:18px; font-weight:bold;">۱۵۰,۰۰۰ تومان</p>
+            <div class="profile-field">
+                <label>آیدی تلگرام جهت چت مستقیم</label>
+                <input type="text" id="adTgUsername" placeholder="مثال: t.me/username">
             </div>
-            <button class="save-profile" id="submitVipPayBtn">پرداخت و فعالسازی آنلاین</button>
-            <button class="help-close" onclick="document.getElementById('buyVipModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; border:1px solid #7b5aff;">بستن</button>
-        </div>
-    </div>
-
-    <div class="modal" id="chargeWalletModal">
-        <div class="modal-content help-modal" style="justify-content: center; padding:30px 20px;">
-            <h2>💰 افزایش موجودی کیف پول</h2>
-            <div class="profile-field" style="margin-top:15px;">
-                <label>مبلغ افزایش موجودی (تومان)</label>
-                <input type="number" id="chargeAmountInput" placeholder="مثال: 50000" style="text-align:center;">
+            
+            <div class="profile-field">
+                <label>تصاویر آگهی (آپلود در کانال تلگرام جدار)</label>
+                <div class="upload-area" id="uploadTrigger">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p style="font-size:13px; color:#aaa;">کلیک کنید و تصاویر خود را انتخاب کنید</p>
+                    <input type="file" id="adFileInput" accept="image/*" multiple style="display:none;">
+                </div>
+                <div class="preview-container" id="uploadPreview"></div>
             </div>
-            <button class="save-profile" id="submitChargePayBtn">اتصال به درگاه پرداخت</button>
-            <button class="help-close" onclick="document.getElementById('chargeWalletModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; border:1px solid #7b5aff;">انصراف</button>
+
+            <button class="save-profile" id="submitAdRealBtn">ارسال آگهی جهت تایید ادمین</button>
+            <button class="btn-close" onclick="document.getElementById('createAdModal').classList.remove('active')">انصراف</button>
         </div>
     </div>
 
-    <div class="modal" id="helpModal">
-        <div class="modal-content help-modal" style="justify-content: center;">
-            <h2><i class="fas fa-info-circle"></i> راهنمای جدار</h2>
-            <p style="color:#ccc; line-height:1.8; margin-bottom:20px;">جدار بستری هوشمند برای ثبت و نیازمندی‌های خدمات، گردشگری و سیاحت در منطقه است که به صورت وب‌اپلیکیشن مستقل (PWA) سرویس‌دهی می‌کند.</p>
-            <button class="help-close" id="helpClose">متوجه شدم</button>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span data-i18n="home">خانه</span></div>
-        <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span data-i18n="favorites">علاقه‌مندی</span></div>
-        <div class="nav-item" data-page="profile"><i class="fas fa-user"></i><span data-i18n="profile">پروفایل</span></div>
+    <div class="modal" id="detailsModal">
+        <div class="modal-content" id="detailsModalContent"></div>
     </div>
 
     <script>
-        // ثبت هوشمند Service Worker برای PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log("PWA SW Error: ", err));
-        }
+        // کانفیگ واقعی متصل به کلودفلر ورکر شما
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
+        let userId = localStorage.getItem('jedar_user_id');
+        let uploadedImagesBase64 = []; // آرایه برای تصاویر لوکل قبل ارسال
 
+        // هماهنگی با ربات تلگرام در صورت اجرا درون Mini App
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
-            tg.enableClosingConfirmation();
+            if (tg.initDataUnsafe?.user) {
+                userId = tg.initDataUnsafe.user.id.toString();
+                localStorage.setItem('jedar_user_id', userId);
+            }
         }
 
-        // کانفیگ پایه متصل به کلودفلر ورکر شما
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        const SUPER_ADMIN_ID = '6522877528';
-        
-        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
-        let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
-        let allAds = [];
-
-        // مکانیزم احراز هویت مستقل هوشمند (محیط تلگرام یا مرورگر مستقل PWA)
-        let userId = localStorage.getItem('jedar_user_id');
-        const tgUser = tg?.initDataUnsafe?.user;
-
-        if (tgUser) {
-            userId = tgUser.id.toString();
-            localStorage.setItem('jedar_user_id', userId);
-            document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
-        } else if (userId) {
-            document.getElementById('tgUsername').value = userId;
-        }
-
-        // تابع چک کردن لاگین کاربر در زمان‌های حساس
-        function requireAuth() {
+        // بررسی لاگین هوشمند
+        function checkUserAuth() {
             if (!userId) {
                 document.getElementById('loginModal').classList.add('active');
                 return false;
@@ -1015,226 +288,229 @@
             return true;
         }
 
-        // مدیریت ورود در مودال PWA مستقل
-        document.getElementById('submitLoginBtn').addEventListener('click', () => {
-            const inputVal = document.getElementById('loginUserId').value.trim();
-            if (inputVal.length >= 4) {
-                userId = inputVal;
+        // عملکرد ورود مستقل
+        document.getElementById('executeLoginBtn').addEventListener('click', () => {
+            const input = document.getElementById('loginInput').value.trim();
+            if (input.length >= 5) {
+                userId = input;
                 localStorage.setItem('jedar_user_id', userId);
-                document.getElementById('tgUsername').value = userId;
                 document.getElementById('loginModal').classList.remove('active');
-                loadUserProfile();
-                alert("ورود مستقل با موفقیت انجام شد.");
+                initApp();
             } else {
-                alert("لطفا شناسه کاربری معتبری وارد کنید.");
+                alert('لطفا شناسه معتبر وارد کنید.');
             }
         });
 
-        // باز کردن پنجره‌های اکشن به صورت پاپ‌آپ درون‌برنامه‌ای
-        document.getElementById('postAdBtn').addEventListener('click', () => {
-            if (requireAuth()) document.getElementById('createAdModal').classList.add('active');
-        });
-
-        document.getElementById('vipBtn').addEventListener('click', () => {
-            if (requireAuth()) document.getElementById('buyVipModal').classList.add('active');
-        });
-
-        document.getElementById('chargeBtn').addEventListener('click', () => {
-            if (requireAuth()) document.getElementById('chargeWalletModal').classList.add('active');
-        });
-
-        document.getElementById('convertPointsBtn').addEventListener('click', () => {
-            if (requireAuth()) alert("تبدیل امتیاز در حال حاضر بر اساس سیاست‌های جدید مالی مستقیم در پنل بررسی می‌شود.");
-        });
-
-        // ارسال مستقیم اطلاعات آگهی به بک‌اند ورکر کلودفلر
-        document.getElementById('submitNewAdBtn').addEventListener('click', async () => {
-            const title = document.getElementById('adTitle').value.trim();
-            const desc = document.getElementById('adDesc').value.trim();
-            const price = document.getElementById('adPrice').value.trim();
-            const tgLink = document.getElementById('adTgLink').value.trim();
-            const phone = document.getElementById('adPhone').value.trim();
-
-            if (!title || !desc) {
-                alert("لطفا عنوان و توضیحات آگهی را پر کنید.");
-                return;
-            }
-
-            try {
-                const res = await fetch(`${API_BASE}/api/ads/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        title_fa: title,
-                        description_fa: desc,
-                        price: price,
-                        phone_number: phone,
-                        tg_link: tgLink
-                    })
-                });
-
-                if (res.ok) {
-                    alert("آگهی شما با موفقیت ثبت مستقل شد و پس از تایید توسط ادمین در جدار نمایش داده خواهد شد.");
-                    document.getElementById('createAdModal').classList.remove('active');
-                } else {
-                    alert("خطا در فرآیند ثبت. بررسی کنید که محدودیت ثبت آگهی بدون اشتراک نداشته باشید.");
-                }
-            } catch {
-                alert("ارتباط با کلودفلر ورکر برقرار نشد. آگهی ثبت موقت شد.");
-            }
-        });
-
-        // پرداخت اشتراک ویژه مستقل
-        document.getElementById('submitVipPayBtn').addEventListener('click', () => {
-            alert("در حال اتصال به درگاه پرداخت مستقیم جدار برای کاربر شناسه: " + userId);
-        });
-
-        // پرداخت افزایش موجودی مستقل
-        document.getElementById('submitChargePayBtn').addEventListener('click', () => {
-            const amt = document.getElementById('chargeAmountInput').value;
-            if(amt > 1000) {
-                alert(`درخواست شارژ به مبلغ ${parseInt(amt).toLocaleString()} تومان به درگاه بانکی ارسال شد.`);
-            } else {
-                alert("لطفا مبلغ معتبری وارد کنید.");
-            }
-        });
-
-        // ترجمه‌ها و دیکشنری چندزبانه
-        const translations = {
-            fa: { home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل', post_ad: 'ثبت آگهی', vip_subscription: 'ویژه', charge: 'شارژ', convert_points: 'تبدیل', searchPlaceholder: 'جستجو در آگهی‌ها...', categories: 'دسته‌بندی‌ها', all: 'همه', latest_ads: 'جدیدترین آگهی‌ها', more: 'بیشتر', balance: '💰 موجودی کیف پول', search: 'جستجو', save: 'ذخیره تغییرات' },
-            ar: { home: 'الرئيسية', favorites: 'المفضلة', profile: 'الملف', post_ad: 'إعلان', vip_subscription: 'VIP', charge: 'شحن', convert_points: 'تحويل', searchPlaceholder: 'ابحث في الإعلانات...', categories: 'الفئات', all: 'الكل', latest_ads: 'أحدث الإعلانات', more: 'المزيد', balance: '💰 رصيد المحفظة', search: 'بحث', save: 'حفظ التغييرات' },
-            en: { home: 'Home', favorites: 'Favorites', profile: 'Profile', post_ad: 'Post Ad', vip_subscription: 'VIP', charge: 'Wallet', convert_points: 'Points', searchPlaceholder: 'Search ads...', categories: 'Categories', all: 'All', latest_ads: 'Latest Ads', more: 'More', balance: '💰 Wallet Balance', search: 'Search', save: 'Save Changes' }
-        };
-
-        // هندل کردن منوی ناوبری پایینی بین صفحات
+        // جابجایی بین صفحات با منوی پایینی روی حالت PWA مستقل
         document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 
                 item.classList.add('active');
-                const pageId = item.getAttribute('data-page') + 'Page';
-                document.getElementById(pageId).classList.add('active');
+                const target = item.getAttribute('data-target');
+                document.getElementById(`${target}Page`).classList.add('active');
             });
         });
 
-        // تغییر زبان برنامه
-        document.getElementById('langMainBtn').addEventListener('click', () => {
-            if (currentLang === 'fa') currentLang = 'ar';
-            else if (currentLang === 'ar') currentLang = 'en';
-            else currentLang = 'fa';
-            localStorage.setItem('jedar_lang', currentLang);
-            updateUILanguage();
+        // باز کردن مودال ثبت آگهی
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            if(checkUserAuth()) document.getElementById('createAdModal').classList.add('active');
         });
 
-        function updateUILanguage() {
-            const langData = translations[currentLang];
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = (currentLang === 'en') ? 'ltr' : 'rtl';
-            document.body.style.direction = (currentLang === 'en') ? 'ltr' : 'rtl';
+        // فرآیند خواندن تصاویر و تبدیل به Base64 جهت ارسال به ورکر کلودفلر
+        document.getElementById('uploadTrigger').addEventListener('click', () => {
+            document.getElementById('adFileInput').click();
+        });
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (langData[key]) el.innerText = langData[key];
-            });
+        document.getElementById('adFileInput').addEventListener('change', (e) => {
+            const files = e.target.files;
+            const previewContainer = document.getElementById('uploadPreview');
+            previewContainer.innerHTML = '';
+            uploadedImagesBase64 = [];
 
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput && langData.searchPlaceholder) searchInput.placeholder = langData.searchPlaceholder;
-        }
-
-        // لود آگهی‌های پیش‌فرض
-        async function loadAds() {
-            const grid = document.getElementById('adsGrid');
-            try {
-                const res = await fetch(`${API_BASE}/api/ads`);
-                if (res.ok) {
-                    allAds = await res.json();
-                    renderAds(allAds, grid);
-                } else { throw new Error(); }
-            } catch {
-                // آگهی‌های دمو در صورت آفلاین بودن بک‌آند
-                allAds = [
-                    { id: 1, title_fa: 'خدمات تخصصی کاشت مو و زیبایی زیبایی', price: 'توافقی', location: 'مشهد', images: '["https://picsum.photos/300/300?random=1"]', phone_number: '09123456789' },
-                    { id: 2, title_fa: 'تور سیاحتی زیارتی کربلا و نجف اشرف', price: '۳,۵۰۰,۰۰۰ تومان', location: 'کربلا', images: '["https://picsum.photos/300/300?random=2"]', phone_number: '09151112233' }
-                ];
-                renderAds(allAds, grid);
+            for(let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedImagesBase64.push(event.target.result); // ذخیره دیتا سورس تصویر
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'preview-img';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             }
-        }
+        });
 
-        function renderAds(ads, targetGrid) {
-            targetGrid.innerHTML = '';
-            if(ads.length === 0) {
-                targetGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa; padding:20px;">آگهی‌ای یافت نشد.</p>';
+        // ارسال واقعی آگهی و فایل‌ها به ورکر (که ورکر مستقیم به کانال تلگرام هدایت می‌کند)
+        document.getElementById('submitAdRealBtn').addEventListener('click', async () => {
+            const title = document.getElementById('adTitle').value.trim();
+            const category = document.getElementById('adCategory').value;
+            const desc = document.getElementById('adDesc').value.trim();
+            const price = document.getElementById('adPrice').value.trim();
+            const phone = document.getElementById('adPhone').value.trim();
+            const tgUsername = document.getElementById('adTgUsername').value.trim();
+
+            if(!title || !desc || !phone) {
+                alert('لطفا فیلدهای ضروری (عنوان، توضیحات و شماره تماس) را پر کنید.');
                 return;
             }
+
+            const adData = {
+                user_id: userId,
+                title: title,
+                category: category,
+                description: desc,
+                price: price,
+                phone: phone,
+                telegram: tgUsername,
+                images: uploadedImagesBase64 // ارسال تصاویر به صورت آرایه آرگومان ورکر
+            };
+
+            try {
+                // نمایش لودینگ صوری
+                document.getElementById('submitAdRealBtn').innerText = 'در حال ارسال و آپلود تصاویر در تلگرام...';
+                document.getElementById('submitAdRealBtn').disabled = true;
+
+                const response = await fetch(`${API_BASE}/api/ads/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(adData)
+                });
+
+                if(response.ok) {
+                    alert('آگهی با موفقیت ثبت شد و برای تایید به کانال مدیریت ادمین ارسال گردید.');
+                    document.getElementById('createAdModal').classList.remove('active');
+                    // ریست فرم
+                    document.getElementById('adTitle').value = '';
+                    document.getElementById('adDesc').value = '';
+                    document.getElementById('uploadPreview').innerHTML = '';
+                } else {
+                    alert('خطا در ثبت آگهی. ممکن است به سقف مجاز آگهی بدون اشتراک رسیده باشید.');
+                }
+            } catch (err) {
+                alert('خطا در برقراری ارتباط با ورکر کلودفلر.');
+            } finally {
+                document.getElementById('submitAdRealBtn').innerText = 'ارسال آگهی جهت تایید ادمین';
+                document.getElementById('submitAdRealBtn').disabled = false;
+            }
+        });
+
+        // دریافت آگهی‌ها از ورکر کلودفلر و نمایش زنده در صفحه اصلی
+        async function fetchLiveAds() {
+            const grid = document.getElementById('adsGrid');
+            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa;">در حال لود آگهی‌های زنده جدار...</p>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/ads`);
+                if(res.ok) {
+                    const ads = await res.json();
+                    renderAdsList(ads, grid);
+                } else { throw new Error(); }
+            } catch {
+                // اطلاعات پیش‌فرض بک‌آپ در صورت متصل نبودن دیتابیس ورکر
+                const backupAds = [
+                    { id: 101, title: 'تور سیاحتی ۳ روزه شیراز لیدر عربی زبانه', price: 'توافقی', category: 'tourism', description: 'بهترین تور لیدر منطقه با قیمت عالی', phone: '09123456789', telegram: 'https://t.me/jedar_support', images: ['https://picsum.photos/400/400?random=1'] },
+                    { id: 102, title: 'آپارتمان لوکس اجاره‌ای مخصوص مسافرین در تهران', price: '۲,۰۰۰,۰۰۰ تومان', category: 'realestate', description: 'دسترسی عالی به مترو و مراکز درمانی', phone: '09359998877', telegram: 'https://t.me/jedar_support', images: ['https://picsum.photos/400/400?random=2'] }
+                ];
+                renderAdsList(backupAds, grid);
+            }
+        }
+
+        function renderAdsList(ads, targetGrid) {
+            targetGrid.innerHTML = '';
+            if(ads.length === 0) {
+                targetGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#aaa;">هیچ آگهی فعالی در این دسته‌بندی وجود ندارد.</p>';
+                return;
+            }
+
             ads.forEach(ad => {
-                const imgUrl = ad.images ? JSON.parse(ad.images)[0] : 'https://picsum.photos/300/300';
+                const img = (ad.images && ad.images.length > 0) ? ad.images[0] : 'https://picsum.photos/400/400?random=99';
                 const card = document.createElement('div');
                 card.className = 'ad-card';
                 card.innerHTML = `
-                    <div class="ad-card-image">
-                        <img src="${imgUrl}" alt="">
-                        <div class="watermark">J-DAR</div>
-                    </div>
+                    <div class="ad-card-image"><img src="${img}"></div>
                     <div class="ad-card-content">
-                        <div class="ad-card-title">${ad.title_fa}</div>
+                        <div class="ad-card-title">${ad.title}</div>
                         <div class="ad-card-price">${ad.price}</div>
-                        <div class="ad-card-meta"><i class="fas fa-map-marker-alt"></i> ${ad.location || 'منطقه'}</div>
                     </div>
                 `;
-                card.addEventListener('click', () => openAdDetails(ad));
+                card.addEventListener('click', () => showAdDetails(ad));
                 targetGrid.appendChild(card);
             });
         }
 
-        function openAdDetails(ad) {
-            const modal = document.getElementById('adModal');
-            const content = document.getElementById('modalContent');
-            const imgUrl = ad.images ? JSON.parse(ad.images)[0] : 'https://picsum.photos/300/300';
+        // نمایش پاپ آپ جزئیات آگهی با راه‌های ارتباطی مستقل (تماس، تلگرام، واتساپ)
+        function showAdDetails(ad) {
+            const modal = document.getElementById('detailsModal');
+            const content = document.getElementById('detailsModalContent');
+            const img = (ad.images && ad.images.length > 0) ? ad.images[0] : 'https://picsum.photos/400/400?random=99';
             
+            // لینک‌دهی تمیز چت تلگرام و واتساپ
+            const cleanPhone = ad.phone.replace(/[^0-9]/g, "");
+            const whatsappLink = `https://api.whatsapp.com/send?phone=${cleanPhone}`;
+            const telegramLink = ad.telegram.includes('t.me') ? ad.telegram : `https://t.me/${ad.telegram.replace('@', '')}`;
+
             content.innerHTML = `
-                <button class="modal-back" onclick="document.getElementById('adModal').classList.remove('active')"><i class="fas fa-arrow-right"></i></button>
-                <div class="modal-content-scroll">
-                    <div class="image-gallery">
-                        <img src="${imgUrl}" class="modal-image" alt="">
-                    </div>
-                    <h1 class="modal-title">${ad.title_fa}</h1>
-                    <p class="modal-price">${ad.price}</p>
-                    <div class="modal-description">
-                        <div class="description-text">${ad.description_fa || 'توضیحاتی برای این آگهی ثبت نشده است.'}</div>
-                    </div>
+                <div style="text-align:center; margin-bottom:15px;">
+                    <img src="${img}" style="width:100%; max-height:250px; object-fit:cover; border-radius:18px;">
                 </div>
-                <div class="modal-footer">
-                    <a href="tel:${ad.phone_number || ''}" class="contact-btn"><i class="fas fa-phone"></i> تماس مستقیم</a>
-                    <a href="${ad.tg_link || '#'}" target="_blank" class="chat-btn"><i class="fab fa-telegram"></i> چت در تلگرام</a>
+                <h2 style="margin-bottom:10px; font-size:20px;">${ad.title}</h2>
+                <p style="color:#7b5aff; font-weight:bold; font-size:18px; margin-bottom:15px;">${ad.price}</p>
+                <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:18px; margin-bottom:20px; font-size:14px; line-height:1.7; color:#ddd;">
+                    ${ad.description}
                 </div>
+                
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                    <a href="tel:${ad.phone}" style="background:#7b5aff; color:white; text-decoration:none; padding:12px; border-radius:20px; text-align:center; font-weight:bold;"><i class="fas fa-phone"></i> تماس مستقیم</a>
+                    <a href="${telegramLink}" target="_blank" style="background:#229ED9; color:white; text-decoration:none; padding:12px; border-radius:20px; text-align:center; font-weight:bold;"><i class="fab fa-telegram"></i> تلگرام</a>
+                </div>
+                <a href="${whatsappLink}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:12px; border-radius:20px; text-align:center; font-weight:bold; margin-bottom:15px;"><i class="fab fa-whatsapp"></i> چت در واتساپ</a>
+                
+                <button class="btn-close" onclick="document.getElementById('detailsModal').classList.remove('active')">بستن آگهی</button>
             `;
             modal.classList.add('active');
         }
 
-        // مودال‌های اطلاعات و راهنما
-        document.getElementById('helpBtn').addEventListener('click', () => document.getElementById('helpModal').classList.add('active'));
-        document.getElementById('helpClose').addEventListener('click', () => document.getElementById('helpModal').classList.remove('active'));
-
-        // لود اطلاعات اولیه پروفایل
-        async function loadUserProfile() {
-            if (!userId) return;
+        // لود اطلاعات مالی پروفایل از پایگاه داده کلودفلر
+        async function loadProfileLive() {
+            if(!userId) return;
+            document.getElementById('profileUid').value = userId;
             try {
                 const res = await fetch(`${API_BASE}/api/user/${userId}`);
-                if (res.ok) {
+                if(res.ok) {
                     const data = await res.json();
                     document.getElementById('walletBalance').innerText = (data.balance || 0).toLocaleString();
                     document.getElementById('userPoints').innerText = data.points || 0;
-                    if(data.is_vip) document.getElementById('accountStatus').innerText = "کاربر ویژه (VIP) 👑";
+                    if(data.is_vip) {
+                        document.getElementById('profileVipStatus').value = 'کاربر ویژه (VIP) 👑';
+                    }
                 }
             } catch {}
         }
 
-        // اجرای اولیه برنامه
-        loadAds();
-        updateUILanguage();
-        loadUserProfile();
+        // فیلتر آگهی‌ها بر اساس دسته‌بندی
+        document.querySelectorAll('#categoriesBar .category-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('#categoriesBar .category-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const cat = chip.getAttribute('data-cat');
+                if(cat === 'all') {
+                    fetchLiveAds();
+                } else {
+                    const filtered = allAds.filter(a => a.category === cat);
+                    renderAdsList(filtered, document.getElementById('adsGrid'));
+                }
+            });
+        });
+
+        function initApp() {
+            fetchLiveAds();
+            loadProfileLive();
+        }
+
+        // شروع به کار اپلیکیشن
+        initApp();
     </script>
 </body>
-    </html>
+</html>
