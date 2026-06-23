@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جدار | J-DAR</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7b5aff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
+    <!-- PWA Manifest (Inline) -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkotREFSIiwKICAic2hvcnRfbmFtZSI6ICJKLURBUiIsCiAgImRlc2NyaXB0aW9uIjogIlBsYXRmb3JtIGJlem5pbiB2YSBoZXJmaCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwYTBjIiwKICAidGhlbWVfY29sb3IiOiAiIzdiNWFmZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyByeD0nNTAnIGZpbGw9JyM3YjVhZmYnLz48dGV4dCB4PScyNTYnIHk9JzM0MCcgZm9udC1zaXplPScyODAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZmlsbD0nd2hpdGUnPkokdDwvdGV4dD48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFzayBhbnlsYW5nIgogICAgfQogIF0KfQ==">
+    <meta name="theme-color" content="#7b5aff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="J-DAR">
 
+    <!-- Telegram WebApp (اختیاری) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
+        /* ===== استایل‌های کامل ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -23,13 +28,7 @@
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
             font-weight: bold;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Vazir', 'Inter', sans-serif;
             background: #0a0a0c;
@@ -38,1050 +37,286 @@
             direction: rtl;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 30% 30%, rgba(123, 90, 255, 0.08) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 70%, rgba(255, 100, 150, 0.05) 0%, transparent 60%),
+            top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at 30% 30%, rgba(123,90,255,0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 70%, rgba(255,100,150,0.05) 0%, transparent 60%),
                         #0a0a0c;
             z-index: -1;
         }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px 16px 90px 16px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(145deg, #7b5aff, #a58aff);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(123, 90, 255, 0.4);
-        }
-
-        .logo-text {
-            font-weight: 800;
-            font-size: 24px;
-            background: linear-gradient(135deg, #fff, #e0d0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .header-left {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .wallet-card {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 35px -20px rgba(0, 0, 0, 0.8);
-        }
-
-        .wallet-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .wallet-info h4 {
-            font-size: 14px;
-            color: #aaa;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .wallet-info .amount {
-            font-size: 32px;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .wallet-info small {
-            font-size: 14px;
-            color: #7b5aff;
-        }
-
-        .wallet-points {
-            background: rgba(123, 90, 255, 0.15);
-            border: 1px solid rgba(123, 90, 255, 0.3);
-            border-radius: 30px;
-            padding: 10px 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #a58aff;
-        }
-
-        .wallet-points i {
-            color: #ffd966;
-            font-size: 20px;
-        }
-
-        .wallet-points .points-num {
-            font-weight: 700;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .notice-card {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 32px;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-        }
-
-        .notice-icon {
-            width: 40px;
-            height: 40px;
-            background: #daa520;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        .notice-text {
-            flex: 1;
-            font-size: 14px;
-            color: #ffd966;
-            line-height: 1.6;
-        }
-
-        .notice-edit {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #daa520;
-            font-size: 18px;
-            transition: 0.2s;
-            flex-shrink: 0;
-        }
-
-        .notice-edit:hover {
-            background: #daa520;
-            color: white;
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .action-item {
-            background: rgba(20, 20, 30, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            padding: 14px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #fff;
-        }
-
-        .action-item:hover {
-            background: rgba(123, 90, 255, 0.2);
-            border-color: rgba(123, 90, 255, 0.3);
-            transform: translateY(-4px);
-        }
-
-        .action-item i {
-            font-size: 26px;
-            color: #a58aff;
-        }
-
-        .action-item span {
-            font-size: 11px;
-            font-weight: 500;
-            opacity: 0.8;
-        }
-
-        .search-box {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 40px;
-            padding: 8px 18px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .search-box i {
-            color: #aaa;
-            font-size: 20px;
-            margin-left: 12px;
-        }
-
-        .search-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-box input::placeholder {
-            color: rgba(255,255,255,0.3);
-        }
-
-        .search-box button {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 8px 20px;
-            color: #fff;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 14px;
-        }
-
-        .search-box button:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.2);
-        }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .section-title h3 {
-            font-weight: 600;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .section-title a {
-            color: #aaa;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .section-title a:hover {
-            color: #a58aff;
-        }
-
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-chip {
-            background: rgba(30, 30, 40, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 10px 22px;
-            white-space: nowrap;
-            color: #ddd;
-            font-weight: 500;
-            transition: 0.2s;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .category-chip.active {
-            background: #7b5aff;
-            border-color: #7b5aff;
-            color: white;
-        }
-
-        .ads-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .ad-card {
-            background: rgba(20, 20, 28, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.25s;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ad-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(123, 90, 255, 0.3);
-            box-shadow: 0 20px 30px -15px #7b5aff;
-        }
-
-        .ad-card-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background: #1a1a24;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ad-card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .ad-card:hover .ad-card-image img {
-            transform: scale(1.05);
-        }
-
-        .ad-card-image .watermark {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            color: white;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.2);
-            z-index: 2;
-        }
-
-        .ad-card-content {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .ad-card-title {
-            font-weight: 600;
-            font-size: 15px;
-            color: #fff;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.5;
-            min-height: 45px;
-        }
-
-        .ad-card-price {
-            font-weight: 700;
-            font-size: 16px;
-            color: #7b5aff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ad-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #aaa;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .ad-card-meta i {
-            font-size: 12px;
-            color: #a58aff;
-        }
-
-        .special-badge {
-            background: #daa520;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-
-        .ad-card .favorite {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-            transition: 0.2s;
-            z-index: 10;
-            cursor: pointer;
-        }
-
-        .ad-card .favorite:hover {
-            background: #ff5e7c;
-            color: white;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 0;
-        }
-
-        .modal.active { display: block; }
-
-        .modal-content {
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15, 15, 20, 0.9);
-            backdrop-filter: blur(20px);
-            border: none;
-            border-radius: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .modal-back {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: #7b5aff;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            z-index: 1001;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .modal-back:hover { transform: scale(1.1); }
-
-        .modal-content-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 20px 100px 20px;
-        }
-
-        .image-gallery {
-            margin-bottom: 20px;
-        }
-
-        .modal-image {
-            width: 100%;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
-            display: block;
-        }
-
-        .gallery-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        .gallery-controls button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .gallery-controls button:hover {
-            background: #7b5aff;
-            border-color: #7b5aff;
-        }
-
-        .gallery-counter {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        .modal-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: #fff;
-            line-height: 1.3;
-        }
-
-        .modal-location-time {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .modal-price {
-            font-size: 20px;
-            font-weight: 600;
-            color: #7b5aff;
-            margin: 10px 0 10px;
-        }
-
-        .modal-description {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .description-text {
-            color: #ddd;
-            font-size: 15px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            overflow: hidden;
-        }
-
-        .description-text.truncated {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-
-        .read-more-btn {
-            background: transparent;
-            border: none;
-            color: #7b5aff;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 5px 0;
-            margin-top: 5px;
-            display: block;
-            text-align: left;
-        }
-
-        .read-more-btn:hover {
-            text-decoration: underline;
-        }
-
-        .review-section {
-            margin-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 20px;
-        }
-
-        .review-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .review-header .avg {
-            font-size: 24px;
-            font-weight: bold;
-            color: #7b5aff;
-        }
-
-        .review-header .stars {
-            color: #ffd966;
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-
-        .review-header .count {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        .review-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            padding: 18px;
-            margin-bottom: 15px;
-        }
-
-        .review-item .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .review-item .user i {
-            background: #7b5aff;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .review-item .user-name {
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .review-item .rating-stars {
-            color: #ffd966;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-
-        .review-item .comment {
-            color: #ddd;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        .review-item .date {
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        .review-input {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .review-input input,
-        .review-input textarea {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px;
-            padding: 14px 20px;
-            color: white;
-            width: 100%;
-            resize: none;
-            font-family: 'Vazir', sans-serif;
-        }
-
-        .review-input input::placeholder,
-        .review-input textarea::placeholder {
-            color: rgba(255,255,255,0.4);
-        }
-
-        .review-input button {
-            background: #7b5aff;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .review-input button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .modal-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 16px 20px;
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-footer button {
-            flex: 1;
-            padding: 16px 12px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-            font-size: 16px;
-            border: none;
-        }
-
-        .chat-btn {
-            background: #7b5aff;
-            color: white;
-        }
-
-        .chat-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-3px);
-        }
-
-        .contact-btn {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid #7b5aff !important;
-            color: #fff;
-        }
-
-        .contact-btn:hover {
-            background: #7b5aff;
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        .page { display: none; }
-        .page.active { display: block; }
-
-        .profile-section {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 32px;
-            padding: 24px;
-        }
-
-        .profile-field { margin-bottom: 20px; }
-        .profile-field label { display: block; color: #aaa; margin-bottom: 5px; font-size: 14px; }
-
-        .profile-field input,
-        .profile-field select {
-            width: 100%;
-            padding: 14px 20px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 30px;
-            color: white;
-            outline: none;
-        }
-
-        .save-profile {
-            background: #7b5aff;
-            border: none;
-            border-radius: 30px;
-            padding: 16px;
-            width: 100%;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15, 15, 20, 0.8);
-            backdrop-filter: blur(30px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #aaa;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 12px;
-        }
-
-        .nav-item.active {
-            color: #a58aff;
-        }
-
-        .nav-item i {
-            font-size: 24px;
-            margin-bottom: 2px;
-        }
-
-        .gallery-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .gallery-modal.active { display: flex; align-items: center; justify-content: center; }
-
-        .gallery-content {
-            max-width: 500px;
-            width: 100%;
-            background: transparent;
-            position: relative;
-        }
-
-        .gallery-back {
-            position: absolute;
-            top: -60px;
-            left: 0;
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            z-index: 10;
-        }
-
-        .gallery-image {
-            width: 100%;
-            border-radius: 30px;
-            border: 3px solid #7b5aff;
-        }
-
-        .gallery-controls-modal {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            color: white;
-        }
-
-        .gallery-nav {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px;
-        }
-
-        .gallery-counter-modal {
-            font-size: 18px;
-            background: rgba(0,0,0,0.5);
-            padding: 6px 20px;
-            border-radius: 30px;
-        }
-
-        .telegram-warning {
-            background: #ffc107;
-            color: #1e2a3a;
-            text-align: center;
-            padding: 10px;
-            border-radius: 30px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            display: none;
-        }
-        .telegram-warning.show { display: block; }
-
-        .help-modal {
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .help-modal h2 { color: #a58aff; margin-bottom: 20px; }
-        .help-steps { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
-        .step { display: flex; align-items: center; gap: 10px; }
-        .step-number { background: #7b5aff; width: 30px; height: 30px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .help-close { background: #7b5aff; border: none; border-radius: 30px; padding: 12px 30px; color: white; font-weight: bold; cursor: pointer; }
-
-        .notice-edit-modal {
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        .notice-edit-modal textarea {
-            width: 100%;
-            padding: 14px 20px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 30px;
-            color: white;
-            margin: 15px 0;
-            resize: none;
-        }
-        .notice-edit-modal button {
-            background: #7b5aff;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
+        .container { max-width:500px; margin:0 auto; padding:20px 16px 90px 16px; position:relative; z-index:10; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+        .logo { display:flex; align-items:center; gap:8px; }
+        .logo-icon { width:44px; height:44px; background:linear-gradient(145deg,#7b5aff,#a58aff); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; box-shadow:0 10px 20px -5px rgba(123,90,255,0.4); }
+        .logo-text { font-weight:800; font-size:24px; background:linear-gradient(135deg,#fff,#e0d0ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-0.5px; }
+        .header-left { display:flex; gap:8px; }
+        .icon-btn { width:44px; height:44px; border-radius:16px; background:rgba(255,255,255,0.03); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; color:#aaa; font-size:20px; cursor:pointer; transition:0.2s; }
+        .icon-btn:hover { background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2); }
+        .icon-btn.admin { border-color:#daa520; color:#daa520; }
+        .icon-btn.admin:hover { background:#daa520; color:#fff; }
+
+        .toast-container { position:fixed; top:20px; left:50%; transform:translateX(-50%); z-index:9999; max-width:90%; width:400px; pointer-events:none; }
+        .toast { background:rgba(20,20,30,0.95); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:14px 20px; margin-bottom:10px; color:#fff; font-size:14px; display:flex; align-items:center; gap:12px; box-shadow:0 20px 40px -15px rgba(0,0,0,0.8); transform:translateY(-20px); opacity:0; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events:auto; border-right:4px solid #7b5aff; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.success { border-right-color:#4caf50; }
+        .toast.error { border-right-color:#ff5e7c; }
+        .toast.warning { border-right-color:#ffd966; }
+        .toast i { font-size:20px; flex-shrink:0; }
+        .toast.success i { color:#4caf50; }
+        .toast.error i { color:#ff5e7c; }
+        .toast.warning i { color:#ffd966; }
+
+        .wallet-card { background:rgba(20,20,30,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.05); border-radius:32px; padding:20px; margin-bottom:25px; box-shadow:0 20px 35px -20px rgba(0,0,0,0.8); }
+        .wallet-row { display:flex; justify-content:space-between; align-items:center; }
+        .wallet-info h4 { font-size:14px; color:#aaa; font-weight:500; }
+        .wallet-info .amount { font-size:32px; font-weight:700; color:#fff; }
+        .wallet-info small { font-size:14px; color:#7b5aff; }
+        .wallet-points { background:rgba(123,90,255,0.15); border:1px solid rgba(123,90,255,0.3); border-radius:30px; padding:10px 18px; display:flex; align-items:center; gap:8px; color:#a58aff; }
+        .wallet-points i { color:#ffd966; font-size:20px; }
+        .wallet-points .points-num { font-weight:700; font-size:18px; color:#fff; }
+
+        .notice-card { background:rgba(20,20,30,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,215,0,0.3); border-radius:32px; padding:15px 20px; margin-bottom:25px; display:flex; align-items:center; gap:12px; }
+        .notice-icon { width:40px; height:40px; background:#daa520; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; flex-shrink:0; }
+        .notice-text { flex:1; font-size:14px; color:#ffd966; line-height:1.6; }
+        .notice-edit { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; cursor:pointer; color:#daa520; font-size:18px; transition:0.2s; flex-shrink:0; }
+        .notice-edit:hover { background:#daa520; color:#fff; }
+
+        .action-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:30px; }
+        .action-item { background:rgba(20,20,30,0.4); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:14px 0; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; transition:0.2s; color:#fff; }
+        .action-item:hover { background:rgba(123,90,255,0.2); border-color:rgba(123,90,255,0.3); transform:translateY(-4px); }
+        .action-item i { font-size:26px; color:#a58aff; }
+        .action-item span { font-size:11px; font-weight:500; opacity:0.8; }
+
+        .search-box { background:rgba(20,20,30,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.05); border-radius:40px; padding:8px 18px; display:flex; align-items:center; margin-bottom:25px; }
+        .search-box i { color:#aaa; font-size:20px; margin-left:12px; }
+        .search-box input { flex:1; background:transparent; border:none; color:#fff; font-size:16px; outline:none; }
+        .search-box input::placeholder { color:rgba(255,255,255,0.3); }
+        .search-box button { background:transparent; border:1px solid rgba(255,255,255,0.1); border-radius:30px; padding:8px 20px; color:#fff; font-weight:500; cursor:pointer; transition:0.2s; font-size:14px; }
+        .search-box button:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.2); }
+
+        .section-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+        .section-title h3 { font-weight:600; font-size:18px; color:#fff; }
+        .section-title a { color:#aaa; text-decoration:none; font-size:14px; transition:0.2s; cursor:pointer; }
+        .section-title a:hover { color:#a58aff; }
+
+        .categories { display:flex; overflow-x:auto; gap:10px; padding-bottom:12px; margin-bottom:25px; scrollbar-width:none; }
+        .categories::-webkit-scrollbar { display:none; }
+        .category-chip { background:rgba(30,30,40,0.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:10px 22px; white-space:nowrap; color:#ddd; font-weight:500; transition:0.2s; cursor:pointer; font-size:14px; }
+        .category-chip.active { background:#7b5aff; border-color:#7b5aff; color:#fff; }
+
+        .ads-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+        .ad-card { background:rgba(20,20,28,0.7); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.05); border-radius:28px; overflow:hidden; cursor:pointer; transition:0.25s; position:relative; display:flex; flex-direction:column; }
+        .ad-card:hover { transform:translateY(-6px); border-color:rgba(123,90,255,0.3); box-shadow:0 20px 30px -15px #7b5aff; }
+        .ad-card-image { width:100%; aspect-ratio:1/1; background:#1a1a24; position:relative; overflow:hidden; }
+        .ad-card-image img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s; }
+        .ad-card:hover .ad-card-image img { transform:scale(1.05); }
+        .ad-card-image .watermark { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; font-size:10px; padding:2px 8px; border-radius:30px; border:1px solid rgba(255,255,255,0.2); z-index:2; }
+        .ad-card-content { padding:12px; display:flex; flex-direction:column; gap:6px; }
+        .ad-card-title { font-weight:600; font-size:15px; color:#fff; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.5; min-height:45px; }
+        .ad-card-price { font-weight:700; font-size:16px; color:#7b5aff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ad-card-meta { display:flex; align-items:center; gap:6px; font-size:11px; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ad-card-meta i { font-size:12px; color:#a58aff; }
+        .special-badge { background:#daa520; color:#fff; padding:2px 8px; border-radius:30px; font-size:10px; font-weight:bold; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+        .ad-card .favorite { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); border-radius:30px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,0.1); color:#fff; transition:0.2s; z-index:10; cursor:pointer; font-size:18px; }
+        .ad-card .favorite:hover { background:#ff5e7c; color:#fff; }
+        .ad-card .status-badge { position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); border-radius:30px; padding:4px 12px; font-size:11px; color:#ffd966; border:1px solid rgba(255,215,0,0.3); z-index:10; }
+        .ad-card .status-badge.approved { color:#4caf50; border-color:rgba(76,175,80,0.3); }
+        .ad-card .status-badge.rejected { color:#ff5e7c; border-color:rgba(255,94,124,0.3); }
+
+        .modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(20px); z-index:1000; overflow-y:auto; padding:0; }
+        .modal.active { display:block; }
+        .modal-content { max-width:500px; margin:0 auto; background:rgba(15,15,20,0.95); backdrop-filter:blur(20px); min-height:100vh; display:flex; flex-direction:column; position:relative; }
+        .modal-back { position:fixed; top:20px; left:20px; background:#7b5aff; border:none; border-radius:50%; width:50px; height:50px; color:#fff; font-size:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; z-index:1001; box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+        .modal-back:hover { transform:scale(1.1); }
+        .modal-content-scroll { flex:1; overflow-y:auto; padding:20px 20px 100px 20px; }
+
+        /* فرم‌ها */
+        .form-group { margin-bottom:18px; }
+        .form-group label { display:block; color:#aaa; font-size:14px; margin-bottom:6px; font-weight:500; }
+        .form-group label .required { color:#ff5e7c; }
+        .form-control { width:100%; padding:14px 18px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:30px; color:#fff; font-size:16px; font-family:'Vazir','Inter',sans-serif; transition:0.2s; outline:none; }
+        .form-control:focus { border-color:#7b5aff; box-shadow:0 0 0 3px rgba(123,90,255,0.2); }
+        .form-control::placeholder { color:rgba(255,255,255,0.3); }
+        select.form-control { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:left 18px center; padding-left:40px; }
+        select.form-control option { background:#1a1a24; color:#fff; }
+        textarea.form-control { resize:vertical; min-height:80px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .form-btn { width:100%; padding:16px; border:none; border-radius:40px; font-weight:700; font-size:16px; cursor:pointer; transition:0.2s; font-family:'Vazir','Inter',sans-serif; display:inline-flex; align-items:center; justify-content:center; gap:10px; }
+        .form-btn-primary { background:#7b5aff; color:#fff; }
+        .form-btn-primary:hover { opacity:0.9; transform:translateY(-2px); }
+        .form-btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .form-btn-secondary { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; }
+        .form-btn-secondary:hover { background:rgba(255,255,255,0.1); }
+        .form-btn-success { background:#4caf50; color:#fff; }
+        .form-btn-danger { background:#ff5e7c; color:#fff; }
+        .form-btn-gold { background:#daa520; color:#fff; }
+
+        .image-upload-area { border:2px dashed rgba(255,255,255,0.15); border-radius:30px; padding:30px 20px; text-align:center; cursor:pointer; transition:0.2s; position:relative; background:rgba(0,0,0,0.2); }
+        .image-upload-area:hover { border-color:#7b5aff; background:rgba(123,90,255,0.05); }
+        .image-upload-area i { font-size:40px; color:#7b5aff; display:block; margin-bottom:10px; }
+        .image-upload-area p { color:#aaa; font-size:14px; }
+        .image-upload-area input[type="file"] { position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+        .image-preview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
+        .image-preview-item { position:relative; aspect-ratio:1/1; border-radius:16px; overflow:hidden; background:#1a1a24; border:1px solid rgba(255,255,255,0.05); }
+        .image-preview-item img { width:100%; height:100%; object-fit:cover; }
+        .image-preview-item .remove-img { position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.6); border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; color:#ff5e7c; cursor:pointer; font-size:14px; border:none; }
+
+        /* جزییات آگهی */
+        .image-gallery { margin-bottom:20px; }
+        .modal-image { width:100%; border-radius:30px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 20px 30px -10px rgba(0,0,0,0.5); display:block; aspect-ratio:1/1; object-fit:cover; }
+        .gallery-controls { display:flex; align-items:center; justify-content:center; gap:20px; margin-top:10px; }
+        .gallery-controls button { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:50%; width:40px; height:40px; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; }
+        .gallery-controls button:hover { background:#7b5aff; border-color:#7b5aff; }
+        .gallery-counter { color:#aaa; font-size:14px; }
+        .modal-title { font-size:28px; font-weight:800; margin-bottom:8px; color:#fff; line-height:1.3; }
+        .modal-location-time { font-size:14px; color:#aaa; margin-bottom:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .modal-price { font-size:20px; font-weight:600; color:#7b5aff; margin:10px 0; }
+        .modal-description { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:15px; margin:15px 0; }
+        .description-text { color:#ddd; font-size:15px; line-height:1.8; white-space:pre-wrap; }
+        .description-text.truncated { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+        .read-more-btn { background:transparent; border:none; color:#7b5aff; font-size:14px; font-weight:bold; cursor:pointer; padding:5px 0; margin-top:5px; display:block; text-align:left; }
+        .read-more-btn:hover { text-decoration:underline; }
+
+        .review-section { margin-top:25px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; }
+        .review-header { display:flex; align-items:center; gap:15px; margin-bottom:20px; flex-wrap:wrap; }
+        .review-header .avg { font-size:24px; font-weight:bold; color:#7b5aff; }
+        .review-header .stars { color:#ffd966; font-size:18px; letter-spacing:2px; }
+        .review-header .count { color:#aaa; font-size:14px; }
+        .review-item { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:18px; margin-bottom:15px; }
+        .review-item .user { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+        .review-item .user i { background:#7b5aff; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; }
+        .review-item .user-name { font-weight:600; color:#fff; }
+        .review-item .rating-stars { color:#ffd966; font-size:16px; margin-bottom:6px; }
+        .review-item .comment { color:#ddd; margin-bottom:6px; font-size:14px; }
+        .review-item .date { font-size:11px; color:#aaa; }
+        .review-input { margin-top:20px; display:flex; flex-direction:column; gap:12px; }
+        .review-input input, .review-input textarea { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:30px; padding:14px 20px; color:#fff; width:100%; resize:none; font-family:'Vazir',sans-serif; outline:none; }
+        .review-input input::placeholder, .review-input textarea::placeholder { color:rgba(255,255,255,0.4); }
+        .review-input button { background:#7b5aff; color:#fff; border:none; border-radius:30px; padding:14px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.2s; }
+        .review-input button:hover { opacity:0.9; transform:translateY(-2px); }
+
+        .modal-footer { position:fixed; bottom:0; left:0; right:0; max-width:500px; margin:0 auto; padding:16px 20px; background:rgba(15,15,20,0.95); backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:15px; justify-content:center; z-index:1000; }
+        .modal-footer button { flex:1; padding:16px 12px; border-radius:40px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:0.2s; font-size:16px; border:none; }
+        .chat-btn { background:#7b5aff; color:#fff; }
+        .chat-btn:hover { opacity:0.9; transform:translateY(-3px); }
+        .contact-btn { background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border:1px solid #7b5aff !important; color:#fff; }
+        .contact-btn:hover { background:#7b5aff; color:#fff; transform:translateY(-3px); }
+
+        .page { display:none; }
+        .page.active { display:block; }
+
+        .profile-section { background:rgba(20,20,30,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.05); border-radius:32px; padding:24px; }
+        .profile-field { margin-bottom:20px; }
+        .profile-field label { display:block; color:#aaa; margin-bottom:5px; font-size:14px; }
+        .profile-field input, .profile-field select { width:100%; padding:14px 20px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:30px; color:#fff; outline:none; font-family:'Vazir','Inter',sans-serif; }
+        .save-profile { background:#7b5aff; border:none; border-radius:30px; padding:16px; width:100%; color:#fff; font-weight:bold; cursor:pointer; margin-top:15px; font-family:'Vazir','Inter',sans-serif; }
+        .save-profile:hover { opacity:0.9; }
+
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; max-width:500px; margin:0 auto; background:rgba(15,15,20,0.8); backdrop-filter:blur(30px); border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-around; padding:12px 0; border-top-left-radius:30px; border-top-right-radius:30px; z-index:100; }
+        .nav-item { display:flex; flex-direction:column; align-items:center; color:#aaa; cursor:pointer; transition:0.2s; font-size:12px; }
+        .nav-item.active { color:#a58aff; }
+        .nav-item i { font-size:24px; margin-bottom:2px; }
+
+        .gallery-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(20px); z-index:2000; padding:20px; }
+        .gallery-modal.active { display:flex; align-items:center; justify-content:center; }
+        .gallery-content { max-width:500px; width:100%; position:relative; }
+        .gallery-back { position:absolute; top:-60px; left:0; background:rgba(255,255,255,0.2); border:2px solid #fff; border-radius:50%; width:50px; height:50px; color:#fff; font-size:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; z-index:10; }
+        .gallery-image { width:100%; border-radius:30px; border:3px solid #7b5aff; }
+        .gallery-controls-modal { display:flex; justify-content:space-between; align-items:center; margin-top:20px; color:#fff; }
+        .gallery-nav { background:rgba(255,255,255,0.2); border:2px solid #fff; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:24px; }
+        .gallery-counter-modal { font-size:18px; background:rgba(0,0,0,0.5); padding:6px 20px; border-radius:30px; }
+
+        .telegram-warning { background:#ffc107; color:#1e2a3a; text-align:center; padding:10px; border-radius:30px; margin-bottom:20px; font-weight:bold; display:none; }
+        .telegram-warning.show { display:block; }
+
+        .help-modal { background:rgba(15,15,20,0.95); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:40px; padding:30px 20px; text-align:center; }
+        .help-modal h2 { color:#a58aff; margin-bottom:20px; }
+        .help-steps { display:flex; flex-direction:column; gap:15px; margin:20px 0; text-align:right; }
+        .step { display:flex; align-items:center; gap:10px; }
+        .step-number { background:#7b5aff; width:30px; height:30px; border-radius:30px; display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0; }
+        .help-close { background:#7b5aff; border:none; border-radius:30px; padding:12px 30px; color:#fff; font-weight:bold; cursor:pointer; }
+
+        .notice-edit-modal { background:rgba(15,15,20,0.95); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:40px; padding:30px 20px; text-align:center; }
+        .notice-edit-modal textarea { width:100%; padding:14px 20px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:30px; color:#fff; margin:15px 0; resize:none; font-family:'Vazir','Inter',sans-serif; }
+        .notice-edit-modal button { background:#7b5aff; color:#fff; border:none; border-radius:30px; padding:14px; font-weight:bold; cursor:pointer; width:100%; margin-top:10px; font-family:'Vazir','Inter',sans-serif; }
+
+        .amount-options { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px; }
+        .amount-option { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:12px; text-align:center; cursor:pointer; transition:0.2s; color:#ddd; font-weight:600; }
+        .amount-option:hover { border-color:#7b5aff; background:rgba(123,90,255,0.1); }
+        .amount-option.active { border-color:#7b5aff; background:rgba(123,90,255,0.2); color:#fff; }
+        .amount-option small { display:block; font-weight:400; font-size:11px; color:#aaa; margin-top:2px; }
+
+        .pending-badge { display:inline-block; background:#ffd966; color:#1e2a3a; padding:2px 12px; border-radius:30px; font-size:11px; font-weight:600; }
+
+        .spinner { display:inline-block; width:20px; height:20px; border:3px solid rgba(255,255,255,0.1); border-top-color:#7b5aff; border-radius:50%; animation:spin 0.7s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .pwa-install { display:none; background:rgba(20,20,30,0.8); backdrop-filter:blur(20px); border:1px solid rgba(123,90,255,0.3); border-radius:32px; padding:16px 20px; margin-bottom:20px; align-items:center; gap:14px; }
+        .pwa-install.show { display:flex; }
+        .pwa-install .pwa-icon { width:48px; height:48px; background:#7b5aff; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; flex-shrink:0; }
+        .pwa-install .pwa-text { flex:1; font-size:14px; }
+        .pwa-install .pwa-text strong { display:block; font-size:16px; color:#fff; }
+        .pwa-install button { background:#7b5aff; border:none; border-radius:30px; padding:10px 20px; color:#fff; font-weight:bold; cursor:pointer; flex-shrink:0; }
+
+        /* پنل ادمین */
+        .admin-panel { background:rgba(20,20,30,0.6); backdrop-filter:blur(20px); border:1px solid rgba(255,215,0,0.3); border-radius:32px; padding:20px; margin-bottom:25px; }
+        .admin-panel h4 { color:#daa520; margin-bottom:15px; display:flex; align-items:center; gap:10px; }
+        .admin-panel .admin-item { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:20px; padding:12px 15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+        .admin-panel .admin-item .info { flex:1; }
+        .admin-panel .admin-item .info .title { font-weight:600; color:#fff; }
+        .admin-panel .admin-item .info .sub { font-size:12px; color:#aaa; }
+        .admin-panel .admin-item .actions { display:flex; gap:8px; }
+        .admin-panel .admin-item .actions button { padding:6px 14px; border:none; border-radius:20px; font-size:12px; font-weight:bold; cursor:pointer; }
+        .admin-panel .admin-item .actions .approve { background:#4caf50; color:#fff; }
+        .admin-panel .admin-item .actions .reject { background:#ff5e7c; color:#fff; }
+        .admin-panel .admin-item .actions .delete { background:#ff1744; color:#fff; }
+
+        @media (max-width:480px) {
+            .form-row { grid-template-columns:1fr; }
+            .action-grid { grid-template-columns:repeat(2,1fr); }
+            .ads-grid { grid-template-columns:1fr 1fr; gap:12px; }
+            .wallet-info .amount { font-size:24px; }
+            .modal-title { font-size:22px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="container">
-        <div class="telegram-warning" id="telegramWarning">
-            ⚠️ این صفحه باید در تلگرام باز شود
+        <div class="telegram-warning" id="telegramWarning">⚠️ این صفحه در تلگرام باز نشده است، اما همچنان کار می‌کند.</div>
+
+        <!-- PWA Install -->
+        <div class="pwa-install" id="pwaInstall">
+            <div class="pwa-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="pwa-text"><strong>نصب J-DAR</strong><span>اپلیکیشن را روی دستگاه خود نصب کنید</span></div>
+            <button id="pwaInstallBtn">نصب</button>
         </div>
 
+        <!-- Header -->
         <div class="header">
             <div class="logo">
                 <div class="logo-icon"><i class="fas fa-bolt"></i></div>
                 <span class="logo-text">J-DAR</span>
             </div>
             <div class="header-left">
+                <button class="icon-btn admin" id="adminBtn" style="display:none;"><i class="fas fa-user-shield"></i></button>
                 <button class="icon-btn" id="langMainBtn"><i class="fas fa-globe"></i></button>
                 <button class="icon-btn" id="helpBtn"><i class="fas fa-question"></i></button>
                 <button class="icon-btn" id="supportBtn"><i class="fas fa-headset"></i></button>
             </div>
         </div>
 
+        <!-- Home Page -->
         <div id="homePage" class="page active">
             <div class="wallet-card">
                 <div class="wallet-row">
                     <div class="wallet-info">
-                        <h4 data-i18n="balance">💰 موجودی کیف پول</h4>
+                        <h4>💰 موجودی کیف پول</h4>
                         <div class="amount"><span id="walletBalance">۰</span> <small>تومان</small></div>
                     </div>
                     <div class="wallet-points">
@@ -1091,101 +326,223 @@
                 </div>
             </div>
 
-            <div class="notice-card" id="noticeCard">
+            <div class="notice-card">
                 <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
                 <div class="notice-text" id="noticeText"></div>
-                <div class="notice-edit" id="noticeEditBtn" style="display: none;"><i class="fas fa-pencil-alt"></i></div>
+                <div class="notice-edit" id="noticeEditBtn" style="display:none;"><i class="fas fa-pencil-alt"></i></div>
+            </div>
+
+            <!-- پنل ادمین -->
+            <div id="adminPanel" style="display:none;" class="admin-panel">
+                <h4><i class="fas fa-user-shield"></i> پنل مدیریت</h4>
+                <div id="adminAdsList"></div>
+                <div id="adminChargesList" style="margin-top:15px;"></div>
             </div>
 
             <div class="action-grid">
-                <div class="action-item" id="postAdBtn">
-                    <i class="fas fa-plus-circle"></i>
-                    <span data-i18n="post_ad">ثبت آگهی</span>
-                </div>
-                <div class="action-item" id="vipBtn">
-                    <i class="fas fa-crown"></i>
-                    <span data-i18n="vip_subscription">ویژه</span>
-                </div>
-                <div class="action-item" id="chargeBtn">
-                    <i class="fas fa-wallet"></i>
-                    <span data-i18n="charge">شارژ</span>
-                </div>
-                <div class="action-item" id="convertPointsBtn">
-                    <i class="fas fa-gift"></i>
-                    <span data-i18n="convert_points">تبدیل</span>
-                </div>
+                <div class="action-item" id="postAdBtn"><i class="fas fa-plus-circle"></i><span>ثبت آگهی</span></div>
+                <div class="action-item" id="vipBtn"><i class="fas fa-crown"></i><span>ویژه</span></div>
+                <div class="action-item" id="chargeBtn"><i class="fas fa-wallet"></i><span>شارژ</span></div>
+                <div class="action-item" id="convertPointsBtn"><i class="fas fa-gift"></i><span>تبدیل</span></div>
             </div>
 
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="جستجو در آگهی‌ها...">
-                <button id="searchBtn"><span data-i18n="search">جستجو</span></button>
+                <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
+                <button id="searchBtn">جستجو</button>
             </div>
 
-            <div class="section-title">
-                <h3 data-i18n="categories">دسته‌بندی‌ها</h3>
-                <a href="#" id="allCategoriesLink" data-i18n="all">همه</a>
-            </div>
+            <div class="section-title"><h3>دسته‌بندی‌ها</h3><a id="allCategoriesLink">همه</a></div>
             <div class="categories" id="mainCategoryList"></div>
             <div class="categories" id="subCategoryList"></div>
 
-            <div class="section-title">
-                <h3 data-i18n="latest_ads">جدیدترین آگهی‌ها</h3>
-                <a href="#" id="moreAdsLink" data-i18n="more">بیشتر</a>
-            </div>
+            <div class="section-title"><h3>جدیدترین آگهی‌ها</h3><a id="moreAdsLink">بیشتر</a></div>
             <div class="ads-grid" id="adsGrid"></div>
         </div>
 
+        <!-- Favorites Page -->
         <div id="favoritesPage" class="page">
-            <h3 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-heart"></i> <span data-i18n="favorites">علاقه‌مندی‌ها</span></h3>
+            <h3 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-heart"></i> علاقه‌مندی‌ها</h3>
             <div class="ads-grid" id="favoritesGrid"></div>
         </div>
 
+        <!-- Profile Page -->
         <div id="profilePage" class="page">
             <div class="profile-section">
                 <div class="profile-field">
-                    <label data-i18n="tgUsername"><i class="fas fa-user"></i> نام کاربری تلگرام</label>
+                    <label><i class="fas fa-user"></i> نام کاربری تلگرام</label>
                     <input type="text" id="tgUsername" readonly>
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="displayNameLabel">نام نمایشی</label>
-                    <input type="text" id="displayName" data-i18n-placeholder="displayNamePlaceholder" placeholder="نام شما">
+                    <label>نام نمایشی</label>
+                    <input type="text" id="displayName" placeholder="نام شما">
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="countryLabel">کشور</label>
-                    <select id="country">
-                        <option value="IR">🇮🇷 ایران</option>
-                        <option value="IQ">🇮🇶 عراق</option>
-                    </select>
+                    <label>کشور</label>
+                    <select id="country"><option value="IR">🇮🇷 ایران</option><option value="IQ">🇮🇶 عراق</option></select>
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="balanceLabel">موجودی کیف پول:</label>
+                    <label>موجودی کیف پول:</label>
                     <span id="profileBalance">۰</span> تومان
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="pointsLabel">امتیاز شما:</label>
+                    <label>امتیاز شما:</label>
                     <span id="profilePoints">۰</span>
                 </div>
                 <div class="profile-field">
-                    <label data-i18n="referralLinkLabel">لینک دعوت</label>
+                    <label>لینک دعوت</label>
                     <div style="display:flex; gap:5px;">
                         <input type="text" id="referralLink" readonly>
-                        <button id="copyReferral" class="icon-btn" style="width:50px;"><i class="fas fa-copy"></i></button>
+                        <button id="copyReferral" class="icon-btn" style="width:50px; flex-shrink:0;"><i class="fas fa-copy"></i></button>
                     </div>
                 </div>
-                <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> <span data-i18n="save">ذخیره تغییرات</span></button>
+                <button class="save-profile" id="saveProfile"><i class="fas fa-save"></i> ذخیره تغییرات</button>
             </div>
         </div>
     </div>
 
+    <!-- ===== مودال‌ها ===== -->
+
+    <!-- ثبت آگهی -->
+    <div class="modal" id="postAdModal">
+        <div class="modal-content">
+            <button class="modal-back" onclick="closeModal('postAdModal')"><i class="fas fa-arrow-right"></i></button>
+            <div class="modal-content-scroll">
+                <h2 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-plus-circle"></i> ثبت آگهی</h2>
+                <form id="postAdForm" onsubmit="submitAd(event)">
+                    <div class="form-group"><label>عنوان آگهی <span class="required">*</span></label><input type="text" class="form-control" id="adTitle" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>قیمت <span class="required">*</span></label><input type="text" class="form-control" id="adPrice" placeholder="مثلا ۱,۲۰۰,۰۰۰ یا توافقی" required></div>
+                        <div class="form-group"><label>واحد پول</label><select class="form-control" id="adCurrency"><option value="تومان">تومان</option><option value="دلار">دلار</option><option value="یورو">یورو</option></select></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>دسته‌بندی <span class="required">*</span></label><select class="form-control" id="adMainCategory" onchange="updateSubCategories()"><option value="پزشکی">پزشکی</option><option value="گردشگری">گردشگری</option><option value="زیارت">زیارت</option></select></div>
+                        <div class="form-group"><label>زیردسته</label><select class="form-control" id="adSubCategory"><option value="">انتخاب کنید</option></select></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>شهر</label><input type="text" class="form-control" id="adCity" placeholder="مثلا تهران"></div>
+                        <div class="form-group"><label>نوع آگهی</label><select class="form-control" id="adType"><option value="normal">عادی</option><option value="special">ویژه ⭐</option></select></div>
+                    </div>
+                    <div class="form-group"><label>توضیحات <span class="required">*</span></label><textarea class="form-control" id="adDescription" rows="4" required></textarea></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>شماره تماس</label><input type="text" class="form-control" id="adPhone" placeholder="۰۹۱۲۳۴۵۶۷۸۹"></div>
+                        <div class="form-group"><label>نام کاربری تلگرام</label><input type="text" class="form-control" id="adTelegram" placeholder="بدون @"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>تصاویر (حداکثر ۴ عدد)</label>
+                        <div class="image-upload-area" id="imageUploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i><p>برای آپلود تصاویر کلیک کنید</p>
+                            <input type="file" id="adImages" accept="image/*" multiple onchange="handleImageUpload(event)">
+                        </div>
+                        <div class="image-preview-grid" id="imagePreviewGrid"></div>
+                    </div>
+                    <button type="submit" class="form-btn form-btn-primary" id="submitAdBtn"><i class="fas fa-paper-plane"></i> ارسال آگهی</button>
+                    <button type="button" class="form-btn form-btn-secondary" onclick="closeModal('postAdModal')" style="margin-top:10px;">انصراف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- شارژ -->
+    <div class="modal" id="chargeModal">
+        <div class="modal-content">
+            <button class="modal-back" onclick="closeModal('chargeModal')"><i class="fas fa-arrow-right"></i></button>
+            <div class="modal-content-scroll">
+                <h2 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-wallet"></i> شارژ کیف پول</h2>
+                <form id="chargeForm" onsubmit="submitCharge(event)">
+                    <div class="form-group">
+                        <label>مبلغ (تومان) <span class="required">*</span></label>
+                        <div class="amount-options" id="amountOptions">
+                            <div class="amount-option" data-amount="50000">۵۰,۰۰۰ <small>تومان</small></div>
+                            <div class="amount-option" data-amount="100000">۱۰۰,۰۰۰ <small>تومان</small></div>
+                            <div class="amount-option" data-amount="200000">۲۰۰,۰۰۰ <small>تومان</small></div>
+                            <div class="amount-option" data-amount="500000">۵۰۰,۰۰۰ <small>تومان</small></div>
+                            <div class="amount-option" data-amount="1000000">۱,۰۰۰,۰۰۰ <small>تومان</small></div>
+                            <div class="amount-option" data-amount="custom">سفارشی</div>
+                        </div>
+                        <input type="text" class="form-control" id="chargeAmount" placeholder="مبلغ را وارد کنید..." style="margin-top:10px;">
+                    </div>
+                    <div class="form-group">
+                        <label>تصویر رسید <span class="required">*</span></label>
+                        <div class="image-upload-area" id="receiptUploadArea">
+                            <i class="fas fa-receipt"></i><p>تصویر رسید یا فیش واریزی را آپلود کنید</p>
+                            <input type="file" id="receiptImage" accept="image/*" onchange="handleReceiptUpload(event)">
+                        </div>
+                        <div style="margin-top:10px; display:none;" id="receiptPreview"><img id="receiptPreviewImg" style="max-width:100%; border-radius:20px; max-height:200px; object-fit:cover;"></div>
+                    </div>
+                    <button type="submit" class="form-btn form-btn-success" id="submitChargeBtn"><i class="fas fa-check-circle"></i> ارسال درخواست شارژ</button>
+                    <button type="button" class="form-btn form-btn-secondary" onclick="closeModal('chargeModal')" style="margin-top:10px;">انصراف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP -->
+    <div class="modal" id="vipModal">
+        <div class="modal-content">
+            <button class="modal-back" onclick="closeModal('vipModal')"><i class="fas fa-arrow-right"></i></button>
+            <div class="modal-content-scroll">
+                <h2 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-crown"></i> اشتراک ویژه</h2>
+                <p style="color:#aaa; margin-bottom:20px;">با اشتراک ویژه، آگهی‌های شما در بالای لیست نمایش داده می‌شوند.</p>
+                <div style="display:grid; gap:15px;">
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:20px; text-align:center;">
+                        <div style="font-size:28px; font-weight:700; color:#daa520;">۷ روز</div>
+                        <div style="color:#aaa; margin:8px 0;">ویژه شدن یک آگهی</div>
+                        <div style="font-size:20px; font-weight:600; color:#fff;">۵۰,۰۰۰ تومان</div>
+                        <button class="form-btn form-btn-gold" style="margin-top:15px;" onclick="subscribeVip(7,50000)"><i class="fas fa-crown"></i> تهیه</button>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:20px; text-align:center; border-color:#7b5aff;">
+                        <div style="font-size:28px; font-weight:700; color:#daa520;">۳۰ روز</div>
+                        <div style="color:#aaa; margin:8px 0;">ویژه شدن یک آگهی</div>
+                        <div style="font-size:20px; font-weight:600; color:#fff;">۱۵۰,۰۰۰ تومان</div>
+                        <div style="font-size:12px; color:#4caf50; margin-top:4px;">★ بهترین ارزش</div>
+                        <button class="form-btn form-btn-primary" style="margin-top:15px;" onclick="subscribeVip(30,150000)"><i class="fas fa-crown"></i> تهیه</button>
+                    </div>
+                </div>
+                <button type="button" class="form-btn form-btn-secondary" onclick="closeModal('vipModal')" style="margin-top:20px;">انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- تبدیل امتیاز -->
+    <div class="modal" id="convertPointsModal">
+        <div class="modal-content">
+            <button class="modal-back" onclick="closeModal('convertPointsModal')"><i class="fas fa-arrow-right"></i></button>
+            <div class="modal-content-scroll">
+                <h2 style="color:#a58aff; margin-bottom:20px;"><i class="fas fa-gift"></i> تبدیل امتیاز</h2>
+                <p style="color:#aaa; margin-bottom:10px;">امتیاز خود را به یکی از گزینه‌های زیر تبدیل کنید:</p>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:20px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><div style="font-weight:600; color:#fff;">تبدیل به تومان</div><div style="font-size:13px; color:#aaa;">هر ۱۰۰ امتیاز = ۱,۰۰۰ تومان</div></div>
+                        <button class="form-btn form-btn-success" style="padding:10px 20px; width:auto; font-size:14px;" onclick="convertPoints('money')">تبدیل</button>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:20px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><div style="font-weight:600; color:#fff;">تبدیل به آگهی ویژه</div><div style="font-size:13px; color:#aaa;">هر ۵۰ امتیاز = ۱ روز ویژه</div></div>
+                        <button class="form-btn form-btn-gold" style="padding:10px 20px; width:auto; font-size:14px;" onclick="convertPoints('vip')">تبدیل</button>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:30px; padding:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div><div style="font-weight:600; color:#fff;">امتیاز شما</div><div style="font-size:20px; font-weight:700; color:#7b5aff;" id="convertPointsBalance">۰</div></div>
+                    </div>
+                </div>
+                <button type="button" class="form-btn form-btn-secondary" onclick="closeModal('convertPointsModal')" style="margin-top:20px;">انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- جزییات آگهی -->
     <div class="modal" id="adModal">
         <div class="modal-content" id="modalContent"></div>
     </div>
 
+    <!-- گالری بزرگ -->
     <div class="gallery-modal" id="galleryModal">
         <div class="gallery-content">
             <button class="gallery-back" id="galleryBack"><i class="fas fa-arrow-right"></i></button>
-            <img id="galleryImg" class="gallery-image" src="" alt="">
+            <img id="galleryImg" class="gallery-image" src="">
             <div class="gallery-controls-modal">
                 <button class="gallery-nav" id="galleryPrev"><i class="fas fa-chevron-right"></i></button>
                 <span class="gallery-counter-modal" id="galleryCounter">1/1</span>
@@ -1194,20 +551,22 @@
         </div>
     </div>
 
+    <!-- راهنما -->
     <div class="modal" id="helpModal">
         <div class="modal-content help-modal">
-            <h2><i class="fas fa-graduation-cap"></i> <span data-i18n="helpTitle">راهنمای J-DAR</span></h2>
+            <h2><i class="fas fa-graduation-cap"></i> راهنمای J-DAR</h2>
             <div class="help-steps">
-                <div class="step"><span class="step-number">1</span><span class="step-text" data-i18n="helpStep1">ثبت آگهی: دکمه «ثبت آگهی» را بزنید و مراحل را در ربات دنبال کنید.</span></div>
-                <div class="step"><span class="step-number">2</span><span class="step-text" data-i18n="helpStep2">شارژ حساب: با کلیک «شارژ» مبلغ مورد نظر را انتخاب و رسید را ارسال کنید.</span></div>
-                <div class="step"><span class="step-number">3</span><span class="step-text" data-i18n="helpStep3">تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.</span></div>
-                <div class="step"><span class="step-number">4</span><span class="step-text" data-i18n="helpStep4">علاقه‌مندی‌ها: با کلیک روی قلب بالای هر طرح، آن را ذخیره کنید.</span></div>
-                <div class="step"><span class="step-number">5</span><span class="step-text" data-i18n="helpStep5">تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.</span></div>
+                <div class="step"><span class="step-number">1</span><span>ثبت آگهی: دکمه «ثبت آگهی» را بزنید و فرم را تکمیل کنید. آگهی پس از تایید مدیر منتشر می‌شود.</span></div>
+                <div class="step"><span class="step-number">2</span><span>شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید. پس از تایید مدیر، موجودی افزایش می‌یابد.</span></div>
+                <div class="step"><span class="step-number">3</span><span>تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.</span></div>
+                <div class="step"><span class="step-number">4</span><span>علاقه‌مندی‌ها: با کلیک روی قلب بالای هر آگهی، آن را ذخیره کنید.</span></div>
+                <div class="step"><span class="step-number">5</span><span>تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.</span></div>
             </div>
-            <button class="help-close" id="helpClose" data-i18n="gotIt">متوجه شدم</button>
+            <button class="help-close" id="helpClose">متوجه شدم</button>
         </div>
     </div>
 
+    <!-- ویرایش اطلاعیه -->
     <div class="modal" id="noticeEditModal">
         <div class="modal-content notice-edit-modal">
             <h2 style="color:#a58aff;">✏️ ویرایش اطلاعیه</h2>
@@ -1217,32 +576,60 @@
         </div>
     </div>
 
+    <!-- ناوبری پایین -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span data-i18n="home">خانه</span></div>
-        <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span data-i18n="favorites">علاقه‌مندی</span></div>
-        <div class="nav-item" data-page="profile"><i class="fas fa-user"></i><span data-i18n="profile">پروفایل</span></div>
+        <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span>خانه</span></div>
+        <div class="nav-item" data-page="favorites"><i class="fas fa-heart"></i><span>علاقه‌مندی</span></div>
+        <div class="nav-item" data-page="profile"><i class="fas fa-user"></i><span>پروفایل</span></div>
     </div>
 
     <script>
+        // ============================================================
+        //  همه‌چیز در localStorage بدون سرور
+        // ============================================================
+
         const tg = window.Telegram?.WebApp;
-        if (tg) { tg.expand(); tg.enableClosingConfirmation(); }
+        if (tg) { tg.expand();
+            tg.enableClosingConfirmation(); }
 
-        const isTelegramEnvironment = !!(window.Telegram?.WebApp);
-        const telegramWarning = document.getElementById('telegramWarning');
-        if (!isTelegramEnvironment) telegramWarning.classList.add('show');
-
-        // ===== آدرس API worker خود را در اینجا قرار دهید =====
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        const SUPER_ADMIN_ID = '6522877528';
-
-        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
-        let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
-        let allAds = [];
-
+        // کاربر فعلی
         const tgUser = tg?.initDataUnsafe?.user;
-        const userId = tgUser?.id?.toString();
-        if (tgUser) document.getElementById('tgUsername').value = tgUser.username || tgUser.id;
+        const userId = tgUser?.id?.toString() || 'user_' + Math.random().toString(36).substr(2, 9);
+        const isAdmin = (userId === '6522877528');
 
+        // ===== توابع ذخیره‌سازی =====
+        function loadData(key, defaultValue) {
+            try { return JSON.parse(localStorage.getItem('jedar_' + key)) || defaultValue; } catch { return defaultValue; }
+        }
+
+        function saveData(key, data) {
+            localStorage.setItem('jedar_' + key, JSON.stringify(data));
+        }
+
+        // ===== داده‌های اولیه =====
+        let allAds = loadData('ads', []);
+        let charges = loadData('charges', []);
+        let reviews = loadData('reviews', []);
+        let favorites = loadData('favorites', []);
+        let users = loadData('users', {});
+        let noticeText = loadData('notice', 'تنها حمایت شما از این پلتفرم، معرفی آن به دوستان و آشنایانتان است. با تشکر از همراهی شما.');
+
+        // کاربر فعلی
+        if (!users[userId]) {
+            users[userId] = {
+                id: userId,
+                displayName: tgUser?.username || '',
+                country: 'IR',
+                balance: 0,
+                points: 0,
+                referralCode: 'REF-' + Date.now().toString(36).toUpperCase(),
+                createdAt: Date.now()
+            };
+            saveData('users', users);
+        }
+
+        // ===== زبان =====
+        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         const translations = {
             fa: {
                 home: 'خانه', favorites: 'علاقه‌مندی', profile: 'پروفایل',
@@ -1268,63 +655,30 @@
                 noUsername: 'نام کاربری فروشنده ثبت نشده است',
                 search: 'جستجو',
                 reviewsCount: 'نظر',
-                reviewBtn: '★ {avg} ({count})',
                 helpTitle: 'راهنمای J-DAR',
-                helpStep1: 'ثبت آگهی: دکمه «ثبت آگهی» را بزنید و مراحل را در ربات دنبال کنید.',
-                helpStep2: 'شارژ حساب: با کلیک «شارژ» مبلغ مورد نظر را انتخاب و رسید را ارسال کنید.',
+                helpStep1: 'ثبت آگهی: دکمه «ثبت آگهی» را بزنید و فرم را تکمیل کنید. آگهی پس از تایید مدیر منتشر می‌شود.',
+                helpStep2: 'شارژ حساب: با کلیک «شارژ» مبلغ را انتخاب و رسید را آپلود کنید. پس از تایید مدیر، موجودی افزایش می‌یابد.',
                 helpStep3: 'تبدیل امتیاز: امتیازهای خود را به آگهی ویژه یا تومان تبدیل کنید.',
-                helpStep4: 'علاقه‌مندی‌ها: با کلیک روی قلب بالای هر طرح، آن را ذخیره کنید.',
+                helpStep4: 'علاقه‌مندی‌ها: با کلیک روی قلب بالای هر آگهی، آن را ذخیره کنید.',
                 helpStep5: 'تغییر زبان: از دکمه کره زمین در هدر استفاده کنید.',
                 gotIt: 'متوجه شدم',
-                submitReview: 'ثبت نظر',
-                ratingPlaceholder: 'امتیاز (1 تا 5)',
-                commentPlaceholder: 'نظر شما...',
-                sendReview: 'ارسال نظر',
-                cancel: 'انصراف',
-                imageCounter: '{current}/{total}',
-                defaultNotice: 'تنها حمایت شما از این پلتفرم، معرفی آن به دوستان و آشنایانتان است. با تشکر از همراهی شما.',
-                readMore: 'اظهار المزيد',
-                readLess: 'إخفاء',
+                submit: 'ارسال', cancel: 'انصراف',
+                title: 'عنوان', price: 'قیمت', description: 'توضیحات', city: 'شهر', category: 'دسته‌بندی',
+                readMore: 'نمایش بیشتر', readLess: 'کمتر',
+                pending: 'در انتظار تایید', approved: 'تایید شده', rejected: 'رد شده',
                 categories_list: {
-                    'پزشکی': 'پزشکی',
-                    'پزشک عمومی': 'پزشک عمومی',
-                    'متخصص': 'متخصص',
-                    'دندانپزشک': 'دندانپزشک',
-                    'داروخانه': 'داروخانه',
-                    'آزمایشگاه': 'آزمایشگاه',
-                    'بیمارستان': 'بیمارستان',
-                    'خدمات پرستاری': 'خدمات پرستاری',
-                    'تجهیزات پزشکی': 'تجهیزات پزشکی',
-                    'چشم‌پزشکی': 'چشم‌پزشکی',
-                    'کاشت مو': 'کاشت مو',
-                    'زیبایی': 'زیبایی',
-                    'لیزر': 'لیزر',
-                    'پوست و مو': 'پوست و مو',
-                    'گردشگری': 'گردشگری',
-                    'تور داخلی': 'تور داخلی',
-                    'تور خارجی': 'تور خارجی',
-                    'راهنما': 'راهنما',
-                    'اقامتگاه': 'اقامتگاه',
-                    'حمل و نقل': 'حمل و نقل',
-                    'خدمات سفر': 'خدمات سفر',
-                    'شاندیز': 'شاندیز',
-                    'سرعین': 'سرعین',
-                    'کیش': 'کیش',
-                    'مشهد': 'مشهد',
-                    'اصفهان': 'اصفهان',
-                    'شیراز': 'شیراز',
-                    'زیارت': 'زیارت',
-                    'عتبات عالیات': 'عتبات عالیات',
-                    'سوریه': 'سوریه',
-                    'کربلا': 'کربلا',
-                    'نجف': 'نجف',
-                    'کاظمین': 'کاظمین',
-                    'سامرا': 'سامرا',
-                    'عمره': 'عمره',
-                    'حج': 'حج',
-                    'قم': 'قم',
-                    'جمکران': 'جمکران',
-                    'شاه چراغ': 'شاه چراغ'
+                    'پزشکی': 'پزشکی', 'پزشک عمومی': 'پزشک عمومی', 'متخصص': 'متخصص',
+                    'دندانپزشک': 'دندانپزشک', 'داروخانه': 'داروخانه', 'آزمایشگاه': 'آزمایشگاه',
+                    'بیمارستان': 'بیمارستان', 'خدمات پرستاری': 'خدمات پرستاری', 'تجهیزات پزشکی': 'تجهیزات پزشکی',
+                    'چشم‌پزشکی': 'چشم‌پزشکی', 'کاشت مو': 'کاشت مو', 'زیبایی': 'زیبایی',
+                    'لیزر': 'لیزر', 'پوست و مو': 'پوست و مو',
+                    'گردشگری': 'گردشگری', 'تور داخلی': 'تور داخلی', 'تور خارجی': 'تور خارجی',
+                    'راهنما': 'راهنما', 'اقامتگاه': 'اقامتگاه', 'حمل و نقل': 'حمل و نقل',
+                    'خدمات سفر': 'خدمات سفر', 'شاندیز': 'شاندیز', 'سرعین': 'سرعین',
+                    'کیش': 'کیش', 'مشهد': 'مشهد', 'اصفهان': 'اصفهان', 'شیراز': 'شیراز',
+                    'زیارت': 'زیارت', 'عتبات عالیات': 'عتبات عالیات', 'سوریه': 'سوریه',
+                    'کربلا': 'کربلا', 'نجف': 'نجف', 'کاظمین': 'کاظمین', 'سامرا': 'سامرا',
+                    'عمره': 'عمره', 'حج': 'حج', 'قم': 'قم', 'جمکران': 'جمکران', 'شاه چراغ': 'شاه چراغ'
                 }
             },
             ar: {
@@ -1351,63 +705,30 @@
                 noUsername: 'اسم المستخدم للبائع غير مسجل',
                 search: 'بحث',
                 reviewsCount: 'تعليق',
-                reviewBtn: '★ {avg} ({count})',
                 helpTitle: 'دليل J-DAR',
-                helpStep1: 'إعلان: استخدم زر "إعلان" واتبع الخطوات في البوت.',
-                helpStep2: 'شحن: انقر "شحن" واختر المبلغ وأرسل الإيصال.',
+                helpStep1: 'إعلان: استخدم زر "إعلان" واملأ النموذج. يتم نشر الإعلان بعد موافقة المدير.',
+                helpStep2: 'شحن: انقر "شحن" واختر المبلغ وأرفق إيصال الدفع. بعد الموافقة، سيتم زيادة رصيدك.',
                 helpStep3: 'تحويل النقاط: حوّل نقاطك إلى إعلان مميز أو تومان.',
                 helpStep4: 'المفضلة: انقر على القلب أعلى كل إعلان لحفظه.',
                 helpStep5: 'تغيير اللغة: استخدم زر الكرة الأرضية في الرأس.',
                 gotIt: 'فهمت',
-                submitReview: 'إضافة تقييم',
-                ratingPlaceholder: 'التقييم (1-5)',
-                commentPlaceholder: 'تعليقك...',
-                sendReview: 'إرسال',
-                cancel: 'إلغاء',
-                imageCounter: '{current}/{total}',
-                defaultNotice: 'دعمك الوحيد لهذه المنصة هو تعريف أصدقائك ومعارفك بها. شكراً لكم.',
-                readMore: 'اقرأ المزيد',
-                readLess: 'إخفاء',
+                submit: 'إرسال', cancel: 'إلغاء',
+                title: 'العنوان', price: 'السعر', description: 'الوصف', city: 'المدينة', category: 'الفئة',
+                readMore: 'اقرأ المزيد', readLess: 'إخفاء',
+                pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
                 categories_list: {
-                    'پزشکی': 'طب',
-                    'پزشک عمومی': 'طبيب عام',
-                    'متخصص': 'أخصائي',
-                    'دندانپزشک': 'طبيب أسنان',
-                    'داروخانه': 'صيدلية',
-                    'آزمایشگاه': 'مختبر',
-                    'بیمارستان': 'مستشفى',
-                    'خدمات پرستاری': 'تمريض',
-                    'تجهیزات پزشکی': 'معدات طبية',
-                    'چشم‌پزشکی': 'طب عيون',
-                    'کاشت مو': 'زراعة شعر',
-                    'زیبایی': 'تجميل',
-                    'لیزر': 'ليزر',
-                    'پوست و مو': 'جلد وشعر',
-                    'گردشگری': 'سياحة',
-                    'تور داخلی': 'جولة داخلية',
-                    'تور خارجی': 'جولة خارجية',
-                    'راهنما': 'مرشد',
-                    'اقامتگاه': 'مبيت',
-                    'حمل و نقل': 'نقل',
-                    'خدمات سفر': 'خدمات سفر',
-                    'شاندیز': 'شانديز',
-                    'سرعین': 'سرعين',
-                    'کیش': 'كيش',
-                    'مشهد': 'مشهد',
-                    'اصفهان': 'أصفهان',
-                    'شیراز': 'شيراز',
-                    'زیارت': 'زيارة',
-                    'عتبات عالیات': 'عتبات',
-                    'سوریه': 'سوريا',
-                    'کربلا': 'كربلاء',
-                    'نجف': 'النجف',
-                    'کاظمین': 'كاظمين',
-                    'سامرا': 'سامراء',
-                    'عمره': 'عمرة',
-                    'حج': 'حج',
-                    'قم': 'قم',
-                    'جمکران': 'جمكران',
-                    'شاه چراغ': 'شاه جراغ'
+                    'پزشکی': 'طب', 'پزشک عمومی': 'طبيب عام', 'متخصص': 'أخصائي',
+                    'دندانپزشک': 'طبيب أسنان', 'داروخانه': 'صيدلية', 'آزمایشگاه': 'مختبر',
+                    'بیمارستان': 'مستشفى', 'خدمات پرستاری': 'تمريض', 'تجهیزات پزشکی': 'معدات طبية',
+                    'چشم‌پزشکی': 'طب عيون', 'کاشت مو': 'زراعة شعر', 'زیبایی': 'تجميل',
+                    'لیزر': 'ليزر', 'پوست و مو': 'جلد وشعر',
+                    'گردشگری': 'سياحة', 'تور داخلی': 'جولة داخلية', 'تور خارجی': 'جولة خارجية',
+                    'راهنما': 'مرشد', 'اقامتگاه': 'مبيت', 'حمل و نقل': 'نقل',
+                    'خدمات سفر': 'خدمات سفر', 'شاندیز': 'شانديز', 'سرعین': 'سرعين',
+                    'کیش': 'كيش', 'مشهد': 'مشهد', 'اصفهان': 'أصفهان', 'شیراز': 'شيراز',
+                    'زیارت': 'زيارة', 'عتبات عالیات': 'عتبات', 'سوریه': 'سوريا',
+                    'کربلا': 'كربلاء', 'نجف': 'النجف', 'کاظمین': 'كاظمين', 'سامرا': 'سامراء',
+                    'عمره': 'عمرة', 'حج': 'حج', 'قم': 'قم', 'جمکران': 'جمكران', 'شاه چراغ': 'شاه جراغ'
                 }
             },
             en: {
@@ -1434,63 +755,30 @@
                 noUsername: 'Seller username not registered',
                 search: 'Search',
                 reviewsCount: 'review',
-                reviewBtn: '★ {avg} ({count})',
                 helpTitle: 'J-DAR Guide',
-                helpStep1: 'Post Ad: Click "Post" and follow steps in bot.',
-                helpStep2: 'Charge: Click "Charge", select amount, send receipt.',
-                helpStep3: 'Convert points: Convert points to special ad or Toman.',
-                helpStep4: 'Favorites: Click heart on shots to save.',
+                helpStep1: 'Post Ad: Click "Post Ad" and fill the form. Ad will be published after admin approval.',
+                helpStep2: 'Charge: Click "Charge", select amount and upload receipt. After admin approval, balance increases.',
+                helpStep3: 'Convert points: Convert your points to special ad or Toman.',
+                helpStep4: 'Favorites: Click heart on ads to save them.',
                 helpStep5: 'Change language: Use globe button in header.',
                 gotIt: 'Got it',
-                submitReview: 'Submit Review',
-                ratingPlaceholder: 'Rating (1-5)',
-                commentPlaceholder: 'Your comment...',
-                sendReview: 'Send',
-                cancel: 'Cancel',
-                imageCounter: '{current}/{total}',
-                defaultNotice: 'The only way to support this platform is to introduce it to your friends and acquaintances. Thank you for your support.',
-                readMore: 'Read more',
-                readLess: 'Show less',
+                submit: 'Submit', cancel: 'Cancel',
+                title: 'Title', price: 'Price', description: 'Description', city: 'City', category: 'Category',
+                readMore: 'Read more', readLess: 'Show less',
+                pending: 'Pending', approved: 'Approved', rejected: 'Rejected',
                 categories_list: {
-                    'پزشکی': 'Medical',
-                    'پزشک عمومی': 'General Practitioner',
-                    'متخصص': 'Specialist',
-                    'دندانپزشک': 'Dentist',
-                    'داروخانه': 'Pharmacy',
-                    'آزمایشگاه': 'Laboratory',
-                    'بیمارستان': 'Hospital',
-                    'خدمات پرستاری': 'Nursing',
-                    'تجهیزات پزشکی': 'Medical Equipment',
-                    'چشم‌پزشکی': 'Ophthalmology',
-                    'کاشت مو': 'Hair Transplant',
-                    'زیبایی': 'Cosmetic',
-                    'لیزر': 'Laser',
-                    'پوست و مو': 'Skin & Hair',
-                    'گردشگری': 'Tourism',
-                    'تور داخلی': 'Domestic Tour',
-                    'تور خارجی': 'International Tour',
-                    'راهنما': 'Guide',
-                    'اقامتگاه': 'Accommodation',
-                    'حمل و نقل': 'Transport',
-                    'خدمات سفر': 'Travel Services',
-                    'شاندیز': 'Shandiz',
-                    'سرعین': 'Sareyn',
-                    'کیش': 'Kish',
-                    'مشهد': 'Mashhad',
-                    'اصفهان': 'Isfahan',
-                    'شیراز': 'Shiraz',
-                    'زیارت': 'Pilgrimage',
-                    'عتبات عالیات': 'Atabat',
-                    'سوریه': 'Syria',
-                    'کربلا': 'Karbala',
-                    'نجف': 'Najaf',
-                    'کاظمین': 'Kadhimayn',
-                    'سامرا': 'Samarra',
-                    'عمره': 'Umrah',
-                    'حج': 'Hajj',
-                    'قم': 'Qom',
-                    'جمکران': 'Jamkaran',
-                    'شاه چراغ': 'Shah Cheragh'
+                    'پزشکی': 'Medical', 'پزشک عمومی': 'General Practitioner', 'متخصص': 'Specialist',
+                    'دندانپزشک': 'Dentist', 'داروخانه': 'Pharmacy', 'آزمایشگاه': 'Laboratory',
+                    'بیمارستان': 'Hospital', 'خدمات پرستاری': 'Nursing', 'تجهیزات پزشکی': 'Medical Equipment',
+                    'چشم‌پزشکی': 'Ophthalmology', 'کاشت مو': 'Hair Transplant', 'زیبایی': 'Cosmetic',
+                    'لیزر': 'Laser', 'پوست و مو': 'Skin & Hair',
+                    'گردشگری': 'Tourism', 'تور داخلی': 'Domestic Tour', 'تور خارجی': 'International Tour',
+                    'راهنما': 'Guide', 'اقامتگاه': 'Accommodation', 'حمل و نقل': 'Transport',
+                    'خدمات سفر': 'Travel Services', 'شاندیز': 'Shandiz', 'سرعین': 'Sareyn',
+                    'کیش': 'Kish', 'مشهد': 'Mashhad', 'اصفهان': 'Isfahan', 'شیراز': 'Shiraz',
+                    'زیارت': 'Pilgrimage', 'عتبات عالیات': 'Atabat', 'سوریه': 'Syria',
+                    'کربلا': 'Karbala', 'نجف': 'Najaf', 'کاظمین': 'Kadhimayn', 'سامرا': 'Samarra',
+                    'عمره': 'Umrah', 'حج': 'Hajj', 'قم': 'Qom', 'جمکران': 'Jamkaran', 'شاه چراغ': 'Shah Cheragh'
                 }
             }
         };
@@ -1500,28 +788,50 @@
             return translations[currentLang]?.[key] || key;
         }
 
-        function updateUILanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (key) el.textContent = t(key);
-            });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                el.placeholder = t(key);
-            });
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = (currentLang === 'fa' || currentLang === 'ar') ? 'rtl' : 'ltr';
-            renderCategories();
-            renderAds(allAds, 'adsGrid');
-            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
-            if (document.getElementById('adModal').classList.contains('active') && currentAdId) {
-                showAd(currentAdId);
+        // ===== توابع کمکی =====
+        function showToast(msg, type = 'info', duration = 4000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle' };
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${msg}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => { toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400); }, duration);
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); if (tg) tg.BackButton.show(); }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (tg) {
+                const anyOpen = document.querySelector('.modal.active') || document.querySelector('.gallery-modal.active');
+                if (!anyOpen) tg.BackButton.hide();
             }
         }
 
+        function getRelativeTime(ts) {
+            const diff = Math.floor(Date.now() / 1000) - ts;
+            if (diff < 60) return 'چند لحظه پیش';
+            if (diff < 3600) return Math.floor(diff / 60) + ' دقیقه پیش';
+            if (diff < 86400) return Math.floor(diff / 3600) + ' ساعت پیش';
+            if (diff < 604800) return Math.floor(diff / 86400) + ' روز پیش';
+            return 'قدیمی';
+        }
+
+        function isNumericPrice(str) { return /^[\d,]+$/.test(str); }
+
+        function getImgUrl(imgIds) {
+            if (!imgIds || !imgIds.length) return 'https://via.placeholder.com/400x400?text=J-DAR';
+            return imgIds[0];
+        }
+
+        // ===== زبان =====
         document.getElementById('langMainBtn').addEventListener('click', () => {
             tg?.showPopup({
-                title: 'انتخاب زبان / اختر اللغة / Select Language',
+                title: 'انتخاب زبان',
                 message: 'زبان مورد نظر را انتخاب کنید:',
                 buttons: [
                     { id: 'fa', type: 'default', text: '🇮🇷 فارسی' },
@@ -1529,418 +839,681 @@
                     { id: 'en', type: 'default', text: '🇬🇧 English' }
                 ]
             }, (btnId) => {
-                if (btnId && ['fa','ar','en'].includes(btnId)) {
+                if (btnId && ['fa', 'ar', 'en'].includes(btnId)) {
                     currentLang = btnId;
                     localStorage.setItem('jedar_lang', btnId);
-                    updateUILanguage();
+                    updateUI();
                 }
             });
         });
 
-        document.getElementById('helpBtn').addEventListener('click', () => {
-            document.getElementById('helpModal').classList.add('active');
-        });
-        document.getElementById('helpClose').addEventListener('click', () => {
-            document.getElementById('helpModal').classList.remove('active');
-        });
-        document.getElementById('supportBtn').addEventListener('click', () => {
-            tg?.openTelegramLink('https://t.me/Mehdi_E_admin');
-        });
-
-        async function loadNotice() {
-            try {
-                const res = await fetch(`${API_BASE}/api/notice`);
-                const data = await res.json();
-                document.getElementById('noticeText').innerText = data.success ? data.notice : t('defaultNotice');
-            } catch {
-                document.getElementById('noticeText').innerText = t('defaultNotice');
-            }
+        function updateUI() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key) el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            });
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = (currentLang === 'fa' || currentLang === 'ar') ? 'rtl' : 'ltr';
+            renderCategories();
+            renderAds(allAds, 'adsGrid');
+            renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
         }
 
-        if (userId === SUPER_ADMIN_ID) {
-            document.getElementById('noticeEditBtn').style.display = 'flex';
-        }
+        // ===== اطلاعیه =====
+        document.getElementById('noticeText').textContent = noticeText;
+        if (isAdmin) document.getElementById('noticeEditBtn').style.display = 'flex';
 
         document.getElementById('noticeEditBtn').addEventListener('click', () => {
-            document.getElementById('noticeEditText').value = document.getElementById('noticeText').innerText;
-            document.getElementById('noticeEditModal').classList.add('active');
+            document.getElementById('noticeEditText').value = noticeText;
+            openModal('noticeEditModal');
         });
 
-        document.getElementById('noticeSaveBtn').addEventListener('click', async () => {
-            const newText = document.getElementById('noticeEditText').value.trim();
-            if (!newText) return;
-            try {
-                const res = await fetch(`${API_BASE}/api/notice`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ notice: newText, admin_id: userId })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('noticeText').innerText = newText;
-                    document.getElementById('noticeEditModal').classList.remove('active');
-                } else {
-                    alert('خطا در ذخیره اطلاعیه');
-                }
-            } catch {
-                alert('خطا در ارتباط با سرور');
-            }
+        document.getElementById('noticeSaveBtn').addEventListener('click', () => {
+            const txt = document.getElementById('noticeEditText').value.trim();
+            if (!txt) return;
+            noticeText = txt;
+            saveData('notice', noticeText);
+            document.getElementById('noticeText').textContent = noticeText;
+            closeModal('noticeEditModal');
+            showToast('اطلاعیه به‌روز شد', 'success');
         });
+        document.getElementById('noticeCancelBtn').addEventListener('click', () => closeModal('noticeEditModal'));
 
-        document.getElementById('noticeCancelBtn').addEventListener('click', () => {
-            document.getElementById('noticeEditModal').classList.remove('active');
-        });
-
-        const mainCategories = ['پزشکی', 'گردشگری', 'زیارت'];
-        const subCategories = {
-            'پزشکی': ['پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان', 'خدمات پرستاری', 'تجهیزات پزشکی', 'چشم‌پزشکی', 'کاشت مو', 'زیبایی', 'لیزر', 'پوست و مو'],
-            'گردشگری': ['تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر', 'شاندیز', 'سرعین', 'کیش', 'مشهد', 'اصفهان', 'شیراز'],
-            'زیارت': ['عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج', 'قم', 'جمکران', 'شاه چراغ']
+        // ===== دسته‌بندی‌ها =====
+        const mainCats = ['پزشکی', 'گردشگری', 'زیارت'];
+        const subCats = {
+            'پزشکی': ['پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان', 'خدمات پرستاری', 'تجهیزات پزشکی',
+                'چشم‌پزشکی', 'کاشت مو', 'زیبایی', 'لیزر', 'پوست و مو'
+            ],
+            'گردشگری': ['تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر', 'شاندیز', 'سرعین', 'کیش',
+                'مشهد', 'اصفهان', 'شیراز'
+            ],
+            'زیارت': ['عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج', 'قم', 'جمکران',
+                'شاه چراغ'
+            ]
         };
-        let currentMainCat = 'پزشکی';
-        let currentSubCat = '';
+        let currentMain = 'پزشکی';
+        let currentSub = '';
 
         function renderCategories() {
-            const mainContainer = document.getElementById('mainCategoryList');
-            mainContainer.innerHTML = mainCategories.map(cat => 
-                `<span class="category-chip ${cat === currentMainCat ? 'active' : ''}" data-maincat="${cat}">${t('categories_list', cat)}</span>`
+            const mc = document.getElementById('mainCategoryList');
+            mc.innerHTML = mainCats.map(c =>
+                `<span class="category-chip ${c===currentMain?'active':''}" data-main="${c}">${t('categories_list', c)}</span>`
             ).join('');
-            document.querySelectorAll('[data-maincat]').forEach(el => {
+            document.querySelectorAll('[data-main]').forEach(el => {
                 el.addEventListener('click', () => {
-                    currentMainCat = el.dataset.maincat;
-                    currentSubCat = '';
+                    currentMain = el.dataset.main;
+                    currentSub = '';
                     renderCategories();
-                    renderSubCategories(currentMainCat);
+                    renderSubs(currentMain);
                     filterAds();
                 });
             });
-            renderSubCategories(currentMainCat);
+            renderSubs(currentMain);
         }
 
-        function renderSubCategories(mainCat) {
-            const subContainer = document.getElementById('subCategoryList');
-            const subs = subCategories[mainCat] || [];
-            let html = `<span class="category-chip ${currentSubCat === '' ? 'active' : ''}" data-subcat="">${t('all')}</span>`;
-            subs.forEach(sub => {
-                const translated = t('categories_list', sub);
-                html += `<span class="category-chip ${sub === currentSubCat ? 'active' : ''}" data-subcat="${sub}">${translated}</span>`;
+        function renderSubs(main) {
+            const sc = document.getElementById('subCategoryList');
+            const subs = subCats[main] || [];
+            let html = `<span class="category-chip ${currentSub===''?'active':''}" data-sub="">${t('all')}</span>`;
+            subs.forEach(s => {
+                html +=
+                    `<span class="category-chip ${s===currentSub?'active':''}" data-sub="${s}">${t('categories_list', s)}</span>`;
             });
-            subContainer.innerHTML = html;
-            document.querySelectorAll('[data-subcat]').forEach(el => {
+            sc.innerHTML = html;
+            document.querySelectorAll('[data-sub]').forEach(el => {
                 el.addEventListener('click', () => {
-                    currentSubCat = el.dataset.subcat || '';
-                    document.querySelectorAll('[data-subcat]').forEach(c => c.classList.remove('active'));
+                    currentSub = el.dataset.sub || '';
+                    document.querySelectorAll('[data-sub]').forEach(c => c.classList.remove('active'));
                     el.classList.add('active');
                     filterAds();
                 });
             });
         }
 
-        function getRelativeTime(timestamp) {
-            const now = Math.floor(Date.now() / 1000);
-            const diff = now - timestamp;
-            if (diff < 60) return currentLang === 'fa' ? 'چند لحظه پیش' : (currentLang === 'ar' ? 'منذ لحظات' : 'just now');
-            if (diff < 3600) {
-                const m = Math.floor(diff / 60);
-                return currentLang === 'fa' ? `${m} دقیقه پیش` : (currentLang === 'ar' ? `منذ ${m} دقيقة` : `${m} minutes ago`);
-            }
-            if (diff < 86400) {
-                const h = Math.floor(diff / 3600);
-                return currentLang === 'fa' ? `${h} ساعت پیش` : (currentLang === 'ar' ? `منذ ${h} ساعة` : `${h} hours ago`);
-            }
-            if (diff < 604800) {
-                const d = Math.floor(diff / 86400);
-                return currentLang === 'fa' ? `${d} روز پیش` : (currentLang === 'ar' ? `منذ ${d} يوم` : `${d} days ago`);
-            }
-            return currentLang === 'fa' ? 'قدیمی' : (currentLang === 'ar' ? 'قديم' : 'old');
-        }
-
-        function isNumericPrice(str) {
-            return /^[\d,]+$/.test(str);
-        }
-
-        async function loadAds() {
-            try {
-                const res = await fetch(`${API_BASE}/api/ads`);
-                const data = await res.json();
-                if (data.success) {
-                    allAds = data.ads;
-                } else {
-                    allAds = [];
-                }
-            } catch {
-                allAds = [
-                    { id: 1, title: 'مانتو مشکی', price: '۹۰۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'تهران', created_at: Math.floor(Date.now()/1000)-3600, image_ids: [], ad_type: 'special', description: 'مانتو مشکی نوقط یکبار استفاده شده سایز ۴۶ این یک توضیح طولانی است که باید بریده شود و کاربر بتواند با کلیک روی دکمه "اظهار المزيد" آن را کامل ببیند. این قسمت تست طولانی بودن متن است تا عملکرد دکمه را بررسی کنیم.', phone: '09123456789', telegram_username: 'username', rating_avg: 4.5, rating_count: 12 },
-                    { id: 2, title: 'کفش کالج', price: 'توافقی', currency: 'تومان', category: 'گردشگری', city: 'مشهد', created_at: Math.floor(Date.now()/1000)-7200, image_ids: [], ad_type: 'normal', description: 'کفش کالج چرم طبیعی', phone: '09123456788', telegram_username: 'username2', rating_avg: 4.0, rating_count: 8 },
-                    { id: 3, title: 'کیف چرم', price: '۱,۲۰۰,۰۰۰', currency: 'تومان', category: 'زیارت', city: 'قم', created_at: Math.floor(Date.now()/1000)-86400, image_ids: [], ad_type: 'special', description: 'کیف چرم طبیعی دستدوز', phone: '09123456787', telegram_username: 'username3', rating_avg: 4.8, rating_count: 25 },
-                    { id: 4, title: 'ساعت مچی', price: '۵۵۰,۰۰۰', currency: 'تومان', category: 'پزشکی', city: 'شیراز', created_at: Math.floor(Date.now()/1000)-172800, image_ids: [], ad_type: 'normal', description: 'ساعت مچی اسپرت', phone: '09123456786', telegram_username: 'username4', rating_avg: 3.5, rating_count: 5 },
-                ];
-            }
-            allAds.sort((a, b) => {
-                if (a.ad_type === 'special' && b.ad_type !== 'special') return -1;
-                if (a.ad_type !== 'special' && b.ad_type === 'special') return 1;
-                return b.created_at - a.created_at;
-            });
-            renderAds(allAds, 'adsGrid');
-            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
-        }
-
-        function getImgUrl(imageIds) {
-            if (!imageIds || imageIds.length === 0) return 'https://via.placeholder.com/400x400?text=J-DAR';
-            try {
-                const ids = Array.isArray(imageIds) ? imageIds : JSON.parse(imageIds);
-                return ids.length ? `${API_BASE}/image/${ids[0]}` : 'https://via.placeholder.com/400x400?text=J-DAR';
-            } catch { return 'https://via.placeholder.com/400x400?text=J-DAR'; }
-        }
-
+        // ===== رندر آگهی‌ها =====
         function renderAds(ads, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
             if (!ads.length) {
-                container.innerHTML = `<div style="text-align:center; color:#aaa;">${t('no_ads')}</div>`;
+                container.innerHTML = `<div style="text-align:center; color:#aaa; padding:20px;">${t('no_ads')}</div>`;
                 return;
             }
             container.innerHTML = ads.map(ad => {
-                const imgUrl = getImgUrl(ad.image_ids);
+                const img = getImgUrl(ad.image_ids);
                 const isFav = favorites.includes(ad.id);
                 const time = getRelativeTime(ad.created_at);
-                const location = ad.city || '';
-                const priceDisplay = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency}` : t('negotiable');
-                const specialBadge = ad.ad_type === 'special' ? `<span class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</span>` : '';
+                const price = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency||'تومان'}` : t('negotiable');
+                const special = ad.ad_type === 'special' ?
+                    `<span class="special-badge"><i class="fas fa-crown"></i> ${t('special_badge')}</span>` : '';
+                const statusMap = {
+                    pending: `<span class="status-badge">${t('pending')}</span>`,
+                    approved: `<span class="status-badge approved">${t('approved')}</span>`,
+                    rejected: `<span class="status-badge rejected">${t('rejected')}</span>`
+                };
                 return `<div class="ad-card" data-id="${ad.id}">
                     <div class="ad-card-image">
-                        <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                        <img src="${img}" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
                         <div class="watermark">J-DAR</div>
+                        ${statusMap[ad.status] || ''}
                     </div>
                     <div class="ad-card-content">
                         <div class="ad-card-title">${ad.title}</div>
-                        <div class="ad-card-price">💰 ${priceDisplay}</div>
+                        <div class="ad-card-price">💰 ${price}</div>
                         <div class="ad-card-meta">
-                            ${specialBadge ? specialBadge + ' | ' : ''}
+                            ${special ? special + ' | ' : ''}
                             <i class="fas fa-clock"></i> ${time}
-                            ${location ? ' 📌 ' + location : ''}
+                            ${ad.city ? ' 📌 ' + ad.city : ''}
                         </div>
                     </div>
                     <div class="favorite" onclick="toggleFavorite(event, ${ad.id})">${isFav ? '❤️' : '🤍'}</div>
                 </div>`;
             }).join('');
             document.querySelectorAll(`#${containerId} .ad-card`).forEach(card => {
-                card.addEventListener('click', (e) => { if (!e.target.classList.contains('favorite')) showAd(card.dataset.id); });
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('.favorite')) showAd(card.dataset.id);
+                });
             });
         }
 
         window.toggleFavorite = (e, id) => {
             e.stopPropagation();
             const idx = favorites.indexOf(id);
-            if (idx === -1) favorites.push(id); else favorites.splice(idx, 1);
-            localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
+            if (idx === -1) favorites.push(id);
+            else favorites.splice(idx, 1);
+            saveData('favorites', favorites);
             renderAds(allAds, 'adsGrid');
-            renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
+            renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
         };
 
-        let currentAdId = null;
+        function filterAds() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAds.filter(ad => {
+                const matchMain = currentMain ? ad.category?.includes(currentMain) : true;
+                const matchSub = currentSub ? ad.category?.includes(currentSub) : true;
+                const matchTerm = ad.title?.toLowerCase().includes(term) || ad.description?.toLowerCase().includes(term);
+                return matchMain && matchSub && matchTerm;
+            });
+            renderAds(filtered, 'adsGrid');
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', filterAds);
+        document.getElementById('searchInput').addEventListener('keyup', filterAds);
+
+        // ===== ثبت آگهی =====
+        let uploadedImages = [];
+
+        document.getElementById('postAdBtn').addEventListener('click', () => {
+            uploadedImages = [];
+            document.getElementById('imagePreviewGrid').innerHTML = '';
+            document.getElementById('postAdForm').reset();
+            updateSubCategories();
+            openModal('postAdModal');
+        });
+
+        function updateSubCategories() {
+            const main = document.getElementById('adMainCategory').value;
+            const subs = subCats[main] || [];
+            const sel = document.getElementById('adSubCategory');
+            sel.innerHTML = '<option value="">انتخاب کنید</option>';
+            subs.forEach(s => sel.innerHTML += `<option value="${s}">${t('categories_list', s)}</option>`);
+        }
+        document.getElementById('adMainCategory').addEventListener('change', updateSubCategories);
+        updateSubCategories();
+
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            const grid = document.getElementById('imagePreviewGrid');
+            for (const file of files) {
+                if (uploadedImages.length >= 4) { showToast('حداکثر ۴ تصویر', 'warning'); break; }
+                uploadedImages.push(file);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.innerHTML =
+                        `<img src="${ev.target.result}"><button class="remove-img" onclick="removeImage(${uploadedImages.length-1})"><i class="fas fa-times"></i></button>`;
+                    grid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            }
+            e.target.value = '';
+        }
+
+        window.removeImage = (idx) => {
+            uploadedImages.splice(idx, 1);
+            const grid = document.getElementById('imagePreviewGrid');
+            grid.innerHTML = '';
+            uploadedImages.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.innerHTML =
+                        `<img src="${ev.target.result}"><button class="remove-img" onclick="removeImage(${i})"><i class="fas fa-times"></i></button>`;
+                    grid.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        async function submitAd(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitAdBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
+
+            try {
+                const title = document.getElementById('adTitle').value.trim();
+                const price = document.getElementById('adPrice').value.trim();
+                const currency = document.getElementById('adCurrency').value;
+                const main = document.getElementById('adMainCategory').value;
+                const sub = document.getElementById('adSubCategory').value;
+                const city = document.getElementById('adCity').value.trim();
+                const adType = document.getElementById('adType').value;
+                const desc = document.getElementById('adDescription').value.trim();
+                const phone = document.getElementById('adPhone').value.trim();
+                const telegram = document.getElementById('adTelegram').value.trim();
+
+                if (!title || !price || !desc) { showToast('لطفاً تمام فیلدهای ضروری را پر کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال آگهی'; return; }
+
+                // تبدیل تصاویر به Base64
+                const imagePromises = uploadedImages.map(file => {
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => resolve(ev.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                });
+                const imageData = await Promise.all(imagePromises);
+
+                const newAd = {
+                    id: Date.now() + Math.random(),
+                    user_id: userId,
+                    title,
+                    price,
+                    currency,
+                    category: sub || main,
+                    city,
+                    ad_type: adType,
+                    description: desc,
+                    phone,
+                    telegram_username: telegram,
+                    image_ids: imageData,
+                    status: 'pending',
+                    created_at: Math.floor(Date.now() / 1000),
+                    rating_avg: 0,
+                    rating_count: 0
+                };
+                allAds.push(newAd);
+                saveData('ads', allAds);
+                showToast('آگهی با موفقیت ثبت شد و در انتظار تایید است', 'success');
+                closeModal('postAdModal');
+                renderAds(allAds, 'adsGrid');
+            } catch (err) { showToast('خطا در ثبت آگهی', 'error');
+                console.error(err); }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال آگهی';
+        }
+
+        // ===== شارژ =====
+        let receiptBase64 = null;
+
+        document.getElementById('chargeBtn').addEventListener('click', () => {
+            receiptBase64 = null;
+            document.getElementById('receiptPreview').style.display = 'none';
+            document.getElementById('chargeAmount').value = '';
+            document.querySelectorAll('.amount-option').forEach(el => el.classList.remove('active'));
+            openModal('chargeModal');
+        });
+
+        document.querySelectorAll('.amount-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.amount-option').forEach(e => e.classList.remove('active'));
+                el.classList.add('active');
+                const amt = el.dataset.amount;
+                if (amt === 'custom') { document.getElementById('chargeAmount').value = '';
+                    document.getElementById('chargeAmount').focus(); } else document.getElementById('chargeAmount')
+                    .value = amt;
+            });
+        });
+
+        function handleReceiptUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                receiptBase64 = ev.target.result;
+                document.getElementById('receiptPreview').style.display = 'block';
+                document.getElementById('receiptPreviewImg').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitCharge(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitChargeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> در حال ارسال...';
+
+            try {
+                const amount = parseInt(document.getElementById('chargeAmount').value.trim());
+                if (!amount || amount <= 0) { showToast('مبلغ معتبر وارد کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ'; return; }
+                if (!receiptBase64) { showToast('تصویر رسید را آپلود کنید', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ'; return; }
+
+                const newCharge = {
+                    id: Date.now() + Math.random(),
+                    user_id: userId,
+                    amount: amount,
+                    receipt: receiptBase64,
+                    status: 'pending',
+                    created_at: Math.floor(Date.now() / 1000),
+                    approved_at: null
+                };
+                charges.push(newCharge);
+                saveData('charges', charges);
+                showToast('درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی افزایش می‌یابد.', 'success');
+                closeModal('chargeModal');
+            } catch (err) { showToast('خطا در درخواست شارژ', 'error');
+                console.error(err); }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> ارسال درخواست شارژ';
+        }
+
+        // ===== VIP =====
+        document.getElementById('vipBtn').addEventListener('click', () => openModal('vipModal'));
+
+        async function subscribeVip(days, amount) {
+            const user = users[userId];
+            if (!user) { showToast('کاربر یافت نشد', 'error'); return; }
+            if (user.balance < amount) { showToast('موجودی کافی نیست', 'error'); return; }
+
+            user.balance -= amount;
+            // ثبت اشتراک (در user ذخیره می‌کنیم)
+            if (!user.vip) user.vip = [];
+            user.vip.push({ days, start: Date.now(), end: Date.now() + days * 24 * 60 * 60 * 1000 });
+            saveData('users', users);
+            showToast('اشتراک ویژه با موفقیت فعال شد', 'success');
+            closeModal('vipModal');
+            updateUserUI();
+        }
+
+        // ===== تبدیل امتیاز =====
+        document.getElementById('convertPointsBtn').addEventListener('click', () => {
+            const user = users[userId];
+            document.getElementById('convertPointsBalance').textContent = user?.points || 0;
+            openModal('convertPointsModal');
+        });
+
+        async function convertPoints(type) {
+            const user = users[userId];
+            if (!user) { showToast('کاربر یافت نشد', 'error'); return; }
+            let needed = 0,
+                reward = 0,
+                rewardType = '';
+            if (type === 'money') { needed = 100;
+                reward = 1000;
+                rewardType = 'balance'; } else if (type === 'vip') { needed = 50;
+                reward = 1;
+                rewardType = 'vip_days'; } else { showToast('نوع نامعتبر', 'error'); return; }
+
+            if (user.points < needed) { showToast('امتیاز کافی نیست', 'error'); return; }
+
+            user.points -= needed;
+            if (rewardType === 'balance') user.balance += reward;
+            else if (rewardType === 'vip_days') {
+                if (!user.vip) user.vip = [];
+                user.vip.push({ days: reward, start: Date.now(), end: Date.now() + reward * 24 * 60 * 60 * 1000 });
+            }
+            saveData('users', users);
+            showToast('امتیاز با موفقیت تبدیل شد', 'success');
+            closeModal('convertPointsModal');
+            updateUserUI();
+            document.getElementById('convertPointsBalance').textContent = user.points;
+        }
+
+        // ===== جزییات آگهی =====
         let currentAdImages = [];
 
-        window.showAd = async (id) => {
+        window.showAd = (id) => {
             const ad = allAds.find(a => a.id == id);
             if (!ad) return;
-            currentAdId = ad.id;
-            const images = ad.image_ids ? (Array.isArray(ad.image_ids) ? ad.image_ids : JSON.parse(ad.image_ids)) : [];
-            currentAdImages = images;
-            const timeStr = getRelativeTime(ad.created_at);
-            const locationTime = `${timeStr} در ${ad.city || ''}`;
-            const priceDisplay = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency}` : t('negotiable');
+            currentAdImages = ad.image_ids || [];
+            const price = isNumericPrice(ad.price) ? `${ad.price} ${ad.currency||'تومان'}` : t('negotiable');
+            const time = getRelativeTime(ad.created_at);
 
             let reviewsHtml = '';
-            let avgRating = ad.rating_avg ? ad.rating_avg.toFixed(1) : '0';
-            let reviewCount = ad.rating_count || 0;
-            try {
-                const reviewsRes = await fetch(`${API_BASE}/api/reviews?adId=${id}`);
-                const reviewsData = await reviewsRes.json();
-                const reviews = reviewsData.reviews || [];
-                reviewCount = reviews.length;
-                if (reviews.length > 0) {
-                    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
-                    avgRating = (sum / reviews.length).toFixed(1);
-                }
-                reviewsHtml = reviews.map(r => {
-                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-                    return `
-                        <div class="review-item">
-                            <div class="user"><i class="fas fa-user-circle"></i> <span class="user-name">${r.first_name || r.username || 'کاربر'}</span></div>
-                            <div class="rating-stars">${stars}</div>
-                            <div class="comment">${r.comment || 'بدون نظر'}</div>
-                            <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (e) { console.error('خطا در دریافت نظرات', e); }
+            const adReviews = reviews.filter(r => r.ad_id == id);
+            const avg = adReviews.length ? (adReviews.reduce((a, b) => a + b.rating, 0) / adReviews.length).toFixed(1) :
+            '0';
+            const stars = '★'.repeat(Math.round(parseFloat(avg))) + '☆'.repeat(5 - Math.round(parseFloat(avg)));
 
-            let galleryHtml = '';
-            if (images.length > 0) {
-                galleryHtml = `
-                    <div class="image-gallery">
-                        <img src="${API_BASE}/image/${images[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
-                        ${images.length > 1 ? `
-                        <div class="gallery-controls">
-                            <button id="prevImage"><i class="fas fa-chevron-right"></i></button>
-                            <span class="gallery-counter" id="imageCounter">1/${images.length}</span>
-                            <button id="nextImage"><i class="fas fa-chevron-left"></i></button>
-                        </div>
-                        ` : ''}
-                    </div>
-                `;
-            } else {
-                galleryHtml = `<img src="https://via.placeholder.com/400x400?text=J-DAR" class="modal-image">`;
-            }
+            reviewsHtml = adReviews.map(r => {
+                const s = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                return `<div class="review-item"><div class="user"><i class="fas fa-user-circle"></i><span class="user-name">${r.user_name || 'کاربر'}</span></div>
+                        <div class="rating-stars">${s}</div><div class="comment">${r.comment || ''}</div>
+                        <div class="date">${new Date(r.created_at*1000).toLocaleDateString()}</div></div>`;
+            }).join('');
 
-            const description = ad.description || '';
-            const descriptionId = 'desc_' + ad.id;
-            const readMoreId = 'readmore_' + ad.id;
-            let descriptionHtml = '';
-            if (description.length > 100) {
-                descriptionHtml = `
-                    <div class="modal-description">
-                        <div class="description-text truncated" id="${descriptionId}">${description}</div>
-                        <button class="read-more-btn" id="${readMoreId}" onclick="toggleReadMore('${descriptionId}', '${readMoreId}')">${t('readMore')}</button>
-                    </div>
-                `;
-            } else {
-                descriptionHtml = `<div class="modal-description">${description}</div>`;
-            }
+            const gallery = currentAdImages.length ? `
+                <div class="image-gallery">
+                    <img src="${currentAdImages[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                    ${currentAdImages.length > 1 ? `
+                    <div class="gallery-controls">
+                        <button id="prevImage"><i class="fas fa-chevron-right"></i></button>
+                        <span class="gallery-counter" id="imageCounter">1/${currentAdImages.length}</span>
+                        <button id="nextImage"><i class="fas fa-chevron-left"></i></button>
+                    </div>` : ''}
+                </div>` :
+                `<img src="https://via.placeholder.com/400x400?text=J-DAR" class="modal-image">`;
+
+            const desc = ad.description || '';
+            const descId = 'desc_' + ad.id;
+            const moreId = 'more_' + ad.id;
+            const descHtml = desc.length > 100 ?
+                `<div class="modal-description"><div class="description-text truncated" id="${descId}">${desc}</div>
+                <button class="read-more-btn" id="${moreId}" onclick="toggleReadMore('${descId}','${moreId}')">${t('readMore')}</button></div>` :
+                `<div class="modal-description">${desc}</div>`;
 
             const modalHtml = `
-                <button class="modal-back" onclick="closeAdModal()"><i class="fas fa-arrow-right"></i></button>
+                <button class="modal-back" onclick="closeModal('adModal')"><i class="fas fa-arrow-right"></i></button>
                 <div class="modal-content-scroll">
-                    ${galleryHtml}
+                    ${gallery}
                     <div class="modal-title">${ad.title}</div>
-                    <div class="modal-location-time">${locationTime}</div>
-                    <div class="modal-price">💰 ${priceDisplay}</div>
-                    ${descriptionHtml}
+                    <div class="modal-location-time">${time} در ${ad.city || ''}</div>
+                    <div class="modal-price">💰 ${price}</div>
+                    ${descHtml}
                     <div class="review-section">
                         <div class="review-header">
-                            <span class="avg"><i class="fas fa-star"></i> ${avgRating}</span>
-                            <span class="stars">${'★'.repeat(Math.round(parseFloat(avgRating)))}${'☆'.repeat(5 - Math.round(parseFloat(avgRating)))}</span>
-                            <span class="count">(${reviewCount} ${t('reviewsCount')})</span>
+                            <span class="avg"><i class="fas fa-star"></i> ${avg}</span>
+                            <span class="stars">${stars}</span>
+                            <span class="count">(${adReviews.length} ${t('reviewsCount')})</span>
                         </div>
                         ${reviewsHtml || '<p style="color:#aaa;">هنوز نظری ثبت نشده است.</p>'}
                         <div class="review-input">
-                            <input type="number" id="newRating" min="1" max="5" placeholder="${t('ratingPlaceholder')}">
-                            <textarea id="newComment" placeholder="${t('commentPlaceholder')}" rows="2"></textarea>
-                            <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ${t('sendReview')}</button>
+                            <input type="number" id="newRating" min="1" max="5" placeholder="امتیاز (1-5)">
+                            <textarea id="newComment" placeholder="نظر شما..." rows="2"></textarea>
+                            <button onclick="submitReview(${ad.id})"><i class="fas fa-paper-plane"></i> ارسال نظر</button>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="contact-btn" onclick="showContact('${ad.phone}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
-                    <button class="chat-btn" onclick="showChat('${ad.telegram_username}')"><i class="fas fa-comment-dots"></i> ${t('chat')}</button>
+                    <button class="contact-btn" onclick="showContact('${ad.phone||''}')"><i class="fas fa-phone-alt"></i> ${t('contactInfo')}</button>
+                    <button class="chat-btn" onclick="showChat('${ad.telegram_username||''}')"><i class="fas fa-comment-dots"></i> ${t('chat')}</button>
                 </div>
             `;
             document.getElementById('modalContent').innerHTML = modalHtml;
-            document.getElementById('adModal').classList.add('active');
-            if (tg) tg.BackButton.show();
+            openModal('adModal');
 
-            if (images.length > 1) {
-                let currentIndex = 0;
-                const mainImage = document.getElementById('mainImage');
-                const prevBtn = document.getElementById('prevImage');
-                const nextBtn = document.getElementById('nextImage');
+            // گالری
+            if (currentAdImages.length > 1) {
+                let idx = 0;
+                const img = document.getElementById('mainImage');
+                const prev = document.getElementById('prevImage');
+                const next = document.getElementById('nextImage');
                 const counter = document.getElementById('imageCounter');
-
-                if (prevBtn && nextBtn) {
-                    prevBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex - 1 + images.length) % images.length;
-                        mainImage.src = `${API_BASE}/image/${images[currentIndex]}`;
-                        if (counter) counter.innerText = (currentIndex+1) + '/' + images.length;
-                    });
-                    nextBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex + 1) % images.length;
-                        mainImage.src = `${API_BASE}/image/${images[currentIndex]}`;
-                        if (counter) counter.innerText = (currentIndex+1) + '/' + images.length;
-                    });
+                if (prev && next) {
+                    prev.addEventListener('click', () => { idx = (idx - 1 + currentAdImages.length) % currentAdImages
+                            .length;
+                        img.src = currentAdImages[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + currentAdImages.length; });
+                    next.addEventListener('click', () => { idx = (idx + 1) % currentAdImages.length;
+                        img.src = currentAdImages[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + currentAdImages.length; });
                 }
             }
         };
 
-        window.toggleReadMore = function(descId, btnId) {
-            const descEl = document.getElementById(descId);
-            const btnEl = document.getElementById(btnId);
-            if (descEl.classList.contains('truncated')) {
-                descEl.classList.remove('truncated');
-                btnEl.innerText = t('readLess');
-            } else {
-                descEl.classList.add('truncated');
-                btnEl.innerText = t('readMore');
-            }
+        window.toggleReadMore = (id, btnId) => {
+            const el = document.getElementById(id);
+            const btn = document.getElementById(btnId);
+            if (el.classList.contains('truncated')) { el.classList.remove('truncated');
+                btn.textContent = t('readLess'); } else { el.classList.add('truncated');
+                btn.textContent = t('readMore'); }
         };
 
-        window.closeAdModal = function() {
-            document.getElementById('adModal').classList.remove('active');
-            if (tg) tg.BackButton.hide();
-        };
-
-        if (tg) {
-            tg.BackButton.onClick(() => {
-                if (document.getElementById('adModal').classList.contains('active')) {
-                    closeAdModal();
-                } else {
-                    tg.close();
-                }
-            });
-        }
-
-        window.submitReview = async (adId) => {
+        window.submitReview = (adId) => {
             const rating = parseInt(document.getElementById('newRating').value);
-            const comment = document.getElementById('newComment').value;
-            if (!rating || rating < 1 || rating > 5) {
-                tg?.showPopup({ title: '❌', message: 'امتیاز باید بین 1 تا 5 باشد' });
-                return;
+            const comment = document.getElementById('newComment').value.trim();
+            if (!rating || rating < 1 || rating > 5) { showToast('امتیاز بین 1 تا 5', 'error'); return; }
+            const newReview = {
+                id: Date.now() + Math.random(),
+                ad_id: adId,
+                user_id: userId,
+                user_name: users[userId]?.displayName || 'کاربر',
+                rating,
+                comment,
+                created_at: Math.floor(Date.now() / 1000)
+            };
+            reviews.push(newReview);
+            saveData('reviews', reviews);
+
+            // بروزرسانی میانگین آگهی
+            const ad = allAds.find(a => a.id == adId);
+            if (ad) {
+                const adRev = reviews.filter(r => r.ad_id == adId);
+                ad.rating_avg = adRev.length ? (adRev.reduce((a, b) => a + b.rating, 0) / adRev.length) : 0;
+                ad.rating_count = adRev.length;
+                saveData('ads', allAds);
             }
-            if (!userId) {
-                tg?.showPopup({ title: '❌', message: 'ابتدا وارد شوید' });
-                return;
-            }
-            try {
-                const res = await fetch(`${API_BASE}/api/review`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ adId, userId, rating, comment })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    tg?.showPopup({ title: '✅', message: 'نظر شما ثبت شد' });
-                    showAd(adId);
-                } else {
-                    tg?.showPopup({ title: '❌', message: data.error || 'خطا در ثبت نظر' });
-                }
-            } catch {
-                tg?.showPopup({ title: '❌', message: 'خطا در ارتباط با سرور' });
-            }
+            showToast('نظر شما ثبت شد', 'success');
+            showAd(adId);
         };
 
         function showContact(phone) {
-            if (!phone) { tg?.showPopup({ title: '📞', message: t('noPhone') }); return; }
+            if (!phone) { showToast(t('noPhone'), 'warning'); return; }
             tg?.showPopup({
-                title: '📞 ' + t('contactInfo'),
+                title: '📞 تماس',
                 message: phone,
-                buttons: [
-                    { id: 'call', type: 'default', text: t('call') },
-                    { id: 'copy', type: 'default', text: t('copyHint') },
-                    { type: 'cancel' }
-                ]
-            }, (btnId) => {
-                if (btnId === 'call') window.location.href = `tel:${phone}`;
-                else if (btnId === 'copy') {
-                    navigator.clipboard.writeText(phone).then(() => tg?.showPopup({ title: '✅', message: t('copyHint') }));
-                }
+                buttons: [{ id: 'call', type: 'default', text: t('call') }, { id: 'copy', type: 'default',
+                        text: t('copyHint') }, { type: 'cancel' }]
+            }, (btn) => {
+                if (btn === 'call') window.location.href = `tel:${phone}`;
+                else if (btn === 'copy') navigator.clipboard.writeText(phone).then(() => showToast(t('copyHint'),
+                    'success'));
             });
         }
 
         function showChat(username) {
-            if (!username) { tg?.showPopup({ title: '💬', message: t('noUsername') }); return; }
+            if (!username) { showToast(t('noUsername'), 'warning'); return; }
             tg?.openTelegramLink(`https://t.me/${username}`);
         }
 
+        // ===== پنل ادمین =====
+        if (isAdmin) {
+            document.getElementById('adminBtn').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderAdminPanel();
+        }
+
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            if (panel.style.display === 'block') renderAdminPanel();
+        });
+
+        function renderAdminPanel() {
+            // آگهی‌های در انتظار
+            const pendingAds = allAds.filter(a => a.status === 'pending');
+            const adsList = document.getElementById('adminAdsList');
+            if (!pendingAds.length) {
+                adsList.innerHTML = '<p style="color:#aaa;">هیچ آگهی در انتظار تاییدی نیست.</p>';
+            } else {
+                adsList.innerHTML = pendingAds.map(ad => `
+                    <div class="admin-item">
+                        <div class="info">
+                            <div class="title">${ad.title}</div>
+                            <div class="sub">${ad.category} | ${ad.city || ''}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="approve" onclick="adminApproveAd(${ad.id})">✓</button>
+                            <button class="reject" onclick="adminRejectAd(${ad.id})">✗</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // درخواست‌های شارژ
+            const pendingCharges = charges.filter(c => c.status === 'pending');
+            const chargesList = document.getElementById('adminChargesList');
+            if (!pendingCharges.length) {
+                chargesList.innerHTML = '<p style="color:#aaa;">هیچ درخواست شارژی در انتظار نیست.</p>';
+            } else {
+                chargesList.innerHTML = pendingCharges.map(c => `
+                    <div class="admin-item">
+                        <div class="info">
+                            <div class="title">${c.amount.toLocaleString()} تومان</div>
+                            <div class="sub">کاربر: ${c.user_id}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="approve" onclick="adminApproveCharge(${c.id})">✓</button>
+                            <button class="reject" onclick="adminRejectCharge(${c.id})">✗</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.adminApproveAd = (id) => {
+            const ad = allAds.find(a => a.id == id);
+            if (ad) { ad.status = 'approved';
+                saveData('ads', allAds);
+                showToast('آگهی تایید شد', 'success');
+                renderAdminPanel();
+                renderAds(allAds, 'adsGrid'); }
+        };
+        window.adminRejectAd = (id) => {
+            const ad = allAds.find(a => a.id == id);
+            if (ad) { ad.status = 'rejected';
+                saveData('ads', allAds);
+                showToast('آگهی رد شد', 'warning');
+                renderAdminPanel();
+                renderAds(allAds, 'adsGrid'); }
+        };
+
+        window.adminApproveCharge = (id) => {
+            const charge = charges.find(c => c.id == id);
+            if (charge) {
+                charge.status = 'approved';
+                charge.approved_at = Math.floor(Date.now() / 1000);
+                // افزایش موجودی کاربر
+                const user = users[charge.user_id];
+                if (user) { user.balance += charge.amount;
+                    saveData('users', users); }
+                saveData('charges', charges);
+                showToast('درخواست شارژ تایید شد', 'success');
+                renderAdminPanel();
+                updateUserUI();
+            }
+        };
+        window.adminRejectCharge = (id) => {
+            const charge = charges.find(c => c.id == id);
+            if (charge) { charge.status = 'rejected';
+                saveData('charges', charges);
+                showToast('درخواست شارژ رد شد', 'warning');
+                renderAdminPanel(); }
+        };
+
+        // ===== پروفایل =====
+        function updateUserUI() {
+            const user = users[userId] || { balance: 0, points: 0 };
+            document.getElementById('walletBalance').textContent = user.balance.toLocaleString();
+            document.getElementById('userPoints').textContent = user.points || 0;
+            document.getElementById('profileBalance').textContent = user.balance.toLocaleString();
+            document.getElementById('profilePoints').textContent = user.points || 0;
+            document.getElementById('referralLink').value = user.referralCode ? `https://t.me/your_bot?start=${user.referralCode}` :
+                'کد دعوت موجود نیست';
+            document.getElementById('tgUsername').value = tgUser?.username || userId;
+            document.getElementById('displayName').value = user.displayName || '';
+            document.getElementById('country').value = user.country || 'IR';
+        }
+
+        document.getElementById('saveProfile').addEventListener('click', () => {
+            const user = users[userId];
+            if (user) {
+                user.displayName = document.getElementById('displayName').value.trim();
+                user.country = document.getElementById('country').value;
+                saveData('users', users);
+                showToast(t('save'), 'success');
+                updateUserUI();
+            }
+        });
+
+        document.getElementById('copyReferral').addEventListener('click', () => {
+            const link = document.getElementById('referralLink');
+            navigator.clipboard.writeText(link.value).then(() => showToast(t('copyHint'), 'success'));
+        });
+
+        // ===== ناوبری =====
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1948,121 +1521,56 @@
                 const page = item.dataset.page;
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 document.getElementById(page + 'Page').classList.add('active');
-                if (page === 'favorites') {
-                    renderAds(allAds.filter(ad => favorites.includes(ad.id)), 'favoritesGrid');
-                } else if (page === 'profile') {
-                    loadUserProfile();
-                }
-                updateUILanguage();
+                if (page === 'favorites') renderAds(allAds.filter(a => favorites.includes(a.id)), 'favoritesGrid');
+                else if (page === 'profile') updateUserUI();
             });
         });
 
-        document.getElementById('postAdBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'post_ad' })); tg.close(); }
+        // ===== راهنما =====
+        document.getElementById('helpBtn').addEventListener('click', () => openModal('helpModal'));
+        document.getElementById('helpClose').addEventListener('click', () => closeModal('helpModal'));
+        document.getElementById('supportBtn').addEventListener('click', () => tg?.openTelegramLink('https://t.me/Mehdi_E_admin'));
+
+        // ===== PWA =====
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwaInstall').classList.add('show');
         });
-        document.getElementById('vipBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'vip' })); tg.close(); }
-        });
-        document.getElementById('chargeBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'charge' })); tg.close(); }
-        });
-        document.getElementById('convertPointsBtn').addEventListener('click', () => {
-            if (tg) { tg.sendData(JSON.stringify({ action: 'convert_points' })); tg.close(); }
-        });
-        document.getElementById('saveProfile').addEventListener('click', () => {
-            const displayName = document.getElementById('displayName').value;
-            const country = document.getElementById('country').value;
-            tg?.sendData(JSON.stringify({ action: 'updateProfile', displayName, country }));
-            tg?.showPopup({ title: '✅', message: t('save') });
-        });
-        document.getElementById('copyReferral').addEventListener('click', () => {
-            const link = document.getElementById('referralLink');
-            link.select();
-            navigator.clipboard.writeText(link.value).then(() => tg?.showPopup({ title: '✅', message: t('copyHint') }));
+        document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') { document.getElementById('pwaInstall').classList.remove('show');
+                    showToast('J-DAR نصب شد!', 'success'); }
+                deferredPrompt = null;
+            }
         });
 
-        document.getElementById('searchBtn').addEventListener('click', filterAds);
-        document.getElementById('searchInput').addEventListener('keyup', filterAds);
-        function filterAds() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allAds.filter(ad => {
-                const matchMain = currentMainCat ? ad.category?.includes(currentMainCat) : true;
-                const matchSub = currentSubCat ? ad.category?.includes(currentSubCat) : true;
-                const matchTerm = ad.title?.toLowerCase().includes(term) || ad.description?.toLowerCase().includes(term);
-                return matchMain && matchSub && matchTerm;
-            });
-            renderAds(filtered, 'adsGrid');
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                const CACHE='jedar-v2';
+                const URLS=['.','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2','https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2'];
+                self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS))));
+                self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+                self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
+            `)).catch(() => {});
         }
 
-        async function loadUserProfile() {
-            const balanceElHome = document.getElementById('walletBalance');
-            const pointsElHome = document.getElementById('userPoints');
-            const balanceElProfile = document.getElementById('profileBalance');
-            const pointsElProfile = document.getElementById('profilePoints');
-            const referralEl = document.getElementById('referralLink');
+        // ===== مقداردهی اولیه =====
+        updateUI();
+        updateUserUI();
 
-            if (!userId) {
-                balanceElHome.innerText = '0';
-                pointsElHome.innerText = '0';
-                if (balanceElProfile) balanceElProfile.innerText = '0';
-                if (pointsElProfile) pointsElProfile.innerText = '0';
-                referralEl.value = 'برای دیدن اطلاعات وارد تلگرام شوید';
-                return;
-            }
+        // نمایش اخطار تلگرام
+        if (!tg) document.getElementById('telegramWarning').classList.add('show');
 
-            try {
-                const res = await fetch(`${API_BASE}/api/user/profile?user_id=${userId}`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                if (data.success) {
-                    balanceElHome.innerText = (data.balance || 0).toLocaleString();
-                    pointsElHome.innerText = data.points || 0;
-                    if (balanceElProfile) balanceElProfile.innerText = (data.balance || 0).toLocaleString();
-                    if (pointsElProfile) pointsElProfile.innerText = data.points || 0;
-                    referralEl.value = data.referral_code ? `https://t.me/your_bot?start=${data.referral_code}` : 'کد دعوت موجود نیست';
-                } else {
-                    throw new Error();
-                }
-            } catch {
-                balanceElHome.innerText = '0';
-                pointsElHome.innerText = '0';
-                if (balanceElProfile) balanceElProfile.innerText = '0';
-                if (pointsElProfile) pointsElProfile.innerText = '0';
-                referralEl.value = 'خطا در ارتباط با سرور';
-            }
-        }
-
-        document.getElementById('displayName').addEventListener('input', (e) => {
-            localStorage.setItem('jedar_displayName', e.target.value);
-        });
-        document.getElementById('country').addEventListener('change', (e) => {
-            localStorage.setItem('jedar_country', e.target.value);
-        });
-        const savedName = localStorage.getItem('jedar_displayName');
-        if (savedName) document.getElementById('displayName').value = savedName;
-        const savedCountry = localStorage.getItem('jedar_country');
-        if (savedCountry) document.getElementById('country').value = savedCountry;
-
-        loadAds();
-        renderCategories();
-        updateUILanguage();
-        loadUserProfile();
-        loadNotice();
+        console.log('✅ J-DAR PWA بارگذاری شد.');
+        console.log('👤 کاربر:', userId);
+        console.log('👑 ادمین:', isAdmin ? 'بله' : 'خیر');
+        console.log('📦 تعداد آگهی‌ها:', allAds.length);
+        console.log('💰 تعداد درخواست‌های شارژ:', charges.length);
     </script>
-<script>
-if ('serviceWorker' in navigator) {
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js'));
-}
-document.addEventListener('DOMContentLoaded',()=>{
- const btn=document.getElementById('convertPointsBtn');
- if(btn) btn.style.display='none';
- const wp=document.querySelector('.wallet-points');
- if(wp) wp.style.display='none';
- const referral=document.getElementById('referralLink')?.closest('.profile-field');
- if(referral) referral.style.display='none';
- const profilePoints=document.getElementById('profilePoints')?.closest('.profile-field');
- if(profilePoints) profilePoints.style.display='none';
-});
-</script>
 </body>
     </html>
