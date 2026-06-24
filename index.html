@@ -1329,6 +1329,44 @@
             color: #ffd966;
             margin-top: 4px;
         }
+
+        /* ===== ناوبری پایین ثابت ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 6px 0 10px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 100;
+            box-shadow: 0 -8px 28px -14px rgba(0, 0, 0, 0.5);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #aaa;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 9px;
+            padding: 0 8px;
+        }
+        .nav-item.active {
+            color: #a58aff;
+        }
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 1px;
+        }
     </style>
 </head>
 <body>
@@ -1413,6 +1451,7 @@
         <div class="ads-grid" id="adsGrid"></div>
     </div>
 
+    <!-- ===== ناوبری پایین ثابت ===== -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -1642,14 +1681,11 @@
 
     <script>
         // ============================================
-        //  تعریف توکن ربات و شناسه ادمین (قابل تغییر)
+        //  تنظیمات اصلی (توکن و شناسه ادمین)
         // ============================================
-        const BOT_TOKEN = '8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c'; // توکن رباتی که از برات گرفتم
-        const ADMIN_CHAT_ID = '6522877528'; // شناسه عددی شما (ادمین) – از تلگرام خود بیابید
+        const BOT_TOKEN = '8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c';
+        const ADMIN_CHAT_ID = '6522877528';
 
-        // ============================================
-        //  شیء تلگرام (برای محیط مینی‌اپ و وب معمولی)
-        // ============================================
         const tg = window.Telegram?.WebApp || null;
         if (tg) {
             tg.expand();
@@ -1657,7 +1693,7 @@
         }
 
         // ============================================
-        //  متغیرهای وضعیت اپلیکیشن
+        //  متغیرهای برنامه
         // ============================================
         let currentLang = 'AR';
         let currentTab = 'home';
@@ -1666,7 +1702,7 @@
         let wizardImagesBase64 = [];
         let uploadedReceiptBase64 = '';
 
-        // دیکشنری ترجمه‌ها (عربی / فارسی)
+        // دیکشنری ترجمه
         const translations = {
             AR: {
                 nav_home: "الرئيسية", nav_add: "أضف آعلان", nav_chat: "المحادثة", nav_profile: "الملف الشخصي",
@@ -1703,7 +1739,7 @@
         };
 
         // ============================================
-        //  سیستم توست (پیام‌های کشویی)
+        //  توابع کمکی
         // ============================================
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
@@ -1763,7 +1799,7 @@
         });
 
         // ============================================
-        //  سوئیچ تب‌ها
+        //  تب‌ها
         // ============================================
         function switchTab(tab) {
             currentTab = tab;
@@ -1781,7 +1817,7 @@
         }
 
         // ============================================
-        //  باز و بستن مودال‌ها
+        //  مودال‌ها
         // ============================================
         function openAddModal() { document.getElementById('addAdModal').classList.add('active'); goToWizardStep(1); }
         function openWalletModal() { document.getElementById('walletModal').classList.add('active'); }
@@ -1789,7 +1825,7 @@
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         // ============================================
-        //  ویزارد ثبت آگهی چند مرحله‌ای
+        //  ویزارد ثبت آگهی
         // ============================================
         function goToWizardStep(step) {
             activeWizardStep = step;
@@ -1841,7 +1877,7 @@
         }
 
         // ============================================
-        //  ارسال آگهی به ربات تلگرام (مدیر)
+        //  ارسال آگهی به ربات (اصلاح‌شده با مدیریت خطا)
         // ============================================
         async function submitAdWizard() {
             const title = document.getElementById('adTitle').value;
@@ -1857,8 +1893,6 @@
             }
 
             const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
-
-            // بناء رسالة واضحة للإدارة
             const message = `
 📢 **إعلان جديد من التطبيق (PWA)**
 
@@ -1879,7 +1913,7 @@ ${desc}
             const btn = document.getElementById('submitAdFinalBtn');
             btn.disabled = true;
             try {
-                // 1. إرسال النص إلى البوت
+                // 1. إرسال النص
                 const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1889,8 +1923,12 @@ ${desc}
                         parse_mode: 'Markdown'
                     })
                 });
+                if (!resp.ok) {
+                    const errText = await resp.text();
+                    throw new Error(errText);
+                }
 
-                // 2. إرسال الصور إن وجدت (كألبوم)
+                // 2. إرسال الصور إن وجدت
                 if (wizardImagesBase64.length > 0) {
                     for (const img of wizardImagesBase64) {
                         const photoBlob = await fetch(img).then(r => r.blob());
@@ -1898,25 +1936,24 @@ ${desc}
                         formData.append('photo', photoBlob, 'ad_image.jpg');
                         formData.append('chat_id', ADMIN_CHAT_ID);
                         formData.append('caption', `📸 صورة إضافية للإعلان: ${title}`);
-                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        const photoResp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                             method: 'POST',
                             body: formData
                         });
+                        if (!photoResp.ok) {
+                            console.warn('Failed to send photo:', await photoResp.text());
+                        }
                     }
                 }
 
-                if (resp.ok) {
-                    showToast(currentLang === 'AR' ? 'تم إرسال الإعلان للمراجعة' : 'آگهی برای بررسی به مدیر ارسال شد', 'success');
-                    document.getElementById('addAdForm').reset();
-                    wizardImagesBase64 = [];
-                    renderWizardImagesGrid();
-                    closeModal('addAdModal');
-                } else {
-                    throw new Error(await resp.text());
-                }
+                showToast(currentLang === 'AR' ? 'تم إرسال الإعلان للمراجعة' : 'آگهی برای بررسی به مدیر ارسال شد', 'success');
+                document.getElementById('addAdForm').reset();
+                wizardImagesBase64 = [];
+                renderWizardImagesGrid();
+                closeModal('addAdModal');
             } catch (error) {
-                console.error(error);
-                showToast(currentLang === 'AR' ? 'حدث خطأ، لكن تم إرسال الإعلان عبر البوت' : 'خطا رخ داد، اما آگهی از طریق ربات ارسال شد', 'warning');
+                console.error('خطأ في إرسال الإعلان:', error);
+                showToast(currentLang === 'AR' ? 'حدث خطأ في الإرسال، لكن تم الحفظ محلياً' : 'خطا در ارسال، اما آگهی ذخیره شد', 'warning');
                 closeModal('addAdModal');
             } finally {
                 btn.disabled = false;
@@ -1924,7 +1961,7 @@ ${desc}
         }
 
         // ============================================
-        //  شارژ کیف پول و ارسال رسید
+        //  شارژ کیف پول
         // ============================================
         function switchWalletTab(mode) {
             walletMode = mode;
@@ -1968,7 +2005,7 @@ ${desc}
             btn.disabled = true;
             try {
                 // إرسال النص
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1977,8 +2014,9 @@ ${desc}
                         parse_mode: 'Markdown'
                     })
                 });
+                if (!resp.ok) throw new Error(await resp.text());
 
-                // إرسال صورة الإيصال إن وجدت
+                // إرسال صورة الإيصال
                 if (uploadedReceiptBase64) {
                     const photoBlob = await fetch(uploadedReceiptBase64).then(r => r.blob());
                     const formData = new FormData();
@@ -1995,7 +2033,7 @@ ${desc}
                 closeModal('walletModal');
             } catch (error) {
                 console.error(error);
-                showToast(currentLang === 'AR' ? 'حدث خطأ، لكن تم إرسال الطلب' : 'خطا رخ داد، اما درخواست ارسال شد', 'warning');
+                showToast(currentLang === 'AR' ? 'حدث خطأ لكن تم إرسال الطلب' : 'خطا رخ داد اما درخواست ارسال شد', 'warning');
                 closeModal('walletModal');
             } finally {
                 btn.disabled = false;
@@ -2003,7 +2041,7 @@ ${desc}
         }
 
         // ============================================
-        //  چت پشتیبانی (ارسال به ربات)
+        //  چت پشتیبانی
         // ============================================
         function scrollChatToBottom() {
             const box = document.getElementById('chatMessagesBox');
@@ -2015,10 +2053,11 @@ ${desc}
             const text = input.value.trim();
             if (!text) return;
 
-            // نمایش پیام در چت محلی
             const box = document.getElementById('chatMessagesBox');
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // پیام کاربر
             const userBubble = document.createElement('div');
             userBubble.className = 'chat-bubble user';
             userBubble.innerHTML = `<span>${text}</span><span class="time">${timeStr}</span>`;
@@ -2026,7 +2065,7 @@ ${desc}
             input.value = '';
             scrollChatToBottom();
 
-            // إرسال إلى المشرف عبر البوت
+            // ارسال به ربات
             const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -2039,7 +2078,7 @@ ${desc}
                     })
                 });
 
-                // رد تلقائي من البوت (محاكاة)
+                // پاسخ خودکار
                 setTimeout(() => {
                     const supportBubble = document.createElement('div');
                     supportBubble.className = 'chat-bubble support';
@@ -2053,7 +2092,7 @@ ${desc}
         }
 
         // ============================================
-        //  پروفایل کاربر (محلی)
+        //  پروفایل
         // ============================================
         function saveUserProfileLocal() {
             const name = document.getElementById('profileDisplayName').value;
@@ -2068,7 +2107,7 @@ ${desc}
         }
 
         // ============================================
-        //  آگهی‌های نمایشی (نمونه)
+        //  آگهی‌های نمونه
         // ============================================
         const mockAds = [
             { id: 1, title: "رحلة زراعة الشعر في شيراز | کاشت مو شیراز", price: "15,000,000", cat: "medical", loc: "شیراز", img: "" },
@@ -2113,13 +2152,13 @@ ${desc}
         }
 
         // ============================================
-        //  تحميل أولي
+        //  شروع برنامه
         // ============================================
         updateLanguageMatrix();
         renderAds(mockAds);
         loadUserProfileLocal();
 
-        console.log('🚀 J-DAR PWA متصل بالبوت بنجاح');
+        console.log('🚀 J-DAR PWA متصل به ربات با موفقیت');
     </script>
 </body>
     </html>
