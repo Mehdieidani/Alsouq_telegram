@@ -1,520 +1,514 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جدار | J-DAR</title>
+    <title>جدار | J-DAR - سوق حراج</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkotREFSIiwKICAic2hvcnRfbmFtZSI6ICJKLURBUiIsCiAgImRlc2NyaXB0aW9uIjogIlBsYXRmb3JtIGJlem5pbiB2YSBoZXJmaCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGEwYTBjIiwKICAidGhlbWVfY29sb3IiOiAiIzdiNWFmZiIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyByeD0nNTAnIGZpbGw9JyM3YjVhZmYnLz48dGV4dCB4PScyNTYnIHk9JzM0MCcgZm9udC1zaXplPScyODAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtZmFtaWx5PSdBcmlhbCcgZmlsbD0nd2hpdGUnPkokdDwvdGV4dD48L3N2Zz4iLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFzayBhbnlsYW5nIgogICAgfQogIF0KfQ==">
+    <meta name="theme-color" content="#7b5aff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="J-DAR">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== Reset & Base ===== */
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        html { overflow-x:hidden; overscroll-behavior:none; height:100%; }
         body {
-            font-family: 'Tahoma', 'Arial', sans-serif;
-            background: #0a0a0c;
-            color: #fff;
-            min-height: 100vh;
-            direction: rtl;
-            padding: 0 10px 80px 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        body.light {
+            font-family: 'Vazir', 'Inter', sans-serif;
             background: #f0f0f3;
             color: #111;
+            min-height:100vh;
+            direction:rtl;
+            overflow-x:hidden;
+            overscroll-behavior:none;
+            transition:background 0.3s, color 0.3s;
+            height:100%;
+            display:flex;
+            flex-direction:column;
         }
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .logo-icon {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(145deg, #7b5aff, #a58aff);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        body.dark { background:#0a0a0c; color:#fff; }
+
+        /* ===== Dark Mode Overrides ===== */
+        body.dark .container, body.dark .wallet-card, body.dark .notice-card, body.dark .profile-section,
+        body.dark .ad-card, body.dark .modal-content, body.dark .auth-box, body.dark .dropdown-menu {
+            background: rgba(20,20,28,0.7) !important;
+            backdrop-filter: blur(12px);
+            border-color: rgba(255,255,255,0.05) !important;
             color: #fff;
+        }
+        body.dark .ad-card-title, body.dark .modal-title, body.dark .wallet-info .amount,
+        body.dark .section-title h3, body.dark .profile-field label, body.dark .auth-box h2,
+        body.dark .help-modal h2, body.dark .dropdown-menu a { color:#fff; }
+        body.dark .ad-card-price, body.dark .modal-price, body.dark .wallet-points { color:#a58aff; }
+        body.dark .search-box { background:rgba(20,20,30,0.6); }
+        body.dark .search-box input { color:#fff; }
+        body.dark .bottom-nav { background:rgba(15,15,20,0.85); border-top-color:rgba(255,255,255,0.04); }
+        body.dark .nav-item { color:#aaa; }
+        body.dark .nav-item.active { color:#a58aff; }
+        body.dark .icon-btn { background:rgba(255,255,255,0.04); color:#aaa; }
+        body.dark .icon-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+        body.dark .form-control { background:rgba(0,0,0,0.3); color:#fff; border-color:rgba(255,255,255,0.06); }
+        body.dark .form-control::placeholder { color:rgba(255,255,255,0.25); }
+        body.dark .category-chip { background:rgba(30,30,40,0.6); color:#ddd; }
+        body.dark .category-chip.active { background:#7b5aff; color:#fff; }
+        body.dark .ad-card-meta, body.dark .modal-location-time, body.dark .review-item .comment,
+        body.dark .review-item .date, body.dark .description-text { color:#aaa; }
+        body.dark .wallet-info h4 { color:#aaa; }
+        body.dark .notice-text { color:#ffd966; }
+        body.dark .toast { background:rgba(20,20,30,0.92); color:#fff; }
+        body.dark .ad-card .user-info .username { color:#fff; }
+        body.dark .ad-card .user-info { border-top-color:rgba(255,255,255,0.04); }
+        body.dark .my-ad-item { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); }
+        body.dark .my-ad-item .title { color:#fff; }
+        body.dark .image-gallery .no-image-placeholder { background:#181820; color:#555; }
+        body.dark .ad-card-image .no-image { background:#181820; color:#555; }
+        body.dark .pwa-install { background:rgba(20,20,30,0.92); border-color:#7b5aff; }
+        body.dark .pwa-install .pwa-text strong { color:#fff; }
+        body.dark .auth-page .captcha-box input { color:#fff; border-bottom-color:rgba(255,255,255,0.2); }
+        body.dark .dropdown-menu .dropdown-item:hover { background:rgba(255,255,255,0.06); }
+        body.dark .dropdown-menu .dropdown-item { color:#fff; }
+        body.dark .dropdown-menu .dropdown-item i { color:#a58aff; }
+        body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); }
+        body.dark .support-info a { color:#a58aff; }
+
+        /* ===== Background ===== */
+        body::before {
+            content:'';
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background: radial-gradient(circle at 30% 30%, rgba(123,90,255,0.04) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 70%, rgba(255,100,150,0.02) 0%, transparent 60%),
+                        #f0f0f3;
+            z-index:-1;
+        }
+        body.dark::before {
+            background: radial-gradient(circle at 30% 30%, rgba(123,90,255,0.06) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 70%, rgba(255,100,150,0.04) 0%, transparent 60%),
+                        #0a0a0c;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width:500px;
+            margin:0 auto;
+            padding:14px 10px 80px 10px;
+            position:relative;
+            z-index:10;
+            overscroll-behavior:none;
+            flex:1;
+            width:100%;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:16px;
+            padding:0 2px;
+            position:relative;
+        }
+        .logo { display:flex; align-items:center; gap:6px; }
+        .logo-icon {
+            width:38px; height:38px;
+            background:linear-gradient(145deg,#7b5aff,#a58aff);
+            border-radius:12px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:20px; color:#fff;
+            box-shadow:0 6px 16px -4px rgba(123,90,255,0.4);
+            flex-shrink:0;
         }
         .logo-text {
-            font-weight: 800;
-            font-size: 18px;
-            background: linear-gradient(135deg, #7b5aff, #a58aff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight:800; font-size:18px;
+            background:linear-gradient(135deg,#7b5aff,#a58aff);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            letter-spacing:-0.5px;
         }
-        .header-left {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
+        .header-left { display:flex; align-items:center; gap:6px; }
         .icon-btn {
-            background: rgba(255,255,255,0.05);
-            border: none;
-            border-radius: 10px;
-            width: 34px;
-            height: 34px;
-            color: #aaa;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width:34px; height:34px;
+            border-radius:10px;
+            background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06);
+            display:flex; align-items:center; justify-content:center;
+            color:#333; font-size:16px; cursor:pointer; transition:0.2s;
+            flex-shrink:0;
         }
-        body.light .icon-btn {
-            background: rgba(0,0,0,0.05);
-            color: #333;
-        }
-        .wallet-card {
-            background: rgba(20,20,30,0.6);
-            border-radius: 18px;
-            padding: 14px 16px;
-            margin: 10px 0;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        body.light .wallet-card {
-            background: rgba(255,255,255,0.92);
-            border-color: rgba(0,0,0,0.06);
-        }
-        .wallet-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .wallet-info h4 {
-            font-size: 11px;
-            color: #aaa;
-            font-weight: 500;
-        }
-        body.light .wallet-info h4 { color: #555; }
-        .wallet-info .amount {
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
-        }
-        body.light .wallet-info .amount { color: #111; }
-        .wallet-points {
-            background: rgba(123,90,255,0.12);
-            border: 1px solid rgba(123,90,255,0.2);
-            border-radius: 20px;
-            padding: 4px 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #a58aff;
-            font-size: 11px;
-        }
-        body.light .wallet-points { color: #7b5aff; }
-        .wallet-points .points-num {
-            font-weight: 700;
-            font-size: 14px;
-            color: #fff;
-        }
-        body.light .wallet-points .points-num { color: #111; }
-        .form-btn {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 24px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .form-btn-primary {
-            background: #7b5aff;
-            color: #fff;
-        }
-        .form-btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
-        .form-btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #fff;
-        }
-        body.light .form-btn-secondary {
-            background: rgba(0,0,0,0.05);
-            border-color: rgba(0,0,0,0.06);
-            color: #111;
-        }
-        .form-btn-success {
-            background: #4caf50;
-            color: #fff;
-        }
-        .ads-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .ad-card {
-            background: rgba(20,20,28,0.7);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 18px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.25s;
-        }
-        body.light .ad-card {
-            background: rgba(255,255,255,0.92);
-            border-color: rgba(0,0,0,0.06);
-        }
-        .ad-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(123,90,255,0.25);
-        }
-        .ad-card-image {
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: #181820;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-size: 12px;
-        }
-        body.light .ad-card-image { background: #e0e0e0; color: #888; }
-        .ad-card-content {
-            padding: 6px 8px 4px;
-        }
-        .ad-card-title {
-            font-weight: 600;
-            font-size: 12px;
-            color: #fff;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-            min-height: 32px;
-        }
-        body.light .ad-card-title { color: #111; }
-        .ad-card-price {
-            font-weight: 700;
-            font-size: 13px;
-            color: #7b5aff;
-        }
-        .ad-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 9px;
-            color: #aaa;
-        }
-        body.light .ad-card-meta { color: #555; }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15,15,20,0.85);
-            backdrop-filter: blur(24px);
-            border-top: 1px solid rgba(255,255,255,0.04);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 6px 0 10px;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 100;
-        }
-        body.light .bottom-nav {
-            background: rgba(255,255,255,0.85);
-            border-top-color: rgba(0,0,0,0.06);
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #aaa;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 9px;
-            padding: 0 8px;
-        }
-        body.light .nav-item { color: #555; }
-        .nav-item.active { color: #a58aff; }
-        body.light .nav-item.active { color: #7b5aff; }
-        .nav-item i { font-size: 18px; margin-bottom: 1px; }
+        .icon-btn:hover { background:rgba(0,0,0,0.1); color:#000; }
+        body.dark .icon-btn { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); color:#aaa; }
+        body.dark .icon-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+        .icon-btn.hamburger { font-size:20px; }
 
-        /* ===== صفحه ثبت‌نام ===== */
-        #registerOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
+        /* ===== Dropdown Menu ===== */
+        .dropdown-menu {
+            position:absolute; top:44px; left:0;
+            background:rgba(255,255,255,0.92); backdrop-filter:blur(20px);
+            border:1px solid rgba(0,0,0,0.08); border-radius:14px;
+            padding:8px 0; min-width:180px; z-index:100;
+            display:none; box-shadow:0 12px 30px -10px rgba(0,0,0,0.2);
+            animation:fadeInUp 0.25s ease;
         }
-        #registerOverlay.active { display: flex; }
-        #registerOverlay .register-box {
-            background: #1a1a24;
-            border-radius: 24px;
-            padding: 30px 24px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        body.dark .dropdown-menu { background:rgba(20,20,30,0.92); border-color:rgba(255,255,255,0.06); box-shadow:0 12px 30px -10px rgba(0,0,0,0.6); }
+        .dropdown-menu.open { display:block; }
+        .dropdown-menu .dropdown-item {
+            display:flex; align-items:center; gap:10px;
+            padding:8px 16px; color:#111; text-decoration:none;
+            font-size:13px; cursor:pointer; transition:0.15s;
+            border:none; background:transparent; width:100%; text-align:right;
+            font-family: 'Vazir', 'Inter', sans-serif;
         }
-        body.light #registerOverlay .register-box {
-            background: #fff;
-            border-color: rgba(0,0,0,0.06);
-        }
-        #registerOverlay .register-logo { font-size: 48px; margin-bottom: 10px; }
-        #registerOverlay h2 { color: #fff; font-size: 22px; margin-bottom: 6px; }
-        body.light #registerOverlay h2 { color: #111; }
-        #registerOverlay p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
-        body.light #registerOverlay p { color: #555; }
-        .register-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-            margin: 6px 0;
-        }
-        .register-btn-telegram {
-            background: #0088cc;
-            color: #fff;
-        }
-        .register-btn-telegram:hover { opacity: 0.9; transform: translateY(-2px); }
-        .register-btn-telegram i { font-size: 20px; }
-        .register-btn-back {
-            background: transparent;
-            color: #aaa;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        body.light .register-btn-back {
-            color: #555;
-            border-color: rgba(0,0,0,0.1);
-        }
-        .register-btn-back:hover { background: rgba(255,255,255,0.05); }
+        .dropdown-menu .dropdown-item:hover { background:rgba(0,0,0,0.04); }
+        body.dark .dropdown-menu .dropdown-item { color:#fff; }
+        body.dark .dropdown-menu .dropdown-item:hover { background:rgba(255,255,255,0.06); }
+        .dropdown-menu .dropdown-item i { width:20px; font-size:15px; color:#7b5aff; }
+        body.dark .dropdown-menu .dropdown-item i { color:#a58aff; }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* ===== Modal ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            overflow-y: auto;
-            padding: 0;
-        }
-        .modal.active { display: block; }
-        .modal-content {
-            max-width: 500px;
-            margin: 0 auto;
-            background: rgba(15,15,20,0.95);
-            min-height: 100vh;
-            padding: 16px;
-            padding-top: 50px;
-            position: relative;
-        }
-        body.light .modal-content { background: rgba(255,255,255,0.95); }
-        .modal-back {
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            background: #7b5aff;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-        }
-        .modal-back:hover { transform: scale(1.05); }
-        .form-group { margin-bottom: 12px; }
-        .form-group label {
-            display: block;
-            color: #aaa;
-            font-size: 12px;
-            margin-bottom: 3px;
-            font-weight: 500;
-        }
-        body.light .form-group label { color: #555; }
-        .form-control {
-            width: 100%;
-            padding: 8px 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 20px;
-            color: #fff;
-            font-size: 13px;
-            font-family: inherit;
-            outline: none;
-        }
-        body.light .form-control {
-            background: rgba(0,0,0,0.05);
-            border-color: rgba(0,0,0,0.06);
-            color: #111;
-        }
-        .form-control:focus { border-color: #7b5aff; }
-        .form-control::placeholder { color: rgba(255,255,255,0.25); }
-        body.light .form-control::placeholder { color: rgba(0,0,0,0.25); }
-        .image-upload-area {
-            border: 2px dashed rgba(255,255,255,0.12);
-            border-radius: 20px;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
-        body.light .image-upload-area { border-color: rgba(0,0,0,0.12); }
-        .image-upload-area input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-        .image-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-top: 6px;
-        }
-        .image-preview-item {
-            position: relative;
-            aspect-ratio: 1/1;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #1a1a24;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        body.light .image-preview-item { background: #e0e0e0; }
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .image-preview-item .remove-img {
-            position: absolute;
-            top: 3px;
-            right: 3px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff5e7c;
-            cursor: pointer;
-            font-size: 10px;
-            border: none;
-        }
+        /* ===== Toast ===== */
         .toast-container {
-            position: fixed;
-            top: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            max-width: 92%;
-            width: 400px;
-            pointer-events: none;
+            position:fixed; top:14px; left:50%; transform:translateX(-50%);
+            z-index:9999; max-width:92%; width:400px; pointer-events:none;
         }
         .toast {
-            background: rgba(20,20,30,0.92);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            padding: 10px 16px;
-            margin-bottom: 6px;
-            color: #fff;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 12px 30px -10px rgba(0,0,0,0.6);
-            transform: translateY(-20px);
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-right: 4px solid #7b5aff;
+            background:rgba(255,255,255,0.95); border:1px solid rgba(0,0,0,0.08);
+            border-radius:14px; padding:10px 16px; margin-bottom:6px;
+            color:#111; font-size:13px; display:flex; align-items:center; gap:10px;
+            box-shadow:0 12px 30px -10px rgba(0,0,0,0.2);
+            transform:translateY(-20px); opacity:0;
+            transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            pointer-events:auto; border-right:4px solid #7b5aff;
         }
-        body.light .toast {
-            background: rgba(255,255,255,0.95);
-            color: #111;
-            border-color: rgba(0,0,0,0.08);
+        body.dark .toast { background:rgba(20,20,30,0.92); border-color:rgba(255,255,255,0.08); color:#fff; box-shadow:0 12px 30px -10px rgba(0,0,0,0.6); }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.success { border-right-color:#4caf50; }
+        .toast.error { border-right-color:#ff5e7c; }
+        .toast.warning { border-right-color:#ffd966; }
+        .toast i { font-size:16px; flex-shrink:0; }
+
+        /* ===== Wallet Card ===== */
+        .wallet-card {
+            background:rgba(255,255,255,0.92); backdrop-filter:blur(16px);
+            border:1px solid rgba(0,0,0,0.06); border-radius:18px;
+            padding:14px 16px; margin-bottom:16px;
+            box-shadow:0 10px 28px -14px rgba(0,0,0,0.1);
         }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { border-right-color: #4caf50; }
-        .toast.error { border-right-color: #ff5e7c; }
-        .toast.warning { border-right-color: #ffd966; }
+        body.dark .wallet-card { background:rgba(20,20,30,0.6); border-color:rgba(255,255,255,0.05); box-shadow:0 10px 28px -14px rgba(0,0,0,0.6); }
+        .wallet-row { display:flex; justify-content:space-between; align-items:center; }
+        .wallet-info h4 { font-size:11px; color:#555; font-weight:500; }
+        body.dark .wallet-info h4 { color:#aaa; }
+        .wallet-info .amount { font-size:24px; font-weight:700; color:#111; }
+        body.dark .wallet-info .amount { color:#fff; }
+        .wallet-info small { font-size:12px; color:#7b5aff; }
+        .wallet-points {
+            background:rgba(123,90,255,0.12); border:1px solid rgba(123,90,255,0.2);
+            border-radius:20px; padding:4px 12px;
+            display:flex; align-items:center; gap:5px;
+            color:#7b5aff; font-size:11px;
+        }
+        body.dark .wallet-points { color:#a58aff; }
+        .wallet-points i { color:#ffd966; font-size:14px; }
+        .wallet-points .points-num { font-weight:700; font-size:14px; color:#111; }
+        body.dark .wallet-points .points-num { color:#fff; }
+
+        /* ===== Notice ===== */
+        .notice-card {
+            background:rgba(255,255,255,0.92); backdrop-filter:blur(16px);
+            border:1px solid rgba(255,215,0,0.3); border-radius:16px;
+            padding:8px 12px; margin-bottom:16px;
+            display:flex; align-items:center; gap:10px;
+        }
+        body.dark .notice-card { background:rgba(20,20,30,0.6); border-color:rgba(255,215,0,0.2); }
+        .notice-icon { width:30px; height:30px; background:#daa520; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; flex-shrink:0; }
+        .notice-text { flex:1; font-size:12px; color:#b8860b; line-height:1.4; }
+        body.dark .notice-text { color:#ffd966; }
+        .notice-edit { width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:center; cursor:pointer; color:#daa520; font-size:14px; transition:0.2s; flex-shrink:0; }
+        .notice-edit:hover { background:#daa520; color:#fff; }
+        body.dark .notice-edit { background:rgba(255,255,255,0.08); }
+
+        /* ===== Action Grid ===== */
+        .action-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px; }
+        .action-item {
+            background:rgba(255,255,255,0.5); backdrop-filter:blur(8px);
+            border:1px solid rgba(0,0,0,0.05); border-radius:18px;
+            padding:10px 0; display:flex; flex-direction:column; align-items:center; gap:3px;
+            cursor:pointer; transition:0.2s; color:#222;
+        }
+        body.dark .action-item { background:rgba(20,20,30,0.4); border-color:rgba(255,255,255,0.05); color:#fff; }
+        .action-item:hover { background:rgba(123,90,255,0.1); border-color:rgba(123,90,255,0.2); transform:translateY(-2px); }
+        body.dark .action-item:hover { background:rgba(123,90,255,0.15); border-color:rgba(123,90,255,0.25); }
+        .action-item i { font-size:20px; color:#7b5aff; }
+        body.dark .action-item i { color:#a58aff; }
+        .action-item span { font-size:10px; font-weight:500; opacity:0.8; }
+
+        /* ===== Search ===== */
+        .search-box {
+            background:rgba(255,255,255,0.85); backdrop-filter:blur(16px);
+            border:1px solid rgba(0,0,0,0.06); border-radius:24px;
+            padding:4px 12px; display:flex; align-items:center; margin-bottom:16px;
+        }
+        body.dark .search-box { background:rgba(20,20,30,0.6); border-color:rgba(255,255,255,0.05); }
+        .search-box i { color:#777; font-size:15px; margin-left:8px; }
+        body.dark .search-box i { color:#aaa; }
+        .search-box input { flex:1; background:transparent; border:none; color:#111; font-size:13px; outline:none; padding:6px 0; }
+        body.dark .search-box input { color:#fff; }
+        .search-box input::placeholder { color:rgba(0,0,0,0.25); }
+        body.dark .search-box input::placeholder { color:rgba(255,255,255,0.25); }
+        .search-box button {
+            background:transparent; border:1px solid rgba(0,0,0,0.08); border-radius:20px;
+            padding:4px 14px; color:#222; font-weight:500; cursor:pointer; transition:0.2s; font-size:12px;
+        }
+        body.dark .search-box button { border-color:rgba(255,255,255,0.08); color:#fff; }
+        .search-box button:hover { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.15); }
+        body.dark .search-box button:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); }
+
+        /* ===== Categories ===== */
+        .section-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .section-title h3 { font-weight:600; font-size:15px; color:#111; }
+        body.dark .section-title h3 { color:#fff; }
+        .section-title a { color:#777; text-decoration:none; font-size:12px; transition:0.2s; cursor:pointer; }
+        body.dark .section-title a { color:#aaa; }
+        .section-title a:hover { color:#7b5aff; }
+        .categories { display:flex; overflow-x:auto; gap:6px; padding-bottom:8px; margin-bottom:14px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+        .categories::-webkit-scrollbar { display:none; }
+        .category-chip {
+            background:rgba(255,255,255,0.5); backdrop-filter:blur(8px);
+            border:1px solid rgba(0,0,0,0.05); border-radius:20px;
+            padding:4px 14px; white-space:nowrap; color:#333; font-weight:500;
+            transition:0.2s; cursor:pointer; font-size:12px;
+        }
+        body.dark .category-chip { background:rgba(30,30,40,0.6); border-color:rgba(255,255,255,0.05); color:#ddd; }
+        .category-chip.active { background:#7b5aff; border-color:#7b5aff; color:#fff; }
+
+        /* ===== Ads Grid ===== */
+        .ads-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+        .ad-card {
+            background:rgba(255,255,255,0.92); backdrop-filter:blur(10px);
+            border:1px solid rgba(0,0,0,0.06); border-radius:18px;
+            overflow:hidden; cursor:pointer; transition:0.25s;
+            position:relative; display:flex; flex-direction:column;
+        }
+        body.dark .ad-card { background:rgba(20,20,28,0.7); border-color:rgba(255,255,255,0.05); }
+        .ad-card:hover { transform:translateY(-3px); border-color:rgba(123,90,255,0.3); box-shadow:0 10px 24px -10px rgba(123,90,255,0.3); }
+        body.dark .ad-card:hover { border-color:rgba(123,90,255,0.25); box-shadow:0 10px 24px -10px rgba(123,90,255,0.3); }
+        .ad-card-image { width:100%; aspect-ratio:1/1; background:#f0f0f3; position:relative; overflow:hidden; }
+        body.dark .ad-card-image { background:#181820; }
+        .ad-card-image img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+        .ad-card:hover .ad-card-image img { transform:scale(1.03); }
+        .ad-card-image .watermark { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; font-size:8px; padding:2px 8px; border-radius:14px; border:1px solid rgba(255,255,255,0.1); z-index:2; }
+        .ad-card-image .no-image { display:flex; align-items:center; justify-content:center; width:100%; height:100%; color:#aaa; font-size:12px; background:#f0f0f3; }
+        body.dark .ad-card-image .no-image { background:#181820; color:#555; }
+        .ad-card-content { padding:6px 8px 4px; display:flex; flex-direction:column; gap:2px; }
+        .ad-card-title { font-weight:600; font-size:12px; color:#111; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.3; min-height:32px; }
+        body.dark .ad-card-title { color:#fff; }
+        .ad-card-price { font-weight:700; font-size:13px; color:#7b5aff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ad-card-meta { display:flex; align-items:center; gap:4px; font-size:9px; color:#555; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        body.dark .ad-card-meta { color:#aaa; }
+        .ad-card-meta i { font-size:9px; color:#7b5aff; }
+
+        /* ===== Bottom Navigation ===== */
+        .bottom-nav {
+            position:fixed; bottom:0; left:0; right:0; max-width:500px; margin:0 auto;
+            background:rgba(255,255,255,0.85); backdrop-filter:blur(24px);
+            border-top:1px solid rgba(0,0,0,0.06);
+            display:flex; justify-content:space-around; align-items:center;
+            padding:6px 0 10px; border-top-left-radius:20px; border-top-right-radius:20px;
+            z-index:100; box-shadow:0 -8px 28px -14px rgba(0,0,0,0.1);
+        }
+        body.dark .bottom-nav { background:rgba(15,15,20,0.85); border-top-color:rgba(255,255,255,0.04); box-shadow:0 -8px 28px -14px rgba(0,0,0,0.5); }
+        .nav-item { display:flex; flex-direction:column; align-items:center; color:#555; cursor:pointer; transition:0.2s; font-size:9px; padding:0 8px; }
+        body.dark .nav-item { color:#aaa; }
+        .nav-item.active { color:#7b5aff; }
+        body.dark .nav-item.active { color:#a58aff; }
+        .nav-item i { font-size:18px; margin-bottom:1px; }
+
+        /* ===== Loading ===== */
+        .loading-spinner { text-align:center; padding:30px 0; color:#7b5aff; }
+        .loading-spinner i { font-size:28px; animation:spin 1s linear infinite; }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
+        /* ===== Modals (Base) ===== */
+        .modal {
+            display:none;
+            position:fixed; top:0; left:0; right:0; bottom:0;
+            background:rgba(0,0,0,0.6); backdrop-filter:blur(20px);
+            z-index:1000; overflow-y:auto; padding:0;
+            overscroll-behavior:none;
+        }
+        .modal.active { display:block; }
+        .modal-content {
+            max-width:500px; margin:0 auto;
+            background:rgba(255,255,255,0.95); backdrop-filter:blur(20px);
+            min-height:100vh; display:flex; flex-direction:column;
+            position:relative; animation:fadeInUp 0.3s ease-out;
+        }
+        body.dark .modal-content { background:rgba(15,15,20,0.95); }
+        .modal-back {
+            position:fixed; top:12px; left:12px;
+            background:#7b5aff; border:none; border-radius:50%;
+            width:36px; height:36px; color:#fff; font-size:20px;
+            cursor:pointer; display:flex; align-items:center; justify-content:center;
+            transition:0.2s; z-index:1001; box-shadow:0 6px 16px rgba(0,0,0,0.4);
+        }
+        .modal-back:hover { transform:scale(1.05); }
+        .modal-content-scroll { flex:1; overflow-y:auto; padding:16px 16px 80px 16px; overscroll-behavior:none; }
+
+        /* ===== Form ===== */
+        .form-group { margin-bottom:12px; }
+        .form-group label { display:block; color:#555; font-size:12px; margin-bottom:3px; font-weight:500; }
+        body.dark .form-group label { color:#aaa; }
+        .form-group label .required { color:#ff5e7c; }
+        .form-control {
+            width:100%; padding:8px 12px;
+            background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06);
+            border-radius:20px; color:#111; font-size:13px;
+            font-family:'Vazir','Inter',sans-serif;
+            transition:0.2s; outline:none;
+        }
+        body.dark .form-control { background:rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.06); color:#fff; }
+        .form-control:focus { border-color:#7b5aff; box-shadow:0 0 0 3px rgba(123,90,255,0.15); }
+        .form-control::placeholder { color:rgba(0,0,0,0.25); }
+        body.dark .form-control::placeholder { color:rgba(255,255,255,0.25); }
+        select.form-control { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:left 12px center; padding-left:32px; }
+        body.dark select.form-control { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+        select.form-control option { background:#fff; color:#111; }
+        body.dark select.form-control option { background:#1a1a24; color:#fff; }
+        textarea.form-control { resize:vertical; min-height:60px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .form-btn {
+            width:100%; padding:10px; border:none; border-radius:24px;
+            font-weight:700; font-size:13px; cursor:pointer; transition:0.2s;
+            font-family:'Vazir','Inter',sans-serif;
+            display:inline-flex; align-items:center; justify-content:center; gap:6px;
+        }
+        .form-btn-primary { background:#7b5aff; color:#fff; }
+        .form-btn-primary:hover { opacity:0.9; transform:translateY(-2px); }
+        .form-btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .form-btn-secondary { background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06); color:#111; }
+        body.dark .form-btn-secondary { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.08); color:#fff; }
+        .form-btn-secondary:hover { background:rgba(0,0,0,0.1); }
+        body.dark .form-btn-secondary:hover { background:rgba(255,255,255,0.1); }
+        .form-btn-success { background:#4caf50; color:#fff; }
+        .form-btn-gold { background:#daa520; color:#fff; }
+        .form-btn-telegram { background:#0088cc; color:#fff; }
+        .form-btn-telegram:hover { opacity:0.9; }
+
+        /* ===== Image Upload ===== */
+        .image-upload-area { border:2px dashed rgba(0,0,0,0.12); border-radius:20px; padding:16px 12px; text-align:center; cursor:pointer; transition:0.2s; position:relative; background:rgba(0,0,0,0.03); }
+        body.dark .image-upload-area { border-color:rgba(255,255,255,0.12); background:rgba(0,0,0,0.15); }
+        .image-upload-area:hover { border-color:#7b5aff; background:rgba(123,90,255,0.05); }
+        .image-upload-area i { font-size:28px; color:#7b5aff; display:block; margin-bottom:4px; }
+        .image-upload-area p { color:#555; font-size:11px; }
+        body.dark .image-upload-area p { color:#aaa; }
+        .image-upload-area input[type="file"] { position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+        .image-preview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:6px; }
+        .image-preview-item { position:relative; aspect-ratio:1/1; border-radius:10px; overflow:hidden; background:#f0f0f3; border:1px solid rgba(0,0,0,0.06); }
+        body.dark .image-preview-item { background:#1a1a24; border-color:rgba(255,255,255,0.05); }
+        .image-preview-item img { width:100%; height:100%; object-fit:cover; }
+        .image-preview-item .remove-img { position:absolute; top:3px; right:3px; background:rgba(0,0,0,0.6); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; color:#ff5e7c; cursor:pointer; font-size:10px; border:none; }
+
+        /* ===== Wizard ===== */
+        .wizard-progress { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; position:relative; padding:0 10px; }
+        .wizard-progress::before { content:''; position:absolute; top:50%; left:0; right:0; height:2px; background:rgba(0,0,0,0.1); z-index:1; transform:translateY(-50%); }
+        body.dark .wizard-progress::before { background:rgba(255,255,255,0.1); }
+        .wizard-progress-bar { position:absolute; top:50%; right:0; height:2px; background:#7b5aff; z-index:2; transform:translateY(-50%); transition:width 0.3s ease; width:0%; }
+        .wizard-step-indicator { width:28px; height:28px; border-radius:50%; background:#f0f0f3; border:2px solid rgba(0,0,0,0.15); color:#888; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; position:relative; z-index:3; transition:all 0.3s ease; }
+        body.dark .wizard-step-indicator { background:#1a1a24; border-color:rgba(255,255,255,0.2); color:#888; }
+        .wizard-step-indicator.active { border-color:#7b5aff; background:#7b5aff; color:#fff; box-shadow:0 0 12px rgba(123,90,255,0.5); }
+        .wizard-step-indicator.completed { border-color:#4caf50; background:#4caf50; color:#fff; }
+        .wizard-step-pane { display:none; }
+        .wizard-step-pane.active { display:block; animation:fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+
+        /* ===== Chat ===== */
+        .chat-container { display:flex; flex-direction:column; height:calc(100vh - 200px); background:rgba(255,255,255,0.95); border-radius:18px; overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
+        body.dark .chat-container { background:rgba(10,10,12,0.95); border-color:rgba(255,255,255,0.05); }
+        .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
+        .chat-bubble { max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; position:relative; word-break:break-word; }
+        .chat-bubble.user { background:#7b5aff; color:#fff; align-self:flex-start; border-bottom-right-radius:4px; }
+        .chat-bubble.support { background:rgba(0,0,0,0.05); color:#333; align-self:flex-end; border-bottom-left-radius:4px; }
+        body.dark .chat-bubble.support { background:rgba(255,255,255,0.08); color:#eee; }
+        .chat-bubble .time { font-size:9px; opacity:0.6; margin-top:4px; text-align:left; display:block; }
+        .chat-input-area { padding:10px; background:rgba(255,255,255,0.95); border-top:1px solid rgba(0,0,0,0.06); display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        body.dark .chat-input-area { background:rgba(20,20,28,0.9); border-top-color:rgba(255,255,255,0.05); }
+        .chat-input-area textarea { flex:1; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06); border-radius:20px; color:#111; padding:8px 14px; font-size:13px; resize:none; height:38px; outline:none; font-family:'Vazir',sans-serif; min-width:100px; }
+        body.dark .chat-input-area textarea { background:rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.08); color:#fff; }
+        .chat-input-area .user-id-field { flex-basis:100%; display:flex; gap:6px; align-items:center; }
+        .chat-input-area .user-id-field input { flex:1; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06); border-radius:20px; color:#111; padding:6px 12px; font-size:12px; outline:none; font-family:'Vazir',sans-serif; }
+        body.dark .chat-input-area .user-id-field input { background:rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.08); color:#fff; }
+        .chat-input-area .user-id-field input::placeholder { color:rgba(0,0,0,0.3); }
+        body.dark .chat-input-area .user-id-field input::placeholder { color:rgba(255,255,255,0.3); }
+        .chat-send-btn { width:38px; height:38px; border-radius:50%; background:#7b5aff; border:none; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.2s; flex-shrink:0; }
+        .chat-send-btn:hover { transform:scale(1.05); }
+
+        /* ===== Wallet Tabs ===== */
+        .wallet-tabs { display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:6px; }
+        body.dark .wallet-tabs { border-bottom-color:rgba(255,255,255,0.05); }
+        .wallet-tab-btn { flex:1; padding:8px; background:transparent; border:none; color:#555; font-size:12px; font-weight:bold; cursor:pointer; transition:all 0.2s; text-align:center; }
+        body.dark .wallet-tab-btn { color:#aaa; }
+        .wallet-tab-btn.active { color:#7b5aff; border-bottom:2px solid #7b5aff; }
+        .wallet-tab-pane { display:none; }
+        .wallet-tab-pane.active { display:block; }
+        .crypto-address-box { background:rgba(0,0,0,0.03); border:1px solid rgba(0,0,0,0.06); border-radius:14px; padding:10px; display:flex; justify-content:space-between; align-items:center; font-family:monospace; font-size:12px; color:#7b5aff; margin-top:4px; }
+        body.dark .crypto-address-box { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.06); color:#ffd966; }
+        .crypto-address-box i { cursor:pointer; opacity:0.6; transition:0.2s; }
+        .crypto-address-box i:hover { opacity:1; }
+
+        /* ===== Support Info ===== */
+        .support-info { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:12px; padding:10px; margin-bottom:12px; text-align:center; font-size:13px; color:#333; }
+        body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); color:#eee; }
+        .support-info a { color:#7b5aff; text-decoration:none; font-weight:bold; }
+        .support-info a:hover { text-decoration:underline; }
+
+        /* ===== Register Overlay ===== */
+        #registerOverlay {
+            display:none;
+            position:fixed; top:0; left:0; right:0; bottom:0;
+            background:rgba(0,0,0,0.7);
+            backdrop-filter:blur(10px);
+            z-index:2000;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            padding:20px;
+        }
+        #registerOverlay.active { display:flex; }
+        #registerOverlay .register-box {
+            background:#1a1a24;
+            border-radius:24px;
+            padding:30px 24px;
+            max-width:400px;
+            width:100%;
+            text-align:center;
+            border:1px solid rgba(255,255,255,0.06);
+            box-shadow:0 20px 60px rgba(0,0,0,0.8);
+        }
+        body.light #registerOverlay .register-box { background:#fff; border-color:rgba(0,0,0,0.06); }
+        #registerOverlay .register-logo { font-size:48px; margin-bottom:10px; }
+        #registerOverlay h2 { color:#fff; font-size:22px; margin-bottom:6px; }
+        body.light #registerOverlay h2 { color:#111; }
+        #registerOverlay p { color:#aaa; font-size:14px; margin-bottom:20px; }
+        body.light #registerOverlay p { color:#555; }
+        .register-btn { width:100%; padding:14px; border:none; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:0.2s; }
+        .register-btn-telegram { background:#0088cc; color:#fff; }
+        .register-btn-telegram:hover { opacity:0.9; transform:translateY(-2px); }
+        .register-btn-telegram i { font-size:20px; }
+
+        /* ===== Misc ===== */
+        .profile-unique-code { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:10px; padding:8px 12px; margin-top:6px; text-align:center; font-family:monospace; font-size:16px; color:#7b5aff; direction:ltr; }
+        .no-ads-msg { text-align:center; padding:30px; color:#888; }
+        body.dark .no-ads-msg { color:#aaa; }
     </style>
 </head>
 <body>
-
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== صفحه ثبت‌نام (Overlay) ===== -->
-    <div id="registerOverlay">
-        <div class="register-box">
-            <div class="register-logo">🚀</div>
-            <h2>به جدار خوش آمدید</h2>
-            <p>برای ثبت آگهی، شارژ حساب یا ارسال پیام، لطفاً ثبت‌نام کنید.</p>
-            <button class="register-btn register-btn-telegram" id="registerBtn" onclick="registerWithTelegram()">
-                <i class="fa-brands fa-telegram"></i> ثبت‌نام با تلگرام
-            </button>
-            <button class="register-btn register-btn-telegram" onclick="window.location.href='https://t.me/AlsouqAlmaftuhiran_bot?start=register'">
-                <i class="fa-brands fa-telegram"></i> ادامه ثبت‌نام در ربات
-            </button>
-            <button class="register-btn register-btn-back" onclick="document.getElementById('registerOverlay').classList.remove('active')">
-                <i class="fa-solid fa-arrow-right"></i> بازگشت به صفحه اصلی
-            </button>
-        </div>
-    </div>
-
-    <!-- ===== برنامه اصلی ===== -->
+    <!-- ===== محتوای اصلی (همیشه نمایش داده می‌شود) ===== -->
     <div id="mainApp">
-        <div class="container">
+        <div class="container" id="mainAppContainer">
             <!-- هدر -->
             <div class="header">
                 <div class="logo">
@@ -522,12 +516,19 @@
                     <div class="logo-text">J-DAR | جدار</div>
                 </div>
                 <div class="header-left">
-                    <button class="icon-btn" id="themeToggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-                    <button class="icon-btn" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i></button>
+                    <button class="icon-btn" id="themeToggle"><i class="fa-solid fa-sun"></i></button>
+                    <button class="icon-btn" id="langToggle">FA</button>
+                    <button class="icon-btn hamburger" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <button class="dropdown-item" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>الرئيسية</span></button>
+                        <button class="dropdown-item" onclick="requireRegisterThen('openSupportChat')"><i class="fa-solid fa-headset"></i><span>الدعم الحي</span></button>
+                        <button class="dropdown-item" onclick="window.open('https://t.me/Mehdi_E_admin','_blank')"><i class="fa-brands fa-telegram"></i><span>الدعم في التلغرام</span></button>
+                        <button class="dropdown-item" onclick="requireRegisterThen('switchTab', 'profile')"><i class="fa-solid fa-user"></i><span>الملف الشخصي</span></button>
+                    </div>
                 </div>
             </div>
 
-            <!-- کارت کیف پول -->
+            <!-- کیف پول -->
             <div class="wallet-card">
                 <div class="wallet-row">
                     <div class="wallet-info">
@@ -540,200 +541,249 @@
                         <span class="points-num" id="walletPoints">0</span>
                     </div>
                 </div>
-                <button class="form-btn form-btn-primary" onclick="requireRegister('openWalletModal')">
-                    <i class="fa-solid fa-wallet"></i> شحن المحفظة
+                <button class="form-btn form-btn-primary" style="margin-top:10px; padding:6px;" onclick="requireRegisterThen('openWalletModal')">
+                    <i class="fa-solid fa-wallet"></i> <span>شحن المحفظة</span>
                 </button>
             </div>
 
-            <!-- دکمه‌های سریع -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0;">
-                <button class="form-btn form-btn-primary" onclick="requireRegister('openAddModal')">
-                    <i class="fa-solid fa-plus"></i> أضف آعلان
-                </button>
-                <button class="form-btn form-btn-secondary" onclick="requireRegister('openSupportChat')">
-                    <i class="fa-solid fa-headset"></i> المحادثة
-                </button>
+            <!-- اطلاعیه -->
+            <div class="notice-card" id="sysNoticeCard" style="display:none;">
+                <div class="notice-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                <div class="notice-text" id="sysNoticeText">...</div>
+            </div>
+
+            <!-- دکمه‌های دسته‌بندی -->
+            <div class="action-grid">
+                <div class="action-item" onclick="filterByCategory('tourism')">
+                    <i class="fa-solid fa-plane-departure"></i>
+                    <span>السياحة والرحلات</span>
+                </div>
+                <div class="action-item" onclick="filterByCategory('medical')">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>العلاج والطبابة</span>
+                </div>
+                <div class="action-item" onclick="filterByCategory('beauty')">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span>مراكز التجميل</span>
+                </div>
+                <div class="action-item" onclick="filterByCategory('all')">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>كل الفئات</span>
+                </div>
             </div>
 
             <!-- جستجو -->
-            <div style="display:flex; gap:8px; margin:10px 0; background:rgba(20,20,30,0.6); border-radius:24px; padding:4px 12px; align-items:center;">
-                <i class="fa-solid fa-magnifying-glass" style="color:#aaa;"></i>
-                <input type="text" id="searchInput" placeholder="ابحث عن الخدمات والآعلانات..." style="flex:1; background:transparent; border:none; color:#fff; padding:6px 0; outline:none;">
-                <button onclick="searchAds()" style="background:transparent; border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 14px; color:#fff; cursor:pointer;">بحث</button>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن الخدمات والآعلانات...">
+                <button id="searchBtn" onclick="performSearch()">بحث</button>
             </div>
 
-            <!-- آگهی‌ها -->
-            <div class="ads-grid" id="adsGrid">
-                <div class="loading-spinner" style="text-align:center; padding:30px; color:#7b5aff;">
-                    <i class="fa-solid fa-spinner fa-spin" style="font-size:28px;"></i>
-                </div>
+            <!-- لیست آگهی‌ها -->
+            <div class="section-title">
+                <h3>آخر الإعلانات</h3>
+                <a onclick="fetchAds()" style="cursor:pointer;"><i class="fa-solid fa-rotate"></i></a>
             </div>
+            <div class="categories" id="categoriesContainer"></div>
+            <div class="ads-grid" id="adsGrid">
+                <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
+            </div>
+        </div>
+
+        <!-- ناوبری پایین -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>الرئيسية</span></div>
+            <div class="nav-item" id="nav-add" onclick="requireRegisterThen('openAddModal')"><i class="fa-solid fa-circle-plus"></i><span>أضف آعلان</span></div>
+            <div class="nav-item" id="nav-chat" onclick="requireRegisterThen('openSupportChat')"><i class="fa-solid fa-comments"></i><span>المحادثة</span></div>
+            <div class="nav-item" id="nav-profile" onclick="requireRegisterThen('switchTab', 'profile')"><i class="fa-solid fa-user"></i><span>الملف الشخصي</span></div>
         </div>
     </div>
 
-    <!-- ===== ناوبری پایین ===== -->
-    <div class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <i class="fa-solid fa-house"></i>
-            <span>الرئيسية</span>
-        </div>
-        <div class="nav-item" id="nav-add" onclick="requireRegister('openAddModal')">
-            <i class="fa-solid fa-circle-plus"></i>
-            <span>أضف آعلان</span>
-        </div>
-        <div class="nav-item" id="nav-chat" onclick="requireRegister('openSupportChat')">
-            <i class="fa-solid fa-comments"></i>
-            <span>المحادثة</span>
-        </div>
-        <div class="nav-item" id="nav-profile" onclick="requireRegister('switchTab', 'profile')">
-            <i class="fa-solid fa-user"></i>
-            <span>الملف الشخصي</span>
+    <!-- ===== صفحه ثبت‌نام (Overlay) ===== -->
+    <div id="registerOverlay">
+        <div class="register-box">
+            <div class="register-logo">🚀</div>
+            <h2>به جدار خوش آمدید</h2>
+            <p>برای ثبت آگهی، شارژ حساب یا ارسال پیام، لطفاً ثبت‌نام کنید.</p>
+            <button class="register-btn register-btn-telegram" onclick="registerWithTelegram()">
+                <i class="fa-brands fa-telegram"></i> ثبت‌نام با تلگرام
+            </button>
+            <div style="margin-top:16px; font-size:12px; color:#666;">
+                <i class="fa-solid fa-shield-halved"></i> اطلاعات شما نزد ما امن است
+            </div>
         </div>
     </div>
 
     <!-- ===== مودال‌ها ===== -->
-
-    <!-- مودال ثبت آگهی -->
     <div class="modal" id="addAdModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 style="margin-bottom:14px; font-size:18px;">إضافة إعلان جديد</h2>
-            <form id="addAdForm" onsubmit="event.preventDefault();">
-                <div class="form-group">
-                    <label>عنوان الإعلان <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <input type="text" class="form-control" id="adTitle" required placeholder="مثال: رحلة سياحية">
+            <div class="modal-content-scroll">
+                <h2 style="margin-bottom:14px; font-size:18px;">إضافة إعلان جديد</h2>
+                <div class="wizard-progress">
+                    <div class="wizard-progress-bar" id="wizardProgressBar"></div>
+                    <div class="wizard-step-indicator active" id="stepInd1">۱</div>
+                    <div class="wizard-step-indicator" id="stepInd2">۲</div>
+                    <div class="wizard-step-indicator" id="stepInd3">۳</div>
                 </div>
-                <div class="form-group">
-                    <label>الفئة <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <select class="form-control" id="adCategory" required>
-                        <option value="tourism">السياحة والرحلات</option>
-                        <option value="medical">العلاج والطبابة</option>
-                        <option value="beauty">مراكز التجميل</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>السعر (تومان) <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <input type="number" class="form-control" id="adPrice" required placeholder="0">
-                </div>
-                <div class="form-group">
-                    <label>تفاصيل الإعلان <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <textarea class="form-control" id="adDescription" required rows="4" placeholder="اكتب تفاصيل الخدمة..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>الموقع / المدينة <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <input type="text" class="form-control" id="adLocation" required placeholder="مثال: طهران">
-                </div>
-                <div class="form-group">
-                    <label>صور الإعلان</label>
-                    <div class="image-upload-area" style="border:2px dashed rgba(255,255,255,0.12); border-radius:20px; padding:16px 12px; text-align:center; cursor:pointer; position:relative;">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px; color:#7b5aff;"></i>
-                        <p style="color:#aaa; font-size:11px;">اضغط هنا لرفع الصور (الحد الأقصى ۴ صور)</p>
-                        <input type="file" id="adImagesInput" accept="image/*" multiple onchange="handleWizardImages(this)">
+                <form id="addAdForm" onsubmit="event.preventDefault();">
+                    <div class="wizard-step-pane active" id="wizardStep1">
+                        <div class="form-group"><label>عنوان الإعلان <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="adTitle" required placeholder="مثال: رحلة سياحية إلى شمال إيران">
+                        </div>
+                        <div class="form-group"><label>الفئة <span class="required">*</span></label>
+                            <select class="form-control" id="adCategory" required>
+                                <option value="tourism">السياحة والرحلات</option>
+                                <option value="medical">العلاج والطبابة</option>
+                                <option value="beauty">مراكز التجميل</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>السعر (تومان) <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="adPrice" required placeholder="0">
+                        </div>
+                        <button type="button" class="form-btn form-btn-primary" style="margin-top:10px;" onclick="goToWizardStep(2)">التالي <i class="fa-solid fa-arrow-left"></i></button>
                     </div>
-                    <div class="image-preview-grid" id="wizardImagePreviewGrid"></div>
-                </div>
-                <div class="form-group">
-                    <label>رقم التواصل (واتساب / إتصال)</label>
-                    <input type="tel" class="form-control" id="adContact" placeholder="+964...">
-                </div>
-                <button type="button" class="form-btn form-btn-success" id="submitAdFinalBtn" onclick="submitAdWizard()">
-                    <i class="fa-solid fa-check"></i> نشر الإعلان
-                </button>
-            </form>
+                    <div class="wizard-step-pane" id="wizardStep2">
+                        <div class="form-group"><label>تفاصيل الإعلان <span class="required">*</span></label>
+                            <textarea class="form-control" id="adDescription" required rows="4" placeholder="اكتب تفاصيل الخدمة وشروطها بدقة..."></textarea>
+                        </div>
+                        <div class="form-group"><label>الموقع / المدينة <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="adLocation" required placeholder="مثال: طهران / مشهد">
+                        </div>
+                        <div class="form-row" style="margin-top:14px;">
+                            <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(1)"><i class="fa-solid fa-arrow-right"></i> السابق</button>
+                            <button type="button" class="form-btn form-btn-primary" onclick="goToWizardStep(3)">التالي <i class="fa-solid fa-arrow-left"></i></button>
+                        </div>
+                    </div>
+                    <div class="wizard-step-pane" id="wizardStep3">
+                        <div class="form-group"><label>صور الإعلان</label>
+                            <div class="image-upload-area">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>اضغط هنا لرفع الصور (الحد الأقصى ۴ صور)</p>
+                                <input type="file" id="adImagesInput" accept="image/*" multiple onchange="handleWizardImages(this)">
+                            </div>
+                            <div class="image-preview-grid" id="wizardImagePreviewGrid"></div>
+                        </div>
+                        <div class="form-group"><label>رقم التواصل (واتساب / إتصال)</label>
+                            <input type="tel" class="form-control" id="adContact" placeholder="+964...">
+                        </div>
+                        <div class="form-row" style="margin-top:14px;">
+                            <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(2)"><i class="fa-solid fa-arrow-right"></i> السابق</button>
+                            <button type="button" class="form-btn form-btn-success" id="submitAdFinalBtn" onclick="submitAdWizard()"><i class="fa-solid fa-check"></i> نشر الإعلان</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- مودال شارژ کیف پول -->
     <div class="modal" id="walletModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('walletModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 style="margin-bottom:14px; font-size:18px;">شحن رصيد المحفظة</h2>
-            <div style="display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
-                <button class="wallet-tab-btn active" id="tabBtnBank" onclick="switchWalletTab('bank')" style="flex:1; padding:8px; background:transparent; border:none; color:#aaa; font-weight:bold; cursor:pointer; text-align:center;">تحويل بنكي</button>
-                <button class="wallet-tab-btn" id="tabBtnCrypto" onclick="switchWalletTab('crypto')" style="flex:1; padding:8px; background:transparent; border:none; color:#aaa; font-weight:bold; cursor:pointer; text-align:center;">شحن كريبتو</button>
+            <div class="modal-content-scroll">
+                <h2 style="margin-bottom:14px; font-size:18px;">شحن رصيد المحفظة</h2>
+                <div class="wallet-tabs">
+                    <button class="wallet-tab-btn active" id="tabBtnBank" onclick="switchWalletTab('bank')"><i class="fa-solid fa-credit-card"></i> تحويل بنكي / كارت</button>
+                    <button class="wallet-tab-btn" id="tabBtnCrypto" onclick="switchWalletTab('crypto')"><i class="fa-brands fa-ethereum"></i> شحن كريبتو USDT</button>
+                </div>
+                <form id="walletChargeForm" onsubmit="event.preventDefault();">
+                    <div class="wallet-tab-pane active" id="walletPaneBank">
+                        <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(123,90,255,0.2);">
+                            <strong style="color:#7b5aff;">تعليمات الدفع الفيزيائي:</strong>
+                            <p style="margin-top:4px; opacity:0.8;">يرجى تحويل المبلغ المطلوب إلى رقم الكارت التالي باسم <strong>مهدی عیدانی</strong> (بنك <strong>رسالت</strong>)، ثم قم برفع صورة الإيصال أدناه لتأكيد شحن الحساب.</p>
+                            <div class="crypto-address-box">
+                                <span id="cardNumberDisplay">5041-7212-3135-6420</span>
+                                <i class="fa-solid fa-copy" style="cursor:pointer;" onclick="copyCardNumber();"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wallet-tab-pane" id="walletPaneCrypto">
+                        <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(218,165,32,0.2);">
+                            <strong style="color:#daa520;">تعليمات الدفع الرقمي (USDT-TRC20):</strong>
+                            <p style="margin-top:4px; opacity:0.8;">قم بإرسال العملة الرقمية الحرة إلى العنوان المباشر أدناه، وارفع لقطة شاشة لإثبات المعاملة المكتملة.</p>
+                            <div class="crypto-address-box">
+                                <span id="tetherAddressDisplay">TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y</span>
+                                <i class="fa-solid fa-copy" style="cursor:pointer;" onclick="copyTetherAddress();"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>المبلغ المراد شحنه <span class="required">*</span></label>
+                        <input type="number" class="form-control" id="chargeAmount" required placeholder="0">
+                    </div>
+                    <div class="form-group"><label>صورة إيصال التحويل <span class="required">*</span></label>
+                        <div class="image-upload-area">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <p id="receiptPromptText">اضغط هنا لرفع إيصال الدفع</p>
+                            <input type="file" id="walletReceiptInput" accept="image/*" required onchange="handleReceiptUpload(this)">
+                        </div>
+                        <div id="receiptPreviewContainer" style="margin-top:8px; text-align:center; display:none;">
+                            <img id="receiptPreviewImg" src="" style="max-width:100px; max-height:100px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);">
+                        </div>
+                    </div>
+                    <button type="button" class="form-btn form-btn-primary" style="margin-top:14px;" id="submitChargeBtn" onclick="submitWalletCharge()"><i class="fa-solid fa-paper-plane"></i> إرسال الطلب للإدارة</button>
+                </form>
             </div>
-            <form id="walletChargeForm" onsubmit="event.preventDefault();">
-                <div class="wallet-tab-pane active" id="walletPaneBank">
-                    <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(123,90,255,0.2);">
-                        <strong style="color:#7b5aff;">تعليمات الدفع الفيزيائي:</strong>
-                        <p style="margin-top:4px; opacity:0.8;">يرجى تحويل المبلغ المطلوب إلى رقم الكارت التالي باسم <strong>مهدی عیدانی</strong> (بنك <strong>رسالت</strong>)، ثم قم برفع صورة الإيصال أدناه لتأكيد شحن الحساب.</p>
-                        <div class="crypto-address-box" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:10px; display:flex; justify-content:space-between; align-items:center; font-family:monospace; font-size:12px; color:#ffd966; margin-top:4px;">
-                            <span id="cardNumberDisplay">5041-7212-3135-6420</span>
-                            <i class="fa-solid fa-copy" style="cursor:pointer;" onclick="copyCardNumber();"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="wallet-tab-pane" id="walletPaneCrypto" style="display:none;">
-                    <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(218,165,32,0.2);">
-                        <strong style="color:#daa520;">تعليمات الدفع الرقمي (USDT-TRC20):</strong>
-                        <p style="margin-top:4px; opacity:0.8;">قم بإرسال العملة الرقمية الحرة إلى العنوان المباشر أدناه، وارفع لقطة شاشة لإثبات المعاملة المكتملة.</p>
-                        <div class="crypto-address-box" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:10px; display:flex; justify-content:space-between; align-items:center; font-family:monospace; font-size:12px; color:#ffd966; margin-top:4px;">
-                            <span id="tetherAddressDisplay">TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y</span>
-                            <i class="fa-solid fa-copy" style="cursor:pointer;" onclick="copyTetherAddress();"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>المبلغ المراد شحنه <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <input type="number" class="form-control" id="chargeAmount" required placeholder="0">
-                </div>
-                <div class="form-group">
-                    <label>صورة إيصال التحويل <span class="required" style="color:#ff5e7c;">*</span></label>
-                    <div class="image-upload-area" style="border:2px dashed rgba(255,255,255,0.12); border-radius:20px; padding:16px 12px; text-align:center; cursor:pointer; position:relative;">
-                        <i class="fa-solid fa-file-invoice-dollar" style="font-size:28px; color:#7b5aff;"></i>
-                        <p id="receiptPromptText" style="color:#aaa; font-size:11px;">اضغط هنا لرفع إيصال الدفع</p>
-                        <input type="file" id="walletReceiptInput" accept="image/*" required onchange="handleReceiptUpload(this)">
-                    </div>
-                    <div id="receiptPreviewContainer" style="margin-top:8px; text-align:center; display:none;">
-                        <img id="receiptPreviewImg" src="" style="max-width:100px; max-height:100px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
-                    </div>
-                </div>
-                <button type="button" class="form-btn form-btn-primary" id="submitChargeBtn" onclick="submitWalletCharge()">
-                    <i class="fa-solid fa-paper-plane"></i> إرسال الطلب للإدارة
-                </button>
-            </form>
         </div>
     </div>
 
-    <!-- مودال چت پشتیبانی -->
     <div class="modal" id="supportChatModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('supportChatModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 style="margin-bottom:10px; font-size:16px;"><i class="fa-solid fa-headset" style="color:#7b5aff;"></i> الدعم الفني المباشر</h2>
-            <div style="background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:12px; padding:10px; margin-bottom:12px; text-align:center; font-size:13px;">
-                <i class="fa-brands fa-telegram" style="color:#0088cc;"></i>
-                <span>للدعم المباشر عبر التلغرام، يمكنك مراسلة المدير على:</span>
-                <a href="https://t.me/Mehdi_E_admin" target="_blank" style="color:#7b5aff; text-decoration:none; font-weight:bold;">@Mehdi_E_admin</a>
-            </div>
-            <div class="chat-container" style="display:flex; flex-direction:column; height:calc(100vh - 200px); background:rgba(10,10,12,0.95); border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
-                <div class="chat-messages" id="chatMessagesBox" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
-                    <div class="chat-bubble support" style="max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; background:rgba(255,255,255,0.08); color:#eee; align-self:flex-end; border-bottom-left-radius:4px;">
-                        <span>مرحباً بك في مركز دعم جدار الفريد. كيف يمكننا مساعدتك اليوم؟</span>
-                        <span class="time" style="font-size:9px; opacity:0.6; margin-top:4px; text-align:left; display:block;">00:00</span>
-                    </div>
+            <div class="modal-content-scroll" style="padding:10px; display:flex; flex-direction:column;">
+                <h2 style="margin-bottom:10px; font-size:16px;"><i class="fa-solid fa-headset" style="color:#7b5aff;"></i> الدعم الفني المباشر</h2>
+                <div class="support-info">
+                    <i class="fa-brands fa-telegram" style="color:#0088cc;"></i>
+                    <span>للدعم المباشر عبر التلغرام، يمكنك مراسلة المدير على:</span>
+                    <a href="https://t.me/Mehdi_E_admin" target="_blank">@Mehdi_E_admin</a>
                 </div>
-                <div class="chat-input-area" style="padding:10px; background:rgba(20,20,28,0.9); border-top:1px solid rgba(255,255,255,0.05); display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                    <textarea id="chatInputMessage" placeholder="اكتب رسالتك هنا..." style="flex:1; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:20px; color:#fff; padding:8px 14px; font-size:13px; resize:none; height:38px; outline:none; font-family:inherit; min-width:100px;"></textarea>
-                    <button class="chat-send-btn" onclick="sendSupportMessage()" style="width:38px; height:38px; border-radius:50%; background:#7b5aff; border:none; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><i class="fa-solid fa-paper-plane"></i></button>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessagesBox">
+                        <div class="chat-bubble support"><span>مرحباً بك في مركز دعم جدار الفريد. كيف يمكننا مساعدتك اليوم في تسيير أعمالك؟</span><span class="time">00:00</span></div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="user-id-field" id="userIdField" style="display:none;">
+                            <input type="text" id="manualUserIdInput" placeholder="أدخل معرفك في تلغرام (User ID)">
+                        </div>
+                        <textarea id="chatInputMessage" placeholder="اكتب رسالتك هنا..."></textarea>
+                        <button class="chat-send-btn" onclick="sendSupportMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- مودال جزییات آگهی -->
     <div class="modal" id="adDetailsModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-arrow-right"></i></button>
-            <h2 id="modalAdTitle" class="modal-title" style="font-size:20px; font-weight:800; margin-bottom:4px; color:#fff;">...</h2>
-            <div id="modalAdPrice" class="modal-price" style="font-size:17px; font-weight:600; color:#7b5aff; margin:4px 0;">...</div>
-            <div id="modalAdLocationTime" class="modal-location-time" style="font-size:11px; color:#aaa; margin-bottom:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">...</div>
-            <div class="modal-description" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:18px; padding:10px; margin:8px 0;">
-                <p id="modalAdDescription" class="description-text" style="color:#ddd; font-size:13px; line-height:1.6; white-space:pre-wrap;">...</p>
+            <div class="modal-content-scroll">
+                <div class="image-gallery"><img id="modalAdImg" class="modal-image" src="" alt="Ad Image"></div>
+                <h2 id="modalAdTitle" class="modal-title">...</h2>
+                <div id="modalAdPrice" class="modal-price">...</div>
+                <div id="modalAdLocationTime" class="modal-location-time">...</div>
+                <div class="modal-description"><p id="modalAdDescription" class="description-text">...</p></div>
+                <div class="form-row" style="margin-top:16px;">
+                    <a href="" id="callContactBtn" class="form-btn form-btn-primary" style="text-decoration:none;"><i class="fa-solid fa-phone"></i> إتصال هاتف</a>
+                    <a href="" id="whatsappContactBtn" class="form-btn form-btn-success" style="text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                </div>
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px;">
-                <a href="" id="callContactBtn" class="form-btn form-btn-primary" style="text-decoration:none; text-align:center;"><i class="fa-solid fa-phone"></i> إتصال هاتف</a>
-                <a href="" id="whatsappContactBtn" class="form-btn form-btn-success" style="text-decoration:none; text-align:center;"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+        </div>
+    </div>
+
+    <div class="container" id="profileApp" style="display:none;">
+        <h2 style="margin-bottom:16px; font-size:20px;">حسابي الشخصي</h2>
+        <div style="background:rgba(255,255,255,0.92); padding:16px; border-radius:18px; border:1px solid rgba(0,0,0,0.06);">
+            <div class="form-group"><label>الاسم المستعار</label>
+                <input type="text" class="form-control" id="profileDisplayName" value="مستخدم جدار">
             </div>
+            <div class="form-group"><label>رقم الهاتف المرتبط</label>
+                <input type="text" class="form-control" id="profilePhone" readonly value="+964...">
+            </div>
+            <div class="form-group"><label>🆔 كودك الشخصي (ثابت ودائم)</label>
+                <div class="profile-unique-code" id="profileUniqueCode">جاري التحميل...</div>
+                <small style="color:#888; font-size:10px; display:block; margin-top:4px;">هذا الكود خاص بك ولا يتغير أبداً</small>
+            </div>
+            <button class="form-btn form-btn-primary" style="margin-top:10px;" onclick="saveUserProfileLocal()">حفظ التغييرات</button>
+            <button class="form-btn form-btn-secondary" style="margin-top:6px;" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> تحديث الرصيد</button>
         </div>
     </div>
 
@@ -761,10 +811,10 @@
         //  وضعیت ثبت‌نام
         // ============================================
         let isUserRegistered = false;
-        let pendingAction = null;
+        let allAds = [];
 
         // ============================================
-        //  توابع Toast
+        //  توابع کمکی
         // ============================================
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
@@ -782,6 +832,78 @@
             }, 3500);
         }
 
+        function copyCardNumber() {
+            const text = '5041721231356420';
+            navigator.clipboard.writeText(text).then(() => showToast('تم نسخ رقم البطاقة', 'success')).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showToast('تم نسخ رقم البطاقة', 'success');
+            });
+        }
+
+        function copyTetherAddress() {
+            const text = 'TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y';
+            navigator.clipboard.writeText(text).then(() => showToast('تم نسخ عنوان USDT', 'success')).catch(() => {
+                const el = document.createElement('textarea');
+                el.value = text;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                showToast('تم نسخ عنوان USDT', 'success');
+            });
+        }
+
+        // ============================================
+        //  زبان و تم
+        // ============================================
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+        });
+
+        document.getElementById('langToggle').addEventListener('click', () => {
+            // ساده: تغییر متن دکمه (برای دمو)
+            const btn = document.getElementById('langToggle');
+            btn.innerText = btn.innerText === 'FA' ? 'AR' : 'FA';
+        });
+
+        // ============================================
+        //  منوی همبرگری
+        // ============================================
+        document.getElementById('menuToggle').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('dropdownMenu').classList.toggle('open');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('dropdownMenu').classList.remove('open');
+        });
+
+        // ============================================
+        //  تب‌ها
+        // ============================================
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (tab === 'home') {
+                document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('profileApp').style.display = 'none';
+                document.getElementById('nav-home').classList.add('active');
+                fetchAds();
+                fetchUserProfile();
+            } else if (tab === 'profile') {
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('profileApp').style.display = 'block';
+                document.getElementById('nav-profile').classList.add('active');
+                loadUserProfileLocal();
+                fetchUserProfile();
+            }
+        }
+
         // ============================================
         //  ثبت‌نام
         // ============================================
@@ -796,8 +918,10 @@
                 } else if (data.need_register) {
                     isUserRegistered = false;
                     return false;
+                } else {
+                    isUserRegistered = false;
+                    return false;
                 }
-                return false;
             } catch (error) {
                 console.error('Error checking registration:', error);
                 return false;
@@ -806,11 +930,11 @@
 
         async function registerWithTelegram() {
             if (!telegramUserId) {
-                showToast('لطفاً از طریق تلگرام وارد شوید', 'error');
+                alert('لطفاً از طریق تلگرام وارد شوید');
                 return;
             }
 
-            const btn = document.getElementById('registerBtn');
+            const btn = document.querySelector('.register-btn-telegram');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال ثبت‌نام...';
 
@@ -832,9 +956,10 @@
                     document.getElementById('registerOverlay').classList.remove('active');
                     showToast('✅ ثبت‌نام با موفقیت انجام شد', 'success');
                     fetchUserProfile();
-                    if (pendingAction) {
-                        const action = pendingAction;
-                        pendingAction = null;
+                    // اجرای عملیات معلق
+                    if (window.pendingAction) {
+                        const action = window.pendingAction;
+                        window.pendingAction = null;
                         eval(action);
                     }
                 } else {
@@ -852,107 +977,52 @@
         // ============================================
         //  توابع نیازمند ثبت‌نام
         // ============================================
-        async function requireRegister(action, param) {
-            const isRegistered = await checkRegistrationStatus();
-            if (isRegistered) {
-                if (param !== undefined) {
-                    eval(`${action}('${param}')`);
+        function requireRegisterThen(action, ...args) {
+            if (isUserRegistered) {
+                if (typeof window[action] === 'function') {
+                    window[action](...args);
                 } else {
-                    eval(`${action}()`);
+                    console.error(`Function ${action} not found`);
                 }
-            } else {
-                document.getElementById('registerOverlay').classList.add('active');
-                pendingAction = param ? `${action}('${param}')` : `${action}()`;
+                return;
             }
-        }
-
-        // ============================================
-        //  توابع کپی
-        // ============================================
-        function copyCardNumber() {
-            const text = '5041721231356420';
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('تم نسخ رقم البطاقة', 'success');
-            }).catch(() => {
-                const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                showToast('تم نسخ رقم البطاقة', 'success');
-            });
-        }
-
-        function copyTetherAddress() {
-            const text = 'TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y';
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('تم نسخ عنوان USDT', 'success');
-            }).catch(() => {
-                const el = document.createElement('textarea');
-                el.value = text;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                showToast('تم نسخ عنوان USDT', 'success');
-            });
-        }
-
-        // ============================================
-        //  تم
-        // ============================================
-        function toggleTheme() {
-            document.body.classList.toggle('light');
-            const isLight = document.body.classList.contains('light');
-            document.getElementById('themeToggle').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-        }
-
-        // ============================================
-        //  تب‌ها
-        // ============================================
-        function switchTab(tab) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            if (tab === 'home') {
-                document.getElementById('nav-home').classList.add('active');
-                fetchAds();
-            } else if (tab === 'profile') {
-                document.getElementById('nav-profile').classList.add('active');
-                fetchUserProfile();
-                showToast('پروفایل شما', 'success');
-            }
+            // ذخیره عملیات برای اجرا پس از ثبت‌نام
+            window.pendingAction = `${action}(${args.map(a => typeof a === 'string' ? `'${a}'` : a).join(',')})`;
+            document.getElementById('registerOverlay').classList.add('active');
         }
 
         // ============================================
         //  مودال‌ها
         // ============================================
-        function openAddModal() {
-            document.getElementById('addAdModal').classList.add('active');
-            resetWizard();
-        }
-
-        function openWalletModal() {
-            document.getElementById('walletModal').classList.add('active');
-        }
-
+        function openAddModal() { document.getElementById('addAdModal').classList.add('active'); goToWizardStep(1); }
+        function openWalletModal() { document.getElementById('walletModal').classList.add('active'); }
         function openSupportChat() {
             document.getElementById('supportChatModal').classList.add('active');
+            if (!telegramUserId) {
+                document.getElementById('userIdField').style.display = 'flex';
+            } else {
+                document.getElementById('userIdField').style.display = 'none';
+            }
             setTimeout(scrollChatToBottom, 300);
         }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function resetWizard() {
-            document.getElementById('addAdForm').reset();
-            wizardImagesBase64 = [];
-            document.getElementById('wizardImagePreviewGrid').innerHTML = '';
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         // ============================================
-        //  تصاویر آگهی
+        //  ویزارد ثبت آگهی
         // ============================================
+        function goToWizardStep(step) {
+            activeWizardStep = step;
+            document.querySelectorAll('.wizard-step-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById(`wizardStep${step}`).classList.add('active');
+            document.getElementById('wizardProgressBar').style.width = `${(step - 1) * 50}%`;
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById(`stepInd${i}`);
+                ind.classList.remove('active', 'completed');
+                if (i < step) ind.classList.add('completed');
+                else if (i === step) ind.classList.add('active');
+            }
+        }
+        let activeWizardStep = 1;
         let wizardImagesBase64 = [];
 
         function handleWizardImages(input) {
@@ -991,18 +1061,77 @@
             renderWizardImagesGrid();
         }
 
+        async function submitAdWizard() {
+            const title = document.getElementById('adTitle').value;
+            const category = document.getElementById('adCategory').value;
+            const price = document.getElementById('adPrice').value;
+            const desc = document.getElementById('adDescription').value;
+            const loc = document.getElementById('adLocation').value;
+            const contact = document.getElementById('adContact').value;
+
+            if (!title || !price || !desc || !loc) {
+                showToast('يرجى ملء الحقول الإجبارية', 'error');
+                return;
+            }
+
+            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: telegramUserId || 'ناشناس' };
+
+            const payload = {
+                user: user,
+                title: title,
+                category: category,
+                price: price,
+                location: loc,
+                contact: contact,
+                description: desc,
+                images: wizardImagesBase64
+            };
+
+            const btn = document.getElementById('submitAdFinalBtn');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${WORKER_URL}/api/submit-ad`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('✅ تم إرسال الإعلان للمراجعة', 'success');
+                    document.getElementById('addAdForm').reset();
+                    wizardImagesBase64 = [];
+                    renderWizardImagesGrid();
+                    closeModal('addAdModal');
+                    fetchAds();
+                } else if (result.need_register) {
+                    showToast('⚠️ لطفاً ابتدا ثبت‌نام کنید', 'warning');
+                    requireRegisterThen('openAddModal');
+                } else {
+                    showToast('❌ خطأ: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('⚠️ خطأ في الاتصال', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
         // ============================================
-        //  شارژ
+        //  شارژ کیف پول
         // ============================================
-        let uploadedReceiptBase64 = '';
         let walletMode = 'bank';
+        let uploadedReceiptBase64 = '';
 
         function switchWalletTab(mode) {
             walletMode = mode;
             document.getElementById('tabBtnBank').classList.toggle('active', mode === 'bank');
             document.getElementById('tabBtnCrypto').classList.toggle('active', mode === 'crypto');
-            document.getElementById('walletPaneBank').style.display = mode === 'bank' ? 'block' : 'none';
-            document.getElementById('walletPaneCrypto').style.display = mode === 'crypto' ? 'block' : 'none';
+            document.getElementById('walletPaneBank').classList.toggle('active', mode === 'bank');
+            document.getElementById('walletPaneCrypto').classList.toggle('active', mode === 'crypto');
         }
 
         function handleReceiptUpload(input) {
@@ -1025,7 +1154,8 @@
                 return;
             }
 
-            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
+            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: telegramUserId || 'ناشناس' };
+
             const payload = {
                 user: user,
                 amount: amount,
@@ -1042,10 +1172,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+
                 const result = await response.json();
+
                 if (result.success) {
                     showToast('✅ تم إرسال طلب الشحن', 'success');
                     closeModal('walletModal');
+                    fetchUserProfile();
+                } else if (result.need_register) {
+                    showToast('⚠️ لطفاً ابتدا ثبت‌نام کنید', 'warning');
+                    requireRegisterThen('openWalletModal');
                 } else {
                     showToast('❌ خطأ: ' + result.error, 'error');
                 }
@@ -1058,76 +1194,25 @@
         }
 
         // ============================================
-        //  ارسال آگهی
-        // ============================================
-        async function submitAdWizard() {
-            const title = document.getElementById('adTitle').value;
-            const category = document.getElementById('adCategory').value;
-            const price = document.getElementById('adPrice').value;
-            const desc = document.getElementById('adDescription').value;
-            const loc = document.getElementById('adLocation').value;
-            const contact = document.getElementById('adContact').value;
-
-            if (!title || !price || !desc || !loc) {
-                showToast('يرجى ملء الحقول الإجبارية', 'error');
-                return;
-            }
-
-            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
-            const payload = {
-                user: user,
-                title: title,
-                category: category,
-                price: price,
-                location: loc,
-                contact: contact,
-                description: desc,
-                images: wizardImagesBase64
-            };
-
-            const btn = document.getElementById('submitAdFinalBtn');
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(`${WORKER_URL}/api/submit-ad`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                if (result.success) {
-                    showToast('✅ تم إرسال الإعلان للمراجعة', 'success');
-                    closeModal('addAdModal');
-                    fetchAds();
-                } else {
-                    showToast('❌ خطأ: ' + result.error, 'error');
-                }
-            } catch (error) {
-                console.error(error);
-                showToast('⚠️ خطأ في الاتصال', 'error');
-            } finally {
-                btn.disabled = false;
-            }
-        }
-
-        // ============================================
-        //  دریافت آگهی‌ها
+        //  دریافت آگهی‌ها (بدون نیاز به ثبت‌نام)
         // ============================================
         async function fetchAds() {
             const grid = document.getElementById('adsGrid');
-            grid.innerHTML = '<div style="text-align:center; padding:30px; color:#7b5aff;"><i class="fa-solid fa-spinner fa-spin" style="font-size:28px;"></i></div>';
+            grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
 
             try {
                 const response = await fetch(`${WORKER_URL}/api/ads`);
                 const data = await response.json();
+
                 if (data.success && data.ads) {
-                    renderAds(data.ads);
+                    allAds = data.ads;
+                    renderAds(allAds);
                 } else {
-                    grid.innerHTML = '<div style="text-align:center; padding:30px; color:#aaa;">لا توجد إعلانات حالياً</div>';
+                    grid.innerHTML = `<div class="no-ads-msg">لا توجد إعلانات حالياً</div>`;
                 }
             } catch (error) {
                 console.error('Error fetching ads:', error);
-                grid.innerHTML = '<div style="text-align:center; padding:30px; color:#ff5e7c;">خطأ في تحميل الإعلانات</div>';
+                grid.innerHTML = `<div class="no-ads-msg" style="color:#ff5e7c;">خطأ في تحميل الإعلانات</div>`;
             }
         }
 
@@ -1135,16 +1220,22 @@
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = '';
             if (!ads || ads.length === 0) {
-                grid.innerHTML = '<div style="text-align:center; padding:30px; color:#aaa;">لا توجد إعلانات حالياً</div>';
+                grid.innerHTML = `<div class="no-ads-msg">لا توجد إعلانات حالياً</div>`;
                 return;
             }
             ads.forEach(ad => {
                 const card = document.createElement('div');
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetails(ad);
+
+                const imageHtml = (ad.images && ad.images.length > 0) ?
+                    `<img src="${ad.images[0]}" alt="Ad Image">` :
+                    `<div class="no-image"><i class="fa-solid fa-image" style="font-size:24px;"></i></div>`;
+
                 card.innerHTML = `
                     <div class="ad-card-image">
-                        ${ad.images && ad.images.length > 0 ? `<img src="${ad.images[0]}" style="width:100%; height:100%; object-fit:cover;">` : '<i class="fa-solid fa-image" style="font-size:24px;"></i>'}
+                        ${imageHtml}
+                        <div class="watermark">J-DAR</div>
                     </div>
                     <div class="ad-card-content">
                         <div class="ad-card-title">${ad.title}</div>
@@ -1156,40 +1247,68 @@
             });
         }
 
+        function filterByCategory(cat) {
+            if (cat === 'all') renderAds(allAds);
+            else renderAds(allAds.filter(ad => ad.category === cat));
+        }
+
+        function performSearch() {
+            const q = document.getElementById('searchInput').value.trim();
+            if (!q) { renderAds(allAds); return; }
+            const filtered = allAds.filter(ad => 
+                ad.title.includes(q) || 
+                ad.description.includes(q) || 
+                ad.city.includes(q)
+            );
+            renderAds(filtered);
+        }
+
         function openAdDetails(ad) {
             document.getElementById('modalAdTitle').innerText = ad.title;
             document.getElementById('modalAdPrice').innerText = `${Number(ad.price).toLocaleString()} تومان`;
             document.getElementById('modalAdLocationTime').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${ad.city || ad.location || ''}`;
             document.getElementById('modalAdDescription').innerText = ad.description || 'توضیحات تکمیلی وجود ندارد';
+
+            const img = document.getElementById('modalAdImg');
+            if (ad.images && ad.images.length > 0) {
+                img.src = ad.images[0];
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+                img.parentElement.innerHTML = `<div class="no-image-placeholder"><i class="fa-solid fa-image" style="font-size:32px;"></i></div>`;
+            }
+
             const contact = ad.phone || ad.contact || '';
             document.getElementById('callContactBtn').href = `tel:${contact}`;
             document.getElementById('whatsappContactBtn').href = `https://wa.me/${contact.replace(/\s/g, '')}`;
+
             document.getElementById('adDetailsModal').classList.add('active');
         }
 
-        function searchAds() {
-            const query = document.getElementById('searchInput').value.trim();
-            if (!query) { fetchAds(); return; }
-            fetch(`${WORKER_URL}/api/search?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.ok && data.data) renderAds(data.data);
-                    else showToast('لا توجد نتائج', 'warning');
-                })
-                .catch(() => showToast('خطأ في البحث', 'error'));
-        }
-
         // ============================================
-        //  دریافت پروفایل کاربر
+        //  دریافت اطلاعات کاربر (نیاز به ثبت‌نام)
         // ============================================
         async function fetchUserProfile() {
-            if (!telegramUserId) return;
+            const userId = telegramUserId || 'ناشناس';
+            if (userId === 'ناشناس') return;
             try {
-                const response = await fetch(`${WORKER_URL}/api/user/profile?user_id=${telegramUserId}`);
+                const response = await fetch(`${WORKER_URL}/api/user/profile?user_id=${userId}`);
                 const data = await response.json();
                 if (data.success) {
                     document.getElementById('walletBalance').innerText = data.balance.toLocaleString();
                     document.getElementById('walletPoints').innerText = data.points || 0;
+                    const codeEl = document.getElementById('profileUniqueCode');
+                    if (data.unique_code) {
+                        codeEl.innerText = data.unique_code;
+                        codeEl.style.direction = 'ltr';
+                    } else {
+                        codeEl.innerText = 'ندارد';
+                    }
+                    isUserRegistered = true;
+                } else if (data.need_register) {
+                    isUserRegistered = false;
+                } else {
+                    console.warn('Failed to load profile:', data.error);
                 }
             } catch (error) {
                 console.error('Error fetching profile:', error);
@@ -1212,54 +1331,105 @@
                 return;
             }
 
-            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
+            let userId = telegramUserId;
+            if (!userId) {
+                const manualId = document.getElementById('manualUserIdInput').value.trim();
+                if (!manualId) {
+                    showToast('الرجاء إدخال معرفك في تلغرام', 'error');
+                    return;
+                }
+                userId = manualId;
+            }
+
+            const userName = telegramUserName || 'کاربر';
+
             const box = document.getElementById('chatMessagesBox');
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
             const userBubble = document.createElement('div');
             userBubble.className = 'chat-bubble user';
-            userBubble.style.cssText = 'max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; background:#7b5aff; color:#fff; align-self:flex-start; border-bottom-right-radius:4px;';
-            userBubble.innerHTML = `<span>${text}</span><span class="time" style="font-size:9px; opacity:0.6; margin-top:4px; text-align:left; display:block;">${timeStr}</span>`;
+            userBubble.innerHTML = `<span>${text}</span><span class="time">${timeStr}</span>`;
             box.appendChild(userBubble);
             input.value = '';
             scrollChatToBottom();
 
             try {
-                await fetch(`${WORKER_URL}/api/send-chat`, {
+                const response = await fetch(`${WORKER_URL}/api/send-chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user: user, message: text })
+                    body: JSON.stringify({
+                        user: { id: userId, first_name: userName },
+                        message: text
+                    })
                 });
-                setTimeout(() => {
-                    const supportBubble = document.createElement('div');
-                    supportBubble.className = 'chat-bubble support';
-                    supportBubble.style.cssText = 'max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; background:rgba(255,255,255,0.08); color:#eee; align-self:flex-end; border-bottom-left-radius:4px;';
-                    supportBubble.innerHTML = `<span>تم إرسال رسالتك، سيتم الرد قريباً</span><span class="time" style="font-size:9px; opacity:0.6; margin-top:4px; text-align:left; display:block;">${timeStr}</span>`;
-                    box.appendChild(supportBubble);
-                    scrollChatToBottom();
-                }, 600);
+
+                const result = await response.json();
+                if (result.success) {
+                    setTimeout(() => {
+                        const supportBubble = document.createElement('div');
+                        supportBubble.className = 'chat-bubble support';
+                        supportBubble.innerHTML = `<span>تم إرسال رسالتك، سيتم الرد قريباً</span><span class="time">${timeStr}</span>`;
+                        box.appendChild(supportBubble);
+                        scrollChatToBottom();
+                    }, 600);
+                } else if (result.need_register) {
+                    showToast('⚠️ لطفاً ابتدا ثبت‌نام کنید', 'warning');
+                    requireRegisterThen('openSupportChat');
+                } else {
+                    showToast('خطأ في الإرسال', 'error');
+                }
             } catch (error) {
                 console.error(error);
-                showToast('⚠️ خطأ في الإرسال', 'error');
+                showToast('⚠️ خطأ في الاتصال', 'error');
             }
+        }
+
+        // ============================================
+        //  پروفایل
+        // ============================================
+        function saveUserProfileLocal() {
+            const name = document.getElementById('profileDisplayName').value;
+            localStorage.setItem('jedar_user_name', name);
+            showToast('تم حفظ التغييرات', 'success');
+        }
+
+        function loadUserProfileLocal() {
+            const name = localStorage.getItem('jedar_user_name') || (telegramUserName || 'مستخدم جدار');
+            document.getElementById('profileDisplayName').value = name;
+            document.getElementById('profilePhone').value = telegramUserId ? `ID: ${telegramUserId}` : 'Telegram Active User';
         }
 
         // ============================================
         //  شروع برنامه
         // ============================================
-        // ابتدا صفحه ثبت‌نام را مخفی می‌کنیم و اپ را نشان می‌دهیم
-        document.getElementById('registerOverlay').classList.remove('active');
-        document.getElementById('mainApp').style.display = 'block';
+        async function initApp() {
+            // ابتدا صفحه ثبت‌نام را مخفی کن (تا زمان تشخیص)
+            document.getElementById('registerOverlay').classList.remove('active');
+            document.getElementById('mainApp').style.display = 'block';
 
-        // بارگذاری اولیه
-        fetchAds();
-        if (telegramUserId) {
-            checkRegistrationStatus();
-            fetchUserProfile();
+            // بارگذاری آگهی‌ها (بدون نیاز به ثبت‌نام)
+            await fetchAds();
+
+            // بررسی ثبت‌نام کاربر
+            if (telegramUserId) {
+                await checkRegistrationStatus();
+                if (isUserRegistered) {
+                    await fetchUserProfile();
+                } else {
+                    document.getElementById('registerOverlay').classList.add('active');
+                }
+            } else {
+                // اگر کاربر از تلگرام نیامده، صفحه ثبت‌نام را نمایش بده
+                document.getElementById('registerOverlay').classList.add('active');
+            }
+
+            loadUserProfileLocal();
+
+            console.log('🚀 J-DAR با ثبت‌نام اختیاری');
         }
 
-        console.log('🚀 J-DAR App Started');
+        initApp();
     </script>
 </body>
-                                </html>
+                        </html>
