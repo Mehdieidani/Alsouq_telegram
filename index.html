@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== فونت و استایل پایه ===== */
+        /* ===== فونت و استایل پایه (همانند قبل، فقط فضا) ===== */
         @font-face {
             font-family: 'Vazir';
             src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
@@ -1367,6 +1367,21 @@
             font-size: 18px;
             margin-bottom: 1px;
         }
+
+        /* ===== اسپینر بارگذاری ===== */
+        .loading-spinner {
+            text-align: center;
+            padding: 30px 0;
+            color: #7b5aff;
+        }
+        .loading-spinner i {
+            font-size: 28px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -1445,10 +1460,13 @@
 
         <div class="section-title">
             <h3 data-key="recent_ads">آخر الإعلانات</h3>
+            <a onclick="fetchAds()" style="cursor:pointer;"><i class="fa-solid fa-rotate"></i></a>
         </div>
         <div class="categories" id="categoriesContainer"></div>
 
-        <div class="ads-grid" id="adsGrid"></div>
+        <div class="ads-grid" id="adsGrid">
+            <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
+        </div>
     </div>
 
     <!-- ===== ناوبری پایین ثابت ===== -->
@@ -1676,6 +1694,7 @@
                 <input type="text" class="form-control" id="profilePhone" readonly value="+964...">
             </div>
             <button class="form-btn form-btn-primary" style="margin-top:10px;" onclick="saveUserProfileLocal()" data-key="save_profile">حفظ التغييرات</button>
+            <button class="form-btn form-btn-secondary" style="margin-top:6px;" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> تحديث الرصيد</button>
         </div>
     </div>
 
@@ -1700,6 +1719,7 @@
         let activeWizardStep = 1;
         let wizardImagesBase64 = [];
         let uploadedReceiptBase64 = [];
+        let allAds = [];
 
         const translations = {
             AR: {
@@ -1806,11 +1826,14 @@
                 document.getElementById('mainApp').style.display = 'block';
                 document.getElementById('profileApp').style.display = 'none';
                 document.getElementById('nav-home').classList.add('active');
+                fetchAds(); // Refresh ads when returning home
+                fetchUserProfile();
             } else if (tab === 'profile') {
                 document.getElementById('mainApp').style.display = 'none';
                 document.getElementById('profileApp').style.display = 'block';
                 document.getElementById('nav-profile').classList.add('active');
                 loadUserProfileLocal();
+                fetchUserProfile();
             }
         }
 
@@ -1875,7 +1898,7 @@
         }
 
         // ============================================
-        //  ارسال آگهی به ربات (از طریق Worker)
+        //  ارسال آگهی به Worker
         // ============================================
         async function submitAdWizard() {
             const title = document.getElementById('adTitle').value;
@@ -1921,6 +1944,7 @@
                     wizardImagesBase64 = [];
                     renderWizardImagesGrid();
                     closeModal('addAdModal');
+                    fetchAds(); // Refresh ads after submission
                 } else {
                     showToast(currentLang === 'AR' ? '❌ خطأ: ' + result.error : '❌ خطا: ' + result.error, 'error');
                 }
@@ -1988,6 +2012,7 @@
                 if (result.success) {
                     showToast(currentLang === 'AR' ? '✅ تم إرسال طلب الشحن' : '✅ درخواست شارژ ارسال شد', 'success');
                     closeModal('walletModal');
+                    fetchUserProfile(); // Refresh balance (may not change until admin approves, but still)
                 } else {
                     showToast(currentLang === 'AR' ? '❌ خطأ: ' + result.error : '❌ خطا: ' + result.error, 'error');
                 }
@@ -2001,7 +2026,119 @@
         }
 
         // ============================================
-        //  چت پشتیبانی (از طریق Worker)
+        //  دریافت آگهی‌ها از Worker
+        // ============================================
+        async function fetchAds() {
+            const grid = document.getElementById('adsGrid');
+            grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+
+            try {
+                const response = await fetch(`${WORKER_URL}/api/ads`);
+                const data = await response.json();
+
+                if (data.success && data.ads) {
+                    allAds = data.ads;
+                    renderAds(allAds);
+                } else {
+                    grid.innerHTML = `<div style="text-align:center; padding:30px; color:#aaa;">${currentLang === 'AR' ? 'لا توجد إعلانات حالياً' : 'هیچ آگهی‌ای موجود نیست'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error fetching ads:', error);
+                grid.innerHTML = `<div style="text-align:center; padding:30px; color:#ff5e7c;">${currentLang === 'AR' ? 'خطأ في تحميل الإعلانات' : 'خطا در بارگذاری آگهی‌ها'}</div>`;
+            }
+        }
+
+        // ============================================
+        //  دریافت اطلاعات کاربر (موجودی و امتیاز)
+        // ============================================
+        async function fetchUserProfile() {
+            const userId = tg?.initDataUnsafe?.user?.id || 'ناشناس';
+            try {
+                const response = await fetch(`${WORKER_URL}/api/user/profile?user_id=${userId}`);
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('walletBalance').innerText = data.balance.toLocaleString();
+                    document.getElementById('walletPoints').innerText = data.points || 0;
+                } else {
+                    console.warn('Failed to load profile:', data.error);
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        // ============================================
+        //  رندر آگهی‌ها
+        // ============================================
+        function renderAds(ads) {
+            const grid = document.getElementById('adsGrid');
+            grid.innerHTML = '';
+            if (!ads || ads.length === 0) {
+                grid.innerHTML = `<div style="text-align:center; padding:30px; color:#aaa;">${currentLang === 'AR' ? 'لا توجد إعلانات حالياً' : 'هیچ آگهی‌ای موجود نیست'}</div>`;
+                return;
+            }
+            ads.forEach(ad => {
+                const card = document.createElement('div');
+                card.className = 'ad-card';
+                card.onclick = () => openAdDetails(ad);
+
+                // نمایش تصویر اول (در صورت وجود)
+                const imageHtml = (ad.images && ad.images.length > 0) ?
+                    `<img src="${ad.images[0]}" alt="Ad Image">` :
+                    `<div class="no-image"><i class="fa-solid fa-image" style="font-size:24px;"></i></div>`;
+
+                card.innerHTML = `
+                    <div class="ad-card-image">
+                        ${imageHtml}
+                        <div class="watermark">J-DAR</div>
+                    </div>
+                    <div class="ad-card-content">
+                        <div class="ad-card-title">${ad.title}</div>
+                        <div class="ad-card-price">${Number(ad.price).toLocaleString()} ${currentLang === 'AR' ? 'تومان' : 'تومان'}</div>
+                        <div class="ad-card-meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ad.location || ''}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ============================================
+        //  جزئیات آگهی
+        // ============================================
+        function openAdDetails(ad) {
+            document.getElementById('modalAdTitle').innerText = ad.title;
+            document.getElementById('modalAdPrice').innerText = `${Number(ad.price).toLocaleString()} تومان`;
+            document.getElementById('modalAdLocationTime').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${ad.city || ad.location || ''}`;
+            document.getElementById('modalAdDescription').innerText = ad.description || 'توضیحات تکمیلی وجود ندارد';
+
+            // نمایش اولین تصویر
+            const img = document.getElementById('modalAdImg');
+            if (ad.images && ad.images.length > 0) {
+                img.src = ad.images[0];
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+                img.parentElement.innerHTML = `<div class="no-image-placeholder"><i class="fa-solid fa-image" style="font-size:32px;"></i></div>`;
+            }
+
+            // شماره تماس
+            const contact = ad.phone || ad.contact || '';
+            document.getElementById('callContactBtn').href = `tel:${contact}`;
+            document.getElementById('whatsappContactBtn').href = `https://wa.me/${contact.replace(/\s/g, '')}`;
+
+            document.getElementById('adDetailsModal').classList.add('active');
+        }
+
+        // ============================================
+        //  فیلتر بر اساس دسته‌بندی
+        // ============================================
+        function filterByCategory(cat) {
+            if (cat === 'all') renderAds(allAds);
+            else renderAds(allAds.filter(ad => ad.category === cat));
+        }
+
+        // ============================================
+        //  چت پشتیبانی
         // ============================================
         function scrollChatToBottom() {
             const box = document.getElementById('chatMessagesBox');
@@ -2017,7 +2154,6 @@
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-            // نمایش پیام کاربر
             const userBubble = document.createElement('div');
             userBubble.className = 'chat-bubble user';
             userBubble.innerHTML = `<span>${text}</span><span class="time">${timeStr}</span>`;
@@ -2025,7 +2161,6 @@
             input.value = '';
             scrollChatToBottom();
 
-            // ارسال به Worker
             const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
             try {
                 await fetch(`${WORKER_URL}/api/send-chat`, {
@@ -2037,7 +2172,6 @@
                     })
                 });
 
-                // پاسخ خودکار
                 setTimeout(() => {
                     const supportBubble = document.createElement('div');
                     supportBubble.className = 'chat-bubble support';
@@ -2066,58 +2200,14 @@
         }
 
         // ============================================
-        //  آگهی‌های نمونه
-        // ============================================
-        const mockAds = [
-            { id: 1, title: "رحلة زراعة الشعر في شيراز | کاشت مو شیراز", price: "15,000,000", cat: "medical", loc: "شیراز", img: "" },
-            { id: 2, title: "فندق ۵ نجوم في مشهد قريباً من الحرم | هتل ۵ ستاره مشهد", price: "4,500,000", cat: "tourism", loc: "مشهد", img: "" }
-        ];
-
-        function renderAds(ads) {
-            const grid = document.getElementById('adsGrid');
-            grid.innerHTML = '';
-            ads.forEach(ad => {
-                const card = document.createElement('div');
-                card.className = 'ad-card';
-                card.onclick = () => openAdDetails(ad);
-                card.innerHTML = `
-                    <div class="ad-card-image">
-                        <div class="no-image"><i class="fa-solid fa-image" style="font-size:24px;"></i></div>
-                        <div class="watermark">J-DAR</div>
-                    </div>
-                    <div class="ad-card-content">
-                        <div class="ad-card-title">${ad.title}</div>
-                        <div class="ad-card-price">${ad.price} ${currentLang === 'AR' ? 'تومان' : 'تومان'}</div>
-                        <div class="ad-card-meta"><i class="fa-solid fa-location-dot"></i> ${ad.loc}</div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function openAdDetails(ad) {
-            document.getElementById('modalAdTitle').innerText = ad.title;
-            document.getElementById('modalAdPrice').innerText = `${ad.price} تومان`;
-            document.getElementById('modalAdLocationTime').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${ad.loc}`;
-            document.getElementById('modalAdDescription').innerText = `خدمات تخصصية من منصة جدار (J-DAR) \nالتصنيف: ${ad.cat}\nللتواصل اضغط على الأزرار أدناه.`;
-            document.getElementById('callContactBtn').href = `tel:+989123456789`;
-            document.getElementById('whatsappContactBtn').href = `https://wa.me/989123456789`;
-            document.getElementById('adDetailsModal').classList.add('active');
-        }
-
-        function filterByCategory(cat) {
-            if (cat === 'all') renderAds(mockAds);
-            else renderAds(mockAds.filter(ad => ad.cat === cat));
-        }
-
-        // ============================================
         //  شروع برنامه
         // ============================================
         updateLanguageMatrix();
-        renderAds(mockAds);
         loadUserProfileLocal();
+        fetchAds();
+        fetchUserProfile();
 
         console.log('🚀 J-DAR PWA با ارتباط کامل به Worker');
     </script>
 </body>
-                                </html>
+    </html>
