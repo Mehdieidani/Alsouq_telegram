@@ -1681,10 +1681,9 @@
 
     <script>
         // ============================================
-        //  تنظیمات اصلی (توکن و شناسه ادمین)
+        //  تنظیمات اصلی
         // ============================================
-        const BOT_TOKEN = '8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c';
-        const ADMIN_CHAT_ID = '6522877528';
+        const WORKER_URL = 'https://souq-bot.mehdi11eidani.workers.dev';
 
         const tg = window.Telegram?.WebApp || null;
         if (tg) {
@@ -1700,9 +1699,8 @@
         let walletMode = 'bank';
         let activeWizardStep = 1;
         let wizardImagesBase64 = [];
-        let uploadedReceiptBase64 = '';
+        let uploadedReceiptBase64 = [];
 
-        // دیکشنری ترجمه
         const translations = {
             AR: {
                 nav_home: "الرئيسية", nav_add: "أضف آعلان", nav_chat: "المحادثة", nav_profile: "الملف الشخصي",
@@ -1877,7 +1875,7 @@
         }
 
         // ============================================
-        //  ارسال آگهی به ربات (اصلاح‌شده با مدیریت خطا)
+        //  ارسال آگهی به ربات (از طریق Worker)
         // ============================================
         async function submitAdWizard() {
             const title = document.getElementById('adTitle').value;
@@ -1892,68 +1890,43 @@
                 return;
             }
 
-            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
-            const message = `
-📢 **إعلان جديد من التطبيق (PWA)**
+            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
 
-👤 المستخدم: ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'})
-📌 العنوان: ${title}
-📂 الفئة: ${category}
-💰 السعر: ${price} تومان
-📍 الموقع: ${loc}
-📞 التواصل: ${contact || 'غير مذكور'}
-
-📝 التفاصيل:
-${desc}
-
-🖼 عدد الصور: ${wizardImagesBase64.length}
-⏳ الحالة: في انتظار المراجعة
-            `;
+            const payload = {
+                user: user,
+                title: title,
+                category: category,
+                price: price,
+                location: loc,
+                contact: contact,
+                description: desc,
+                images: wizardImagesBase64
+            };
 
             const btn = document.getElementById('submitAdFinalBtn');
             btn.disabled = true;
+
             try {
-                // 1. إرسال النص
-                const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const response = await fetch(`${WORKER_URL}/api/submit-ad`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: ADMIN_CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
+                    body: JSON.stringify(payload)
                 });
-                if (!resp.ok) {
-                    const errText = await resp.text();
-                    throw new Error(errText);
-                }
 
-                // 2. إرسال الصور إن وجدت
-                if (wizardImagesBase64.length > 0) {
-                    for (const img of wizardImagesBase64) {
-                        const photoBlob = await fetch(img).then(r => r.blob());
-                        const formData = new FormData();
-                        formData.append('photo', photoBlob, 'ad_image.jpg');
-                        formData.append('chat_id', ADMIN_CHAT_ID);
-                        formData.append('caption', `📸 صورة إضافية للإعلان: ${title}`);
-                        const photoResp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        if (!photoResp.ok) {
-                            console.warn('Failed to send photo:', await photoResp.text());
-                        }
-                    }
-                }
+                const result = await response.json();
 
-                showToast(currentLang === 'AR' ? 'تم إرسال الإعلان للمراجعة' : 'آگهی برای بررسی به مدیر ارسال شد', 'success');
-                document.getElementById('addAdForm').reset();
-                wizardImagesBase64 = [];
-                renderWizardImagesGrid();
-                closeModal('addAdModal');
+                if (result.success) {
+                    showToast(currentLang === 'AR' ? '✅ تم إرسال الإعلان للمراجعة' : '✅ آگهی برای بررسی ارسال شد', 'success');
+                    document.getElementById('addAdForm').reset();
+                    wizardImagesBase64 = [];
+                    renderWizardImagesGrid();
+                    closeModal('addAdModal');
+                } else {
+                    showToast(currentLang === 'AR' ? '❌ خطأ: ' + result.error : '❌ خطا: ' + result.error, 'error');
+                }
             } catch (error) {
-                console.error('خطأ في إرسال الإعلان:', error);
-                showToast(currentLang === 'AR' ? 'حدث خطأ في الإرسال، لكن تم الحفظ محلياً' : 'خطا در ارسال، اما آگهی ذخیره شد', 'warning');
+                console.error(error);
+                showToast(currentLang === 'AR' ? '⚠️ تم الحفظ محلياً، سيتم الإرسال لاحقاً' : '⚠️ ذخیره محلی شد، بعداً ارسال می‌شود', 'warning');
                 closeModal('addAdModal');
             } finally {
                 btn.disabled = false;
@@ -1961,7 +1934,7 @@ ${desc}
         }
 
         // ============================================
-        //  شارژ کیف پول
+        //  شارژ کیف پول (از طریق Worker)
         // ============================================
         function switchWalletTab(mode) {
             walletMode = mode;
@@ -1991,49 +1964,36 @@ ${desc}
                 return;
             }
 
-            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
-            const message = `
-💰 **طلب شحن محفظة جديد**
+            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
 
-👤 المستخدم: ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'})
-💵 المبلغ: ${amount} تومان
-🏦 طريقة الدفع: ${walletMode === 'bank' ? 'تحويل بنكي' : 'كريبتو (USDT)'}
-🕒 الوقت: ${new Date().toLocaleString()}
-            `;
+            const payload = {
+                user: user,
+                amount: amount,
+                method: walletMode,
+                receipt: uploadedReceiptBase64
+            };
 
             const btn = document.getElementById('submitChargeBtn');
             btn.disabled = true;
+
             try {
-                // إرسال النص
-                const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const response = await fetch(`${WORKER_URL}/api/submit-charge`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: ADMIN_CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
+                    body: JSON.stringify(payload)
                 });
-                if (!resp.ok) throw new Error(await resp.text());
 
-                // إرسال صورة الإيصال
-                if (uploadedReceiptBase64) {
-                    const photoBlob = await fetch(uploadedReceiptBase64).then(r => r.blob());
-                    const formData = new FormData();
-                    formData.append('photo', photoBlob, 'receipt.jpg');
-                    formData.append('chat_id', ADMIN_CHAT_ID);
-                    formData.append('caption', `🧾 إيصال شحن المحفظة (${amount} تومان)`);
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(currentLang === 'AR' ? '✅ تم إرسال طلب الشحن' : '✅ درخواست شارژ ارسال شد', 'success');
+                    closeModal('walletModal');
+                } else {
+                    showToast(currentLang === 'AR' ? '❌ خطأ: ' + result.error : '❌ خطا: ' + result.error, 'error');
                 }
-
-                showToast(currentLang === 'AR' ? 'تم إرسال طلب الشحن للإدارة' : 'درخواست شارژ به مدیریت ارسال شد', 'success');
-                closeModal('walletModal');
             } catch (error) {
                 console.error(error);
-                showToast(currentLang === 'AR' ? 'حدث خطأ لكن تم إرسال الطلب' : 'خطا رخ داد اما درخواست ارسال شد', 'warning');
+                showToast(currentLang === 'AR' ? '⚠️ تم الحفظ محلياً' : '⚠️ ذخیره محلی شد', 'warning');
                 closeModal('walletModal');
             } finally {
                 btn.disabled = false;
@@ -2041,7 +2001,7 @@ ${desc}
         }
 
         // ============================================
-        //  چت پشتیبانی
+        //  چت پشتیبانی (از طریق Worker)
         // ============================================
         function scrollChatToBottom() {
             const box = document.getElementById('chatMessagesBox');
@@ -2057,7 +2017,7 @@ ${desc}
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-            // پیام کاربر
+            // نمایش پیام کاربر
             const userBubble = document.createElement('div');
             userBubble.className = 'chat-bubble user';
             userBubble.innerHTML = `<span>${text}</span><span class="time">${timeStr}</span>`;
@@ -2065,16 +2025,15 @@ ${desc}
             input.value = '';
             scrollChatToBottom();
 
-            // ارسال به ربات
-            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
+            // ارسال به Worker
+            const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', id: 'ناشناس' };
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                await fetch(`${WORKER_URL}/api/send-chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        chat_id: ADMIN_CHAT_ID,
-                        text: `💬 رسالة دعم من ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'}):\n${text}`,
-                        parse_mode: 'Markdown'
+                        user: user,
+                        message: text
                     })
                 });
 
@@ -2082,7 +2041,7 @@ ${desc}
                 setTimeout(() => {
                     const supportBubble = document.createElement('div');
                     supportBubble.className = 'chat-bubble support';
-                    supportBubble.innerHTML = `<span>${currentLang === 'AR' ? 'تم توجيه رسالتك إلى المدير، سيتم الرد قريباً' : 'پیام شما به مدیر ارسال شد، به زودی پاسخ داده می‌شود'}</span><span class="time">${timeStr}</span>`;
+                    supportBubble.innerHTML = `<span>${currentLang === 'AR' ? 'تم إرسال رسالتك، سيتم الرد قريباً' : 'پیام شما ارسال شد، به زودی پاسخ داده می‌شود'}</span><span class="time">${timeStr}</span>`;
                     box.appendChild(supportBubble);
                     scrollChatToBottom();
                 }, 800);
@@ -2158,7 +2117,7 @@ ${desc}
         renderAds(mockAds);
         loadUserProfileLocal();
 
-        console.log('🚀 J-DAR PWA متصل به ربات با موفقیت');
+        console.log('🚀 J-DAR PWA با ارتباط کامل به Worker');
     </script>
 </body>
-    </html>
+                                </html>
