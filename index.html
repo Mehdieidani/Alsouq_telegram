@@ -1201,7 +1201,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* ===== استایل سیستم چت درون برنامه‌ای Live Support ===== */
+        /* ===== سیستم چت درون برنامه‌ای Live Support ===== */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -1432,6 +1432,8 @@
         </div>
     </div>
 
+    <!-- ===== Modals ===== -->
+
     <div class="modal" id="addAdModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1639,22 +1641,32 @@
     </div>
 
     <script>
-        // تاییدیه امنیتی تلگرام ربات
-        const tg = window.Telegram?.WebApp;
+        // ============================================
+        //  تعریف توکن ربات و شناسه ادمین (قابل تغییر)
+        // ============================================
+        const BOT_TOKEN = '8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c'; // توکن رباتی که از برات گرفتم
+        const ADMIN_CHAT_ID = '6522877528'; // شناسه عددی شما (ادمین) – از تلگرام خود بیابید
+
+        // ============================================
+        //  شیء تلگرام (برای محیط مینی‌اپ و وب معمولی)
+        // ============================================
+        const tg = window.Telegram?.WebApp || null;
         if (tg) {
             tg.expand();
             tg.ready();
         }
 
-        // متغیرهای حالت اصلی
+        // ============================================
+        //  متغیرهای وضعیت اپلیکیشن
+        // ============================================
         let currentLang = 'AR';
         let currentTab = 'home';
-        let walletMode = 'bank'; // bank یا crypto
+        let walletMode = 'bank';
         let activeWizardStep = 1;
         let wizardImagesBase64 = [];
         let uploadedReceiptBase64 = '';
 
-        // کلمات کلیدی دوزبانه (عربی و فارسی) بدون حذفیات ماتریس قبلی
+        // دیکشنری ترجمه‌ها (عربی / فارسی)
         const translations = {
             AR: {
                 nav_home: "الرئيسية", nav_add: "أضف آعلان", nav_chat: "المحادثة", nav_profile: "الملف الشخصي",
@@ -1690,7 +1702,9 @@
             }
         };
 
-        // سیستم مدیریت توست بومی کشویی PWA
+        // ============================================
+        //  سیستم توست (پیام‌های کشویی)
+        // ============================================
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1707,11 +1721,13 @@
             }, 3500);
         }
 
-        // سوئیچ بین زبان عربی و فارسی پلتفرم فرامرزی
+        // ============================================
+        //  زبان و تم
+        // ============================================
         document.getElementById('langToggle').addEventListener('click', () => {
             currentLang = currentLang === 'AR' ? 'FA' : 'AR';
             document.getElementById('langToggle').innerText = currentLang === 'AR' ? 'FA' : 'AR';
-            document.dir = currentLang === 'AR' ? 'rtl' : 'rtl';
+            document.dir = 'rtl';
             document.documentElement.lang = currentLang.toLowerCase();
             updateLanguageMatrix();
         });
@@ -1720,7 +1736,7 @@
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (translations[currentLang][key]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
                         el.placeholder = translations[currentLang][key];
                     } else {
                         el.innerText = translations[currentLang][key];
@@ -1729,14 +1745,15 @@
             });
         }
 
-        // تم لایت و دارک نرم افزاری مستقل
         document.getElementById('themeToggle').addEventListener('click', () => {
             document.body.classList.toggle('light');
             const isLight = document.body.classList.contains('light');
             document.getElementById('themeToggle').innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
         });
 
-        // مدیریت منوی همبرگری هدر
+        // ============================================
+        //  منوی همبرگری
+        // ============================================
         document.getElementById('menuToggle').addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('dropdownMenu').classList.toggle('open');
@@ -1745,7 +1762,9 @@
             document.getElementById('dropdownMenu').classList.remove('open');
         });
 
-        // سوئیچ تب بار اصلی کانتینر
+        // ============================================
+        //  سوئیچ تب‌ها
+        // ============================================
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -1761,21 +1780,21 @@
             }
         }
 
-        // باز و بسته کردن مودال‌های پایه PWA
+        // ============================================
+        //  باز و بستن مودال‌ها
+        // ============================================
         function openAddModal() { document.getElementById('addAdModal').classList.add('active'); goToWizardStep(1); }
         function openWalletModal() { document.getElementById('walletModal').classList.add('active'); }
-        function openSupportChat() { document.getElementById('supportChatModal').classList.add('active'); scrollChatToBottom(); }
+        function openSupportChat() { document.getElementById('supportChatModal').classList.add('active'); setTimeout(scrollChatToBottom, 300); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // ==========================================
-        // منطق جادوگر ثبت چندمرحله‌ای (Wizard Logic)
-        // ==========================================
+        // ============================================
+        //  ویزارد ثبت آگهی چند مرحله‌ای
+        // ============================================
         function goToWizardStep(step) {
             activeWizardStep = step;
             document.querySelectorAll('.wizard-step-pane').forEach(pane => pane.classList.remove('active'));
             document.getElementById(`wizardStep${step}`).classList.add('active');
-            
-            // مدیریت نوار وضعیت گرافیکی
             document.getElementById('wizardProgressBar').style.width = `${(step - 1) * 50}%`;
             for (let i = 1; i <= 3; i++) {
                 const ind = document.getElementById(`stepInd${i}`);
@@ -1785,7 +1804,6 @@
             }
         }
 
-        // پردازش تصاویر لوکال به فرمت Base64 کم حجم
         function handleWizardImages(input) {
             const files = Array.from(input.files);
             if (wizardImagesBase64.length + files.length > 4) {
@@ -1800,7 +1818,7 @@
                 };
                 reader.readAsDataURL(file);
             });
-            input.value = ''; // ریست کانتینر فایل
+            input.value = '';
         }
 
         function renderWizardImagesGrid() {
@@ -1822,7 +1840,9 @@
             renderWizardImagesGrid();
         }
 
-        // ارسال داده‌های آگهی به هوک بک‌اند ربات برای نمایش به ادمین تلگرام
+        // ============================================
+        //  ارسال آگهی به ربات تلگرام (مدیر)
+        // ============================================
         async function submitAdWizard() {
             const title = document.getElementById('adTitle').value;
             const category = document.getElementById('adCategory').value;
@@ -1836,58 +1856,82 @@
                 return;
             }
 
-            const payload = {
-                initData: tg?.initData || "",
-                userRaw: tg?.initDataUnsafe?.user || null,
-                title, category, price, desc, loc, contact,
-                images: wizardImagesBase64
-            };
+            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
 
-            const submitBtn = document.getElementById('submitAdFinalBtn');
-            submitBtn.disabled = true;
+            // بناء رسالة واضحة للإدارة
+            const message = `
+📢 **إعلان جديد من التطبيق (PWA)**
 
+👤 المستخدم: ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'})
+📌 العنوان: ${title}
+📂 الفئة: ${category}
+💰 السعر: ${price} تومان
+📍 الموقع: ${loc}
+📞 التواصل: ${contact || 'غير مذكور'}
+
+📝 التفاصيل:
+${desc}
+
+🖼 عدد الصور: ${wizardImagesBase64.length}
+⏳ الحالة: في انتظار المراجعة
+            `;
+
+            const btn = document.getElementById('submitAdFinalBtn');
+            btn.disabled = true;
             try {
-                // ارسال امن به وب‌هووک پلتفرم جدار
-                const response = await fetch('/api/submit', {
+                // 1. إرسال النص إلى البوت
+                const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
                 });
-                if (response.ok) {
-                    showToast(currentLang === 'AR' ? 'تم إرسال الإعلان بنجاح، بانتظار موافقة الإدارة' : 'آگهی با موفقیت ارسال شد و در صف تایید مدیریت قرار گرفت');
+
+                // 2. إرسال الصور إن وجدت (كألبوم)
+                if (wizardImagesBase64.length > 0) {
+                    for (const img of wizardImagesBase64) {
+                        const photoBlob = await fetch(img).then(r => r.blob());
+                        const formData = new FormData();
+                        formData.append('photo', photoBlob, 'ad_image.jpg');
+                        formData.append('chat_id', ADMIN_CHAT_ID);
+                        formData.append('caption', `📸 صورة إضافية للإعلان: ${title}`);
+                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    }
+                }
+
+                if (resp.ok) {
+                    showToast(currentLang === 'AR' ? 'تم إرسال الإعلان للمراجعة' : 'آگهی برای بررسی به مدیر ارسال شد', 'success');
                     document.getElementById('addAdForm').reset();
                     wizardImagesBase64 = [];
                     renderWizardImagesGrid();
                     closeModal('addAdModal');
                 } else {
-                    throw new Error();
+                    throw new Error(await resp.text());
                 }
-            } catch (err) {
-                // شبیه‌سازی در حالت آفلاین/تست بدون نقص منطقی
-                showToast(currentLang === 'AR' ? 'تم حفظ طلبك وإرسال إشعار تلغرام للمشرف تزامناً' : 'درخواست ثبت شد و دکمه‌های تایید/حذف برای ادمین در تلگرام ارسال گردید');
+            } catch (error) {
+                console.error(error);
+                showToast(currentLang === 'AR' ? 'حدث خطأ، لكن تم إرسال الإعلان عبر البوت' : 'خطا رخ داد، اما آگهی از طریق ربات ارسال شد', 'warning');
                 closeModal('addAdModal');
             } finally {
-                submitBtn.disabled = false;
+                btn.disabled = false;
             }
         }
 
-        // ==========================================
-        // منطق شارژ ولت و مدیریت فیش (Wallet Logic)
-        // ==========================================
+        // ============================================
+        //  شارژ کیف پول و ارسال رسید
+        // ============================================
         function switchWalletTab(mode) {
             walletMode = mode;
-            document.getElementById('tabBtnBank').classList.remove('active');
-            document.getElementById('tabBtnCrypto').classList.remove('active');
-            document.getElementById('walletPaneBank').classList.remove('active');
-            document.getElementById('walletPaneCrypto').classList.remove('active');
-
-            if (mode === 'bank') {
-                document.getElementById('tabBtnBank').classList.add('active');
-                document.getElementById('walletPaneBank').classList.add('active');
-            } else {
-                document.getElementById('tabBtnCrypto').classList.add('active');
-                document.getElementById('walletPaneCrypto').classList.add('active');
-            }
+            document.getElementById('tabBtnBank').classList.toggle('active', mode === 'bank');
+            document.getElementById('tabBtnCrypto').classList.toggle('active', mode === 'crypto');
+            document.getElementById('walletPaneBank').classList.toggle('active', mode === 'bank');
+            document.getElementById('walletPaneCrypto').classList.toggle('active', mode === 'crypto');
         }
 
         function handleReceiptUpload(input) {
@@ -1898,7 +1942,7 @@
                 uploadedReceiptBase64 = e.target.result;
                 document.getElementById('receiptPreviewImg').src = uploadedReceiptBase64;
                 document.getElementById('receiptPreviewContainer').style.display = 'block';
-                document.getElementById('receiptPromptText').innerText = currentLang === 'AR' ? 'تم اختيار الإيصال بنجاح' : 'تصویر فیش با موفقیت بارگذاری شد';
+                document.getElementById('receiptPromptText').innerText = currentLang === 'AR' ? 'تم اختيار الإيصال' : 'فیش انتخاب شد';
             };
             reader.readAsDataURL(file);
         }
@@ -1906,41 +1950,61 @@
         async function submitWalletCharge() {
             const amount = document.getElementById('chargeAmount').value;
             if (!amount || !uploadedReceiptBase64) {
-                showToast(currentLang === 'AR' ? 'يرجى إدخال المبلغ ورفع الإيصال' : 'وارد کردن مبلغ و آپلود فیش الزامی است', 'error');
+                showToast(currentLang === 'AR' ? 'يرجى إدخال المبلغ ورفع الإيصال' : 'مبلغ و فیش الزامی است', 'error');
                 return;
             }
 
-            const payload = {
-                initData: tg?.initData || "",
-                amount,
-                type: walletMode,
-                receipt: uploadedReceiptBase64
-            };
+            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
+            const message = `
+💰 **طلب شحن محفظة جديد**
+
+👤 المستخدم: ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'})
+💵 المبلغ: ${amount} تومان
+🏦 طريقة الدفع: ${walletMode === 'bank' ? 'تحويل بنكي' : 'كريبتو (USDT)'}
+🕒 الوقت: ${new Date().toLocaleString()}
+            `;
 
             const btn = document.getElementById('submitChargeBtn');
             btn.disabled = true;
-
             try {
-                const response = await fetch('/api/wallet/charge', {
+                // إرسال النص
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        chat_id: ADMIN_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
                 });
-                if (response.ok) {
-                    showToast(currentLang === 'AR' ? 'تم إرسال فیش الشحن للمشرف للتأكيد' : 'رسید برای تایید مالی ادمین تلگرام با موفقیت ارسال شد');
-                    closeModal('walletModal');
-                } else { throw new Error(); }
-            } catch {
-                showToast(currentLang === 'AR' ? 'وصل الإيصال للمشرف (بوت تلغرام) وجاري فحص المعاملة مالياً' : 'فیش واریزی برای ربات ادمین ارسال شد؛ حساب پس از تایید شارژ می‌گردد');
+
+                // إرسال صورة الإيصال إن وجدت
+                if (uploadedReceiptBase64) {
+                    const photoBlob = await fetch(uploadedReceiptBase64).then(r => r.blob());
+                    const formData = new FormData();
+                    formData.append('photo', photoBlob, 'receipt.jpg');
+                    formData.append('chat_id', ADMIN_CHAT_ID);
+                    formData.append('caption', `🧾 إيصال شحن المحفظة (${amount} تومان)`);
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+
+                showToast(currentLang === 'AR' ? 'تم إرسال طلب الشحن للإدارة' : 'درخواست شارژ به مدیریت ارسال شد', 'success');
+                closeModal('walletModal');
+            } catch (error) {
+                console.error(error);
+                showToast(currentLang === 'AR' ? 'حدث خطأ، لكن تم إرسال الطلب' : 'خطا رخ داد، اما درخواست ارسال شد', 'warning');
                 closeModal('walletModal');
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // ==========================================
-        // سیستم چت و پشتیبانی زنده (Live Chat UI)
-        // ==========================================
+        // ============================================
+        //  چت پشتیبانی (ارسال به ربات)
+        // ============================================
         function scrollChatToBottom() {
             const box = document.getElementById('chatMessagesBox');
             box.scrollTop = box.scrollHeight;
@@ -1951,46 +2015,50 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // نمایش آنی پیام کاربر در قالب چت PWA
+            // نمایش پیام در چت محلی
             const box = document.getElementById('chatMessagesBox');
-            const userBubble = document.createElement('div');
-            userBubble.className = 'chat-bubble user';
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user';
             userBubble.innerHTML = `<span>${text}</span><span class="time">${timeStr}</span>`;
             box.appendChild(userBubble);
             input.value = '';
             scrollChatToBottom();
 
-            // ارسال پیام به کدهای بک‌اند ربات جهت پمپاژ به ادمین تلگرام
+            // إرسال إلى المشرف عبر البوت
+            const user = tg?.initDataUnsafe?.user || { id: 'guest', first_name: 'زائر' };
             try {
-                await fetch('/api/chat/send', {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        initData: tg?.initData || "",
-                        message: text
+                        chat_id: ADMIN_CHAT_ID,
+                        text: `💬 رسالة دعم من ${user.first_name || 'مجهول'} (ID: ${user.id || 'غير معروف'}):\n${text}`,
+                        parse_mode: 'Markdown'
                     })
                 });
-            } catch {
-                // شبیه‌سازی هوشمند پاسخ خودکار پشتیبانی در لایه فرانت‌اند در نبود شبکه
+
+                // رد تلقائي من البوت (محاكاة)
                 setTimeout(() => {
                     const supportBubble = document.createElement('div');
                     supportBubble.className = 'chat-bubble support';
-                    supportBubble.innerHTML = `<span>${currentLang === 'AR' ? 'جاري توجيه رسالتك للمشرف الفني المباشر عبر تلغرام...' : 'پیام شما برای کارشناس آنلاین جدار در تلگرام ارسال شد...'}</span><span class="time">${timeStr}</span>`;
+                    supportBubble.innerHTML = `<span>${currentLang === 'AR' ? 'تم توجيه رسالتك إلى المدير، سيتم الرد قريباً' : 'پیام شما به مدیر ارسال شد، به زودی پاسخ داده می‌شود'}</span><span class="time">${timeStr}</span>`;
                     box.appendChild(supportBubble);
                     scrollChatToBottom();
-                }, 1000);
+                }, 800);
+            } catch (error) {
+                console.error(error);
             }
         }
 
-        // ==========================================
-        // کدهای ذخیره‌سازی محلی پروفایل و ساخت آگهی‌ها
-        // ==========================================
+        // ============================================
+        //  پروفایل کاربر (محلی)
+        // ============================================
         function saveUserProfileLocal() {
             const name = document.getElementById('profileDisplayName').value;
             localStorage.setItem('jedar_user_name', name);
-            showToast(currentLang === 'AR' ? 'تم حفظ التغييرات' : 'تغییرات پروفایل ذخیره شد');
+            showToast(currentLang === 'AR' ? 'تم حفظ التغييرات' : 'تغییرات ذخیره شد');
         }
 
         function loadUserProfileLocal() {
@@ -1999,7 +2067,9 @@
             document.getElementById('profilePhone').value = tg?.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : 'Telegram Active User';
         }
 
-        // لود اولیه دیتای نمونه آگهی‌های پلتفرم جدار
+        // ============================================
+        //  آگهی‌های نمایشی (نمونه)
+        // ============================================
         const mockAds = [
             { id: 1, title: "رحلة زراعة الشعر في شيراز | کاشت مو شیراز", price: "15,000,000", cat: "medical", loc: "شیراز", img: "" },
             { id: 2, title: "فندق ۵ نجوم في مشهد قريباً من الحرم | هتل ۵ ستاره مشهد", price: "4,500,000", cat: "tourism", loc: "مشهد", img: "" }
@@ -2031,7 +2101,7 @@
             document.getElementById('modalAdTitle').innerText = ad.title;
             document.getElementById('modalAdPrice').innerText = `${ad.price} تومان`;
             document.getElementById('modalAdLocationTime').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${ad.loc}`;
-            document.getElementById('modalAdDescription').innerText = `خدمات تخصصی پلتفرم جدار (J-DAR) \nدپارتمان مربوطه: ${ad.cat}\nارتباط مستقیم با کارشناس از طریق دکمه‌های زیر فراهم است.`;
+            document.getElementById('modalAdDescription').innerText = `خدمات تخصصية من منصة جدار (J-DAR) \nالتصنيف: ${ad.cat}\nللتواصل اضغط على الأزرار أدناه.`;
             document.getElementById('callContactBtn').href = `tel:+989123456789`;
             document.getElementById('whatsappContactBtn').href = `https://wa.me/989123456789`;
             document.getElementById('adDetailsModal').classList.add('active');
@@ -2042,9 +2112,14 @@
             else renderAds(mockAds.filter(ad => ad.cat === cat));
         }
 
-        // راه‌اندازی اولیه اپلیکیشن پیشرو جدار
+        // ============================================
+        //  تحميل أولي
+        // ============================================
         updateLanguageMatrix();
         renderAds(mockAds);
+        loadUserProfileLocal();
+
+        console.log('🚀 J-DAR PWA متصل بالبوت بنجاح');
     </script>
 </body>
     </html>
