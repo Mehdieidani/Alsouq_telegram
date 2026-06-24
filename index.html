@@ -2358,6 +2358,7 @@
 
         // ===== زبان =====
         document.getElementById('langMainBtn').addEventListener('click', () => {
+            // بررسی اینکه آیا در تلگرام هستیم و popup در دسترس است
             if (tg && typeof tg.showPopup === 'function') {
                 tg.showPopup({
                     title: 'انتخاب زبان',
@@ -2371,10 +2372,22 @@
                     if (btnId && ['fa', 'ar', 'en'].includes(btnId)) setLanguage(btnId);
                 });
             } else {
+                // در مرورگر یا هر جای دیگر از مودال استفاده کن
                 openModal('langModal');
             }
         });
 
+        // تابع setLanguage برای استفاده در مودال
+        window.setLanguage = function(lang) {
+            if (!['fa', 'ar', 'en'].includes(lang)) return;
+            currentLang = lang;
+            localStorage.setItem('jedar_lang', lang);
+            updateUI();
+            closeModal('langModal');
+            showToast('زبان تغییر کرد', 'success');
+        };
+
+        // تابع setLanguage اصلی برای استفاده در کد
         function setLanguage(lang) {
             if (!['fa', 'ar', 'en'].includes(lang)) return;
             currentLang = lang;
@@ -2690,7 +2703,20 @@
 
         function getImgUrl(imgIds) {
             if (!imgIds || !imgIds.length) return 'https://via.placeholder.com/400x400?text=J-DAR';
-            return imgIds[0];
+            // اگر تصویر به صورت Base64 ذخیره شده، از خودش استفاده کن
+            if (typeof imgIds === 'string' && imgIds.startsWith('data:image')) {
+                return imgIds;
+            }
+            // اگر آرایه است و اولین عنصر Base64 است
+            if (Array.isArray(imgIds) && imgIds.length > 0) {
+                const first = imgIds[0];
+                if (typeof first === 'string' && first.startsWith('data:image')) {
+                    return first;
+                }
+                // اگر آدرس تصویر از Worker است
+                return `${API_BASE}/image/${first}`;
+            }
+            return 'https://via.placeholder.com/400x400?text=J-DAR';
         }
 
         function renderAds(ads, containerId) {
@@ -3036,13 +3062,21 @@
             const time = getRelativeTime(ad.created_at);
 
             const images = ad.image_ids || [];
-            const gallery = images.length ? `
+            // اگر images یک رشته است و با data:image شروع میشود، به آرایه تبدیل کن
+            let imageUrls = [];
+            if (typeof images === 'string' && images.startsWith('data:image')) {
+                imageUrls = [images];
+            } else if (Array.isArray(images)) {
+                imageUrls = images;
+            }
+
+            const gallery = imageUrls.length ? `
                 <div class="image-gallery">
-                    <img src="${images[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
-                    ${images.length > 1 ? `
+                    <img src="${imageUrls[0]}" class="modal-image" id="mainImage" onerror="this.src='https://via.placeholder.com/400x400?text=J-DAR'">
+                    ${imageUrls.length > 1 ? `
                     <div class="gallery-controls">
                         <button id="prevImage"><i class="fas fa-chevron-right"></i></button>
-                        <span class="gallery-counter" id="imageCounter">1/${images.length}</span>
+                        <span class="gallery-counter" id="imageCounter">1/${imageUrls.length}</span>
                         <button id="nextImage"><i class="fas fa-chevron-left"></i></button>
                     </div>` : ''}
                 </div>` :
@@ -3100,19 +3134,19 @@
             document.getElementById('modalContent').innerHTML = modalHtml;
             openModal('adModal');
 
-            if (images.length > 1) {
+            if (imageUrls.length > 1) {
                 let idx = 0;
                 const img = document.getElementById('mainImage');
                 const prev = document.getElementById('prevImage');
                 const next = document.getElementById('nextImage');
                 const counter = document.getElementById('imageCounter');
                 if (prev && next) {
-                    prev.addEventListener('click', () => { idx = (idx - 1 + images.length) % images.length;
-                        img.src = images[idx];
-                        if (counter) counter.textContent = (idx + 1) + '/' + images.length; });
-                    next.addEventListener('click', () => { idx = (idx + 1) % images.length;
-                        img.src = images[idx];
-                        if (counter) counter.textContent = (idx + 1) + '/' + images.length; });
+                    prev.addEventListener('click', () => { idx = (idx - 1 + imageUrls.length) % imageUrls.length;
+                        img.src = imageUrls[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + imageUrls.length; });
+                    next.addEventListener('click', () => { idx = (idx + 1) % imageUrls.length;
+                        img.src = imageUrls[idx];
+                        if (counter) counter.textContent = (idx + 1) + '/' + imageUrls.length; });
                 }
             }
         };
