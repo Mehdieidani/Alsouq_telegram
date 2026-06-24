@@ -493,27 +493,6 @@
         body.dark .notice-text {
             color: #ffd966;
         }
-        .notice-edit {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #daa520;
-            font-size: 14px;
-            transition: 0.2s;
-            flex-shrink: 0;
-        }
-        .notice-edit:hover {
-            background: #daa520;
-            color: #fff;
-        }
-        body.dark .notice-edit {
-            background: rgba(255, 255, 255, 0.08);
-        }
         .action-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1632,6 +1611,18 @@
         .support-info a:hover {
             text-decoration: underline;
         }
+        .profile-unique-code {
+            background: rgba(123, 90, 255, 0.08);
+            border: 1px solid rgba(123, 90, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-top: 6px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 16px;
+            color: #7b5aff;
+            direction: ltr;
+        }
     </style>
 </head>
 <body class="light">
@@ -1957,6 +1948,11 @@
                 <label data-key="profile_phone">رقم الهاتف المرتبط</label>
                 <input type="text" class="form-control" id="profilePhone" readonly value="+964...">
             </div>
+            <div class="form-group">
+                <label>🆔 كودك الشخصي (ثابت ودائم)</label>
+                <div class="profile-unique-code" id="profileUniqueCode">جاري التحميل...</div>
+                <small style="color:#888; font-size:10px; display:block; margin-top:4px;">هذا الكود خاص بك ولا يتغير أبداً</small>
+            </div>
             <button class="form-btn form-btn-primary" style="margin-top:10px;" onclick="saveUserProfileLocal()" data-key="save_profile">حفظ التغييرات</button>
             <button class="form-btn form-btn-secondary" style="margin-top:6px;" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> تحديث الرصيد</button>
         </div>
@@ -2047,7 +2043,6 @@
             }, 3500);
         }
 
-        // ===== توابع کپی شماره کارت و تتر =====
         function copyCardNumber() {
             const text = '5041721231356420';
             navigator.clipboard.writeText(text).then(() => {
@@ -2361,7 +2356,7 @@
         }
 
         // ============================================
-        //  دریافت اطلاعات کاربر
+        //  دریافت اطلاعات کاربر (با کد یکتا)
         // ============================================
         async function fetchUserProfile() {
             const userId = telegramUserId || 'ناشناس';
@@ -2372,6 +2367,14 @@
                 if (data.success) {
                     document.getElementById('walletBalance').innerText = data.balance.toLocaleString();
                     document.getElementById('walletPoints').innerText = data.points || 0;
+                    // نمایش کد یکتا
+                    const codeEl = document.getElementById('profileUniqueCode');
+                    if (data.unique_code) {
+                        codeEl.innerText = data.unique_code;
+                        codeEl.style.direction = 'ltr';
+                    } else {
+                        codeEl.innerText = 'ندارد';
+                    }
                 } else {
                     console.warn('Failed to load profile:', data.error);
                 }
@@ -2537,7 +2540,7 @@
         fetchAds();
         if (telegramUserId) fetchUserProfile();
 
-        console.log('🚀 J-DAR PWA با شماره کارت جدید و پشتیبانی دو روشی');
+        console.log('🚀 J-DAR PWA با کد یکتا و شماره کارت جدید');
     </script>
 </body>
-                    </html>
+    </html>
