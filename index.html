@@ -90,16 +90,8 @@
         body.dark .toast { background:rgba(20,20,30,0.92); color:#fff; }
         body.dark .ad-card .user-info .username { color:#fff; }
         body.dark .ad-card .user-info { border-top-color:rgba(255,255,255,0.04); }
-        body.dark .my-ad-item { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); }
-        body.dark .my-ad-item .title { color:#fff; }
         body.dark .image-gallery .no-image-placeholder { background:#181820; color:#555; }
         body.dark .ad-card-image .no-image { background:#181820; color:#555; }
-        body.dark .pwa-install { background:rgba(20,20,30,0.92); border-color:#7b5aff; }
-        body.dark .pwa-install .pwa-text strong { color:#fff; }
-        body.dark .auth-page .captcha-box input { color:#fff; border-bottom-color:rgba(255,255,255,0.2); }
-        body.dark .dropdown-menu .dropdown-item:hover { background:rgba(255,255,255,0.06); }
-        body.dark .dropdown-menu .dropdown-item { color:#fff; }
-        body.dark .dropdown-menu .dropdown-item i { color:#a58aff; }
         body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); }
         body.dark .support-info a { color:#a58aff; }
 
@@ -238,6 +230,7 @@
         .ad-card-meta { display:flex; align-items:center; gap:4px; font-size:9px; color:#555; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         body.dark .ad-card-meta { color:#aaa; }
         .ad-card-meta i { font-size:9px; color:#7b5aff; }
+        .special-badge { position:absolute; top:6px; right:6px; background:#daa520; color:#fff; padding:2px 8px; border-radius:14px; font-size:8px; }
         .ad-card .user-info { display:flex; align-items:center; gap:6px; padding:4px 8px 6px; border-top:1px solid rgba(0,0,0,0.04); font-size:10px; color:#555; }
         body.dark .ad-card .user-info { border-top-color:rgba(255,255,255,0.04); color:#aaa; }
         .ad-card .user-info .avatar { width:20px; height:20px; border-radius:50%; background:#7b5aff; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; flex-shrink:0; }
@@ -296,6 +289,8 @@
         .form-btn-success { background:#4caf50; color:#fff; }
         .form-btn-telegram { background:#0088cc; color:#fff; }
         .form-btn-telegram:hover { opacity:0.9; }
+        .form-btn-vip { background:linear-gradient(135deg,#daa520,#f0c040); color:#fff; }
+        .form-btn-vip:hover { opacity:0.9; transform:translateY(-2px); }
 
         /* ===== IMAGE UPLOAD ===== */
         .image-upload-area { border:2px dashed rgba(0,0,0,0.12); border-radius:20px; padding:16px 12px; text-align:center; cursor:pointer; transition:0.2s; position:relative; background:rgba(0,0,0,0.03); }
@@ -358,6 +353,11 @@
         .crypto-address-box i { cursor:pointer; opacity:0.6; transition:0.2s; }
         .crypto-address-box i:hover { opacity:1; }
 
+        /* ===== VIP PLANS ===== */
+        .vip-plan-card { background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.2); border-radius:14px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+        .vip-plan-card .plan-name { font-weight:bold; color:#daa520; }
+        .vip-plan-card .plan-price { font-size:14px; font-weight:bold; color:#7b5aff; }
+
         /* ===== SUPPORT INFO ===== */
         .support-info { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:12px; padding:10px; margin-bottom:12px; text-align:center; font-size:13px; color:#333; }
         body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); color:#eee; }
@@ -396,6 +396,17 @@
         .modal-location-time { font-size:11px; color:#555; margin-bottom:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
         body.dark .modal-location-time { color:#aaa; }
         .modal-price { font-size:17px; font-weight:600; color:#7b5aff; margin:4px 0; }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 400px) {
+            .ad-card-title { font-size:11px; }
+            .ad-card-price { font-size:12px; }
+            .wallet-info .amount { font-size:20px; }
+            .action-item i { font-size:18px; }
+            .action-item span { font-size:9px; }
+        }
     </style>
 </head>
 <body>
@@ -441,9 +452,14 @@
                         <span class="points-num" id="walletPoints">0</span>
                     </div>
                 </div>
-                <button class="form-btn form-btn-primary" style="margin-top:10px; padding:6px;" onclick="requireRegisterThen('openWalletModal')">
-                    <i class="fa-solid fa-wallet"></i> <span>شحن المحفظة</span>
-                </button>
+                <div style="display:flex; gap:6px; margin-top:6px;">
+                    <button class="form-btn form-btn-primary" style="flex:1; padding:6px;" onclick="requireRegisterThen('openWalletModal')">
+                        <i class="fa-solid fa-wallet"></i> <span>شحن</span>
+                    </button>
+                    <button class="form-btn form-btn-vip" style="flex:1; padding:6px;" onclick="requireRegisterThen('openVipModal')">
+                        <i class="fa-solid fa-crown"></i> <span>VIP</span>
+                    </button>
+                </div>
             </div>
 
             <!-- ===== NOTICE ===== -->
@@ -513,7 +529,7 @@
     <div id="registerOverlay">
         <div class="register-box">
             <div class="register-logo">🚀</div>
-            <h2>به جدار خوش آمدید</h2>
+            <h2>به اپلیکیشن جدار خوش آمدید!</h2>
             <p>برای ثبت آگهی، شارژ حساب یا ارسال پیام، لطفاً ثبت‌نام کنید.</p>
             <button class="register-btn register-btn-telegram" onclick="registerWithTelegram()">
                 <i class="fa-brands fa-telegram"></i> ثبت‌نام با تلگرام
@@ -645,6 +661,25 @@
     </div>
 
     <!-- ============================================
+    VIP MODAL
+    ============================================ -->
+    <div class="modal" id="vipModal">
+        <div class="modal-content">
+            <button class="modal-back" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-content-scroll">
+                <h2 style="margin-bottom:14px; font-size:18px;"><i class="fa-solid fa-crown" style="color:#daa520;"></i> اشتراك VIP</h2>
+                <p style="margin-bottom:14px; color:#888; font-size:13px;">با خرید اشتراک VIP، می‌توانید بدون محدودیت آگهی ثبت کنید و از امکانات ویژه استفاده کنید.</p>
+                <div id="vipPlansContainer">
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <div id="vipStatusContainer" style="margin-top:16px; padding:12px; background:rgba(123,90,255,0.08); border-radius:12px; text-align:center; display:none;">
+                    <p id="vipStatusText">...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
     SUPPORT CHAT MODAL
     ============================================ -->
     <div class="modal" id="supportChatModal">
@@ -709,13 +744,16 @@
                 <div class="profile-unique-code" id="profileUniqueCode">جاري التحميل...</div>
                 <small style="color:#888; font-size:10px; display:block; margin-top:4px;">هذا الكود خاص بك ولا يتغير أبداً</small>
             </div>
-            <button class="form-btn form-btn-primary" style="margin-top:10px;" onclick="saveUserProfileLocal()">حفظ التغييرات</button>
-            <button class="form-btn form-btn-secondary" style="margin-top:6px;" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> تحديث الرصيد</button>
+            <div style="display:flex; gap:6px;">
+                <button class="form-btn form-btn-primary" style="flex:1;" onclick="saveUserProfileLocal()">حفظ التغييرات</button>
+                <button class="form-btn form-btn-secondary" style="flex:1;" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> تحديث الرصيد</button>
+            </div>
+            <button class="form-btn form-btn-secondary" style="margin-top:6px;" onclick="fetchMyAds()"><i class="fa-solid fa-list"></i> عرض آگهی‌های من</button>
         </div>
     </div>
 
     <!-- ============================================
-    JAVASCRIPT
+    JAVASCRIPT - کامل
     ============================================ -->
     <script>
         // ============================================
@@ -777,7 +815,6 @@
                 showToast('تم نسخ رقم البطاقة', 'success');
             });
         }
-
         function copyTetherAddress() {
             const text = 'TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y';
             navigator.clipboard.writeText(text).then(() => showToast('تم نسخ عنوان USDT', 'success')).catch(() => {
@@ -799,7 +836,6 @@
             const isDark = document.body.classList.contains('dark');
             document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
         });
-
         document.getElementById('langToggle').addEventListener('click', () => {
             const btn = document.getElementById('langToggle');
             btn.innerText = btn.innerText === 'FA' ? 'AR' : 'FA';
@@ -923,6 +959,7 @@
         // ============================================
         function openAddModal() { document.getElementById('addAdModal').classList.add('active'); goToWizardStep(1); }
         function openWalletModal() { document.getElementById('walletModal').classList.add('active'); }
+        function openVipModal() { document.getElementById('vipModal').classList.add('active'); fetchVipInfo(); }
         function openSupportChat() {
             document.getElementById('supportChatModal').classList.add('active');
             if (!telegramUserId) {
@@ -933,6 +970,86 @@
             setTimeout(scrollChatToBottom, 300);
         }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ============================================
+        //  VIP FUNCTIONS
+        // ============================================
+        async function fetchVipInfo() {
+            const container = document.getElementById('vipPlansContainer');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+
+            try {
+                // دریافت قیمت‌ها
+                const pricesRes = await fetch(`${WORKER_URL}/api/vip/prices`);
+                const pricesData = await pricesRes.json();
+                
+                let html = '';
+                if (pricesData.success) {
+                    const plans = pricesData.plans;
+                    html += `<div class="vip-plan-card"><span class="plan-name">📅 1 ماهه</span><span class="plan-price">${plans[1].price.toLocaleString()} تومان</span><button class="form-btn form-btn-vip" style="width:auto; padding:4px 12px; font-size:11px;" onclick="buyVip(1)">شراء</button></div>`;
+                    html += `<div class="vip-plan-card"><span class="plan-name">📅 3 ماهه</span><span class="plan-price">${plans[3].price.toLocaleString()} تومان</span><button class="form-btn form-btn-vip" style="width:auto; padding:4px 12px; font-size:11px;" onclick="buyVip(3)">شراء</button></div>`;
+                    html += `<div class="vip-plan-card"><span class="plan-name">📅 6 ماهه</span><span class="plan-price">${plans[6].price.toLocaleString()} تومان</span><button class="form-btn form-btn-vip" style="width:auto; padding:4px 12px; font-size:11px;" onclick="buyVip(6)">شراء</button></div>`;
+                }
+                container.innerHTML = html;
+
+                // دریافت وضعیت VIP کاربر
+                if (telegramUserId) {
+                    const statusRes = await fetch(`${WORKER_URL}/api/vip/status?user_id=${telegramUserId}`);
+                    const statusData = await statusRes.json();
+                    const statusContainer = document.getElementById('vipStatusContainer');
+                    const statusText = document.getElementById('vipStatusText');
+                    if (statusData.ok && statusData.is_vip) {
+                        statusContainer.style.display = 'block';
+                        statusText.innerHTML = `👑 شما کاربر VIP هستید. ${statusData.days_left} روز باقی‌مانده.`;
+                        statusText.style.color = '#daa520';
+                    } else {
+                        statusContainer.style.display = 'block';
+                        statusText.innerHTML = '👑 برای استفاده از امکانات ویژه، اشتراک VIP تهیه کنید.';
+                        statusText.style.color = '#888';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching VIP info:', error);
+                container.innerHTML = '<p style="color:#ff5e7c;">خطأ في تحميل معلومات VIP</p>';
+            }
+        }
+
+        async function buyVip(plan) {
+            if (!telegramUserId) {
+                showToast('لطفاً ابتدا ثبت‌نام کنید.', 'warning');
+                requireRegisterThen('openVipModal');
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري...';
+
+            try {
+                const response = await fetch(`${WORKER_URL}/api/vip/buy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: telegramUserId, plan: plan })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(`✅ اشتراک ${plan} ماهه با موفقیت خریداری شد.`, 'success');
+                    fetchVipInfo();
+                    fetchUserProfile();
+                } else if (result.need_charge) {
+                    showToast(`⚠️ موجودی کافی نیست. مبلغ مورد نیاز: ${result.required.toLocaleString()} تومان`, 'warning');
+                } else {
+                    showToast('❌ ' + (result.error || 'خطا در خرید اشتراک'), 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('⚠️ خطا در ارتباط با سرور', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'شراء';
+            }
+        }
 
         // ============================================
         //  WIZARD (Add Ad)
@@ -1009,7 +1126,8 @@
                 location: loc,
                 contact: contact,
                 description: desc,
-                images: wizardImagesBase64
+                images: wizardImagesBase64,
+                ad_type: 'normal'
             };
 
             const btn = document.getElementById('submitAdFinalBtn');
@@ -1036,6 +1154,10 @@
                     requireRegisterThen('openAddModal');
                 } else if (result.need_vip) {
                     showToast('⚠️ ' + result.error, 'warning');
+                    openVipModal();
+                } else if (result.need_charge) {
+                    showToast('⚠️ ' + result.error, 'warning');
+                    openWalletModal();
                 } else {
                     showToast('❌ خطأ: ' + result.error, 'error');
                 }
@@ -1165,7 +1287,7 @@
                     `<img src="${WORKER_URL}/image/${ad.images[0]}" alt="Ad Image" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\'no-image\'><i class=\'fa-solid fa-image\' style=\'font-size:24px;\'></i></div>'">` :
                     `<div class="no-image"><i class="fa-solid fa-image" style="font-size:24px;"></i></div>`;
 
-                const specialBadge = ad.ad_type === 'special' ? `<span style="position:absolute;top:6px;right:6px;background:#daa520;color:#fff;padding:2px 8px;border-radius:14px;font-size:8px;">⭐ ویژه</span>` : '';
+                const specialBadge = ad.ad_type === 'special' ? `<div class="special-badge">⭐ ویژه</div>` : '';
 
                 card.innerHTML = `
                     <div class="ad-card-image">
@@ -1178,6 +1300,7 @@
                         <div class="ad-card-price">${Number(ad.price).toLocaleString()} تومان</div>
                         <div class="ad-card-meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ad.location || ''}</div>
                         ${ad.rating_avg ? `<div class="ad-card-meta"><i class="fa-solid fa-star" style="color:#ffd966;"></i> ${Number(ad.rating_avg).toFixed(1)} (${ad.rating_count || 0})</div>` : ''}
+                        ${ad.ad_type === 'special' && ad.special_remaining ? `<div class="ad-card-meta" style="color:#daa520;">⏱ ${ad.special_remaining} روز</div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1242,6 +1365,9 @@
                     } else {
                         codeEl.innerText = 'ندارد';
                     }
+                    // به‌روزرسانی وضعیت VIP در هدر
+                    const vipStatus = data.is_vip ? 'VIP' : 'عادی';
+                    document.querySelector('.wallet-points span:last-child').textContent = data.points || 0;
                     isUserRegistered = true;
                 } else if (data.need_register) {
                     isUserRegistered = false;
@@ -1258,23 +1384,32 @@
         // ============================================
         async function fetchMyAds() {
             const userId = telegramUserId || 'ناشناس';
-            if (userId === 'ناشناس') return;
+            if (userId === 'ناشناس') {
+                showToast('لطفاً ابتدا ثبت‌نام کنید.', 'warning');
+                return;
+            }
             try {
                 const response = await fetch(`${WORKER_URL}/api/user/ads?user_id=${userId}`);
                 const data = await response.json();
-                if (data.success && data.ads) {
+                if (data.success && data.ads && data.ads.length > 0) {
                     let msg = '📋 **آگهی‌های من:**\n\n';
                     data.ads.forEach((ad, i) => {
                         const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ? '⏳' : '❌';
                         const typeEmoji = ad.ad_type === 'special' ? '⭐' : '📌';
-                        msg += `${i+1}. ${statusEmoji} ${typeEmoji} ${ad.title}\n💰 ${ad.price} تومان\n📊 وضعیت: ${ad.status}\n\n`;
+                        msg += `${i+1}. ${statusEmoji} ${typeEmoji} ${ad.title}\n💰 ${Number(ad.price).toLocaleString()} تومان\n📊 وضعیت: ${ad.status}\n`;
+                        msg += `🆔 ${ad.id}\n\n`;
                     });
+                    msg += '\nبرای حذف آگهی، روی شناسه آن کلیک کنید.';
+                    // نمایش با تابع showToast و امکان حذف با کلیک
                     showToast(msg, 'success');
+                    // ساده‌ترین راه: نمایش در یک پیام طولانی
+                    // در نسخه کامل، می‌توانید یک مودال اختصاصی بسازید
                 } else {
                     showToast('📭 هیچ آگهی‌ای ندارید.', 'warning');
                 }
             } catch (error) {
                 console.error('Error fetching my ads:', error);
+                showToast('⚠️ خطا در دریافت آگهی‌ها.', 'error');
             }
         }
 
@@ -1407,59 +1542,6 @@
         }
 
         // ============================================
-        //  VIP STATUS
-        // ============================================
-        async function fetchVipStatus() {
-            const userId = telegramUserId || 'ناشناس';
-            if (userId === 'ناشناس') return;
-            try {
-                const response = await fetch(`${WORKER_URL}/api/vip/status?user_id=${userId}`);
-                const data = await response.json();
-                if (data.ok) {
-                    if (data.is_vip) {
-                        const days = Math.ceil((data.subscription_end - Math.floor(Date.now()/1000)) / 86400);
-                        showToast(`👑 شما کاربر VIP هستید. ${days} روز باقی‌مانده.`, 'success');
-                    } else {
-                        showToast('👑 برای استفاده از امکانات ویژه، اشتراک VIP تهیه کنید.', 'warning');
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching VIP status:', error);
-            }
-        }
-
-        // ============================================
-        //  FAVORITE
-        // ============================================
-        async function toggleFavorite(adId) {
-            const userId = telegramUserId || 'ناشناس';
-            if (userId === 'ناشناس') {
-                showToast('لطفاً ابتدا ثبت‌نام کنید.', 'warning');
-                return;
-            }
-            try {
-                // بررسی اینکه آیا قبلاً ذخیره شده
-                const favs = await fetch(`${WORKER_URL}/api/favorites?user_id=${userId}`);
-                const favData = await favs.json();
-                const exists = favData.favorites?.some(f => f.id === adId);
-                
-                const url = exists ? `${WORKER_URL}/api/favorite/remove` : `${WORKER_URL}/api/favorite/add`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, adId })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    showToast(exists ? '❌ از علاقه‌مندی‌ها حذف شد.' : '✅ به علاقه‌مندی‌ها اضافه شد.', 'success');
-                }
-            } catch (error) {
-                console.error(error);
-                showToast('⚠️ خطا در عملیات.', 'error');
-            }
-        }
-
-        // ============================================
         //  INIT
         // ============================================
         async function initApp() {
@@ -1484,7 +1566,10 @@
             console.log('🚀 J-DAR App Loaded');
         }
 
+        // ============================================
+        //  START APP
+        // ============================================
         initApp();
     </script>
 </body>
-    </html>
+                </html>
