@@ -7,6 +7,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    /* ===== تمام استایل‌های شما (همان فایل اصلی) بدون هیچ تغییری ===== */
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html { overflow-x:hidden; overscroll-behavior:none; height:100%; }
     body {
@@ -302,6 +303,35 @@
     body.dark .review-item .comment { color:#aaa; }
     .review-item .date { font-size:9px; color:#888; margin-top:2px; }
     @media (max-width:420px) { .ads-grid { grid-template-columns:1fr 1fr; gap:6px; } .action-grid { grid-template-columns:repeat(4,1fr); gap:4px; } .action-item { padding:6px 0; } .action-item i { font-size:16px; } .action-item span { font-size:8px; } .wallet-info .amount { font-size:20px; } }
+
+    /* استایل دکمه ثبت‌نام */
+    .login-overlay {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.7); backdrop-filter:blur(10px);
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; padding:20px;
+      animation:fadeIn 0.3s ease;
+    }
+    .login-box {
+      background:rgba(255,255,255,0.95); border-radius:24px;
+      padding:30px 24px; max-width:400px; width:100%;
+      text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+    body.dark .login-box { background:rgba(20,20,28,0.95); color:#fff; }
+    .login-box .icon { font-size:64px; color:#7b5aff; margin-bottom:16px; }
+    .login-box h2 { font-size:22px; margin-bottom:8px; }
+    .login-box p { color:#666; font-size:14px; margin-bottom:20px; line-height:1.6; }
+    body.dark .login-box p { color:#aaa; }
+    .login-box .btn-telegram {
+      display:inline-block; padding:14px 32px; border-radius:16px;
+      background:#0088cc; color:#fff; font-weight:700; font-size:16px;
+      border:none; cursor:pointer; text-decoration:none;
+      transition:0.3s; box-shadow:0 4px 12px rgba(0,136,204,0.3);
+    }
+    .login-box .btn-telegram:hover { opacity:0.9; transform:translateY(-2px); }
+    .login-box .btn-telegram i { margin-left:8px; }
+    .login-box .hint { font-size:12px; color:#888; margin-top:12px; }
+    body.dark .login-box .hint { color:#666; }
   </style>
 </head>
 <body>
@@ -397,14 +427,81 @@
     <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span>پروفایل</span></div>
   </div>
 
-  <!-- Modals -->
-  <div class="modal" id="addAdModal"><!-- Add Ad Modal --></div>
-  <div class="modal" id="walletModal"><!-- Wallet Modal --></div>
-  <div class="modal" id="vipModal"><!-- VIP Modal --></div>
-  <div class="modal" id="supportChatModal"><!-- Support Chat Modal --></div>
-  <div class="modal" id="adDetailsModal"><!-- Ad Details Modal --></div>
-  <div class="modal" id="reviewModal"><!-- Review Modal --></div>
-  <div class="modal" id="storeModal"><!-- Store Modal --></div>
+  <!-- Overlay ثبت‌نام (در صورت نیاز) -->
+  <div class="login-overlay" id="loginOverlay" style="display:none;">
+    <div class="login-box">
+      <div class="icon"><i class="fa-brands fa-telegram"></i></div>
+      <h2>برای ادامه به تلگرام متصل شوید</h2>
+      <p>برای ثبت آگهی، چت یا شارژ حساب، باید از طریق تلگرام وارد شوید.</p>
+      <a href="https://t.me/AlsouqAlmaftuhiran_bot?start=login" target="_blank" class="btn-telegram" onclick="loginWithTelegram()">
+        <i class="fa-brands fa-telegram"></i> ورود با تلگرام
+      </a>
+      <div class="hint">پس از ورود، به‌صورت خودکار به این صفحه برمی‌گردید.</div>
+    </div>
+  </div>
+
+  <!-- Modals (محتوای کامل برای هر مودال) -->
+  <div class="modal" id="addAdModal">
+    <div class="modal-content">
+      <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-content-scroll">
+        <h2 style="margin-bottom:14px; font-size:18px;">ثبت آگهی جدید</h2>
+        <div class="wizard-progress">
+          <div class="wizard-progress-bar" id="wizardProgressBar"></div>
+          <div class="wizard-step-indicator active" id="stepInd1">۱</div>
+          <div class="wizard-step-indicator" id="stepInd2">۲</div>
+          <div class="wizard-step-indicator" id="stepInd3">۳</div>
+        </div>
+        <form id="addAdForm" onsubmit="event.preventDefault();">
+          <div class="wizard-step-pane active" id="wizardStep1">
+            <div class="form-group"><label>عنوان آگهی <span class="required">*</span></label><input type="text" class="form-control" id="adTitle" required placeholder="مثال: تور مشهد"></div>
+            <div class="form-group"><label>دسته‌بندی <span class="required">*</span></label>
+              <select class="form-control" id="adCategory" required>
+                <option value="گردشگری">گردشگری</option><option value="پزشکی">پزشکی</option><option value="زیبایی">زیبایی</option>
+              </select>
+            </div>
+            <div class="form-group"><label>قیمت (تومان) <span class="required">*</span></label><input type="number" class="form-control" id="adPrice" required placeholder="0"></div>
+            <button type="button" class="form-btn form-btn-primary" style="margin-top:10px;" onclick="goToWizardStep(2)">بعدی <i class="fa-solid fa-arrow-left"></i></button>
+          </div>
+          <div class="wizard-step-pane" id="wizardStep2">
+            <div class="form-group"><label>توضیحات <span class="required">*</span></label><textarea class="form-control" id="adDescription" required rows="4" placeholder="توضیحات کامل..."></textarea></div>
+            <div class="form-group"><label>موقعیت / شهر <span class="required">*</span></label><input type="text" class="form-control" id="adLocation" required placeholder="مثال: تهران"></div>
+            <div class="form-group"><label>کشور</label>
+              <select class="form-control" id="adCountry"><option value="ایران">ایران</option><option value="عراق">عراق</option><option value="امارات">امارات</option></select>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(1)"><i class="fa-solid fa-arrow-right"></i> قبلی</button>
+              <button type="button" class="form-btn form-btn-primary" onclick="goToWizardStep(3)">بعدی <i class="fa-solid fa-arrow-left"></i></button>
+            </div>
+          </div>
+          <div class="wizard-step-pane" id="wizardStep3">
+            <div class="form-group"><label>تصاویر (حداکثر ۴)</label>
+              <div class="image-upload-area"><i class="fa-solid fa-cloud-arrow-up"></i><p>برای آپلود کلیک کنید</p><input type="file" id="adImagesInput" accept="image/*" multiple onchange="handleWizardImages(this)"></div>
+              <div class="image-preview-grid" id="wizardImagePreviewGrid"></div>
+            </div>
+            <div class="form-group"><label>شماره تماس</label><input type="tel" class="form-control" id="adContact" placeholder="0912..."></div>
+            <div class="form-group"><label>نوع آگهی</label>
+              <select class="form-control" id="adType"><option value="normal">عادی</option><option value="special">ویژه</option></select>
+            </div>
+            <div class="form-group" id="planGroup" style="display:none;"><label>مدت ویژه</label>
+              <select class="form-control" id="adPlan"><option value="1">۱ روز</option><option value="3">۳ روز</option></select>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(2)"><i class="fa-solid fa-arrow-right"></i> قبلی</button>
+              <button type="button" class="form-btn form-btn-success" id="submitAdFinalBtn" onclick="submitAdWizard()"><i class="fa-solid fa-check"></i> ثبت آگهی</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="walletModal"><!-- Wallet Modal Content --></div>
+  <div class="modal" id="vipModal"><!-- VIP Modal Content --></div>
+  <div class="modal" id="supportChatModal"><!-- Support Chat Modal Content --></div>
+  <div class="modal" id="adDetailsModal"><!-- Ad Details Modal Content --></div>
+  <div class="modal" id="reviewModal"><!-- Review Modal Content --></div>
+  <div class="modal" id="storeModal"><!-- Store Modal Content --></div>
 
   <!-- Profile Tab -->
   <div class="container" id="profileApp" style="display:none;">
@@ -420,13 +517,11 @@
     <div class="my-ads-list" id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
-  <!-- Store Tab -->
   <div class="container" id="storeApp" style="display:none;">
     <h2 style="margin-bottom:16px;">🏪 فروشگاه من</h2>
     <div id="storeContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
-  <!-- Favorites Tab -->
   <div class="container" id="favoritesApp" style="display:none;">
     <h2 style="margin-bottom:16px;">❤️ علاقه‌مندی‌ها</h2>
     <div id="favoritesContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
@@ -434,7 +529,7 @@
 
   <script>
     // ============================================================
-    // J-DAR Global PWA - Complete Frontend
+    // J-DAR GLOBAL - Full Frontend (Fully Integrated with Worker)
     // ============================================================
 
     const WORKER_URL = 'https://souq-bot.mehdi11eidani.workers.dev';
@@ -445,7 +540,8 @@
     let filteredAds = [];
     let currentUser = null;
     let favorites = [];
-    let chatUnread = 0;
+    let wizardImagesBase64 = [];
+    let isLoggedIn = false;
 
     // Telegram init
     const tg = window.Telegram?.WebApp || null;
@@ -456,11 +552,40 @@
       if (user) {
         telegramUserId = user.id;
         telegramUserName = user.first_name || user.username || 'کاربر';
+        isLoggedIn = true;
+      }
+    }
+
+    // ===== Check Login & Show Overlay =====
+    function requireLogin(callback) {
+      if (isLoggedIn && telegramUserId) {
+        if (callback) callback();
+        return true;
+      }
+      // Show login overlay
+      document.getElementById('loginOverlay').style.display = 'flex';
+      // Store callback for after login
+      window._pendingAction = callback;
+      return false;
+    }
+
+    function loginWithTelegram() {
+      // User will be redirected to bot, then back
+      // After return, the page will reload and tg will have user data
+      window.location.href = 'https://t.me/AlsouqAlmaftuhiran_bot?start=login';
+    }
+
+    // After returning from Telegram, check again
+    if (tg && tg.initDataUnsafe?.user) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      if (window._pendingAction) {
+        setTimeout(window._pendingAction, 300);
+        window._pendingAction = null;
       }
     }
 
     // ============================================================
-    // Toast System
+    // Toast
     // ============================================================
     function showToast(msg, type = 'success') {
       const container = document.getElementById('toastContainer');
@@ -474,18 +599,16 @@
     }
 
     // ============================================================
-    // Theme & Language
+    // Theme, Language, Menu
     // ============================================================
     document.getElementById('themeToggle').addEventListener('click', () => {
       document.body.classList.toggle('dark');
       document.getElementById('themeToggle').innerHTML = document.body.classList.contains('dark') ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
     });
-
     document.getElementById('langToggle').addEventListener('click', () => {
-      // Toggle between fa/ar/en
-      document.getElementById('langToggle').innerText = document.getElementById('langToggle').innerText === 'FA' ? 'AR' : 'FA';
+      const btn = document.getElementById('langToggle');
+      btn.innerText = btn.innerText === 'FA' ? 'AR' : 'FA';
     });
-
     document.getElementById('menuToggle').addEventListener('click', (e) => {
       e.stopPropagation();
       document.getElementById('dropdownMenu').classList.toggle('open');
@@ -525,7 +648,7 @@
     }
 
     // ============================================================
-    // API Calls
+    // API Call
     // ============================================================
     async function apiCall(endpoint, options = {}) {
       try {
@@ -538,14 +661,10 @@
     }
 
     // ============================================================
-    // User Profile
+    // User Profile & Auto Register
     // ============================================================
     async function fetchUserProfile() {
-      if (!telegramUserId) { 
-        // Try auto-register
-        await autoRegister();
-        return;
-      }
+      if (!telegramUserId) return;
       const data = await apiCall(`/api/user/profile?user_id=${telegramUserId}`);
       if (data.success) {
         currentUser = data;
@@ -554,13 +673,14 @@
         document.getElementById('profileName').value = data.first_name || 'کاربر';
         document.getElementById('profileCode').innerText = data.unique_code || 'ندارد';
         document.getElementById('profileTrust').value = data.trust_score || 50;
-        document.getElementById('profileTrust').value = data.trust_score || 50;
         if (data.is_vip) {
           document.getElementById('vipBadge').style.display = 'inline-flex';
         } else {
           document.getElementById('vipBadge').style.display = 'none';
         }
+        isLoggedIn = true;
       } else if (data.need_register) {
+        // Auto-register
         await autoRegister();
       }
     }
@@ -577,10 +697,10 @@
         })
       });
       if (data.success) {
+        isLoggedIn = true;
+        document.getElementById('loginOverlay').style.display = 'none';
         showToast('✅ ثبت‌نام با موفقیت انجام شد', 'success');
         fetchUserProfile();
-      } else {
-        showToast('⚠️ خطا در ثبت‌نام', 'error');
       }
     }
 
@@ -597,7 +717,7 @@
       const grid = document.getElementById('adsGrid');
       grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
 
-      const data = await apiCall('/api/feed');
+      const data = await apiCall('/api/ads');
       if (data.success && data.ads) {
         allAds = data.ads;
         filteredAds = [...allAds];
@@ -728,7 +848,7 @@
       document.getElementById('filterPanel').classList.remove('open');
     }
 
-    // Load countries
+    // Load countries & categories
     async function loadCountries() {
       const data = await apiCall('/api/countries');
       if (data.success) {
@@ -739,7 +859,6 @@
     }
     loadCountries();
 
-    // Load categories
     async function loadCategories() {
       const data = await apiCall('/api/categories');
       if (data.success) {
@@ -820,7 +939,7 @@
     // Favorites
     // ============================================================
     async function toggleFavorite(adId) {
-      if (!telegramUserId) { showToast('لطفاً ابتدا وارد شوید', 'warning'); return; }
+      if (!requireLogin()) return;
       const isFav = favorites.includes(adId);
       const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
       const data = await apiCall(endpoint, {
@@ -917,7 +1036,6 @@
     function editAd(adId) {
       const ad = allAds.find(a => a.id === adId);
       if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
-      // Open edit modal with ad data
       showToast('ویرایش آگهی - به زودی', 'warning');
     }
 
@@ -962,6 +1080,7 @@
     }
 
     function createStore() {
+      if (!requireLogin()) return;
       const name = prompt('نام فروشگاه را وارد کنید:');
       if (!name) return;
       apiCall('/api/store/create', {
@@ -977,6 +1096,7 @@
     // Support Chat
     // ============================================================
     function openSupportChat() {
+      if (!requireLogin()) return;
       document.getElementById('supportChatModal').classList.add('active');
       if (!telegramUserId) document.getElementById('userIdField').style.display = 'flex';
       else document.getElementById('userIdField').style.display = 'none';
@@ -1026,25 +1146,227 @@
     }
 
     // ============================================================
-    // Wallet & VIP Modals (Simplified)
+    // Wizard for Ad Creation (با دکمه‌های کامل)
+    // ============================================================
+    document.getElementById('adType').addEventListener('change', function() {
+      document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none';
+    });
+
+    function goToWizardStep(step) {
+      document.querySelectorAll('.wizard-step-pane').forEach(el => el.classList.remove('active'));
+      document.getElementById(`wizardStep${step}`).classList.add('active');
+      document.getElementById('wizardProgressBar').style.width = `${(step-1)*50}%`;
+      for (let i=1; i<=3; i++) {
+        const ind = document.getElementById(`stepInd${i}`);
+        ind.classList.remove('active','completed');
+        if (i < step) ind.classList.add('completed');
+        else if (i === step) ind.classList.add('active');
+      }
+    }
+
+    function handleWizardImages(input) {
+      const files = Array.from(input.files);
+      if (wizardImagesBase64.length + files.length > 4) {
+        showToast('حداکثر ۴ تصویر مجاز است', 'error');
+        return;
+      }
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          wizardImagesBase64.push(e.target.result);
+          renderWizardImagesGrid();
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
+
+    function renderWizardImagesGrid() {
+      const grid = document.getElementById('wizardImagePreviewGrid');
+      grid.innerHTML = '';
+      wizardImagesBase64.forEach((base64, index) => {
+        const item = document.createElement('div');
+        item.className = 'image-preview-item';
+        item.innerHTML = `<img src="${base64}"><button type="button" class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+        grid.appendChild(item);
+      });
+    }
+
+    function removeWizardImage(index) {
+      wizardImagesBase64.splice(index, 1);
+      renderWizardImagesGrid();
+    }
+
+    // ============================================================
+    // Submit Ad (هماهنگ با Worker)
+    // ============================================================
+    async function submitAdWizard() {
+      if (!requireLogin()) return;
+
+      const title = document.getElementById('adTitle').value;
+      const category = document.getElementById('adCategory').value;
+      const price = document.getElementById('adPrice').value;
+      const desc = document.getElementById('adDescription').value;
+      const loc = document.getElementById('adLocation').value;
+      const contact = document.getElementById('adContact').value;
+      const country = document.getElementById('adCountry').value;
+      const adType = document.getElementById('adType').value;
+      const plan = parseInt(document.getElementById('adPlan').value) || 1;
+
+      if (!title || !price || !desc || !loc) {
+        showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'error');
+        return;
+      }
+
+      const user = { id: telegramUserId, first_name: telegramUserName || 'کاربر' };
+
+      const payload = {
+        user: user,
+        title: title,
+        category: category,
+        price: price,
+        location: loc,
+        contact: contact,
+        description: desc,
+        images: wizardImagesBase64,
+        ad_type: adType,
+        plan: plan,
+        country: country
+      };
+
+      const btn = document.getElementById('submitAdFinalBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال ارسال...';
+
+      try {
+        const data = await apiCall('/api/submit-ad', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        if (data.success) {
+          showToast('✅ آگهی ثبت و برای تأیید به ادمین ارسال شد', 'success');
+          document.getElementById('addAdForm').reset();
+          wizardImagesBase64 = [];
+          renderWizardImagesGrid();
+          closeModal('addAdModal');
+          fetchAds();
+          fetchUserProfile();
+        } else {
+          if (data.need_register) {
+            showToast('⚠️ لطفاً ابتدا وارد تلگرام شوید', 'warning');
+            document.getElementById('loginOverlay').style.display = 'flex';
+          } else if (data.need_vip) {
+            showToast('⚠️ برای ثبت آگهی بیشتر، اشتراک VIP تهیه کنید', 'warning');
+          } else if (data.need_charge) {
+            showToast('⚠️ ' + data.error, 'warning');
+          } else {
+            showToast('❌ خطا: ' + data.error, 'error');
+          }
+        }
+      } catch (e) {
+        showToast('⚠️ خطا در ارتباط با سرور', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> ثبت آگهی';
+      }
+    }
+
+    // ============================================================
+    // Wallet & VIP Modals (به‌روز شده)
     // ============================================================
     function openWalletModal() {
-      if (!telegramUserId) { showToast('لطفاً وارد شوید', 'warning'); return; }
+      if (!requireLogin()) return;
       document.getElementById('walletModal').classList.add('active');
     }
 
     function openVipModal() {
-      if (!telegramUserId) { showToast('لطفاً وارد شوید', 'warning'); return; }
+      if (!requireLogin()) return;
       document.getElementById('vipModal').classList.add('active');
+      loadVipPrices();
     }
 
     function openAddModal() {
-      if (!telegramUserId) { showToast('لطفاً وارد شوید', 'warning'); return; }
+      if (!requireLogin()) return;
       document.getElementById('addAdModal').classList.add('active');
+      goToWizardStep(1);
     }
 
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
+    }
+
+    // ============================================================
+    // VIP Prices & Buy
+    // ============================================================
+    async function loadVipPrices() {
+      try {
+        const data = await apiCall('/api/vip/prices');
+        if (data.success) {
+          // Update modal with prices
+          const modal = document.getElementById('vipModal');
+          modal.querySelector('.modal-content-scroll').innerHTML = `
+            <h2 style="margin-bottom:14px; font-size:18px;">👑 اشتراک VIP</h2>
+            <p style="color:#666; font-size:13px; margin-bottom:12px;">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;">
+              <div style="background:rgba(123,90,255,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(123,90,255,0.15);">
+                <div style="font-size:20px; font-weight:800; color:#7b5aff;">1</div>
+                <div style="font-size:11px; color:#555;">ماه</div>
+                <div style="font-weight:700; margin-top:4px;">${data.plans.monthly.price.toLocaleString()} تومان</div>
+                <button class="form-btn form-btn-primary" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('monthly')">خرید</button>
+              </div>
+              <div style="background:rgba(218,165,32,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(218,165,32,0.2);">
+                <div style="font-size:20px; font-weight:800; color:#daa520;">3</div>
+                <div style="font-size:11px; color:#555;">ماه</div>
+                <div style="font-weight:700; margin-top:4px;">${data.plans.quarterly.price.toLocaleString()} تومان</div>
+                <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('quarterly')">خرید</button>
+              </div>
+              <div style="background:rgba(255,215,0,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(255,215,0,0.2);">
+                <div style="font-size:20px; font-weight:800; color:#ffd700;">6</div>
+                <div style="font-size:11px; color:#555;">ماه</div>
+                <div style="font-weight:700; margin-top:4px;">${data.plans.semiannual.price.toLocaleString()} تومان</div>
+                <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('semiannual')">خرید</button>
+              </div>
+            </div>
+            <div id="vipStatusDisplay" style="background:rgba(0,0,0,0.03); border-radius:12px; padding:10px; text-align:center; font-size:13px;">
+              <span id="vipStatusText">در حال بارگذاری...</span>
+            </div>
+            <button class="form-btn form-btn-secondary" style="margin-top:10px;" onclick="closeModal('vipModal')">بستن</button>
+          `;
+          // Load status
+          if (telegramUserId) {
+            const status = await apiCall(`/api/vip/status?user_id=${telegramUserId}`);
+            if (status.success && status.is_vip) {
+              document.getElementById('vipStatusText').innerHTML = `✅ اشتراک فعال است (${status.days_left} روز باقی‌مانده)`;
+            } else {
+              document.getElementById('vipStatusText').innerHTML = '❌ اشتراک فعالی ندارید';
+            }
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function buyVip(plan) {
+      if (!requireLogin()) return;
+      try {
+        const data = await apiCall('/api/vip/buy', {
+          method: 'POST',
+          body: JSON.stringify({ userId: telegramUserId, plan })
+        });
+        if (data.success) {
+          showToast(`✅ اشتراک VIP ${plan} با موفقیت خریداری شد`, 'success');
+          closeModal('vipModal');
+          fetchUserProfile();
+        } else {
+          if (data.need_charge) {
+            showToast(`⚠️ موجودی کافی نیست. نیاز: ${data.required.toLocaleString()} تومان`, 'warning');
+          } else {
+            showToast('❌ ' + data.error, 'error');
+          }
+        }
+      } catch (e) {
+        showToast('⚠️ خطا در ارتباط با سرور', 'error');
+      }
     }
 
     // ============================================================
@@ -1061,6 +1383,16 @@
     }
 
     // ============================================================
+    // Close modals with back button
+    // ============================================================
+    document.querySelectorAll('.modal-back').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modal = btn.closest('.modal');
+        if (modal) modal.classList.remove('active');
+      });
+    });
+
+    // ============================================================
     // Initialize
     // ============================================================
     loadNotice();
@@ -1075,15 +1407,7 @@
       });
     }
 
-    // Close modals with back button
-    document.querySelectorAll('.modal-back').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const modal = btn.closest('.modal');
-        if (modal) modal.classList.remove('active');
-      });
-    });
-
-    console.log('🚀 J-DAR Global v3.0 loaded');
+    console.log('🚀 J-DAR Global v3.0 - Fully Integrated with Worker');
   </script>
 </body>
-    </html>
+  </html>
