@@ -1,4 +1,1240 @@
-<!DOCTYPE html>
+// ============================================
+// J-DAR Worker - نسخه نهایی با ثبت‌نام یک‌کلیک + ورود با رمز
+// کلیه حقوق محفوظ است - گروه M.J (جدار)
+// ============================================
+
+// ===== تنظیمات اصلی =====
+const BOT_TOKEN = '8587925383:AAElQXNbZ8YIDJMWwX4YyVFMCOsC2pV6H6c';
+const SUPER_ADMIN_ID = '6522877528';
+const WEBHOOK_URL = 'https://souq-bot.mehdi11eidani.workers.dev/webhook';
+const APP_URL = 'https://souq-bot.mehdi11eidani.workers.dev/'; // آدرس برنامه
+
+// ===== تنظیم Webhook خودکار =====
+async function setWebhook() {
+  try {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${WEBHOOK_URL}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log('Webhook set:', data);
+  } catch (e) {
+    console.error('Webhook error:', e);
+  }
+}
+
+export default {
+  async fetch(request, env) {
+    if (!env._webhookSet) {
+      await setWebhook();
+      env._webhookSet = true;
+    }
+
+    const url = new URL(request.url);
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    if (url.pathname.startsWith('/image/')) {
+      const fileId = url.pathname.replace('/image/', '');
+      return await handleImageRequest(env, fileId);
+    }
+
+    if (url.pathname.startsWith('/api/')) {
+      return await handleAPI(request, url, env, corsHeaders);
+    }
+
+    // ===== مسیر اصلی HTML (برای ارائه صفحه) =====
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      return new Response(getHTML(), {
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+      });
+    }
+
+    if (url.pathname === '/webhook' && request.method === 'POST') {
+      try {
+        const update = await request.json();
+        await handleUpdate(update, env);
+        return new Response('OK', { headers: corsHeaders });
+      } catch (error) {
+        console.error('Webhook error:', error);
+        return new Response(JSON.stringify({ error: error.message }), {
+          status: 500,
+          headers: corsHeaders
+        });
+      }
+    }
+
+    return new Response('J-DAR Worker فعال 🚀', {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    });
+  }
+};
+
+// ============================================
+// CONSTANTS
+// ============================================
+
+const VALID_PRICE_KEYS = ['price_special1', 'price_special3', 'price_vip1', 'price_vip3', 'price_vip6'];
+const VALID_ROLES = ['ad_admin', 'sub_admin', 'price_admin', 'payment_admin', 'user_manager'];
+const MONTHLY_LIMIT_NORMAL = 2;
+const AD_EXPIRY_DAYS = 30;
+
+const SUBCATEGORIES = {
+  'پزشکی': [
+    'پزشک عمومی', 'متخصص', 'دندانپزشک', 'داروخانه', 'آزمایشگاه', 'بیمارستان',
+    'خدمات پرستاری', 'تجهیزات پزشکی', 'چشم‌پزشکی', 'کاشت مو', 'زیبایی', 'لیزر', 'پوست و مو'
+  ],
+  'گردشگری': [
+    'تور داخلی', 'تور خارجی', 'راهنما', 'اقامتگاه', 'حمل و نقل', 'خدمات سفر',
+    'شاندیز', 'سرعین', 'کیش', 'مشهد', 'اصفهان', 'شیراز'
+  ],
+  'زیارت': [
+    'عتبات عالیات', 'سوریه', 'مشهد', 'کربلا', 'نجف', 'کاظمین', 'سامرا', 'عمره', 'حج',
+    'قم', 'جمکران', 'شاه چراغ'
+  ]
+};
+
+const REFERRAL_POINTS = 2;
+const POINTS_TO_SPECIAL_3DAY = 150;
+const POINTS_TO_VIP_15DAY = 1500;
+const POINTS_TO_TOMAN_RATE = 100;
+
+const DEFAULT_PAYMENT_INFO = {
+  card: {
+    number: '6037-6917-9138-4449',
+    name: 'مهدی عیدانی',
+    bank: 'صادرات'
+  },
+  tether: {
+    address: '0x865e5da97a1a0f656cfc2113097fc963b26e5165',
+    network: 'TRC20'
+  }
+};
+
+// ============================================
+// TRANSLATIONS (فقط فارسی برای اختصار)
+// ============================================
+const translations = {
+  fa: {
+    select_lang: '🌐 لطفاً زبان خود را انتخاب کنید:',
+    welcome: 'به J-DAR خوش آمدید!',
+    home: '🏠 خانه',
+    post_ad: '📌 ثبت آگهی',
+    my_ads: '📋 آگهی‌های من',
+    special_ads: '⭐ آگهی‌های ویژه',
+    vip_subscription: '👑 اشتراک ویژه',
+    profile: '👤 پروفایل',
+    support: '🆘 پشتیبانی',
+    support_message: '💬 برای ارتباط با پشتیبانی روی دکمه زیر کلیک کنید:',
+    no_subscription: '❌ شما اشتراک ویژه ندارید',
+    subscription_remaining: '✅ اشتراک شما فعال است ({days} روز باقی‌مانده)',
+    subscription_expired: '⚠️ اشتراک شما منقضی شده است',
+    admin: '⚙️ پنل مدیریت',
+    statistics: '📊 آمار',
+    cancel: '❌ لغو',
+    skip: '⏭️ رد کردن',
+    normal_ad: '📌 عادی',
+    special_ad_type: '⭐ ویژه',
+    enter_title: '📝 عنوان آگهی را وارد کنید:',
+    enter_photos: '🖼 لطفاً عکس‌ها را ارسال کنید (حداکثر ۵) /done',
+    enter_description: '📝 توضیحات را وارد کنید:',
+    select_category: '📋 دسته‌بندی اصلی را انتخاب کنید:',
+    select_subcategory: '📋 زیرمجموعه را انتخاب کنید (اختیاری):',
+    select_country: '🌍 کشور را انتخاب کنید:',
+    enter_city: '🏙 شهر را وارد کنید:',
+    enter_price: '💰 قیمت را وارد کنید (فقط عدد):',
+    enter_phone: '📞 شماره تماس را وارد کنید:',
+    select_currency: '💱 واحد پول را انتخاب کنید:',
+    select_type: '🔖 نوع آگهی را انتخاب کنید:',
+    select_plan: '⏱ مدت ویژه (روز) را انتخاب کنید:',
+    select_vip_plan: '👑 مدت اشتراک (ماه) را انتخاب کنید:',
+    photo_received: '✅ عکس {count} از ۵ دریافت شد. /done',
+    max_photos: '⚠️ حداکثر ۵ عکس',
+    min_photos: '❌ حداقل یک عکس',
+    payment_info: '💳 اطلاعات پرداخت',
+    card_info: '💳 کارت بانکی:\n<span dir="ltr">{number}</span>\nبه نام {name} - بانک {bank}',
+    tether_info: '💎 USDT تتر TrustWallet (TRC20):\n{address}',
+    payment_note: '⚠️ پس از واریز، رسید را ارسال کنید',
+    send_receipt: '🧾 تصویر رسید را ارسال کنید:',
+    receipt_received: '✅ رسید دریافت شد. پس از تأیید مدیر، آگهی/اشتراک شما فعال می‌شود.',
+    ad_saved: '✅ آگهی شما ثبت و برای بررسی ارسال شد.',
+    ad_saved_special: '✅ آگهی ویژه شما ثبت و برای تأیید ارسال شد.',
+    vip_saved: '✅ درخواست اشتراک ثبت و برای تأیید ارسال شد.',
+    no_ads: '📭 آگهی‌ای یافت نشد.',
+    pending_ads: '📋 آگهی‌های در انتظار',
+    pending_subs: '💰 درخواست‌های اشتراک',
+    pending_charges: '💰 درخواست‌های شارژ',
+    no_pending: '✅ هیچ موردی در انتظار نیست.',
+    ad_approved: '✅ آگهی {id} تایید شد.',
+    ad_rejected: '❌ آگهی {id} رد شد.',
+    ad_deleted: '✅ آگهی {id} با موفقیت حذف شد.',
+    sub_approved: '✅ اشتراک {id} تایید شد.',
+    sub_rejected: '❌ اشتراک {id} رد شد.',
+    charge_approved: '✅ شارژ {amount} تومانی کاربر {user} تایید شد.',
+    charge_rejected: '❌ درخواست شارژ {id} رد شد.',
+    price_settings: '⚙️ قیمت‌ها',
+    price_updated: '✅ قیمت {key} به {value} تغییر کرد.',
+    invalid_key: '❌ کلید نامعتبر',
+    invalid_format: '❌ فرمت نامعتبر',
+    payment_settings: '💳 تنظیمات پرداخت',
+    payment_updated: '✅ اطلاعات پرداخت به‌روز شد.',
+    set_payment_format: 'فرمت: /setpayment card [شماره] [نام] [بانک] یا /setpayment tether [آدرس]',
+    admin_management: '👥 مدیریت ادمین‌ها',
+    add_admin_format: '/addadmin [user_id] [role]',
+    remove_admin_format: '/removeadmin [user_id]',
+    list_admins: '📋 لیست ادمین‌ها:\n',
+    admin_added: '✅ ادمین با نقش {role} اضافه شد.',
+    admin_removed: '✅ ادمین حذف شد.',
+    stats: '📊 آمار\nکاربران: {users}\nآگهی‌ها: {ads}\nویژه: {special}\nدر انتظار: {pending}\nVIP: {vip}',
+    unauthorized: '⛔ دسترسی ندارید',
+    invalid_command: '❌ دستور نامعتبر',
+    operation_cancelled: '❌ عملیات لغو شد.',
+    iran: '🇮🇷 ایران',
+    iraq: '🇮🇶 عراق',
+    code_iran: '98+',
+    code_iraq: '964+',
+    currency_toman: 'تومان',
+    currency_dollar: 'دلار',
+    currency_tether: 'تتر',
+    currency_dinar: 'دینار عراق',
+    balance: '💰 موجودی کیف پول: {balance} تومان',
+    points: '⭐ امتیاز شما: {points}',
+    charge: '💰 شارژ حساب',
+    enter_charge_amount: '💰 لطفاً مبلغ شارژ را انتخاب کنید:',
+    insufficient_balance: '⚠️ موجودی کافی نیست. مبلغ مورد نیاز: {amount} تومان - موجودی: {balance} تومان',
+    charge_request_sent: '✅ درخواست شارژ شما ثبت شد. پس از تأیید مدیر، موجودی اضافه می‌شود.',
+    referral: '🤝 دعوت از دوستان',
+    referral_link: '🔗 لینک دعوت شما:\nhttps://t.me/AlsouqAlmaftuhiran_bot?start={code}',
+    referral_stats: '📊 آمار دعوت‌ها:\nتعداد دعوت‌های موفق: {count}\nامتیاز کسب شده: {points}',
+    referral_points: '✨ به ازای هر دعوت موفق {points} امتیاز دریافت می‌کنید.',
+    convert_points: '🎁 تبدیل امتیاز',
+    convert_options: 'گزینه‌های تبدیل امتیاز:\n1️⃣ {p1} امتیاز = آگهی ویژه ۳ روزه\n2️⃣ {p2} امتیاز = اشتراک طلایی ۱۵ روزه\n3️⃣ تبدیل به تومان (هر امتیاز {rate} تومان)',
+    insufficient_points: '❌ امتیاز شما کافی نیست.',
+    points_converted: '✅ {points} امتیاز با موفقیت به {amount} تومان تبدیل و به کیف پول شما اضافه شد.',
+    special_ad_created: '✅ آگهی ویژه ۳ روزه با استفاده از امتیاز شما ایجاد شد. لطفاً مراحل ثبت آگهی را کامل کنید.',
+    vip_activated: '✅ اشتراک طلایی ۱۵ روزه با استفاده از امتیاز شما فعال شد.',
+    copyHint: '👆 برای کپی ضربه بزنید',
+    call: '📞 تماس',
+    chat: '💬 چت',
+    share: '📤 اشتراک',
+    report: '🚩 گزارش',
+    back: '🔙 بازگشت',
+    contact: 'پشتیبانی',
+    install: '📲 نصب اپ',
+    save: '💾 ذخیره',
+    justNow: 'چند لحظه پیش',
+    minute: 'دقیقه',
+    minutes: 'دقیقه',
+    hour: 'ساعت',
+    hours: 'ساعت',
+    day: 'روز',
+    days: 'روز',
+    week: 'هفته',
+    weeks: 'هفته',
+    user_management: '👥 مدیریت کاربران',
+    block_user: '🚫 مسدود کاربر',
+    unblock_user: '✅ رفع انسداد',
+    user_blocked: '⛔ کاربر {id} مسدود شد.',
+    user_unblocked: '✅ کاربر {id} از مسدودیت خارج شد.',
+    you_are_blocked: '⛔ حساب شما مسدود شده است. با پشتیبانی تماس بگیرید.',
+    view_user_details: '👤 مشاهده جزئیات کاربر',
+    edit_ad: '✏️ ویرایش آگهی',
+    manage_ads: '📋 مدیریت آگهی‌ها',
+    all_ads: '📋 همه آگهی‌ها',
+    edit_title: '✏️ ویرایش عنوان',
+    edit_description: '✏️ ویرایش توضیحات',
+    edit_price: '✏️ ویرایش قیمت',
+    edit_phone: '✏️ ویرایش شماره تماس',
+    edit_city: '✏️ ویرایش شهر',
+    edit_success: '✅ اطلاعات آگهی با موفقیت به‌روزرسانی شد.',
+    feedback: '💬 نظرات و پیشنهادات',
+    feedback_prompt: 'لطفاً نوع بازخورد خود را انتخاب کنید:',
+    feedback_request: '📌 درخواست',
+    feedback_suggestion: '💡 پیشنهاد',
+    feedback_complaint: '⚠️ انتقاد',
+    feedback_message_prompt: 'متن خود را بنویسید:',
+    feedback_thanks: '✅ با تشکر از شما. نظر شما ثبت شد و توسط تیم بررسی خواهد شد.',
+    feedback_list: '📋 لیست نظرات و پیشنهادات',
+    no_feedback: 'هنوز نظری ثبت نشده است.',
+    stats_dashboard: '📊 داشبورد آمار\n\n👥 کل کاربران: {totalUsers}\n📋 کل آگهی‌ها: {totalAds}\n⭐ آگهی‌های ویژه: {specialAds}\n👑 کاربران VIP: {vipUsers}\n\n👁 بازدیدهای امروز: {todayViews}\n👁 بازدیدهای کل: {totalViews}\n🟢 کاربران آنلاین (۵ دقیقه اخیر): {onlineUsers}\n\n📝 تعداد نظرات ثبت‌شده: {feedbackCount}\n   - درخواست: {reqCount}\n   - پیشنهاد: {sugCount}\n   - انتقاد: {comCount}',
+    copyright: '© کلیه حقوق مادی و معنوی این ربات و مینی‌اپ متعلق به گروه M.J (جدار) می‌باشد.',
+  }
+};
+
+// ============================================
+// KEYBOARDS
+// ============================================
+
+const LANG_KEYBOARD = {
+  keyboard: [['🇮🇷 فارسی', '🇦🇪 العربية', '🇬🇧 English']],
+  resize_keyboard: true
+};
+
+const MAIN_KEYBOARD = (lang, isAdmin) => {
+  const keys = [
+    [translations[lang].post_ad, translations[lang].my_ads],
+    [translations[lang].special_ads, translations[lang].vip_subscription],
+    [translations[lang].profile, translations[lang].support]
+  ];
+  if (isAdmin) keys.push([translations[lang].admin, translations[lang].statistics]);
+  return { keyboard: keys, resize_keyboard: true };
+};
+
+const CANCEL_KEYBOARD = (lang) => ({ keyboard: [[translations[lang].cancel, translations[lang].home]], resize_keyboard: true });
+const COUNTRY_KEYBOARD = (lang) => ({
+  keyboard: [[translations[lang].iran, translations[lang].iraq]],
+  resize_keyboard: true,
+  one_time_keyboard: true
+});
+const CATEGORY_KEYBOARD = (lang) => ({
+  keyboard: [['پزشکی', 'گردشگری', 'زیارت']],
+  resize_keyboard: true,
+  one_time_keyboard: true
+});
+const CURRENCY_KEYBOARD = (lang) => ({
+  keyboard: [
+    [translations[lang].currency_toman, translations[lang].currency_dollar],
+    [translations[lang].currency_tether, translations[lang].currency_dinar]
+  ],
+  resize_keyboard: true,
+  one_time_keyboard: true
+});
+const TYPE_KEYBOARD = (lang) => ({ keyboard: [[translations[lang].normal_ad, translations[lang].special_ad_type]], resize_keyboard: true, one_time_keyboard: true });
+const PLAN_KEYBOARD = (lang) => ({ keyboard: [['1', '3']], resize_keyboard: true, one_time_keyboard: true });
+
+async function getVipPlanKeyboard(env, lang) {
+  const price1 = await getPrice(env, 'price_vip1') || 50000;
+  const price3 = await getPrice(env, 'price_vip3') || 130000;
+  const price6 = await getPrice(env, 'price_vip6') || 240000;
+  return {
+    keyboard: [
+      [`1 ماهه (${price1.toLocaleString()} تومان)`, `3 ماهه (${price3.toLocaleString()} تومان)`],
+      [`6 ماهه (${price6.toLocaleString()} تومان)`],
+      [translations[lang].cancel]
+    ],
+    resize_keyboard: true,
+    one_time_keyboard: true
+  };
+}
+
+const CHARGE_AMOUNT_KEYBOARD = (lang) => ({
+  keyboard: [
+    ['۵۰,۰۰۰ تومان', '۱۰۰,۰۰۰ تومان'],
+    ['۲۰۰,۰۰۰ تومان', '۵۰۰,۰۰۰ تومان'],
+    ['۱,۰۰۰,۰۰۰ تومان', 'سایر'],
+    [translations[lang].cancel]
+  ], resize_keyboard: true
+});
+
+// ============================================
+// DATABASE HELPERS
+// ============================================
+
+async function ensureTables(env) {
+  try {
+    // جدول users با ستون password جدید
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS users (
+        telegram_id TEXT PRIMARY KEY,
+        username TEXT,
+        first_name TEXT,
+        lang TEXT DEFAULT 'fa',
+        role TEXT DEFAULT 'user',
+        is_admin INTEGER DEFAULT 0,
+        is_super_admin INTEGER DEFAULT 0,
+        subscription_end INTEGER,
+        balance INTEGER DEFAULT 0,
+        trust_score INTEGER DEFAULT 50,
+        unique_code TEXT,
+        is_blocked INTEGER DEFAULT 0,
+        restricted INTEGER DEFAULT 0,
+        restriction_reason TEXT,
+        last_active INTEGER,
+        created_at INTEGER,
+        points INTEGER DEFAULT 0,
+        referral_code TEXT,
+        password TEXT DEFAULT '1234'
+      )
+    `).run();
+
+    // جدول ads
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS ads (
+        id INTEGER PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        title TEXT,
+        description TEXT,
+        category TEXT,
+        country TEXT,
+        city TEXT,
+        price INTEGER,
+        phone TEXT,
+        currency TEXT DEFAULT 'تومان',
+        ad_type TEXT DEFAULT 'normal',
+        plan_days INTEGER,
+        special_expiry INTEGER,
+        image_ids TEXT,
+        status TEXT DEFAULT 'pending',
+        created_at INTEGER,
+        views INTEGER DEFAULT 0,
+        is_deleted INTEGER DEFAULT 0
+      )
+    `).run();
+
+    // جدول transactions
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS transactions (
+        id INTEGER PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        amount INTEGER,
+        type TEXT,
+        receipt_id TEXT,
+        status TEXT DEFAULT 'pending',
+        created_at INTEGER,
+        processed_at INTEGER
+      )
+    `).run();
+
+    // جدول favorites
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS favorites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL,
+        ad_id INTEGER NOT NULL,
+        created_at INTEGER,
+        UNIQUE(user_id, ad_id)
+      )
+    `).run();
+
+    // جدول reviews
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ad_id INTEGER NOT NULL,
+        user_id TEXT NOT NULL,
+        rating INTEGER,
+        comment TEXT,
+        created_at INTEGER
+      )
+    `).run();
+
+    // جدول messages
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        from_id TEXT NOT NULL,
+        to_id TEXT NOT NULL,
+        message TEXT,
+        created_at INTEGER,
+        read INTEGER DEFAULT 0
+      )
+    `).run();
+
+    // جدول notices
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS notices (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        text TEXT NOT NULL,
+        target TEXT DEFAULT 'all',
+        created_at INTEGER,
+        status TEXT DEFAULT 'active'
+      )
+    `).run();
+
+    // جدول settings
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT
+      )
+    `).run();
+
+    // جدول feedback
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT NOT NULL,
+        message TEXT NOT NULL,
+        type TEXT DEFAULT 'suggestion',
+        created_at INTEGER NOT NULL
+      )
+    `).run();
+
+    // جدول subscription_requests
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS subscription_requests (
+        id INTEGER PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        plan TEXT NOT NULL,
+        receipt_id TEXT,
+        status TEXT DEFAULT 'pending',
+        created_at INTEGER
+      )
+    `).run();
+
+    // جدول ad_views_daily
+    await env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS ad_views_daily (
+        date TEXT NOT NULL,
+        ad_id INTEGER NOT NULL,
+        views INTEGER DEFAULT 0,
+        PRIMARY KEY (date, ad_id)
+      )
+    `).run();
+
+    // اضافه کردن ستون password به users در صورت نبود
+    const tableInfo = await env.DB.prepare("PRAGMA table_info(users)").all();
+    const cols = tableInfo.results.map(c => c.name);
+    if (!cols.includes('password')) {
+      await env.DB.prepare("ALTER TABLE users ADD COLUMN password TEXT DEFAULT '1234'").run();
+    }
+
+  } catch (e) {
+    console.error('Error creating tables:', e);
+    throw e;
+  }
+}
+
+async function getUser(env, userId) {
+  try {
+    return await env.DB.prepare('SELECT * FROM users WHERE telegram_id = ?').bind(String(userId)).first();
+  } catch { return null; }
+}
+
+async function updateUser(env, userId, data) {
+  const id = String(userId);
+  const existing = await getUser(env, id);
+  if (existing) {
+    await env.DB.prepare(`
+      UPDATE users SET 
+        username = COALESCE(?, username),
+        first_name = COALESCE(?, first_name),
+        lang = COALESCE(?, lang),
+        role = COALESCE(?, role),
+        is_admin = COALESCE(?, is_admin),
+        is_super_admin = COALESCE(?, is_super_admin),
+        subscription_end = COALESCE(?, subscription_end),
+        balance = COALESCE(?, balance),
+        trust_score = COALESCE(?, trust_score),
+        is_blocked = COALESCE(?, is_blocked),
+        restricted = COALESCE(?, restricted),
+        restriction_reason = COALESCE(?, restriction_reason),
+        last_active = COALESCE(?, last_active),
+        points = COALESCE(?, points),
+        referral_code = COALESCE(?, referral_code),
+        password = COALESCE(?, password)
+      WHERE telegram_id = ?
+    `).bind(
+      data.username ?? null,
+      data.first_name ?? null,
+      data.lang ?? null,
+      data.role ?? null,
+      data.is_admin ?? null,
+      data.is_super_admin ?? null,
+      data.subscription_end ?? null,
+      data.balance ?? null,
+      data.trust_score ?? null,
+      data.is_blocked ?? null,
+      data.restricted ?? null,
+      data.restriction_reason ?? null,
+      data.last_active ?? null,
+      data.points ?? null,
+      data.referral_code ?? null,
+      data.password ?? null,
+      id
+    ).run();
+  } else {
+    const now = Math.floor(Date.now() / 1000);
+    await env.DB.prepare(`
+      INSERT INTO users (telegram_id, username, first_name, lang, is_super_admin, created_at, balance, trust_score, last_active, points, password)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      id,
+      data.username || '',
+      data.first_name || 'کاربر',
+      data.lang || 'fa',
+      id === SUPER_ADMIN_ID ? 1 : 0,
+      now,
+      data.balance || 0,
+      50,
+      now,
+      data.points || 0,
+      data.password || '1234'
+    ).run();
+  }
+  return true;
+}
+
+async function getUserLang(env, userId) {
+  const u = await getUser(env, userId);
+  return u?.lang || 'fa';
+}
+async function getUserRole(env, userId) {
+  const u = await getUser(env, userId);
+  return {
+    role: u?.role || 'user',
+    is_super_admin: u?.is_super_admin || 0,
+    is_admin: u?.is_admin || 0,
+    is_blocked: u?.is_blocked || 0,
+    restricted: u?.restricted || 0
+  };
+}
+async function sendMessage(env, chatId, text, keyboard = null) {
+  try {
+    const payload = { chat_id: chatId, text, parse_mode: 'HTML' };
+    if (keyboard) payload.reply_markup = keyboard;
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {}
+}
+async function getPrice(env, key) {
+  const res = await env.DB.prepare("SELECT value FROM settings WHERE key = ?").bind(key).first();
+  return res ? parseInt(res.value) : null;
+}
+async function getPaymentInfo(env) {
+  try {
+    const settings = await env.DB.prepare("SELECT * FROM settings WHERE key LIKE 'payment_%'").all();
+    const info = { card: { ...DEFAULT_PAYMENT_INFO.card }, tether: { ...DEFAULT_PAYMENT_INFO.tether } };
+    settings.results.forEach(s => {
+      if (s.key === 'payment_card_number') info.card.number = s.value;
+      else if (s.key === 'payment_card_name') info.card.name = s.value;
+      else if (s.key === 'payment_card_bank') info.card.bank = s.value;
+      else if (s.key === 'payment_tether_address') info.tether.address = s.value;
+    });
+    return info;
+  } catch (e) { return DEFAULT_PAYMENT_INFO; }
+}
+async function checkExpiredItems(env) {
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    const expiryTime = now - AD_EXPIRY_DAYS * 86400;
+    await env.DB.prepare("DELETE FROM ads WHERE created_at < ? AND status = 'approved'").bind(expiryTime).run();
+    await env.DB.prepare("UPDATE ads SET ad_type = 'normal', plan_days = NULL WHERE ad_type = 'special' AND special_expiry < ? AND status = 'approved'").bind(now).run();
+    await env.DB.prepare("UPDATE users SET subscription_end = NULL WHERE subscription_end < ?").bind(now).run();
+  } catch (e) {}
+}
+async function incrementAdView(env, adId) {
+  await env.DB.prepare("UPDATE ads SET views = COALESCE(views, 0) + 1 WHERE id = ?").bind(adId).run();
+  const today = new Date().toISOString().split('T')[0];
+  await env.DB.prepare(`
+    INSERT INTO ad_views_daily (date, ad_id, views) VALUES (?, ?, 1)
+    ON CONFLICT(date, ad_id) DO UPDATE SET views = views + 1
+  `).bind(today, adId).run();
+}
+async function updateLastActive(env, userId) {
+  await env.DB.prepare("UPDATE users SET last_active = ? WHERE telegram_id = ?").bind(Math.floor(Date.now()/1000), String(userId)).run();
+}
+async function sendPhotoToChannel(env, base64, caption = '') {
+  try {
+    const blob = base64ToBlob(base64);
+    if (!blob) return null;
+    const form = new FormData();
+    form.append('photo', blob, 'image.jpg');
+    form.append('chat_id', '-1003761796445');
+    if (caption) form.append('caption', caption);
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+      method: 'POST',
+      body: form
+    });
+    const result = await res.json();
+    if (result.ok && result.result) {
+      return result.result.photo[result.result.photo.length - 1].file_id;
+    }
+    return null;
+  } catch { return null; }
+}
+function base64ToBlob(base64) {
+  try {
+    const byteString = atob(base64.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+    return new Blob([ab], { type: 'image/jpeg' });
+  } catch { return null; }
+}
+
+// ============================================
+// API HANDLERS
+// ============================================
+async function handleAPI(request, url, env, corsHeaders) {
+  try {
+    await ensureTables(env);
+    await checkExpiredItems(env);
+
+    // ===== REGISTER (برای ثبت‌نام از تلگرام) =====
+    if (url.pathname === '/api/register' && request.method === 'POST') {
+      const body = await request.json();
+      const { userId, firstName, username } = body;
+      if (!userId) {
+        return jsonResponse({ success: false, error: 'Missing userId' }, 400, corsHeaders);
+      }
+      const id = String(userId);
+      const existing = await getUser(env, id);
+      if (existing) {
+        return jsonResponse({ success: true, user: existing }, 200, corsHeaders);
+      }
+      await updateUser(env, id, {
+        username: username || '',
+        first_name: firstName || 'کاربر',
+        lang: 'fa',
+        balance: 0,
+        points: 0,
+        password: '1234' // رمز پیش‌فرض
+      });
+      const user = await getUser(env, id);
+      return jsonResponse({ success: true, user }, 200, corsHeaders);
+    }
+
+    // ===== LOGIN با رمز =====
+    if (url.pathname === '/api/login' && request.method === 'POST') {
+      const { userId, password } = await request.json();
+      if (!userId || !password) {
+        return jsonResponse({ success: false, error: 'Missing userId or password' }, 400, corsHeaders);
+      }
+      const id = String(userId);
+      const user = await getUser(env, id);
+      if (!user) {
+        return jsonResponse({ success: false, error: 'User not found' }, 404, corsHeaders);
+      }
+      if (user.password !== password) {
+        return jsonResponse({ success: false, error: 'Invalid password' }, 401, corsHeaders);
+      }
+      return jsonResponse({ success: true, user }, 200, corsHeaders);
+    }
+
+    // ===== CHANGE PASSWORD =====
+    if (url.pathname === '/api/change-password' && request.method === 'POST') {
+      const { userId, oldPassword, newPassword } = await request.json();
+      if (!userId || !oldPassword || !newPassword) {
+        return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      }
+      const id = String(userId);
+      const user = await getUser(env, id);
+      if (!user) {
+        return jsonResponse({ success: false, error: 'User not found' }, 404, corsHeaders);
+      }
+      if (user.password !== oldPassword) {
+        return jsonResponse({ success: false, error: 'Current password is incorrect' }, 401, corsHeaders);
+      }
+      await env.DB.prepare("UPDATE users SET password = ? WHERE telegram_id = ?").bind(newPassword, id).run();
+      return jsonResponse({ success: true, message: 'Password changed successfully' }, 200, corsHeaders);
+    }
+
+    // ===== USER PROFILE =====
+    if (url.pathname === '/api/user/profile' && request.method === 'GET') {
+      const userId = url.searchParams.get('user_id');
+      if (!userId) return jsonResponse({ success: false, error: 'Missing user_id' }, 400, corsHeaders);
+      const user = await getUser(env, userId);
+      if (!user) {
+        return jsonResponse({ success: false, need_register: true, error: 'User not found' }, 404, corsHeaders);
+      }
+      const now = Math.floor(Date.now() / 1000);
+      const isVip = user.subscription_end && user.subscription_end > now;
+      return jsonResponse({
+        success: true,
+        balance: user.balance || 0,
+        trust_score: user.trust_score || 50,
+        unique_code: user.unique_code || '',
+        is_vip: !!isVip,
+        subscription_end: user.subscription_end,
+        first_name: user.first_name,
+        is_blocked: user.is_blocked || 0,
+        restricted: user.restricted || 0,
+        role: user.role || 'user',
+        points: user.points || 0,
+        has_password: !!user.password
+      }, 200, corsHeaders);
+    }
+
+    // ===== ADS FEED =====
+    if (url.pathname === '/api/feed' && request.method === 'GET') {
+      const category = url.searchParams.get('category') || '';
+      const country = url.searchParams.get('country') || '';
+      const city = url.searchParams.get('city') || '';
+      const sort = url.searchParams.get('sort') || 'newest';
+      const search = url.searchParams.get('search') || '';
+
+      let query = `
+        SELECT ads.*, 
+               COALESCE((SELECT AVG(rating) FROM reviews WHERE ad_id = ads.id), 0) as rating_avg,
+               users.first_name as user_name
+        FROM ads LEFT JOIN users ON ads.user_id = users.telegram_id
+        WHERE ads.is_deleted = 0 AND ads.status = 'approved'
+      `;
+      const params = [];
+
+      if (category) { query += ' AND ads.category = ?'; params.push(category); }
+      if (country) { query += ' AND ads.country = ?'; params.push(country); }
+      if (city) { query += ' AND ads.city = ?'; params.push(city); }
+      if (search) {
+        query += ' AND (ads.title LIKE ? OR ads.description LIKE ? OR ads.city LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      const sortMap = {
+        newest: 'ads.created_at DESC',
+        special: 'CASE WHEN ads.ad_type = \'special\' THEN 0 ELSE 1 END, ads.created_at DESC',
+        price_asc: 'ads.price ASC',
+        price_desc: 'ads.price DESC',
+        rating: 'rating_avg DESC, ads.created_at DESC',
+        views: 'ads.views DESC, ads.created_at DESC'
+      };
+      query += ` ORDER BY ${sortMap[sort] || sortMap.newest}`;
+      query += ' LIMIT 100';
+
+      const result = await env.DB.prepare(query).bind(...params).all();
+      const ads = result.results.map(ad => {
+        let images = [];
+        try { images = ad.image_ids ? JSON.parse(ad.image_ids) : []; } catch {}
+        ad.images = images;
+        return ad;
+      });
+
+      return jsonResponse({ success: true, ads }, 200, corsHeaders);
+    }
+
+    // ===== USER ADS =====
+    if (url.pathname === '/api/user/ads' && request.method === 'GET') {
+      const userId = url.searchParams.get('user_id');
+      if (!userId) return jsonResponse({ success: false, error: 'Missing user_id' }, 400, corsHeaders);
+      const result = await env.DB.prepare(
+        'SELECT * FROM ads WHERE user_id = ? AND is_deleted = 0 ORDER BY created_at DESC'
+      ).bind(String(userId)).all();
+      return jsonResponse({ success: true, ads: result.results }, 200, corsHeaders);
+    }
+
+    // ===== SUBMIT AD (با ثبت‌نام خودکار) =====
+    if (url.pathname === '/api/submit-ad' && request.method === 'POST') {
+      try {
+        const data = await request.json();
+        const user = data.user || { id: 'ناشناس', first_name: 'کاربر' };
+        const userId = String(user.id);
+
+        // ثبت‌نام خودکار در صورت عدم وجود
+        let dbUser = await getUser(env, userId);
+        if (!dbUser) {
+          await updateUser(env, userId, {
+            username: user.username || '',
+            first_name: user.first_name || 'کاربر',
+            lang: 'fa',
+            balance: 0,
+            points: 0,
+            password: '1234'
+          });
+          dbUser = await getUser(env, userId);
+          if (!dbUser) {
+            return jsonResponse({ success: false, need_register: true, error: 'Failed to register' }, 403, corsHeaders);
+          }
+        }
+
+        if (dbUser.restricted) {
+          return jsonResponse({ success: false, error: `حساب شما محدود شده است: ${dbUser.restriction_reason || 'نامشخص'}` }, 403, corsHeaders);
+        }
+
+        const now = Math.floor(Date.now() / 1000);
+        const isVip = dbUser.subscription_end && dbUser.subscription_end > now;
+        const activeAds = await env.DB.prepare(
+          "SELECT COUNT(*) as count FROM ads WHERE user_id = ? AND is_deleted = 0 AND status = 'approved'"
+        ).bind(userId).first();
+
+        if (!isVip && (activeAds?.count || 0) >= 3) {
+          return jsonResponse({
+            success: false,
+            error: 'حداکثر ۳ آگهی رایگان. اشتراک VIP تهیه کنید.',
+            need_vip: true
+          }, 403, corsHeaders);
+        }
+
+        const adId = Date.now();
+        const channelFileIds = [];
+        const caption = `📢 ${data.title}\n💰 ${data.price} تومان\n📍 ${data.location}\n👤 ${user.first_name}\n🆔 ${adId}`;
+
+        if (data.images && data.images.length > 0) {
+          for (let i = 0; i < Math.min(data.images.length, 5); i++) {
+            const fid = await sendPhotoToChannel(env, data.images[i], i === 0 ? caption : '');
+            if (fid) channelFileIds.push(fid);
+          }
+        }
+
+        const adType = data.ad_type || 'normal';
+        let specialExpiry = null;
+        if (adType === 'special') {
+          const planDays = data.plan || 3;
+          const price = planDays === 1 ? 10000 : 25000;
+          if (dbUser.balance < price) {
+            return jsonResponse({ success: false, error: `موجودی کافی نیست. نیاز: ${price.toLocaleString()} تومان`, need_charge: true }, 403, corsHeaders);
+          }
+          await env.DB.prepare("UPDATE users SET balance = balance - ? WHERE telegram_id = ?").bind(price, userId).run();
+          specialExpiry = now + planDays * 86400;
+        }
+
+        await env.DB.prepare(`
+          INSERT INTO ads (
+            id, user_id, title, description, category, country, city, price, phone,
+            currency, ad_type, plan_days, image_ids, status, created_at, special_expiry, views
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+        `).bind(
+          adId, userId, data.title, data.description, data.category || 'خدمات',
+          data.country || 'ایران', data.location || 'نامشخص', parseInt(data.price) || 0,
+          data.contact || '', 'تومان', adType, adType === 'special' ? (data.plan || 3) : null,
+          JSON.stringify(channelFileIds), 'pending', now, specialExpiry
+        ).run();
+
+        // ارسال به ادمین
+        await sendMessage(env, SUPER_ADMIN_ID,
+          `🔔 آگهی جدید\n🆔 ${adId}\n👤 ${userId}\n📌 ${data.title}\n💰 ${data.price} تومان`
+        );
+
+        return jsonResponse({ success: true, message: 'آگهی ثبت و برای تأیید ارسال شد' }, 200, corsHeaders);
+
+      } catch (error) {
+        return jsonResponse({ success: false, error: error.message }, 500, corsHeaders);
+      }
+    }
+
+    // ===== DELETE AD =====
+    if (url.pathname === '/api/ad/delete' && request.method === 'POST') {
+      const { userId, adId } = await request.json();
+      if (!userId || !adId) return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      const ad = await env.DB.prepare("SELECT * FROM ads WHERE id = ? AND user_id = ?").bind(adId, userId).first();
+      if (!ad) return jsonResponse({ success: false, error: 'Ad not found' }, 404, corsHeaders);
+      await env.DB.prepare("UPDATE ads SET is_deleted = 1 WHERE id = ?").bind(adId).run();
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+
+    // ===== FAVORITES =====
+    if (url.pathname === '/api/favorites' && request.method === 'GET') {
+      const userId = url.searchParams.get('user_id');
+      if (!userId) return jsonResponse({ success: false, error: 'Missing user_id' }, 400, corsHeaders);
+      const result = await env.DB.prepare(
+        'SELECT ads.* FROM favorites f JOIN ads ON f.ad_id = ads.id WHERE f.user_id = ? AND ads.is_deleted = 0'
+      ).bind(String(userId)).all();
+      return jsonResponse({ success: true, favorites: result.results }, 200, corsHeaders);
+    }
+    if (url.pathname === '/api/favorite/add' && request.method === 'POST') {
+      const { userId, adId } = await request.json();
+      if (!userId || !adId) return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      await env.DB.prepare("INSERT OR IGNORE INTO favorites (user_id, ad_id, created_at) VALUES (?, ?, ?)")
+        .bind(String(userId), adId, Math.floor(Date.now() / 1000)).run();
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+    if (url.pathname === '/api/favorite/remove' && request.method === 'POST') {
+      const { userId, adId } = await request.json();
+      if (!userId || !adId) return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      await env.DB.prepare("DELETE FROM favorites WHERE user_id = ? AND ad_id = ?").bind(String(userId), adId).run();
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+
+    // ===== CHAT =====
+    if (url.pathname === '/api/send-chat' && request.method === 'POST') {
+      const { user, message } = await request.json();
+      const userId = String(user.id);
+      let dbUser = await getUser(env, userId);
+      if (!dbUser) {
+        await updateUser(env, userId, {
+          username: user.username || '',
+          first_name: user.first_name || 'کاربر',
+          lang: 'fa',
+          balance: 0,
+          password: '1234'
+        });
+      }
+      await env.DB.prepare(
+        "INSERT INTO messages (from_id, to_id, message, created_at) VALUES (?, ?, ?, ?)"
+      ).bind(userId, SUPER_ADMIN_ID, message, Math.floor(Date.now() / 1000)).run();
+      await sendMessage(env, SUPER_ADMIN_ID,
+        `💬 پیام از ${user.first_name || 'کاربر'} (${userId})\n${message}`
+      );
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+
+    // ===== REVIEW =====
+    if (url.pathname === '/api/review' && request.method === 'POST') {
+      const { adId, userId, rating, comment } = await request.json();
+      if (!adId || !userId || !rating) return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      const existing = await env.DB.prepare("SELECT id FROM reviews WHERE ad_id = ? AND user_id = ?").bind(adId, String(userId)).first();
+      if (existing) {
+        await env.DB.prepare("UPDATE reviews SET rating = ?, comment = ?, updated_at = ? WHERE id = ?")
+          .bind(rating, comment || '', Math.floor(Date.now() / 1000), existing.id).run();
+      } else {
+        await env.DB.prepare(`
+          INSERT INTO reviews (ad_id, user_id, rating, comment, created_at)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(adId, String(userId), rating, comment || '', Math.floor(Date.now() / 1000)).run();
+      }
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+    if (url.pathname === '/api/reviews' && request.method === 'GET') {
+      const adId = url.searchParams.get('adId');
+      if (!adId) return jsonResponse({ success: false, error: 'Missing adId' }, 400, corsHeaders);
+      const reviews = await env.DB.prepare(
+        'SELECT * FROM reviews WHERE ad_id = ? ORDER BY created_at DESC'
+      ).bind(adId).all();
+      return jsonResponse({ success: true, reviews: reviews.results }, 200, corsHeaders);
+    }
+
+    // ===== VIP =====
+    if (url.pathname === '/api/vip/prices' && request.method === 'GET') {
+      return jsonResponse({
+        success: true,
+        plans: {
+          monthly: { label: 'ماهانه', price: 50000, days: 30 },
+          quarterly: { label: 'سه ماهه', price: 130000, days: 90 },
+          semiannual: { label: 'شش ماهه', price: 240000, days: 180 },
+          annual: { label: 'سالانه', price: 450000, days: 365 }
+        }
+      }, 200, corsHeaders);
+    }
+    if (url.pathname === '/api/vip/buy' && request.method === 'POST') {
+      const { userId, plan } = await request.json();
+      if (!userId || !plan) return jsonResponse({ success: false, error: 'Missing fields' }, 400, corsHeaders);
+      const user = await getUser(env, userId);
+      if (!user) return jsonResponse({ success: false, error: 'User not found' }, 404, corsHeaders);
+      const vipPlan = { monthly: { price: 50000, days: 30 }, quarterly: { price: 130000, days: 90 }, semiannual: { price: 240000, days: 180 }, annual: { price: 450000, days: 365 } }[plan];
+      if (!vipPlan) return jsonResponse({ success: false, error: 'Invalid plan' }, 400, corsHeaders);
+      if (user.balance < vipPlan.price) {
+        return jsonResponse({ success: false, error: `موجودی کافی نیست. نیاز: ${vipPlan.price.toLocaleString()} تومان`, need_charge: true, required: vipPlan.price }, 403, corsHeaders);
+      }
+      const now = Math.floor(Date.now() / 1000);
+      const currentEnd = user.subscription_end && user.subscription_end > now ? user.subscription_end : now;
+      const newEnd = currentEnd + vipPlan.days * 86400;
+      await env.DB.prepare("UPDATE users SET balance = balance - ?, subscription_end = ?, role = 'vip' WHERE telegram_id = ?")
+        .bind(vipPlan.price, newEnd, String(userId)).run();
+      return jsonResponse({ success: true, message: `اشتراک ${vipPlan.label} فعال شد` }, 200, corsHeaders);
+    }
+    if (url.pathname === '/api/vip/status' && request.method === 'GET') {
+      const userId = url.searchParams.get('user_id');
+      if (!userId) return jsonResponse({ success: false, error: 'Missing user_id' }, 400, corsHeaders);
+      const user = await getUser(env, userId);
+      if (!user) return jsonResponse({ success: false, error: 'User not found' }, 404, corsHeaders);
+      const now = Math.floor(Date.now() / 1000);
+      const isVip = user.subscription_end && user.subscription_end > now;
+      const daysLeft = isVip ? Math.ceil((user.subscription_end - now) / 86400) : 0;
+      return jsonResponse({ success: true, is_vip: !!isVip, days_left: daysLeft }, 200, corsHeaders);
+    }
+
+    // ===== WALLET =====
+    if (url.pathname === '/api/submit-charge' && request.method === 'POST') {
+      const { user, amount, receipt } = await request.json();
+      const userId = String(user.id);
+      let dbUser = await getUser(env, userId);
+      if (!dbUser) {
+        await updateUser(env, userId, {
+          username: user.username || '',
+          first_name: user.first_name || 'کاربر',
+          lang: 'fa',
+          balance: 0,
+          password: '1234'
+        });
+      }
+      const txId = Date.now();
+      let receiptFileId = null;
+      if (receipt) {
+        receiptFileId = await sendPhotoToChannel(env, receipt, `🧾 رسید شارژ (${amount} تومان)`);
+      }
+      await env.DB.prepare(`
+        INSERT INTO transactions (id, user_id, amount, type, receipt_id, status, created_at)
+        VALUES (?, ?, ?, 'charge', ?, 'pending', ?)
+      `).bind(txId, userId, parseInt(amount), receiptFileId, Math.floor(Date.now() / 1000)).run();
+      await sendMessage(env, SUPER_ADMIN_ID,
+        `💰 درخواست شارژ\n👤 ${userId}\n💵 ${amount} تومان`
+      );
+      return jsonResponse({ success: true }, 200, corsHeaders);
+    }
+
+    // ===== NOTICE =====
+    if (url.pathname === '/api/notice' && request.method === 'GET') {
+      const notice = await env.DB.prepare("SELECT * FROM notices WHERE status = 'active' ORDER BY created_at DESC LIMIT 1").first();
+      return jsonResponse({ success: true, notice }, 200, corsHeaders);
+    }
+
+    // ===== COUNTRIES =====
+    if (url.pathname === '/api/countries' && request.method === 'GET') {
+      const countries = [
+        { name: 'ایران', cities: ['تهران', 'اصفهان', 'شیراز', 'مشهد', 'تبریز', 'کرج'] },
+        { name: 'عراق', cities: ['بغداد', 'بصره', 'موصل', 'اربیل', 'کرکوک'] },
+        { name: 'امارات', cities: ['دبی', 'ابوظبی', 'شارجه'] },
+        { name: 'عربستان', cities: ['ریاض', 'جده', 'مکه', 'مدینه'] }
+      ];
+      return jsonResponse({ success: true, countries }, 200, corsHeaders);
+    }
+
+    // ===== CATEGORIES =====
+    if (url.pathname === '/api/categories' && request.method === 'GET') {
+      const categories = [
+        { id: 'real_estate', name: 'املاک' },
+        { id: 'vehicles', name: 'خودرو' },
+        { id: 'electronics', name: 'الکترونیک' },
+        { id: 'services', name: 'خدمات' }
+      ];
+      return jsonResponse({ success: true, categories }, 200, corsHeaders);
+    }
+
+    // ===== FALLBACK =====
+    return jsonResponse({ success: false, error: 'Not found' }, 404, corsHeaders);
+  } catch (e) {
+    return jsonResponse({ success: false, error: e.message }, 500, corsHeaders);
+  }
+}
+
+function jsonResponse(data, status = 200, headers = {}) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...headers, 'Content-Type': 'application/json' }
+  });
+}
+
+// ============================================
+// TELEGRAM WEBHOOK HANDLERS
+// ============================================
+async function handleUpdate(update, env) {
+  try {
+    if (update.message) await handleMessage(update.message, env);
+    else if (update.callback_query) await handleCallback(update.callback_query, env);
+  } catch (e) { console.error('handleUpdate error:', e); }
+}
+
+async function handleMessage(msg, env) {
+  try {
+    const chatId = msg.chat.id;
+    const userId = String(msg.from.id);
+    const text = msg.text || '';
+
+    // ===== ثبت‌نام یک‌کلیک =====
+    if (text === '/start login' || text === '/start login') {
+      let user = await getUser(env, userId);
+      if (!user) {
+        await updateUser(env, userId, {
+          username: msg.from.username || '',
+          first_name: msg.from.first_name || 'کاربر',
+          lang: 'fa',
+          balance: 0,
+          points: 0,
+          password: '1234' // رمز پیش‌فرض
+        });
+        user = await getUser(env, userId);
+      }
+      const keyboard = {
+        inline_keyboard: [[{
+          text: '🚀 بازگشت به برنامه',
+          url: APP_URL + '?user_id=' + userId + '&first_name=' + encodeURIComponent(msg.from.first_name || 'کاربر')
+        }]]
+      };
+      await sendMessage(env, chatId,
+        '✅ ثبت‌نام شما با موفقیت انجام شد.\n' +
+        '🔑 رمز ورود شما: <code>1234</code>\n' +
+        '⚠️ لطفاً برای امنیت بیشتر، رمز خود را در پروفایل تغییر دهید.\n\n' +
+        'برای بازگشت به برنامه، روی دکمه‌ی زیر کلیک کنید.',
+        keyboard
+      );
+      return;
+    }
+
+    // ===== سایر دستورات =====
+    await sendMessage(env, chatId, 'لطفاً از برنامه برای استفاده از امکانات استفاده کنید. /start برای شروع');
+  } catch (e) { console.error('handleMessage error:', e); }
+}
+
+async function handleCallback(query, env) {
+  try {
+    const data = query.data;
+    const chatId = query.message.chat.id;
+    const userId = String(query.from.id);
+
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ callback_query_id: query.id })
+    });
+
+    // ===== تایید آگهی =====
+    if (data.startsWith('approve_ad_')) {
+      const adId = parseInt(data.replace('approve_ad_', ''));
+      await env.DB.prepare("UPDATE ads SET status = 'approved' WHERE id = ?").bind(adId).run();
+      const ad = await env.DB.prepare("SELECT * FROM ads WHERE id = ?").bind(adId).first();
+      if (ad) {
+        await sendMessage(env, ad.user_id, `✅ آگهی "${ad.title}" منتشر شد.`);
+        await sendMessage(env, chatId, `✅ آگهی ${adId} تایید شد.`);
+      }
+      return;
+    }
+
+    // ===== رد آگهی =====
+    if (data.startsWith('reject_ad_')) {
+      const adId = parseInt(data.replace('reject_ad_', ''));
+      await env.DB.prepare("DELETE FROM ads WHERE id = ?").bind(adId).run();
+      await sendMessage(env, chatId, `❌ آگهی ${adId} رد شد.`);
+      return;
+    }
+
+    // ===== حذف آگهی =====
+    if (data.startsWith('delete_ad_')) {
+      const adId = parseInt(data.replace('delete_ad_', ''));
+      await env.DB.prepare("UPDATE ads SET is_deleted = 1 WHERE id = ?").bind(adId).run();
+      await sendMessage(env, chatId, `🗑 آگهی ${adId} حذف شد.`);
+      return;
+    }
+
+    // ===== تایید شارژ =====
+    if (data.startsWith('approve_charge_')) {
+      const txId = parseInt(data.replace('approve_charge_', ''));
+      const tx = await env.DB.prepare("SELECT * FROM transactions WHERE id = ?").bind(txId).first();
+      if (tx && tx.status === 'pending') {
+        await env.DB.prepare("UPDATE transactions SET status = 'approved', processed_at = ? WHERE id = ?")
+          .bind(Math.floor(Date.now() / 1000), txId).run();
+        await env.DB.prepare("UPDATE users SET balance = balance + ? WHERE telegram_id = ?")
+          .bind(tx.amount, tx.user_id).run();
+        await sendMessage(env, tx.user_id, `💰 ${tx.amount.toLocaleString()} تومان به کیف پول شما اضافه شد.`);
+        await sendMessage(env, chatId, `✅ شارژ ${txId} تایید شد.`);
+      }
+      return;
+    }
+
+    // ===== رد شارژ =====
+    if (data.startsWith('reject_charge_')) {
+      const txId = parseInt(data.replace('reject_charge_', ''));
+      await env.DB.prepare("UPDATE transactions SET status = 'rejected' WHERE id = ?").bind(txId).run();
+      await sendMessage(env, chatId, `❌ شارژ ${txId} رد شد.`);
+      return;
+    }
+
+    await sendMessage(env, chatId, 'عملیات انجام شد.');
+  } catch (e) { console.error('handleCallback error:', e); }
+}
+
+// ============================================
+// IMAGE PROXY
+// ============================================
+async function handleImageRequest(env, fileId) {
+  try {
+    const fileRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
+    const fileData = await fileRes.json();
+    if (!fileData.ok) return new Response('File not found', { status: 404 });
+    const filePath = fileData.result.file_path;
+    const imageRes = await fetch(`https://api.telegram.org/file/bot${BOT_TOKEN}/${filePath}`);
+    const headers = new Headers(imageRes.headers);
+    headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Access-Control-Allow-Origin', '*');
+    return new Response(imageRes.body, { status: 200, headers });
+  } catch (e) {
+    console.error('Image proxy error:', e);
+    return new Response('Internal Server Error', { status: 500 });
+  }
+}
+
+// ============================================
+// HTML (برای نمایش صفحه)
+// ============================================
+function getHTML() {
+  return `<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -7,7 +1243,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* ===== تمام استایل‌های شما (همان فایل اصلی) بدون هیچ تغییری ===== */
+    /* ===== تمام استایل‌های شما ===== */
     * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html { overflow-x:hidden; overscroll-behavior:none; height:100%; }
     body {
@@ -20,11 +1256,9 @@
     body.dark { background:#0a0a0c; color:#fff; }
     body.dark .container, body.dark .wallet-card, body.dark .notice-card,
     body.dark .ad-card, body.dark .modal-content, body.dark .dropdown-menu,
-    body.dark .chat-container, body.dark .filter-panel, body.dark .store-card,
-    body.dark .product-card { background:rgba(20,20,28,0.7) !important; backdrop-filter:blur(12px); border-color:rgba(255,255,255,0.05) !important; color:#fff; }
+    body.dark .chat-container, body.dark .filter-panel { background:rgba(20,20,28,0.7) !important; backdrop-filter:blur(12px); border-color:rgba(255,255,255,0.05) !important; color:#fff; }
     body.dark .ad-card-title, body.dark .modal-title, body.dark .wallet-info .amount,
-    body.dark .section-title h3, body.dark .filter-label, body.dark .store-name,
-    body.dark .product-name { color:#fff; }
+    body.dark .section-title h3, body.dark .filter-label { color:#fff; }
     body.dark .ad-card-price, body.dark .modal-price { color:#a58aff; }
     body.dark .search-box { background:rgba(20,20,30,0.6); }
     body.dark .search-box input { color:#fff; }
@@ -44,7 +1278,6 @@
     body.dark .toast { background:rgba(20,20,30,0.92); color:#fff; }
     body.dark .vip-badge { background:linear-gradient(135deg,#daa520,#ffd700); }
     body.dark .filter-panel select, body.dark .filter-panel input { background:rgba(0,0,0,0.3); color:#fff; border-color:rgba(255,255,255,0.06); }
-    body.dark .store-card, body.dark .product-card { background:rgba(20,20,28,0.6); border-color:rgba(255,255,255,0.05); }
     .container { max-width:500px; margin:0 auto; padding:14px 10px 80px 10px; position:relative; z-index:10; overscroll-behavior:none; flex:1; width:100%; }
     .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:0 2px; position:relative; }
     .logo { display:flex; align-items:center; gap:6px; }
@@ -280,31 +1513,8 @@
     body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); color:#eee; }
     .support-info a { color:#7b5aff; text-decoration:none; font-weight:bold; }
     .profile-unique-code { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:10px; padding:8px 12px; margin-top:6px; text-align:center; font-family:monospace; font-size:16px; color:#7b5aff; direction:ltr; }
-    .store-card { background:rgba(255,255,255,0.92); border-radius:18px; padding:14px; border:1px solid rgba(0,0,0,0.06); margin-bottom:12px; }
-    body.dark .store-card { background:rgba(20,20,28,0.6); border-color:rgba(255,255,255,0.05); }
-    .store-name { font-size:16px; font-weight:700; color:#111; }
-    body.dark .store-name { color:#fff; }
-    .store-desc { font-size:12px; color:#666; margin-top:4px; }
-    body.dark .store-desc { color:#aaa; }
-    .product-card { background:rgba(255,255,255,0.9); border-radius:14px; padding:10px; border:1px solid rgba(0,0,0,0.05); margin-bottom:8px; display:flex; gap:10px; align-items:center; }
-    body.dark .product-card { background:rgba(20,20,28,0.5); border-color:rgba(255,255,255,0.05); }
-    .product-img { width:60px; height:60px; border-radius:10px; object-fit:cover; background:#f0f0f3; }
-    body.dark .product-img { background:#181820; }
-    .product-info { flex:1; }
-    .product-name { font-weight:600; font-size:13px; color:#111; }
-    body.dark .product-name { color:#fff; }
-    .product-price { font-weight:700; font-size:12px; color:#7b5aff; }
-    .review-item { background:rgba(0,0,0,0.03); border-radius:12px; padding:10px; margin-bottom:6px; border:1px solid rgba(0,0,0,0.04); }
-    body.dark .review-item { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.04); }
-    .review-item .header { display:flex; justify-content:space-between; align-items:center; }
-    .review-item .name { font-weight:600; font-size:12px; }
-    .review-item .stars { color:#daa520; font-size:12px; }
-    .review-item .comment { font-size:12px; color:#555; margin-top:4px; }
-    body.dark .review-item .comment { color:#aaa; }
-    .review-item .date { font-size:9px; color:#888; margin-top:2px; }
-    @media (max-width:420px) { .ads-grid { grid-template-columns:1fr 1fr; gap:6px; } .action-grid { grid-template-columns:repeat(4,1fr); gap:4px; } .action-item { padding:6px 0; } .action-item i { font-size:16px; } .action-item span { font-size:8px; } .wallet-info .amount { font-size:20px; } }
 
-    /* استایل دکمه ثبت‌نام */
+    /* ===== استایل‌های جدید برای لاگین ===== */
     .login-overlay {
       position:fixed; top:0; left:0; right:0; bottom:0;
       background:rgba(0,0,0,0.7); backdrop-filter:blur(10px);
@@ -322,20 +1532,66 @@
     .login-box h2 { font-size:22px; margin-bottom:8px; }
     .login-box p { color:#666; font-size:14px; margin-bottom:20px; line-height:1.6; }
     body.dark .login-box p { color:#aaa; }
+    .login-box .form-group { margin-bottom:16px; text-align:right; }
+    .login-box .form-group label { display:block; font-size:12px; margin-bottom:4px; color:#555; }
+    body.dark .login-box .form-group label { color:#aaa; }
     .login-box .btn-telegram {
       display:inline-block; padding:14px 32px; border-radius:16px;
       background:#0088cc; color:#fff; font-weight:700; font-size:16px;
       border:none; cursor:pointer; text-decoration:none;
       transition:0.3s; box-shadow:0 4px 12px rgba(0,136,204,0.3);
+      width:100%;
     }
     .login-box .btn-telegram:hover { opacity:0.9; transform:translateY(-2px); }
     .login-box .btn-telegram i { margin-left:8px; }
+    .login-box .btn-primary {
+      background:#7b5aff; color:#fff; width:100%; padding:14px;
+      border:none; border-radius:16px; font-weight:700; font-size:16px;
+      cursor:pointer; transition:0.3s;
+    }
+    .login-box .btn-primary:hover { opacity:0.9; transform:translateY(-2px); }
+    .login-box .divider { display:flex; align-items:center; gap:12px; margin:16px 0; color:#888; font-size:12px; }
+    .login-box .divider::before, .login-box .divider::after { content:''; flex:1; height:1px; background:#ddd; }
+    body.dark .login-box .divider { color:#666; }
+    body.dark .login-box .divider::before, body.dark .login-box .divider::after { background:#444; }
     .login-box .hint { font-size:12px; color:#888; margin-top:12px; }
     body.dark .login-box .hint { color:#666; }
+    .login-box .error-text { color:#ff5e7c; font-size:13px; margin-top:8px; display:none; }
   </style>
 </head>
 <body>
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== Login Overlay ===== -->
+  <div class="login-overlay" id="loginOverlay" style="display:none;">
+    <div class="login-box">
+      <div class="icon"><i class="fa-solid fa-layer-group"></i></div>
+      <h2>ورود به جدار جهانی</h2>
+      <p>برای استفاده از امکانات، وارد شوید یا ثبت‌نام کنید</p>
+
+      <!-- فرم ورود با رمز -->
+      <form id="loginForm" onsubmit="event.preventDefault(); loginWithPassword();">
+        <div class="form-group">
+          <label>🆔 شناسه کاربری</label>
+          <input type="text" class="form-control" id="loginUserId" placeholder="شناسه خود را وارد کنید" required>
+        </div>
+        <div class="form-group">
+          <label>🔑 رمز ورود</label>
+          <input type="password" class="form-control" id="loginPassword" placeholder="رمز خود را وارد کنید" required>
+        </div>
+        <div class="error-text" id="loginError">رمز یا شناسه اشتباه است</div>
+        <button type="submit" class="btn-primary" id="loginBtn">ورود</button>
+      </form>
+
+      <div class="divider">یا</div>
+
+      <!-- دکمه ثبت‌نام با تلگرام -->
+      <a href="https://t.me/AlsouqAlmaftuhiran_bot?start=login" target="_blank" class="btn-telegram" onclick="loginWithTelegram()">
+        <i class="fa-brands fa-telegram"></i> ثبت‌نام با تلگرام
+      </a>
+      <div class="hint">با یک کلیک ثبت‌نام کنید و به برنامه بازگردید</div>
+    </div>
+  </div>
 
   <!-- Main App -->
   <div class="container" id="mainApp">
@@ -348,7 +1604,6 @@
         <div class="dropdown-menu" id="dropdownMenu">
           <button class="dropdown-item" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>خانه</span></button>
           <button class="dropdown-item" onclick="openSupportChat()"><i class="fa-solid fa-headset"></i><span>پشتیبانی</span></button>
-          <button class="dropdown-item" onclick="switchTab('store')"><i class="fa-solid fa-store"></i><span>فروشگاه</span></button>
           <button class="dropdown-item" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span>پروفایل</span></button>
           <button class="dropdown-item" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i><span>علاقه‌مندی‌ها</span></button>
         </div>
@@ -370,6 +1625,7 @@
       <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
         <button class="form-btn form-btn-primary" style="flex:1; padding:6px;" onclick="openWalletModal()"><i class="fa-solid fa-wallet"></i> شارژ</button>
         <button class="form-btn form-btn-gold" style="flex:1; padding:6px;" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> VIP</button>
+        <button class="form-btn form-btn-secondary" style="flex:1; padding:6px;" onclick="changePassword()"><i class="fa-solid fa-key"></i> رمز</button>
       </div>
     </div>
 
@@ -423,24 +1679,10 @@
     <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>خانه</span></div>
     <div class="nav-item" id="nav-add" onclick="openAddModal()"><i class="fa-solid fa-circle-plus"></i><span>ثبت</span></div>
     <div class="nav-item" id="nav-chat" onclick="openSupportChat()"><i class="fa-solid fa-comments"></i><span>چت</span><span class="badge" id="chatBadge" style="display:none;">1</span></div>
-    <div class="nav-item" id="nav-store" onclick="switchTab('store')"><i class="fa-solid fa-store"></i><span>فروشگاه</span></div>
     <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span>پروفایل</span></div>
   </div>
 
-  <!-- Overlay ثبت‌نام (در صورت نیاز) -->
-  <div class="login-overlay" id="loginOverlay" style="display:none;">
-    <div class="login-box">
-      <div class="icon"><i class="fa-brands fa-telegram"></i></div>
-      <h2>برای ادامه به تلگرام متصل شوید</h2>
-      <p>برای ثبت آگهی، چت یا شارژ حساب، باید از طریق تلگرام وارد شوید.</p>
-      <a href="https://t.me/AlsouqAlmaftuhiran_bot?start=login" target="_blank" class="btn-telegram" onclick="loginWithTelegram()">
-        <i class="fa-brands fa-telegram"></i> ورود با تلگرام
-      </a>
-      <div class="hint">پس از ورود، به‌صورت خودکار به این صفحه برمی‌گردید.</div>
-    </div>
-  </div>
-
-  <!-- Modals (محتوای کامل برای هر مودال) -->
+  <!-- Modals -->
   <div class="modal" id="addAdModal">
     <div class="modal-content">
       <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -501,7 +1743,6 @@
   <div class="modal" id="supportChatModal"><!-- Support Chat Modal Content --></div>
   <div class="modal" id="adDetailsModal"><!-- Ad Details Modal Content --></div>
   <div class="modal" id="reviewModal"><!-- Review Modal Content --></div>
-  <div class="modal" id="storeModal"><!-- Store Modal Content --></div>
 
   <!-- Profile Tab -->
   <div class="container" id="profileApp" style="display:none;">
@@ -510,16 +1751,16 @@
       <div class="form-group"><label>نام</label><input type="text" class="form-control" id="profileName" value="کاربر"></div>
       <div class="form-group"><label>کد یکتا</label><div class="profile-unique-code" id="profileCode">در حال بارگذاری...</div></div>
       <div class="form-group"><label>امتیاز اعتماد</label><input type="text" class="form-control" id="profileTrust" readonly></div>
+      <div class="form-group"><label>رمز ورود</label>
+        <input type="password" class="form-control" id="profilePassword" placeholder="رمز جدید" value="">
+        <button class="form-btn form-btn-secondary" style="margin-top:4px; padding:4px;" onclick="changePassword()">تغییر رمز</button>
+      </div>
       <button class="form-btn form-btn-primary" onclick="saveProfile()">ذخیره</button>
       <button class="form-btn form-btn-secondary" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> بروزرسانی</button>
+      <button class="form-btn form-btn-danger" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> خروج</button>
     </div>
     <h3 style="margin-top:16px;">📋 آگهی‌های من</h3>
     <div class="my-ads-list" id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
-  </div>
-
-  <div class="container" id="storeApp" style="display:none;">
-    <h2 style="margin-bottom:16px;">🏪 فروشگاه من</h2>
-    <div id="storeContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
   <div class="container" id="favoritesApp" style="display:none;">
@@ -529,7 +1770,7 @@
 
   <script>
     // ============================================================
-    // J-DAR GLOBAL - Full Frontend (Fully Integrated with Worker)
+    // J-DAR GLOBAL - با ثبت‌نام یک‌کلیک و ورود با رمز
     // ============================================================
 
     const WORKER_URL = 'https://souq-bot.mehdi11eidani.workers.dev';
@@ -543,7 +1784,24 @@
     let wizardImagesBase64 = [];
     let isLoggedIn = false;
 
-    // Telegram init
+    // ===== دریافت user_id از URL (بازگشت از تلگرام) =====
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = urlParams.get('user_id');
+    const firstNameFromUrl = urlParams.get('first_name');
+
+    if (userIdFromUrl) {
+      telegramUserId = userIdFromUrl;
+      telegramUserName = firstNameFromUrl || 'کاربر';
+      isLoggedIn = true;
+      // مخفی کردن لاگین
+      document.getElementById('loginOverlay').style.display = 'none';
+      // پاک کردن پارامتر از URL
+      history.replaceState(null, '', window.location.pathname);
+      fetchUserProfile();
+      fetchAds();
+    }
+
+    // ===== تلگرام WebApp =====
     const tg = window.Telegram?.WebApp || null;
     if (tg) {
       tg.expand();
@@ -553,39 +1811,91 @@
         telegramUserId = user.id;
         telegramUserName = user.first_name || user.username || 'کاربر';
         isLoggedIn = true;
-      }
-    }
-
-    // ===== Check Login & Show Overlay =====
-    function requireLogin(callback) {
-      if (isLoggedIn && telegramUserId) {
-        if (callback) callback();
-        return true;
-      }
-      // Show login overlay
-      document.getElementById('loginOverlay').style.display = 'flex';
-      // Store callback for after login
-      window._pendingAction = callback;
-      return false;
-    }
-
-    function loginWithTelegram() {
-      // User will be redirected to bot, then back
-      // After return, the page will reload and tg will have user data
-      window.location.href = 'https://t.me/AlsouqAlmaftuhiran_bot?start=login';
-    }
-
-    // After returning from Telegram, check again
-    if (tg && tg.initDataUnsafe?.user) {
-      document.getElementById('loginOverlay').style.display = 'none';
-      if (window._pendingAction) {
-        setTimeout(window._pendingAction, 300);
-        window._pendingAction = null;
+        document.getElementById('loginOverlay').style.display = 'none';
+        fetchUserProfile();
+        fetchAds();
       }
     }
 
     // ============================================================
-    // Toast
+    // Login Functions
+    // ============================================================
+    function showLogin() {
+      document.getElementById('loginOverlay').style.display = 'flex';
+      document.getElementById('loginError').style.display = 'none';
+    }
+
+    function hideLogin() {
+      document.getElementById('loginOverlay').style.display = 'none';
+    }
+
+    function loginWithTelegram() {
+      window.location.href = 'https://t.me/AlsouqAlmaftuhiran_bot?start=login';
+    }
+
+    async function loginWithPassword() {
+      const userId = document.getElementById('loginUserId').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorEl = document.getElementById('loginError');
+
+      if (!userId || !password) {
+        errorEl.textContent = 'لطفاً شناسه و رمز را وارد کنید';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'در حال ورود...';
+
+      try {
+        const res = await fetch(`${WORKER_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          telegramUserId = userId;
+          telegramUserName = data.user.first_name || 'کاربر';
+          isLoggedIn = true;
+          currentUser = data.user;
+          hideLogin();
+          fetchUserProfile();
+          fetchAds();
+          showToast('✅ ورود موفق', 'success');
+        } else {
+          errorEl.textContent = data.error || 'خطا در ورود';
+          errorEl.style.display = 'block';
+        }
+      } catch (e) {
+        errorEl.textContent = 'خطا در ارتباط با سرور';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'ورود';
+      }
+    }
+
+    function logout() {
+      if (!confirm('آیا از خروج اطمینان دارید؟')) return;
+      telegramUserId = null;
+      telegramUserName = null;
+      isLoggedIn = false;
+      currentUser = null;
+      document.getElementById('walletBalance').innerText = '0';
+      document.getElementById('trustScore').innerText = '50';
+      document.getElementById('profileName').value = 'کاربر';
+      document.getElementById('profileCode').innerText = 'ندارد';
+      document.getElementById('profileTrust').value = '50';
+      document.getElementById('vipBadge').style.display = 'none';
+      showLogin();
+      showToast('👋 شما خارج شدید', 'warning');
+    }
+
+    // ============================================================
+    // Toast System
     // ============================================================
     function showToast(msg, type = 'success') {
       const container = document.getElementById('toastContainer');
@@ -599,7 +1909,7 @@
     }
 
     // ============================================================
-    // Theme, Language, Menu
+    // Theme & Language
     // ============================================================
     document.getElementById('themeToggle').addEventListener('click', () => {
       document.body.classList.toggle('dark');
@@ -623,7 +1933,6 @@
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       document.getElementById('mainApp').style.display = 'none';
       document.getElementById('profileApp').style.display = 'none';
-      document.getElementById('storeApp').style.display = 'none';
       document.getElementById('favoritesApp').style.display = 'none';
 
       if (tab === 'home') {
@@ -636,10 +1945,6 @@
         document.getElementById('nav-profile').classList.add('active');
         fetchUserProfile();
         fetchMyAds();
-      } else if (tab === 'store') {
-        document.getElementById('storeApp').style.display = 'block';
-        document.getElementById('nav-store').classList.add('active');
-        fetchStore();
       } else if (tab === 'favorites') {
         document.getElementById('favoritesApp').style.display = 'block';
         document.getElementById('nav-profile').classList.add('active');
@@ -661,7 +1966,7 @@
     }
 
     // ============================================================
-    // User Profile & Auto Register
+    // User Profile
     // ============================================================
     async function fetchUserProfile() {
       if (!telegramUserId) return;
@@ -679,28 +1984,9 @@
           document.getElementById('vipBadge').style.display = 'none';
         }
         isLoggedIn = true;
+        hideLogin();
       } else if (data.need_register) {
-        // Auto-register
-        await autoRegister();
-      }
-    }
-
-    async function autoRegister() {
-      if (!telegramUserId) return;
-      const user = tg?.initDataUnsafe?.user || { first_name: 'کاربر', username: '' };
-      const data = await apiCall('/api/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: telegramUserId,
-          firstName: user.first_name || 'کاربر',
-          username: user.username || ''
-        })
-      });
-      if (data.success) {
-        isLoggedIn = true;
-        document.getElementById('loginOverlay').style.display = 'none';
-        showToast('✅ ثبت‌نام با موفقیت انجام شد', 'success');
-        fetchUserProfile();
+        showLogin();
       }
     }
 
@@ -710,6 +1996,29 @@
       showToast('✅ ذخیره شد', 'success');
     }
 
+    async function changePassword() {
+      if (!telegramUserId) { showToast('لطفاً وارد شوید', 'warning'); return; }
+      const newPassword = document.getElementById('profilePassword').value.trim();
+      if (!newPassword) {
+        showToast('لطفاً رمز جدید را وارد کنید', 'warning');
+        return;
+      }
+      const data = await apiCall('/api/change-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: telegramUserId,
+          oldPassword: '1234', // رمز پیش‌فرض
+          newPassword: newPassword
+        })
+      });
+      if (data.success) {
+        showToast('✅ رمز با موفقیت تغییر یافت', 'success');
+        document.getElementById('profilePassword').value = '';
+      } else {
+        showToast('❌ ' + data.error, 'error');
+      }
+    }
+
     // ============================================================
     // Fetch Ads
     // ============================================================
@@ -717,7 +2026,7 @@
       const grid = document.getElementById('adsGrid');
       grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
 
-      const data = await apiCall('/api/ads');
+      const data = await apiCall('/api/feed');
       if (data.success && data.ads) {
         allAds = data.ads;
         filteredAds = [...allAds];
@@ -939,7 +2248,7 @@
     // Favorites
     // ============================================================
     async function toggleFavorite(adId) {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       const isFav = favorites.includes(adId);
       const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
       const data = await apiCall(endpoint, {
@@ -1040,63 +2349,10 @@
     }
 
     // ============================================================
-    // Store
-    // ============================================================
-    async function fetchStore() {
-      const container = document.getElementById('storeContent');
-      if (!telegramUserId) { container.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">لطفاً وارد شوید</div>'; return; }
-      container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-      const data = await apiCall(`/api/store/${telegramUserId}`);
-      if (data.success && data.store) {
-        const store = data.store;
-        container.innerHTML = `
-          <div class="store-card">
-            <div style="display:flex;gap:12px;align-items:center;">
-              ${store.logo ? `<img src="${store.logo}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">` : `<div style="width:60px;height:60px;border-radius:50%;background:#7b5aff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;"><i class="fa-solid fa-store"></i></div>`}
-              <div>
-                <div class="store-name">${store.name}</div>
-                <div class="store-desc">${store.description || 'بدون توضیحات'}</div>
-                <div style="font-size:11px;color:#888;">⭐ ${store.rating || 0} | 📦 ${store.total_products || 0} محصول</div>
-              </div>
-            </div>
-          </div>
-          <h4 style="margin:12px 0;">محصولات</h4>
-          ${data.products && data.products.length > 0 ? data.products.map(p => `
-            <div class="product-card">
-              <div class="product-info">
-                <div class="product-name">${p.name}</div>
-                <div class="product-price">${(p.price || 0).toLocaleString()} تومان</div>
-              </div>
-            </div>
-          `).join('') : '<div style="text-align:center;padding:20px;color:#888;">هیچ محصولی موجود نیست</div>'}
-          <button class="form-btn form-btn-primary" style="margin-top:12px;" onclick="createStore()">ایجاد فروشگاه</button>
-        `;
-      } else {
-        container.innerHTML = `
-          <div style="text-align:center;padding:30px;color:#888;">شما فروشگاه ندارید</div>
-          <button class="form-btn form-btn-primary" onclick="createStore()">ایجاد فروشگاه</button>
-        `;
-      }
-    }
-
-    function createStore() {
-      if (!requireLogin()) return;
-      const name = prompt('نام فروشگاه را وارد کنید:');
-      if (!name) return;
-      apiCall('/api/store/create', {
-        method: 'POST',
-        body: JSON.stringify({ userId: telegramUserId, name, description: '' })
-      }).then(data => {
-        if (data.success) { showToast('✅ فروشگاه ایجاد شد', 'success'); fetchStore(); }
-        else showToast('❌ خطا: ' + data.error, 'error');
-      });
-    }
-
-    // ============================================================
     // Support Chat
     // ============================================================
     function openSupportChat() {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       document.getElementById('supportChatModal').classList.add('active');
       if (!telegramUserId) document.getElementById('userIdField').style.display = 'flex';
       else document.getElementById('userIdField').style.display = 'none';
@@ -1146,7 +2402,7 @@
     }
 
     // ============================================================
-    // Wizard for Ad Creation (با دکمه‌های کامل)
+    // Wizard for Ad Creation
     // ============================================================
     document.getElementById('adType').addEventListener('change', function() {
       document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none';
@@ -1198,10 +2454,10 @@
     }
 
     // ============================================================
-    // Submit Ad (هماهنگ با Worker)
+    // Submit Ad
     // ============================================================
     async function submitAdWizard() {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
 
       const title = document.getElementById('adTitle').value;
       const category = document.getElementById('adCategory').value;
@@ -1254,8 +2510,7 @@
           fetchUserProfile();
         } else {
           if (data.need_register) {
-            showToast('⚠️ لطفاً ابتدا وارد تلگرام شوید', 'warning');
-            document.getElementById('loginOverlay').style.display = 'flex';
+            showLogin();
           } else if (data.need_vip) {
             showToast('⚠️ برای ثبت آگهی بیشتر، اشتراک VIP تهیه کنید', 'warning');
           } else if (data.need_charge) {
@@ -1273,21 +2528,21 @@
     }
 
     // ============================================================
-    // Wallet & VIP Modals (به‌روز شده)
+    // Wallet & VIP Modals
     // ============================================================
     function openWalletModal() {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       document.getElementById('walletModal').classList.add('active');
     }
 
     function openVipModal() {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       document.getElementById('vipModal').classList.add('active');
       loadVipPrices();
     }
 
     function openAddModal() {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       document.getElementById('addAdModal').classList.add('active');
       goToWizardStep(1);
     }
@@ -1303,11 +2558,10 @@
       try {
         const data = await apiCall('/api/vip/prices');
         if (data.success) {
-          // Update modal with prices
           const modal = document.getElementById('vipModal');
           modal.querySelector('.modal-content-scroll').innerHTML = `
             <h2 style="margin-bottom:14px; font-size:18px;">👑 اشتراک VIP</h2>
-            <p style="color:#666; font-size:13px; margin-bottom:12px;">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
+            <p style="color:#666; font-size:13px; margin-bottom:12px;">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید.</p>
             <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;">
               <div style="background:rgba(123,90,255,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(123,90,255,0.15);">
                 <div style="font-size:20px; font-weight:800; color:#7b5aff;">1</div>
@@ -1333,7 +2587,6 @@
             </div>
             <button class="form-btn form-btn-secondary" style="margin-top:10px;" onclick="closeModal('vipModal')">بستن</button>
           `;
-          // Load status
           if (telegramUserId) {
             const status = await apiCall(`/api/vip/status?user_id=${telegramUserId}`);
             if (status.success && status.is_vip) {
@@ -1347,7 +2600,7 @@
     }
 
     async function buyVip(plan) {
-      if (!requireLogin()) return;
+      if (!telegramUserId) { showLogin(); return; }
       try {
         const data = await apiCall('/api/vip/buy', {
           method: 'POST',
@@ -1397,17 +2650,22 @@
     // ============================================================
     loadNotice();
     fetchAds();
+
+    // اگر کاربر از قبل لاگین است
     if (telegramUserId) {
       fetchUserProfile();
-      // Load favorites
       apiCall(`/api/favorites?user_id=${telegramUserId}`).then(data => {
         if (data.success && data.favorites) {
           favorites = data.favorites.map(f => f.ad_id || f.id);
         }
       });
+    } else {
+      // نمایش صفحه لاگین
+      showLogin();
     }
 
-    console.log('🚀 J-DAR Global v3.0 - Fully Integrated with Worker');
+    console.log('🚀 J-DAR Global v3.0 - با ثبت‌نام یک‌کلیک و ورود با رمز');
   </script>
 </body>
-  </html>
+</html>`;
+}
