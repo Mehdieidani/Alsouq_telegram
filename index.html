@@ -12,7 +12,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== Reset & Base ===== */
+        /* ============================================
+           RESET & BASE
+           ============================================ */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         html { overflow-x:hidden; overscroll-behavior:none; height:100%; }
         body {
@@ -29,18 +31,44 @@
             flex-direction:column;
         }
         body.dark { background:#0a0a0c; color:#fff; }
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir.woff2') format('woff2');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Vazir';
+            src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/Vazir-Bold.woff2') format('woff2');
+            font-weight: bold;
+        }
 
-        body.dark .container, body.dark .wallet-card, body.dark .notice-card, body.dark .profile-section,
-        body.dark .ad-card, body.dark .modal-content, body.dark .auth-box, body.dark .dropdown-menu {
+        /* ============================================
+           DARK MODE OVERRIDES
+           ============================================ */
+        body.dark .container,
+        body.dark .wallet-card,
+        body.dark .notice-card,
+        body.dark .profile-section,
+        body.dark .ad-card,
+        body.dark .modal-content,
+        body.dark .auth-box,
+        body.dark .dropdown-menu {
             background: rgba(20,20,28,0.7) !important;
             backdrop-filter: blur(12px);
             border-color: rgba(255,255,255,0.05) !important;
             color: #fff;
         }
-        body.dark .ad-card-title, body.dark .modal-title, body.dark .wallet-info .amount,
-        body.dark .section-title h3, body.dark .profile-field label, body.dark .auth-box h2,
-        body.dark .help-modal h2, body.dark .dropdown-menu a { color:#fff; }
-        body.dark .ad-card-price, body.dark .modal-price, body.dark .wallet-points { color:#a58aff; }
+        body.dark .ad-card-title,
+        body.dark .modal-title,
+        body.dark .wallet-info .amount,
+        body.dark .section-title h3,
+        body.dark .profile-field label,
+        body.dark .auth-box h2,
+        body.dark .help-modal h2,
+        body.dark .dropdown-menu a { color:#fff; }
+        body.dark .ad-card-price,
+        body.dark .modal-price,
+        body.dark .wallet-points { color:#a58aff; }
         body.dark .search-box { background:rgba(20,20,30,0.6); }
         body.dark .search-box input { color:#fff; }
         body.dark .bottom-nav { background:rgba(15,15,20,0.85); border-top-color:rgba(255,255,255,0.04); }
@@ -52,8 +80,11 @@
         body.dark .form-control::placeholder { color:rgba(255,255,255,0.25); }
         body.dark .category-chip { background:rgba(30,30,40,0.6); color:#ddd; }
         body.dark .category-chip.active { background:#7b5aff; color:#fff; }
-        body.dark .ad-card-meta, body.dark .modal-location-time, body.dark .review-item .comment,
-        body.dark .review-item .date, body.dark .description-text { color:#aaa; }
+        body.dark .ad-card-meta,
+        body.dark .modal-location-time,
+        body.dark .review-item .comment,
+        body.dark .review-item .date,
+        body.dark .description-text { color:#aaa; }
         body.dark .wallet-info h4 { color:#aaa; }
         body.dark .notice-text { color:#ffd966; }
         body.dark .toast { background:rgba(20,20,30,0.92); color:#fff; }
@@ -92,7 +123,7 @@
 
         .container { max-width:500px; margin:0 auto; padding:14px 10px 80px 10px; position:relative; z-index:10; overscroll-behavior:none; flex:1; width:100%; }
 
-        /* ===== Header ===== */
+        /* ===== HEADER ===== */
         .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:0 2px; position:relative; }
         .logo { display:flex; align-items:center; gap:6px; }
         .logo-icon { width:38px; height:38px; background:linear-gradient(145deg,#7b5aff,#a58aff); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; box-shadow:0 6px 16px -4px rgba(123,90,255,0.4); flex-shrink:0; }
@@ -104,11 +135,11 @@
         body.dark .icon-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
         .icon-btn.hamburger { font-size:20px; }
 
-        /* ===== Dropdown ===== */
+        /* ===== DROPDOWN ===== */
         .dropdown-menu { position:absolute; top:44px; left:0; background:rgba(255,255,255,0.92); backdrop-filter:blur(20px); border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:8px 0; min-width:180px; z-index:100; display:none; box-shadow:0 12px 30px -10px rgba(0,0,0,0.2); animation:fadeInUp 0.25s ease; }
         body.dark .dropdown-menu { background:rgba(20,20,30,0.92); border-color:rgba(255,255,255,0.06); box-shadow:0 12px 30px -10px rgba(0,0,0,0.6); }
         .dropdown-menu.open { display:block; }
-        .dropdown-menu .dropdown-item { display:flex; align-items:center; gap:10px; padding:8px 16px; color:#111; text-decoration:none; font-size:13px; cursor:pointer; transition:0.15s; border:none; background:transparent; width:100%; text-align:right; font-family: 'Vazir', 'Inter', sans-serif; }
+        .dropdown-menu .dropdown-item { display:flex; align-items:center; gap:10px; padding:8px 16px; color:#111; text-decoration:none; font-size:13px; cursor:pointer; transition:0.15s; border:none; background:transparent; width:100%; text-align:right; font-family:'Vazir','Inter',sans-serif; }
         .dropdown-menu .dropdown-item:hover { background:rgba(0,0,0,0.04); }
         body.dark .dropdown-menu .dropdown-item { color:#fff; }
         body.dark .dropdown-menu .dropdown-item:hover { background:rgba(255,255,255,0.06); }
@@ -116,7 +147,7 @@
         body.dark .dropdown-menu .dropdown-item i { color:#a58aff; }
         @keyframes fadeInUp { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* ===== Toast ===== */
+        /* ===== TOAST ===== */
         .toast-container { position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:9999; max-width:92%; width:400px; pointer-events:none; }
         .toast { background:rgba(255,255,255,0.95); border:1px solid rgba(0,0,0,0.08); border-radius:14px; padding:10px 16px; margin-bottom:6px; color:#111; font-size:13px; display:flex; align-items:center; gap:10px; box-shadow:0 12px 30px -10px rgba(0,0,0,0.2); transform:translateY(-20px); opacity:0; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); pointer-events:auto; border-right:4px solid #7b5aff; }
         body.dark .toast { background:rgba(20,20,30,0.92); border-color:rgba(255,255,255,0.08); color:#fff; box-shadow:0 12px 30px -10px rgba(0,0,0,0.6); }
@@ -126,7 +157,7 @@
         .toast.warning { border-right-color:#ffd966; }
         .toast i { font-size:16px; flex-shrink:0; }
 
-        /* ===== Wallet ===== */
+        /* ===== WALLET ===== */
         .wallet-card { background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); border:1px solid rgba(0,0,0,0.06); border-radius:18px; padding:14px 16px; margin-bottom:16px; box-shadow:0 10px 28px -14px rgba(0,0,0,0.1); }
         body.dark .wallet-card { background:rgba(20,20,30,0.6); border-color:rgba(255,255,255,0.05); box-shadow:0 10px 28px -14px rgba(0,0,0,0.6); }
         .wallet-row { display:flex; justify-content:space-between; align-items:center; }
@@ -141,17 +172,14 @@
         .wallet-points .points-num { font-weight:700; font-size:14px; color:#111; }
         body.dark .wallet-points .points-num { color:#fff; }
 
-        /* ===== Notice ===== */
+        /* ===== NOTICE ===== */
         .notice-card { background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); border:1px solid rgba(255,215,0,0.3); border-radius:16px; padding:8px 12px; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
         body.dark .notice-card { background:rgba(20,20,30,0.6); border-color:rgba(255,215,0,0.2); }
         .notice-icon { width:30px; height:30px; background:#daa520; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff; flex-shrink:0; }
         .notice-text { flex:1; font-size:12px; color:#b8860b; line-height:1.4; }
         body.dark .notice-text { color:#ffd966; }
-        .notice-edit { width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:center; cursor:pointer; color:#daa520; font-size:14px; transition:0.2s; flex-shrink:0; }
-        .notice-edit:hover { background:#daa520; color:#fff; }
-        body.dark .notice-edit { background:rgba(255,255,255,0.08); }
 
-        /* ===== Action Grid ===== */
+        /* ===== ACTION GRID ===== */
         .action-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px; }
         .action-item { background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.05); border-radius:18px; padding:10px 0; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; transition:0.2s; color:#222; }
         body.dark .action-item { background:rgba(20,20,30,0.4); border-color:rgba(255,255,255,0.05); color:#fff; }
@@ -161,7 +189,7 @@
         body.dark .action-item i { color:#a58aff; }
         .action-item span { font-size:10px; font-weight:500; opacity:0.8; }
 
-        /* ===== Search ===== */
+        /* ===== SEARCH ===== */
         .search-box { background:rgba(255,255,255,0.85); backdrop-filter:blur(16px); border:1px solid rgba(0,0,0,0.06); border-radius:24px; padding:4px 12px; display:flex; align-items:center; margin-bottom:16px; }
         body.dark .search-box { background:rgba(20,20,30,0.6); border-color:rgba(255,255,255,0.05); }
         .search-box i { color:#777; font-size:15px; margin-left:8px; }
@@ -175,20 +203,22 @@
         .search-box button:hover { background:rgba(0,0,0,0.04); border-color:rgba(0,0,0,0.15); }
         body.dark .search-box button:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); }
 
-        /* ===== Categories ===== */
+        /* ===== SECTION TITLE ===== */
         .section-title { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
         .section-title h3 { font-weight:600; font-size:15px; color:#111; }
         body.dark .section-title h3 { color:#fff; }
         .section-title a { color:#777; text-decoration:none; font-size:12px; transition:0.2s; cursor:pointer; }
         body.dark .section-title a { color:#aaa; }
         .section-title a:hover { color:#7b5aff; }
+
+        /* ===== CATEGORIES ===== */
         .categories { display:flex; overflow-x:auto; gap:6px; padding-bottom:8px; margin-bottom:14px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
         .categories::-webkit-scrollbar { display:none; }
         .category-chip { background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border:1px solid rgba(0,0,0,0.05); border-radius:20px; padding:4px 14px; white-space:nowrap; color:#333; font-weight:500; transition:0.2s; cursor:pointer; font-size:12px; }
         body.dark .category-chip { background:rgba(30,30,40,0.6); border-color:rgba(255,255,255,0.05); color:#ddd; }
         .category-chip.active { background:#7b5aff; border-color:#7b5aff; color:#fff; }
 
-        /* ===== Ads Grid ===== */
+        /* ===== ADS GRID ===== */
         .ads-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
         .ad-card { background:rgba(255,255,255,0.92); backdrop-filter:blur(10px); border:1px solid rgba(0,0,0,0.06); border-radius:18px; overflow:hidden; cursor:pointer; transition:0.25s; position:relative; display:flex; flex-direction:column; }
         body.dark .ad-card { background:rgba(20,20,28,0.7); border-color:rgba(255,255,255,0.05); }
@@ -214,7 +244,7 @@
         .ad-card .user-info .username { font-weight:500; color:#111; }
         body.dark .ad-card .user-info .username { color:#fff; }
 
-        /* ===== Bottom Nav ===== */
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; max-width:500px; margin:0 auto; background:rgba(255,255,255,0.85); backdrop-filter:blur(24px); border-top:1px solid rgba(0,0,0,0.06); display:flex; justify-content:space-around; align-items:center; padding:6px 0 10px; border-top-left-radius:20px; border-top-right-radius:20px; z-index:100; box-shadow:0 -8px 28px -14px rgba(0,0,0,0.1); }
         body.dark .bottom-nav { background:rgba(15,15,20,0.85); border-top-color:rgba(255,255,255,0.04); box-shadow:0 -8px 28px -14px rgba(0,0,0,0.5); }
         .nav-item { display:flex; flex-direction:column; align-items:center; color:#555; cursor:pointer; transition:0.2s; font-size:9px; padding:0 8px; }
@@ -223,14 +253,14 @@
         body.dark .nav-item.active { color:#a58aff; }
         .nav-item i { font-size:18px; margin-bottom:1px; }
 
-        /* ===== Loading ===== */
+        /* ===== LOADING ===== */
         .loading-spinner { text-align:center; padding:30px 0; color:#7b5aff; }
         .loading-spinner i { font-size:28px; animation:spin 1s linear infinite; }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .no-ads-msg { text-align:center; padding:30px; color:#888; }
         body.dark .no-ads-msg { color:#aaa; }
 
-        /* ===== Modals ===== */
+        /* ===== MODALS ===== */
         .modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(20px); z-index:1000; overflow-y:auto; padding:0; overscroll-behavior:none; }
         .modal.active { display:block; }
         .modal-content { max-width:500px; margin:0 auto; background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); min-height:100vh; display:flex; flex-direction:column; position:relative; animation:fadeInUp 0.3s ease-out; }
@@ -239,7 +269,7 @@
         .modal-back:hover { transform:scale(1.05); }
         .modal-content-scroll { flex:1; overflow-y:auto; padding:16px 16px 80px 16px; overscroll-behavior:none; }
 
-        /* ===== Form ===== */
+        /* ===== FORM ===== */
         .form-group { margin-bottom:12px; }
         .form-group label { display:block; color:#555; font-size:12px; margin-bottom:3px; font-weight:500; }
         body.dark .form-group label { color:#aaa; }
@@ -267,7 +297,7 @@
         .form-btn-telegram { background:#0088cc; color:#fff; }
         .form-btn-telegram:hover { opacity:0.9; }
 
-        /* ===== Image Upload ===== */
+        /* ===== IMAGE UPLOAD ===== */
         .image-upload-area { border:2px dashed rgba(0,0,0,0.12); border-radius:20px; padding:16px 12px; text-align:center; cursor:pointer; transition:0.2s; position:relative; background:rgba(0,0,0,0.03); }
         body.dark .image-upload-area { border-color:rgba(255,255,255,0.12); background:rgba(0,0,0,0.15); }
         .image-upload-area:hover { border-color:#7b5aff; background:rgba(123,90,255,0.05); }
@@ -281,7 +311,7 @@
         .image-preview-item img { width:100%; height:100%; object-fit:cover; }
         .image-preview-item .remove-img { position:absolute; top:3px; right:3px; background:rgba(0,0,0,0.6); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; color:#ff5e7c; cursor:pointer; font-size:10px; border:none; }
 
-        /* ===== Wizard ===== */
+        /* ===== WIZARD ===== */
         .wizard-progress { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; position:relative; padding:0 10px; }
         .wizard-progress::before { content:''; position:absolute; top:50%; left:0; right:0; height:2px; background:rgba(0,0,0,0.1); z-index:1; transform:translateY(-50%); }
         body.dark .wizard-progress::before { background:rgba(255,255,255,0.1); }
@@ -294,7 +324,7 @@
         .wizard-step-pane.active { display:block; animation:fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
 
-        /* ===== Chat ===== */
+        /* ===== CHAT ===== */
         .chat-container { display:flex; flex-direction:column; height:calc(100vh - 200px); background:rgba(255,255,255,0.95); border-radius:18px; overflow:hidden; border:1px solid rgba(0,0,0,0.06); }
         body.dark .chat-container { background:rgba(10,10,12,0.95); border-color:rgba(255,255,255,0.05); }
         .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
@@ -315,7 +345,7 @@
         .chat-send-btn { width:38px; height:38px; border-radius:50%; background:#7b5aff; border:none; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.2s; flex-shrink:0; }
         .chat-send-btn:hover { transform:scale(1.05); }
 
-        /* ===== Wallet Tabs ===== */
+        /* ===== WALLET TABS ===== */
         .wallet-tabs { display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:6px; }
         body.dark .wallet-tabs { border-bottom-color:rgba(255,255,255,0.05); }
         .wallet-tab-btn { flex:1; padding:8px; background:transparent; border:none; color:#555; font-size:12px; font-weight:bold; cursor:pointer; transition:all 0.2s; text-align:center; }
@@ -328,13 +358,13 @@
         .crypto-address-box i { cursor:pointer; opacity:0.6; transition:0.2s; }
         .crypto-address-box i:hover { opacity:1; }
 
-        /* ===== Support Info ===== */
+        /* ===== SUPPORT INFO ===== */
         .support-info { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:12px; padding:10px; margin-bottom:12px; text-align:center; font-size:13px; color:#333; }
         body.dark .support-info { background:rgba(123,90,255,0.12); border-color:rgba(123,90,255,0.25); color:#eee; }
         .support-info a { color:#7b5aff; text-decoration:none; font-weight:bold; }
         .support-info a:hover { text-decoration:underline; }
 
-        /* ===== Register Overlay ===== */
+        /* ===== REGISTER OVERLAY ===== */
         #registerOverlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); z-index:2000; justify-content:center; align-items:center; flex-direction:column; padding:20px; }
         #registerOverlay.active { display:flex; }
         #registerOverlay .register-box { background:#1a1a24; border-radius:24px; padding:30px 24px; max-width:400px; width:100%; text-align:center; border:1px solid rgba(255,255,255,0.06); box-shadow:0 20px 60px rgba(0,0,0,0.8); }
@@ -349,10 +379,10 @@
         .register-btn-telegram:hover { opacity:0.9; transform:translateY(-2px); }
         .register-btn-telegram i { font-size:20px; }
 
-        /* ===== Profile ===== */
+        /* ===== PROFILE ===== */
         .profile-unique-code { background:rgba(123,90,255,0.08); border:1px solid rgba(123,90,255,0.2); border-radius:10px; padding:8px 12px; margin-top:6px; text-align:center; font-family:monospace; font-size:16px; color:#7b5aff; direction:ltr; }
 
-        /* ===== Image Gallery Modal ===== */
+        /* ===== IMAGE GALLERY ===== */
         .modal-image { width:100%; border-radius:20px; border:1px solid rgba(0,0,0,0.06); box-shadow:0 10px 28px -10px rgba(0,0,0,0.2); display:block; aspect-ratio:1/1; object-fit:cover; animation:fadeIn 0.4s ease; }
         body.dark .modal-image { border-color:rgba(255,255,255,0.06); box-shadow:0 10px 28px -10px rgba(0,0,0,0.4); }
         .image-gallery .no-image-placeholder { display:flex; align-items:center; justify-content:center; width:100%; aspect-ratio:1/1; background:#f0f0f3; color:#aaa; border-radius:20px; font-size:13px; }
@@ -369,12 +399,17 @@
     </style>
 </head>
 <body>
+    <!-- ============================================
+    TOAST CONTAINER
+    ============================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== محتوای اصلی ===== -->
+    <!-- ============================================
+    MAIN APP
+    ============================================ -->
     <div id="mainApp">
         <div class="container" id="mainAppContainer">
-            <!-- Header -->
+            <!-- ===== HEADER ===== -->
             <div class="header">
                 <div class="logo">
                     <div class="logo-icon"><i class="fa-solid fa-layer-group"></i></div>
@@ -393,7 +428,7 @@
                 </div>
             </div>
 
-            <!-- Wallet -->
+            <!-- ===== WALLET CARD ===== -->
             <div class="wallet-card">
                 <div class="wallet-row">
                     <div class="wallet-info">
@@ -411,13 +446,13 @@
                 </button>
             </div>
 
-            <!-- Notice -->
+            <!-- ===== NOTICE ===== -->
             <div class="notice-card" id="sysNoticeCard" style="display:none;">
                 <div class="notice-icon"><i class="fa-solid fa-bullhorn"></i></div>
                 <div class="notice-text" id="sysNoticeText">...</div>
             </div>
 
-            <!-- Actions -->
+            <!-- ===== ACTION GRID ===== -->
             <div class="action-grid">
                 <div class="action-item" onclick="filterByCategory('tourism')">
                     <i class="fa-solid fa-plane-departure"></i>
@@ -437,14 +472,14 @@
                 </div>
             </div>
 
-            <!-- Search -->
+            <!-- ===== SEARCH ===== -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="ابحث عن الخدمات والآعلانات...">
                 <button onclick="performSearch()">بحث</button>
             </div>
 
-            <!-- Ads -->
+            <!-- ===== ADS SECTION ===== -->
             <div class="section-title">
                 <h3>آخر الإعلانات</h3>
                 <a onclick="fetchAds()" style="cursor:pointer;"><i class="fa-solid fa-rotate"></i></a>
@@ -455,16 +490,26 @@
             </div>
         </div>
 
-        <!-- Bottom Nav -->
+        <!-- ===== BOTTOM NAV ===== -->
         <div class="bottom-nav">
-            <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>الرئيسية</span></div>
-            <div class="nav-item" id="nav-add" onclick="requireRegisterThen('openAddModal')"><i class="fa-solid fa-circle-plus"></i><span>أضف آعلان</span></div>
-            <div class="nav-item" id="nav-chat" onclick="requireRegisterThen('openSupportChat')"><i class="fa-solid fa-comments"></i><span>المحادثة</span></div>
-            <div class="nav-item" id="nav-profile" onclick="requireRegisterThen('switchTab', 'profile')"><i class="fa-solid fa-user"></i><span>الملف الشخصي</span></div>
+            <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+                <i class="fa-solid fa-house"></i><span>الرئيسية</span>
+            </div>
+            <div class="nav-item" id="nav-add" onclick="requireRegisterThen('openAddModal')">
+                <i class="fa-solid fa-circle-plus"></i><span>أضف آعلان</span>
+            </div>
+            <div class="nav-item" id="nav-chat" onclick="requireRegisterThen('openSupportChat')">
+                <i class="fa-solid fa-comments"></i><span>المحادثة</span>
+            </div>
+            <div class="nav-item" id="nav-profile" onclick="requireRegisterThen('switchTab', 'profile')">
+                <i class="fa-solid fa-user"></i><span>الملف الشخصي</span>
+            </div>
         </div>
     </div>
 
-    <!-- ===== Register Overlay ===== -->
+    <!-- ============================================
+    REGISTER OVERLAY
+    ============================================ -->
     <div id="registerOverlay">
         <div class="register-box">
             <div class="register-logo">🚀</div>
@@ -479,9 +524,9 @@
         </div>
     </div>
 
-    <!-- ===== Modals ===== -->
-
-    <!-- Add Ad Modal -->
+    <!-- ============================================
+    ADD AD MODAL
+    ============================================ -->
     <div class="modal" id="addAdModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -494,6 +539,7 @@
                     <div class="wizard-step-indicator" id="stepInd3">۳</div>
                 </div>
                 <form id="addAdForm" onsubmit="event.preventDefault();">
+                    <!-- Step 1 -->
                     <div class="wizard-step-pane active" id="wizardStep1">
                         <div class="form-group"><label>عنوان الإعلان <span class="required">*</span></label>
                             <input type="text" class="form-control" id="adTitle" required placeholder="مثال: رحلة سياحية إلى شمال إيران">
@@ -510,6 +556,7 @@
                         </div>
                         <button type="button" class="form-btn form-btn-primary" style="margin-top:10px;" onclick="goToWizardStep(2)">التالي <i class="fa-solid fa-arrow-left"></i></button>
                     </div>
+                    <!-- Step 2 -->
                     <div class="wizard-step-pane" id="wizardStep2">
                         <div class="form-group"><label>تفاصيل الإعلان <span class="required">*</span></label>
                             <textarea class="form-control" id="adDescription" required rows="4" placeholder="اكتب تفاصيل الخدمة وشروطها بدقة..."></textarea>
@@ -522,6 +569,7 @@
                             <button type="button" class="form-btn form-btn-primary" onclick="goToWizardStep(3)">التالي <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
+                    <!-- Step 3 -->
                     <div class="wizard-step-pane" id="wizardStep3">
                         <div class="form-group"><label>صور الإعلان</label>
                             <div class="image-upload-area">
@@ -544,7 +592,9 @@
         </div>
     </div>
 
-    <!-- Wallet Modal -->
+    <!-- ============================================
+    WALLET MODAL
+    ============================================ -->
     <div class="modal" id="walletModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('walletModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -594,7 +644,9 @@
         </div>
     </div>
 
-    <!-- Support Chat Modal -->
+    <!-- ============================================
+    SUPPORT CHAT MODAL
+    ============================================ -->
     <div class="modal" id="supportChatModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('supportChatModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -621,7 +673,9 @@
         </div>
     </div>
 
-    <!-- Ad Details Modal -->
+    <!-- ============================================
+    AD DETAILS MODAL
+    ============================================ -->
     <div class="modal" id="adDetailsModal">
         <div class="modal-content">
             <button class="modal-back" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-arrow-right"></i></button>
@@ -639,7 +693,9 @@
         </div>
     </div>
 
-    <!-- Profile Page (hidden by default) -->
+    <!-- ============================================
+    PROFILE PAGE
+    ============================================ -->
     <div class="container" id="profileApp" style="display:none;">
         <h2 style="margin-bottom:16px; font-size:20px;">حسابي الشخصي</h2>
         <div style="background:rgba(255,255,255,0.92); padding:16px; border-radius:18px; border:1px solid rgba(0,0,0,0.06);">
@@ -658,6 +714,9 @@
         </div>
     </div>
 
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
     <script>
         // ============================================
         //  SETTINGS
@@ -718,6 +777,7 @@
                 showToast('تم نسخ رقم البطاقة', 'success');
             });
         }
+
         function copyTetherAddress() {
             const text = 'TY6r7XgHkPqWz9LsKmN4vBxZqQ1wE2rT3y';
             navigator.clipboard.writeText(text).then(() => showToast('تم نسخ عنوان USDT', 'success')).catch(() => {
@@ -739,6 +799,7 @@
             const isDark = document.body.classList.contains('dark');
             document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
         });
+
         document.getElementById('langToggle').addEventListener('click', () => {
             const btn = document.getElementById('langToggle');
             btn.innerText = btn.innerText === 'FA' ? 'AR' : 'FA';
@@ -973,6 +1034,8 @@
                 } else if (result.need_register) {
                     showToast('⚠️ لطفاً ابتدا ثبت‌نام کنید', 'warning');
                     requireRegisterThen('openAddModal');
+                } else if (result.need_vip) {
+                    showToast('⚠️ ' + result.error, 'warning');
                 } else {
                     showToast('❌ خطأ: ' + result.error, 'error');
                 }
@@ -1057,12 +1120,21 @@
         // ============================================
         //  FETCH ADS (Public)
         // ============================================
-        async function fetchAds() {
+        async function fetchAds(params = {}) {
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
 
+            let url = `${WORKER_URL}/api/ads?`;
+            if (params.country) url += `country=${params.country}&`;
+            if (params.city) url += `city=${params.city}&`;
+            if (params.category) url += `category=${params.category}&`;
+            if (params.minPrice) url += `minPrice=${params.minPrice}&`;
+            if (params.maxPrice) url += `maxPrice=${params.maxPrice}&`;
+            if (params.sort) url += `sort=${params.sort}&`;
+            if (params.search) url += `search=${params.search}&`;
+
             try {
-                const response = await fetch(`${WORKER_URL}/api/ads`);
+                const response = await fetch(url);
                 const data = await response.json();
 
                 if (data.success && data.ads) {
@@ -1090,38 +1162,40 @@
                 card.onclick = () => openAdDetails(ad);
 
                 const imageHtml = (ad.images && ad.images.length > 0) ?
-                    `<img src="${WORKER_URL}/image/${ad.images[0]}" alt="Ad Image">` :
+                    `<img src="${WORKER_URL}/image/${ad.images[0]}" alt="Ad Image" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\'no-image\'><i class=\'fa-solid fa-image\' style=\'font-size:24px;\'></i></div>'">` :
                     `<div class="no-image"><i class="fa-solid fa-image" style="font-size:24px;"></i></div>`;
+
+                const specialBadge = ad.ad_type === 'special' ? `<span style="position:absolute;top:6px;right:6px;background:#daa520;color:#fff;padding:2px 8px;border-radius:14px;font-size:8px;">⭐ ویژه</span>` : '';
 
                 card.innerHTML = `
                     <div class="ad-card-image">
                         ${imageHtml}
+                        ${specialBadge}
                         <div class="watermark">J-DAR</div>
                     </div>
                     <div class="ad-card-content">
                         <div class="ad-card-title">${ad.title}</div>
                         <div class="ad-card-price">${Number(ad.price).toLocaleString()} تومان</div>
                         <div class="ad-card-meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ad.location || ''}</div>
+                        ${ad.rating_avg ? `<div class="ad-card-meta"><i class="fa-solid fa-star" style="color:#ffd966;"></i> ${Number(ad.rating_avg).toFixed(1)} (${ad.rating_count || 0})</div>` : ''}
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
+        // ============================================
+        //  FILTERS
+        // ============================================
         function filterByCategory(cat) {
-            if (cat === 'all') renderAds(allAds);
-            else renderAds(allAds.filter(ad => ad.category === cat));
+            const params = { category: cat === 'all' ? '' : cat };
+            fetchAds(params);
         }
 
         function performSearch() {
             const q = document.getElementById('searchInput').value.trim();
-            if (!q) { renderAds(allAds); return; }
-            const filtered = allAds.filter(ad => 
-                ad.title.includes(q) || 
-                ad.description.includes(q) || 
-                ad.city.includes(q)
-            );
-            renderAds(filtered);
+            if (!q) { fetchAds(); return; }
+            fetchAds({ search: q });
         }
 
         // ============================================
@@ -1150,7 +1224,7 @@
         }
 
         // ============================================
-        //  FETCH USER PROFILE (Requires Registration)
+        //  FETCH USER PROFILE
         // ============================================
         async function fetchUserProfile() {
             const userId = telegramUserId || 'ناشناس';
@@ -1176,6 +1250,56 @@
                 }
             } catch (error) {
                 console.error('Error fetching profile:', error);
+            }
+        }
+
+        // ============================================
+        //  FETCH MY ADS
+        // ============================================
+        async function fetchMyAds() {
+            const userId = telegramUserId || 'ناشناس';
+            if (userId === 'ناشناس') return;
+            try {
+                const response = await fetch(`${WORKER_URL}/api/user/ads?user_id=${userId}`);
+                const data = await response.json();
+                if (data.success && data.ads) {
+                    let msg = '📋 **آگهی‌های من:**\n\n';
+                    data.ads.forEach((ad, i) => {
+                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ? '⏳' : '❌';
+                        const typeEmoji = ad.ad_type === 'special' ? '⭐' : '📌';
+                        msg += `${i+1}. ${statusEmoji} ${typeEmoji} ${ad.title}\n💰 ${ad.price} تومان\n📊 وضعیت: ${ad.status}\n\n`;
+                    });
+                    showToast(msg, 'success');
+                } else {
+                    showToast('📭 هیچ آگهی‌ای ندارید.', 'warning');
+                }
+            } catch (error) {
+                console.error('Error fetching my ads:', error);
+            }
+        }
+
+        // ============================================
+        //  DELETE AD
+        // ============================================
+        async function deleteMyAd(adId) {
+            if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
+            const userId = telegramUserId || 'ناشناس';
+            try {
+                const response = await fetch(`${WORKER_URL}/api/ad/delete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, adId })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('✅ آگهی با موفقیت حذف شد.', 'success');
+                    fetchMyAds();
+                } else {
+                    showToast('❌ خطا در حذف آگهی.', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('⚠️ خطا در ارتباط با سرور.', 'error');
             }
         }
 
@@ -1265,12 +1389,84 @@
         }
 
         // ============================================
+        //  NOTICE
+        // ============================================
+        async function fetchNotice() {
+            try {
+                const response = await fetch(`${WORKER_URL}/api/notice`);
+                const data = await response.json();
+                if (data.success && data.notice) {
+                    document.getElementById('sysNoticeCard').style.display = 'flex';
+                    document.getElementById('sysNoticeText').innerText = data.notice.text;
+                } else {
+                    document.getElementById('sysNoticeCard').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error fetching notice:', error);
+            }
+        }
+
+        // ============================================
+        //  VIP STATUS
+        // ============================================
+        async function fetchVipStatus() {
+            const userId = telegramUserId || 'ناشناس';
+            if (userId === 'ناشناس') return;
+            try {
+                const response = await fetch(`${WORKER_URL}/api/vip/status?user_id=${userId}`);
+                const data = await response.json();
+                if (data.ok) {
+                    if (data.is_vip) {
+                        const days = Math.ceil((data.subscription_end - Math.floor(Date.now()/1000)) / 86400);
+                        showToast(`👑 شما کاربر VIP هستید. ${days} روز باقی‌مانده.`, 'success');
+                    } else {
+                        showToast('👑 برای استفاده از امکانات ویژه، اشتراک VIP تهیه کنید.', 'warning');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching VIP status:', error);
+            }
+        }
+
+        // ============================================
+        //  FAVORITE
+        // ============================================
+        async function toggleFavorite(adId) {
+            const userId = telegramUserId || 'ناشناس';
+            if (userId === 'ناشناس') {
+                showToast('لطفاً ابتدا ثبت‌نام کنید.', 'warning');
+                return;
+            }
+            try {
+                // بررسی اینکه آیا قبلاً ذخیره شده
+                const favs = await fetch(`${WORKER_URL}/api/favorites?user_id=${userId}`);
+                const favData = await favs.json();
+                const exists = favData.favorites?.some(f => f.id === adId);
+                
+                const url = exists ? `${WORKER_URL}/api/favorite/remove` : `${WORKER_URL}/api/favorite/add`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, adId })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(exists ? '❌ از علاقه‌مندی‌ها حذف شد.' : '✅ به علاقه‌مندی‌ها اضافه شد.', 'success');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('⚠️ خطا در عملیات.', 'error');
+            }
+        }
+
+        // ============================================
         //  INIT
         // ============================================
         async function initApp() {
             document.getElementById('registerOverlay').classList.remove('active');
             document.getElementById('mainApp').style.display = 'block';
 
+            await fetchNotice();
             await fetchAds();
 
             if (telegramUserId) {
