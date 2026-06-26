@@ -680,6 +680,20 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 14px;
+      max-height: 70vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+    }
+    .ads-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+    .ads-grid::-webkit-scrollbar-thumb {
+      background: #7b5aff;
+      border-radius: 10px;
+    }
+    .ads-grid::-webkit-scrollbar-track {
+      background: transparent;
     }
     .ad-card {
       background: rgba(255, 255, 255, 0.92);
@@ -1583,58 +1597,6 @@
     .login-box .btn-telegram i {
       margin-left: 8px;
     }
-    .login-box .btn-primary {
-      background: #7b5aff;
-      color: #fff;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .login-box .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-    }
-    .login-box .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 16px 0;
-      color: #888;
-      font-size: 12px;
-    }
-    .login-box .divider::before,
-    .login-box .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #ddd;
-    }
-    body.dark .login-box .divider {
-      color: #666;
-    }
-    body.dark .login-box .divider::before,
-    body.dark .login-box .divider::after {
-      background: #444;
-    }
-    .login-box .hint {
-      font-size: 12px;
-      color: #888;
-      margin-top: 12px;
-    }
-    body.dark .login-box .hint {
-      color: #666;
-    }
-    .login-box .error-text {
-      color: #ff5e7c;
-      font-size: 13px;
-      margin-top: 8px;
-      display: none;
-    }
     .login-box .close-login {
       position: absolute;
       top: 12px;
@@ -1656,6 +1618,39 @@
     }
     body.dark .login-box .close-login:hover {
       color: #ff5e7c;
+    }
+    .login-box .hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: 12px;
+    }
+    body.dark .login-box .hint {
+      color: #666;
+    }
+    .login-box .guest-btn {
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid #7b5aff;
+      color: #7b5aff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+    .login-box .guest-btn:hover {
+      background: #7b5aff;
+      color: #fff;
+    }
+    body.dark .guest-btn {
+      border-color: #a58aff;
+      color: #a58aff;
+    }
+    body.dark .guest-btn:hover {
+      background: #a58aff;
+      color: #111;
     }
     /* ===== Time badges ===== */
     .time-badge {
@@ -1694,12 +1689,151 @@
         font-size: 20px;
       }
     }
+    /* ===== Custom ===== */
+    .name-change-hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+    body.dark .name-change-hint {
+      color: #aaa;
+    }
+    .review-stars {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .review-stars span {
+      cursor: pointer;
+      color: #888;
+      transition: 0.2s;
+    }
+    .review-stars span.active {
+      color: #daa520;
+    }
+    body.dark .review-stars span {
+      color: #555;
+    }
+    body.dark .review-stars span.active {
+      color: #ffd700;
+    }
+    .my-ad-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    body.dark .my-ad-item {
+      background: rgba(20, 20, 28, 0.6);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    .my-ad-item .info .title {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .my-ad-item .info .sub {
+      font-size: 11px;
+      color: #888;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    body.dark .my-ad-item .info .sub {
+      color: #aaa;
+    }
+    .my-ad-item .info .sub .status-tag {
+      padding: 1px 8px;
+      border-radius: 12px;
+      font-size: 9px;
+    }
+    .status-tag.pending {
+      background: #ffd966;
+      color: #333;
+    }
+    .status-tag.approved {
+      background: #4caf50;
+      color: #fff;
+    }
+    .status-tag.rejected {
+      background: #ff5e7c;
+      color: #fff;
+    }
+    .my-ad-item .actions {
+      display: flex;
+      gap: 6px;
+    }
+    .my-ad-item .actions button {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+      transition: 0.2s;
+    }
+    .my-ad-item .actions .edit-btn {
+      color: #7b5aff;
+    }
+    .my-ad-item .actions .edit-btn:hover {
+      color: #5a3fcc;
+    }
+    .my-ad-item .actions .delete-btn {
+      color: #ff5e7c;
+    }
+    .my-ad-item .actions .delete-btn:hover {
+      color: #cc0020;
+    }
+    body.dark .my-ad-item .actions .edit-btn {
+      color: #a58aff;
+    }
+    body.dark .my-ad-item .actions .delete-btn {
+      color: #ff5e7c;
+    }
+    .review-item {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    body.dark .review-item {
+      border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+    .review-item .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .review-item .header .name {
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .review-item .header .stars {
+      color: #daa520;
+      font-size: 14px;
+    }
+    .review-item .comment {
+      font-size: 13px;
+      color: #555;
+      margin-top: 4px;
+    }
+    body.dark .review-item .comment {
+      color: #ccc;
+    }
+    .review-item .date {
+      font-size: 10px;
+      color: #888;
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ===== Login Overlay (فقط در صورت نیاز نمایش داده می‌شود) ===== -->
+  <!-- ===== Login Overlay (فقط در صورت نیاز) ===== -->
   <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
       <button class="close-login" onclick="closeLoginAndContinueAsGuest()" title="خروج و ادامه به عنوان مهمان">❌</button>
@@ -1710,11 +1844,9 @@
         <i class="fa-brands fa-telegram"></i> <span id="loginBtnText">ورود با تلگرام</span>
       </a>
       <div class="hint" id="loginHint">با یک کلیک ثبت‌نام کنید و به برنامه بازگردید</div>
-      <div style="margin-top:12px;">
-        <button class="form-btn form-btn-secondary" onclick="closeLoginAndContinueAsGuest()" style="width:auto; padding:6px 16px; font-size:12px;">
-          <i class="fa-solid fa-eye"></i> مشاهده به عنوان مهمان
-        </button>
-      </div>
+      <button class="guest-btn" onclick="closeLoginAndContinueAsGuest()">
+        <i class="fa-solid fa-eye"></i> مشاهده به عنوان مهمان
+      </button>
     </div>
   </div>
 
@@ -1727,10 +1859,11 @@
         <button class="icon-btn" id="langToggle" aria-label="تغییر زبان">FA</button>
         <button class="icon-btn hamburger" id="menuToggle" aria-label="منو"><i class="fa-solid fa-bars"></i></button>
         <div class="dropdown-menu" id="dropdownMenu">
-          <button class="dropdown-item" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span data-key="nav_home">خانه</span></button>
-          <button class="dropdown-item" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span data-key="nav_profile">پروفایل</span></button>
-          <button class="dropdown-item" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i><span data-key="nav_fav">علاقه‌مندی‌ها</span></button>
-          <button class="dropdown-item" onclick="openAddModal()"><i class="fa-solid fa-plus-circle"></i><span data-key="nav_add">ثبت آگهی</span></button>
+          <button class="dropdown-item" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>خانه</span></button>
+          <button class="dropdown-item" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span>پروفایل</span></button>
+          <button class="dropdown-item" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i><span>علاقه‌مندی‌ها</span></button>
+          <button class="dropdown-item" onclick="openAddModal()"><i class="fa-solid fa-plus-circle"></i><span>ثبت آگهی</span></button>
+          <button class="dropdown-item" onclick="window.open('https://t.me/Mehdi_E_admin', '_blank')"><i class="fa-solid fa-headset"></i><span>پشتیبانی</span></button>
         </div>
       </div>
     </div>
@@ -1739,17 +1872,17 @@
     <div class="wallet-card">
       <div class="wallet-row">
         <div class="wallet-info">
-          <h4 data-key="wallet_bal">کیف پول</h4>
-          <div class="amount"><span id="walletBalance">0</span> <small data-key="currency">تومان</small></div>
+          <h4>کیف پول</h4>
+          <div class="amount"><span id="walletBalance">0</span> <small>تومان</small></div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
           <span class="vip-badge" id="vipBadge" style="display:none;"><i class="fa-solid fa-crown"></i> VIP</span>
-          <div class="wallet-points"><i class="fa-solid fa-star"></i> <span data-key="trust">اعتماد:</span> <span class="points-num" id="trustScore">50</span></div>
+          <div class="wallet-points"><i class="fa-solid fa-star"></i> اعتماد: <span class="points-num" id="trustScore">50</span></div>
         </div>
       </div>
       <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
-        <button class="form-btn form-btn-primary" style="flex:1; padding:6px;" onclick="openWalletModal()"><i class="fa-solid fa-wallet"></i> <span data-key="charge">شارژ</span></button>
-        <button class="form-btn form-btn-gold" style="flex:1; padding:6px;" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> <span data-key="vip">VIP</span></button>
+        <button class="form-btn form-btn-primary" style="flex:1; padding:6px;" onclick="openWalletModal()"><i class="fa-solid fa-wallet"></i> شارژ</button>
+        <button class="form-btn form-btn-gold" style="flex:1; padding:6px;" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> VIP</button>
       </div>
     </div>
 
@@ -1761,48 +1894,48 @@
 
     <!-- ===== Quick Actions ===== -->
     <div class="action-grid">
-      <div class="action-item" onclick="filterByCategory('real_estate')"><i class="fa-solid fa-building"></i><span data-key="cat_realestate">املاک</span></div>
-      <div class="action-item" onclick="filterByCategory('vehicles')"><i class="fa-solid fa-car"></i><span data-key="cat_vehicles">خودرو</span></div>
-      <div class="action-item" onclick="filterByCategory('electronics')"><i class="fa-solid fa-mobile-screen"></i><span data-key="cat_electronics">الکترونیک</span></div>
-      <div class="action-item" onclick="filterByCategory('services')"><i class="fa-solid fa-handshake"></i><span data-key="cat_services">خدمات</span></div>
+      <div class="action-item" onclick="filterByCategory('real_estate')"><i class="fa-solid fa-building"></i><span>املاک</span></div>
+      <div class="action-item" onclick="filterByCategory('vehicles')"><i class="fa-solid fa-car"></i><span>خودرو</span></div>
+      <div class="action-item" onclick="filterByCategory('electronics')"><i class="fa-solid fa-mobile-screen"></i><span>الکترونیک</span></div>
+      <div class="action-item" onclick="filterByCategory('services')"><i class="fa-solid fa-handshake"></i><span>خدمات</span></div>
     </div>
 
     <!-- ===== Search ===== -->
     <div class="search-box">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." data-key="search_placeholder">
-      <button id="searchBtn" data-key="search_btn">جستجو</button>
+      <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
+      <button id="searchBtn">جستجو</button>
       <button class="filter-toggle" onclick="toggleFilterPanel()"><i class="fa-solid fa-sliders"></i></button>
     </div>
 
     <!-- ===== Filter Panel ===== -->
     <div class="filter-panel" id="filterPanel">
       <div class="filter-row">
-        <div class="filter-group"><span class="filter-label" data-key="country">🌍 کشور</span><select id="filterCountry"><option value="">همه</option></select></div>
-        <div class="filter-group"><span class="filter-label" data-key="city">🏙 شهر</span><select id="filterCity"><option value="">همه</option></select></div>
+        <div class="filter-group"><span class="filter-label">🌍 کشور</span><select id="filterCountry"><option value="">همه</option></select></div>
+        <div class="filter-group"><span class="filter-label">🏙 شهر</span><select id="filterCity"><option value="">همه</option></select></div>
       </div>
       <div class="filter-row">
-        <div class="filter-group"><span class="filter-label" data-key="category">📂 دسته</span><select id="filterCategory"><option value="">همه</option></select></div>
-        <div class="filter-group"><span class="filter-label" data-key="price">💰 قیمت</span><div style="display:flex; gap:4px;"><input type="number" id="filterMinPrice" placeholder="از" style="flex:1; padding:4px 8px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); font-size:11px;"><input type="number" id="filterMaxPrice" placeholder="تا" style="flex:1; padding:4px 8px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); font-size:11px;"></div></div>
+        <div class="filter-group"><span class="filter-label">📂 دسته</span><select id="filterCategory"><option value="">همه</option></select></div>
+        <div class="filter-group"><span class="filter-label">💰 قیمت</span><div style="display:flex; gap:4px;"><input type="number" id="filterMinPrice" placeholder="از" style="flex:1; padding:4px 8px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); font-size:11px;"><input type="number" id="filterMaxPrice" placeholder="تا" style="flex:1; padding:4px 8px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); font-size:11px;"></div></div>
       </div>
       <div class="filter-row">
-        <div class="filter-group"><span class="filter-label" data-key="rating">⭐ امتیاز</span><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
-        <div class="filter-group"><span class="filter-label" data-key="sort">📅 ترتیب</span><select id="filterSort"><option value="newest">جدیدترین</option><option value="oldest">قدیمی‌ترین</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option><option value="rating">امتیاز</option><option value="views">بازدید</option><option value="special">ویژه</option><option value="popular">محبوب</option></select></div>
+        <div class="filter-group"><span class="filter-label">⭐ امتیاز</span><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
+        <div class="filter-group"><span class="filter-label">📅 ترتیب</span><select id="filterSort"><option value="newest">جدیدترین</option><option value="oldest">قدیمی‌ترین</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option><option value="rating">امتیاز</option><option value="views">بازدید</option><option value="special">ویژه</option><option value="popular">محبوب</option></select></div>
       </div>
-      <div class="filter-actions"><button class="apply-filter" onclick="applyFilters()" data-key="apply">اعمال</button><button onclick="resetFilters()" data-key="cancel">لغو</button></div>
+      <div class="filter-actions"><button class="apply-filter" onclick="applyFilters()">اعمال</button><button onclick="resetFilters()">لغو</button></div>
     </div>
 
     <!-- ===== Ads Grid ===== -->
-    <div class="section-title"><h3 data-key="recent_ads">آخرین آگهی‌ها</h3><a onclick="fetchAds()" style="cursor:pointer;"><i class="fa-solid fa-rotate"></i></a></div>
+    <div class="section-title"><h3>آخرین آگهی‌ها</h3><a onclick="fetchAds()" style="cursor:pointer;"><i class="fa-solid fa-rotate"></i></a></div>
     <div class="categories" id="categoriesContainer"></div>
     <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
-  <!-- ===== Bottom Navigation (بدون چت) ===== -->
+  <!-- ===== Bottom Navigation ===== -->
   <div class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span data-key="nav_home">خانه</span></div>
-    <div class="nav-item" id="nav-add" onclick="openAddModal()"><i class="fa-solid fa-circle-plus"></i><span data-key="nav_add">ثبت</span></div>
-    <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span data-key="nav_profile">پروفایل</span></div>
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>خانه</span></div>
+    <div class="nav-item" id="nav-add" onclick="openAddModal()"><i class="fa-solid fa-circle-plus"></i><span>ثبت</span></div>
+    <div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span>پروفایل</span></div>
   </div>
 
   <!-- ===== Modals ===== -->
@@ -1812,7 +1945,7 @@
     <div class="modal-content">
       <button class="modal-back" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-content-scroll">
-        <h2 style="margin-bottom:14px; font-size:18px;" data-key="add_ad_title">ثبت آگهی جدید</h2>
+        <h2 style="margin-bottom:14px; font-size:18px;">ثبت آگهی جدید</h2>
         <div class="wizard-progress">
           <div class="wizard-progress-bar" id="wizardProgressBar"></div>
           <div class="wizard-step-indicator active" id="stepInd1">۱</div>
@@ -1821,41 +1954,41 @@
         </div>
         <form id="addAdForm" onsubmit="event.preventDefault();">
           <div class="wizard-step-pane active" id="wizardStep1">
-            <div class="form-group"><label data-key="ad_title">عنوان آگهی <span class="required">*</span></label><input type="text" class="form-control" id="adTitle" required placeholder="مثال: تور مشهد"></div>
-            <div class="form-group"><label data-key="ad_category">دسته‌بندی <span class="required">*</span></label>
+            <div class="form-group"><label>عنوان آگهی <span class="required">*</span></label><input type="text" class="form-control" id="adTitle" required placeholder="مثال: تور مشهد"></div>
+            <div class="form-group"><label>دسته‌بندی <span class="required">*</span></label>
               <select class="form-control" id="adCategory" required>
                 <option value="گردشگری">گردشگری</option><option value="پزشکی">پزشکی</option><option value="زیبایی">زیبایی</option>
               </select>
             </div>
-            <div class="form-group"><label data-key="ad_price">قیمت (تومان) <span class="required">*</span></label><input type="number" class="form-control" id="adPrice" required placeholder="0"></div>
-            <button type="button" class="form-btn form-btn-primary" style="margin-top:10px;" onclick="goToWizardStep(2)"><span data-key="next">بعدی</span> <i class="fa-solid fa-arrow-left"></i></button>
+            <div class="form-group"><label>قیمت (تومان) <span class="required">*</span></label><input type="number" class="form-control" id="adPrice" required placeholder="0"></div>
+            <button type="button" class="form-btn form-btn-primary" style="margin-top:10px;" onclick="goToWizardStep(2)">بعدی <i class="fa-solid fa-arrow-left"></i></button>
           </div>
           <div class="wizard-step-pane" id="wizardStep2">
-            <div class="form-group"><label data-key="ad_desc">توضیحات <span class="required">*</span></label><textarea class="form-control" id="adDescription" required rows="4" placeholder="توضیحات کامل..."></textarea></div>
-            <div class="form-group"><label data-key="ad_location">موقعیت / شهر <span class="required">*</span></label><input type="text" class="form-control" id="adLocation" required placeholder="مثال: تهران"></div>
-            <div class="form-group"><label data-key="country">کشور</label>
+            <div class="form-group"><label>توضیحات <span class="required">*</span></label><textarea class="form-control" id="adDescription" required rows="4" placeholder="توضیحات کامل..."></textarea></div>
+            <div class="form-group"><label>موقعیت / شهر <span class="required">*</span></label><input type="text" class="form-control" id="adLocation" required placeholder="مثال: تهران"></div>
+            <div class="form-group"><label>کشور</label>
               <select class="form-control" id="adCountry"><option value="ایران">ایران</option><option value="عراق">عراق</option><option value="امارات">امارات</option></select>
             </div>
             <div class="form-row" style="margin-top:14px;">
-              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(1)"><i class="fa-solid fa-arrow-right"></i> <span data-key="prev">قبلی</span></button>
-              <button type="button" class="form-btn form-btn-primary" onclick="goToWizardStep(3)"><span data-key="next">بعدی</span> <i class="fa-solid fa-arrow-left"></i></button>
+              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(1)"><i class="fa-solid fa-arrow-right"></i> قبلی</button>
+              <button type="button" class="form-btn form-btn-primary" onclick="goToWizardStep(3)">بعدی <i class="fa-solid fa-arrow-left"></i></button>
             </div>
           </div>
           <div class="wizard-step-pane" id="wizardStep3">
-            <div class="form-group"><label data-key="ad_images">تصاویر (حداکثر ۴)</label>
-              <div class="image-upload-area"><i class="fa-solid fa-cloud-arrow-up"></i><p data-key="upload_click">برای آپلود کلیک کنید</p><input type="file" id="adImagesInput" accept="image/*" multiple onchange="handleWizardImages(this)"></div>
+            <div class="form-group"><label>تصاویر (حداکثر ۴)</label>
+              <div class="image-upload-area"><i class="fa-solid fa-cloud-arrow-up"></i><p>برای آپلود کلیک کنید</p><input type="file" id="adImagesInput" accept="image/*" multiple onchange="handleWizardImages(this)"></div>
               <div class="image-preview-grid" id="wizardImagePreviewGrid"></div>
             </div>
-            <div class="form-group"><label data-key="ad_phone">شماره تماس</label><input type="tel" class="form-control" id="adContact" placeholder="0912..."></div>
-            <div class="form-group"><label data-key="ad_type_label">نوع آگهی</label>
-              <select class="form-control" id="adType"><option value="normal" data-key="normal_ad">عادی</option><option value="special" data-key="special_ad">ویژه</option></select>
+            <div class="form-group"><label>شماره تماس</label><input type="tel" class="form-control" id="adContact" placeholder="0912..."></div>
+            <div class="form-group"><label>نوع آگهی</label>
+              <select class="form-control" id="adType"><option value="normal">عادی</option><option value="special">ویژه</option></select>
             </div>
-            <div class="form-group" id="planGroup" style="display:none;"><label data-key="plan_label">مدت ویژه</label>
+            <div class="form-group" id="planGroup" style="display:none;"><label>مدت ویژه</label>
               <select class="form-control" id="adPlan"><option value="1">۱ روز</option><option value="3">۳ روز</option></select>
             </div>
             <div class="form-row" style="margin-top:14px;">
-              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(2)"><i class="fa-solid fa-arrow-right"></i> <span data-key="prev">قبلی</span></button>
-              <button type="button" class="form-btn form-btn-success" id="submitAdFinalBtn" onclick="submitAdWizard()"><i class="fa-solid fa-check"></i> <span data-key="submit_ad">ثبت آگهی</span></button>
+              <button type="button" class="form-btn form-btn-secondary" onclick="goToWizardStep(2)"><i class="fa-solid fa-arrow-right"></i> قبلی</button>
+              <button type="button" class="form-btn form-btn-success" id="submitAdFinalBtn" onclick="submitAdWizard()"><i class="fa-solid fa-check"></i> ثبت آگهی</button>
             </div>
           </div>
         </form>
@@ -1868,31 +2001,31 @@
     <div class="modal-content">
       <button class="modal-back" onclick="closeModal('walletModal')"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-content-scroll">
-        <h2 style="margin-bottom:14px; font-size:18px;" data-key="charge_wallet">شارژ کیف پول</h2>
+        <h2 style="margin-bottom:14px; font-size:18px;">شارژ کیف پول</h2>
         <div class="wallet-tabs">
-          <button class="wallet-tab-btn active" id="tabBtnBank" onclick="switchWalletTab('bank')"><i class="fa-solid fa-credit-card"></i> <span data-key="bank_tab">کارت به کارت</span></button>
-          <button class="wallet-tab-btn" id="tabBtnCrypto" onclick="switchWalletTab('crypto')"><i class="fa-brands fa-ethereum"></i> <span data-key="crypto_tab">کریپتو USDT</span></button>
+          <button class="wallet-tab-btn active" id="tabBtnBank" onclick="switchWalletTab('bank')"><i class="fa-solid fa-credit-card"></i> کارت به کارت</button>
+          <button class="wallet-tab-btn" id="tabBtnCrypto" onclick="switchWalletTab('crypto')"><i class="fa-brands fa-ethereum"></i> کریپتو USDT</button>
         </div>
         <form id="walletChargeForm" onsubmit="event.preventDefault();">
           <div class="wallet-tab-pane active" id="walletPaneBank">
             <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(123,90,255,0.2);">
-              <strong style="color:#7b5aff;" data-key="bank_instructions">راهنمای واریز:</strong>
-              <p style="margin-top:4px; opacity:0.8;" data-key="bank_details">به شماره کارت زیر به نام <strong>مهدی عیدانی</strong> (بانک صادرات) واریز کنید و رسید را آپلود کنید.</p>
-              <div class="crypto-address-box"><span id="cardNumberDisplay">6037-6917-9138-4449</span><i class="fa-solid fa-copy" onclick="copyCardNumber()"></i></div>
+              <strong style="color:#7b5aff;">راهنمای واریز:</strong>
+              <p style="margin-top:4px; opacity:0.8;">به شماره کارت زیر به نام <strong>مهدی عیدانی</strong> (بانک صادرات) واریز کنید و رسید را آپلود کنید.</p>
+              <div class="crypto-address-box"><span>6037-6917-9138-4449</span><i class="fa-solid fa-copy" onclick="copyCardNumber()"></i></div>
             </div>
           </div>
           <div class="wallet-tab-pane" id="walletPaneCrypto">
             <div style="background:rgba(0,0,0,0.03); padding:10px; border-radius:12px; margin-bottom:12px; font-size:12px; border:1px solid rgba(218,165,32,0.2);">
-              <strong style="color:#daa520;" data-key="crypto_instructions">آدرس تتر (TRC20):</strong>
-              <div class="crypto-address-box"><span id="tetherAddressDisplay">0x865e5DA97a1a0f656Cfc2113097FC963b26E5165</span><i class="fa-solid fa-copy" onclick="copyTetherAddress()"></i></div>
+              <strong style="color:#daa520;">آدرس تتر (TRC20):</strong>
+              <div class="crypto-address-box"><span>0x865e5DA97a1a0f656Cfc2113097FC963b26E5165</span><i class="fa-solid fa-copy" onclick="copyTetherAddress()"></i></div>
             </div>
           </div>
-          <div class="form-group"><label data-key="charge_amount">مبلغ (تومان) <span class="required">*</span></label><input type="number" class="form-control" id="chargeAmount" required placeholder="0"></div>
-          <div class="form-group"><label data-key="receipt_label">تصویر رسید <span class="required">*</span></label>
-            <div class="image-upload-area"><i class="fa-solid fa-file-invoice-dollar"></i><p id="receiptPromptText" data-key="upload_receipt">برای آپلود رسید کلیک کنید</p><input type="file" id="walletReceiptInput" accept="image/*" required onchange="handleReceiptUpload(this)"></div>
+          <div class="form-group"><label>مبلغ (تومان) <span class="required">*</span></label><input type="number" class="form-control" id="chargeAmount" required placeholder="0"></div>
+          <div class="form-group"><label>تصویر رسید <span class="required">*</span></label>
+            <div class="image-upload-area"><i class="fa-solid fa-file-invoice-dollar"></i><p id="receiptPromptText">برای آپلود رسید کلیک کنید</p><input type="file" id="walletReceiptInput" accept="image/*" required onchange="handleReceiptUpload(this)"></div>
             <div id="receiptPreviewContainer" style="margin-top:8px; text-align:center; display:none;"><img id="receiptPreviewImg" src="" style="max-width:100px; max-height:100px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);"></div>
           </div>
-          <button type="button" class="form-btn form-btn-primary" style="margin-top:14px;" id="submitChargeBtn" onclick="submitWalletCharge()"><i class="fa-solid fa-paper-plane"></i> <span data-key="send_charge">ارسال درخواست</span></button>
+          <button type="button" class="form-btn form-btn-primary" style="margin-top:14px;" id="submitChargeBtn" onclick="submitWalletCharge()"><i class="fa-solid fa-paper-plane"></i> ارسال درخواست</button>
         </form>
       </div>
     </div>
@@ -1903,30 +2036,30 @@
     <div class="modal-content">
       <button class="modal-back" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-content-scroll">
-        <h2 style="margin-bottom:14px; font-size:18px;" data-key="vip_title">👑 اشتراک VIP</h2>
-        <p style="color:#666; font-size:13px; margin-bottom:12px;" data-key="vip_desc">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
+        <h2 style="margin-bottom:14px; font-size:18px;">👑 اشتراک VIP</h2>
+        <p style="color:#666; font-size:13px; margin-bottom:12px;">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
         <div id="vipPlansContainer" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;">
           <div style="background:rgba(123,90,255,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(123,90,255,0.15);">
             <div style="font-size:20px; font-weight:800; color:#7b5aff;">1</div>
-            <div style="font-size:11px; color:#555;" data-key="month">ماه</div>
+            <div style="font-size:11px; color:#555;">ماه</div>
             <div style="font-weight:700; margin-top:4px;" id="vipPrice1">۵۰,۰۰۰</div>
-            <button class="form-btn form-btn-primary" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('monthly')" data-key="buy">خرید</button>
+            <button class="form-btn form-btn-primary" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('monthly')">خرید</button>
           </div>
           <div style="background:rgba(218,165,32,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(218,165,32,0.2);">
             <div style="font-size:20px; font-weight:800; color:#daa520;">3</div>
-            <div style="font-size:11px; color:#555;" data-key="months_3">ماه</div>
+            <div style="font-size:11px; color:#555;">ماه</div>
             <div style="font-weight:700; margin-top:4px;" id="vipPrice3">۱۳۰,۰۰۰</div>
-            <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('quarterly')" data-key="buy">خرید</button>
+            <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('quarterly')">خرید</button>
           </div>
           <div style="background:rgba(255,215,0,0.08); border-radius:14px; padding:12px; text-align:center; border:1px solid rgba(255,215,0,0.2);">
             <div style="font-size:20px; font-weight:800; color:#ffd700;">6</div>
-            <div style="font-size:11px; color:#555;" data-key="months_6">ماه</div>
+            <div style="font-size:11px; color:#555;">ماه</div>
             <div style="font-weight:700; margin-top:4px;" id="vipPrice6">۲۴۰,۰۰۰</div>
-            <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('semiannual')" data-key="buy">خرید</button>
+            <button class="form-btn form-btn-gold" style="padding:4px; margin-top:6px; font-size:11px;" onclick="buyVip('semiannual')">خرید</button>
           </div>
         </div>
         <div id="vipStatusDisplay" style="background:rgba(0,0,0,0.03); border-radius:12px; padding:10px; text-align:center; font-size:13px;">
-          <span id="vipStatusText" data-key="vip_loading">در حال بارگذاری...</span>
+          <span id="vipStatusText">در حال بارگذاری...</span>
         </div>
       </div>
     </div>
@@ -1937,60 +2070,66 @@
     <div class="modal-content">
       <button class="modal-back" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-arrow-right"></i></button>
       <div class="modal-content-scroll">
-        <div class="image-gallery"><img id="modalAdImg" class="modal-image" src="" alt="Ad Image"><div class="gallery-controls" id="galleryControls" style="display:none;"><button onclick="galleryPrev()"><i class="fa-solid fa-chevron-right"></i></button><span class="gallery-counter" id="galleryCounter">1 / 1</span><button onclick="galleryNext()"><i class="fa-solid fa-chevron-left"></i></button></div></div>
+        <div class="image-gallery">
+          <img id="modalAdImg" class="modal-image" src="" alt="Ad Image">
+          <div class="gallery-controls" id="galleryControls" style="display:none;">
+            <button onclick="galleryPrev()"><i class="fa-solid fa-chevron-right"></i></button>
+            <span class="gallery-counter" id="galleryCounter">1 / 1</span>
+            <button onclick="galleryNext()"><i class="fa-solid fa-chevron-left"></i></button>
+          </div>
+        </div>
         <h2 id="modalAdTitle" class="modal-title">...</h2>
         <div id="modalAdPrice" class="modal-price">...</div>
         <div id="modalAdLocationTime" class="modal-location-time">...</div>
         <div class="modal-description"><p id="modalAdDescription" class="description-text">...</p></div>
         <div class="form-row" style="margin-top:16px;">
-          <a href="" id="callContactBtn" class="form-btn form-btn-primary" style="text-decoration:none;"><i class="fa-solid fa-phone"></i> <span data-key="call">تماس</span></a>
-          <a href="" id="whatsappContactBtn" class="form-btn form-btn-success" style="text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> <span data-key="whatsapp">واتساپ</span></a>
+          <a href="" id="callContactBtn" class="form-btn form-btn-primary" style="text-decoration:none;"><i class="fa-solid fa-phone"></i> تماس</a>
+          <a href="" id="whatsappContactBtn" class="form-btn form-btn-success" style="text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> واتساپ</a>
         </div>
-        <div style="margin-top:10px;"><button class="form-btn form-btn-secondary" style="flex:1;" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i> <span id="favBtnText" data-key="add_fav">افزودن به علاقه‌مندی</span></button></div>
+        <div style="margin-top:10px;">
+          <button class="form-btn form-btn-secondary" style="flex:1;" onclick="toggleFavorite()"><i class="fa-regular fa-heart"></i> <span id="favBtnText">افزودن به علاقه‌مندی</span></button>
+        </div>
+        <!-- بخش نظر و ستاره -->
+        <div style="margin-top:16px;">
+          <h4 style="margin-bottom:8px;">⭐ امتیاز و نظر</h4>
+          <div class="review-stars" id="reviewStars">
+            <span onclick="setReviewRating(1)" data-r="1">☆</span>
+            <span onclick="setReviewRating(2)" data-r="2">☆</span>
+            <span onclick="setReviewRating(3)" data-r="3">☆</span>
+            <span onclick="setReviewRating(4)" data-r="4">☆</span>
+            <span onclick="setReviewRating(5)" data-r="5">☆</span>
+          </div>
+          <div class="form-group"><textarea class="form-control" id="reviewComment" rows="2" placeholder="نظر خود را بنویسید..."></textarea></div>
+          <input type="hidden" id="reviewAdId">
+          <input type="hidden" id="reviewRating" value="0">
+          <button class="form-btn form-btn-primary" style="padding:6px; font-size:12px;" onclick="submitReview()">ارسال نظر</button>
+        </div>
         <div id="reviewsContainer" style="margin-top:12px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Review Modal -->
-  <div class="modal" id="reviewModal">
-    <div class="modal-content">
-      <button class="modal-back" onclick="closeModal('reviewModal')"><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal-content-scroll">
-        <h2 style="margin-bottom:14px; font-size:18px;" data-key="review_title">⭐ امتیاز و نظر</h2>
-        <div style="display:flex; gap:8px; justify-content:center; font-size:28px; margin-bottom:12px;">
-          <span onclick="setReviewRating(1)" style="cursor:pointer;" id="star1">☆</span>
-          <span onclick="setReviewRating(2)" style="cursor:pointer;" id="star2">☆</span>
-          <span onclick="setReviewRating(3)" style="cursor:pointer;" id="star3">☆</span>
-          <span onclick="setReviewRating(4)" style="cursor:pointer;" id="star4">☆</span>
-          <span onclick="setReviewRating(5)" style="cursor:pointer;" id="star5">☆</span>
-        </div>
-        <div class="form-group"><label data-key="review_comment">نظر شما</label><textarea class="form-control" id="reviewComment" rows="3" placeholder="نظر خود را بنویسید..." data-key="review_placeholder"></textarea></div>
-        <input type="hidden" id="reviewAdId"><input type="hidden" id="reviewRating" value="0">
-        <button class="form-btn form-btn-primary" onclick="submitReview()" data-key="submit_review">ارسال نظر</button>
       </div>
     </div>
   </div>
 
   <!-- ===== Profile Tab ===== -->
   <div class="container" id="profileApp" style="display:none;">
-    <h2 style="margin-bottom:16px; font-size:20px;" data-key="profile_title">پروفایل</h2>
+    <h2 style="margin-bottom:16px; font-size:20px;">پروفایل</h2>
     <div style="background:rgba(255,255,255,0.92); padding:16px; border-radius:18px; border:1px solid rgba(0,0,0,0.06);">
-      <div class="form-group"><label data-key="profile_name">نام</label><input type="text" class="form-control" id="profileName" value="کاربر"></div>
-      <div class="form-group"><label data-key="profile_phone">شماره تماس</label><input type="tel" class="form-control" id="profilePhone" placeholder="0912..." value=""></div>
-      <div class="form-group"><label data-key="profile_code">کد یکتا</label><div class="profile-unique-code" id="profileCode">در حال بارگذاری...</div></div>
-      <div class="form-group"><label data-key="trust">امتیاز اعتماد</label><input type="text" class="form-control" id="profileTrust" readonly></div>
-      <button class="form-btn form-btn-primary" onclick="saveProfile()" data-key="save">ذخیره</button>
-      <button class="form-btn form-btn-secondary" onclick="fetchUserProfile()" data-key="refresh"><i class="fa-solid fa-rotate"></i> بروزرسانی</button>
-      <button class="form-btn form-btn-danger" onclick="logout()" data-key="logout"><i class="fa-solid fa-sign-out-alt"></i> خروج</button>
+      <div class="form-group"><label>نام کاربری</label>
+        <input type="text" class="form-control" id="profileName" value="کاربر">
+        <div class="name-change-hint" id="nameChangeHint">تغییر نام باقی‌مانده: <span id="nameChangeCount">3</span> بار</div>
+      </div>
+      <div class="form-group"><label>شماره تماس</label><input type="tel" class="form-control" id="profilePhone" placeholder="0912..."></div>
+      <div class="form-group"><label>امتیاز اعتماد</label><input type="text" class="form-control" id="profileTrust" readonly></div>
+      <button class="form-btn form-btn-primary" onclick="saveProfile()">ذخیره</button>
+      <button class="form-btn form-btn-secondary" onclick="fetchUserProfile()"><i class="fa-solid fa-rotate"></i> بروزرسانی</button>
+      <button class="form-btn form-btn-danger" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> خروج</button>
     </div>
-    <h3 style="margin-top:16px;" data-key="my_ads_title">📋 آگهی‌های من</h3>
+    <h3 style="margin-top:16px;">📋 آگهی‌های من</h3>
     <div class="my-ads-list" id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
   <!-- ===== Favorites Tab ===== -->
   <div class="container" id="favoritesApp" style="display:none;">
-    <h2 style="margin-bottom:16px; font-size:20px;" data-key="fav_title">❤️ علاقه‌مندی‌ها</h2>
+    <h2 style="margin-bottom:16px; font-size:20px;">❤️ علاقه‌مندی‌ها</h2>
     <div id="favoritesContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
   </div>
 
@@ -2000,7 +2139,6 @@
   <script>
     // ===== پیکربندی =====
     const WORKER_URL = 'https://souq-bot.mehdi11eidani.workers.dev';
-    const APP_URL = window.location.origin + window.location.pathname;
 
     // ===== حالت =====
     let telegramUserId = null;
@@ -2017,9 +2155,10 @@
     let uploadedReceiptBase64 = '';
     let currentLang = 'fa';
     let reviewRating = 0;
-    let pendingAction = null; // برای ادامه عملیات بعد از لاگین
+    let pendingAction = null;
+    let nameChangeCount = parseInt(localStorage.getItem('jedar_name_change_count') || '3');
 
-    // ===== ترجمه‌ها (فقط برای مینی‌اپ) =====
+    // ===== ترجمه‌ها =====
     const LANG = {
       fa: {
         nav_home: 'خانه',
@@ -2087,9 +2226,9 @@
         review_placeholder: 'نظر خود را بنویسید...',
         submit_review: 'ارسال نظر',
         profile_title: 'پروفایل',
-        profile_name: 'نام',
+        profile_name: 'نام کاربری',
         profile_phone: 'شماره تماس',
-        profile_code: 'کد یکتا',
+        profile_trust: 'امتیاز اعتماد',
         save: 'ذخیره',
         refresh: 'بروزرسانی',
         logout: 'خروج',
@@ -2112,8 +2251,202 @@
         months_ago: 'ماه پیش',
         expired: 'منقضی شده',
         no_ads: 'هیچ آگهی‌ای موجود نیست',
-        guest_mode: 'حالت مهمان',
-        login_required: 'برای این عملیات نیاز به ورود دارید'
+        guest_mode: 'مهمان',
+        login_required: 'برای این عملیات نیاز به ورود دارید',
+        name_change_limit: 'تعداد تغییر نام باقی‌مانده: {count} بار',
+        name_changed: 'نام کاربری با موفقیت تغییر کرد. {count} بار دیگر می‌توانید تغییر دهید.'
+      },
+      en: {
+        nav_home: 'Home',
+        nav_add: 'Add',
+        nav_profile: 'Profile',
+        nav_fav: 'Favorites',
+        wallet_bal: 'Wallet',
+        currency: 'Toman',
+        trust: 'Trust',
+        charge: 'Charge',
+        vip: 'VIP',
+        cat_realestate: 'Real Estate',
+        cat_vehicles: 'Vehicles',
+        cat_electronics: 'Electronics',
+        cat_services: 'Services',
+        search_placeholder: 'Search ads...',
+        search_btn: 'Search',
+        country: 'Country',
+        city: 'City',
+        category: 'Category',
+        price: 'Price',
+        rating: 'Rating',
+        sort: 'Sort',
+        apply: 'Apply',
+        cancel: 'Cancel',
+        recent_ads: 'Recent Ads',
+        add_ad_title: 'New Ad',
+        ad_title: 'Ad Title',
+        ad_category: 'Category',
+        ad_price: 'Price (Toman)',
+        next: 'Next',
+        prev: 'Previous',
+        ad_desc: 'Description',
+        ad_location: 'Location / City',
+        ad_images: 'Images (max 4)',
+        upload_click: 'Click to upload',
+        ad_phone: 'Phone Number',
+        ad_type_label: 'Ad Type',
+        normal_ad: 'Normal',
+        special_ad: 'Special',
+        plan_label: 'Special duration',
+        submit_ad: 'Post Ad',
+        charge_wallet: 'Charge Wallet',
+        bank_tab: 'Bank Transfer',
+        crypto_tab: 'Crypto USDT',
+        bank_instructions: 'Payment instructions:',
+        bank_details: 'Transfer to the card below and upload receipt.',
+        crypto_instructions: 'USDT (TRC20) Address:',
+        charge_amount: 'Amount (Toman)',
+        receipt_label: 'Receipt Image',
+        upload_receipt: 'Click to upload receipt',
+        send_charge: 'Submit Request',
+        vip_title: 'VIP Subscription',
+        vip_desc: 'With VIP subscription, post unlimited ads.',
+        month: 'Month',
+        months_3: 'Months',
+        months_6: 'Months',
+        buy: 'Buy',
+        vip_loading: 'Loading...',
+        call: 'Call',
+        whatsapp: 'WhatsApp',
+        add_fav: 'Add to favorites',
+        review_title: 'Rate & Review',
+        review_comment: 'Your comment',
+        review_placeholder: 'Write your comment...',
+        submit_review: 'Submit Review',
+        profile_title: 'Profile',
+        profile_name: 'Username',
+        profile_phone: 'Phone Number',
+        profile_trust: 'Trust Score',
+        save: 'Save',
+        refresh: 'Refresh',
+        logout: 'Logout',
+        my_ads_title: 'My Ads',
+        fav_title: 'Favorites',
+        login_title: 'Login to J-DAR',
+        login_desc: 'To post ads and access full features, please login.',
+        login_btn: 'Login with Telegram',
+        login_hint: 'Register with one click and return to app',
+        just_now: 'Just now',
+        minute_ago: 'minute ago',
+        minutes_ago_plural: 'minutes ago',
+        hour_ago: 'hour ago',
+        hours_ago: 'hours ago',
+        day_ago: 'day ago',
+        days_ago: 'days ago',
+        week_ago: 'week ago',
+        weeks_ago: 'weeks ago',
+        month_ago: 'month ago',
+        months_ago: 'months ago',
+        expired: 'Expired',
+        no_ads: 'No ads found',
+        guest_mode: 'Guest',
+        login_required: 'Login required for this action',
+        name_change_limit: 'Name change remaining: {count} times',
+        name_changed: 'Username changed successfully. You can change it {count} more times.'
+      },
+      ar: {
+        nav_home: 'الرئيسية',
+        nav_add: 'إضافة',
+        nav_profile: 'الملف',
+        nav_fav: 'المفضلة',
+        wallet_bal: 'المحفظة',
+        currency: 'تومان',
+        trust: 'الثقة',
+        charge: 'شحن',
+        vip: 'VIP',
+        cat_realestate: 'العقارات',
+        cat_vehicles: 'المركبات',
+        cat_electronics: 'الإلكترونيات',
+        cat_services: 'الخدمات',
+        search_placeholder: 'ابحث في الإعلانات...',
+        search_btn: 'بحث',
+        country: 'الدولة',
+        city: 'المدينة',
+        category: 'الفئة',
+        price: 'السعر',
+        rating: 'التقييم',
+        sort: 'الترتيب',
+        apply: 'تطبيق',
+        cancel: 'إلغاء',
+        recent_ads: 'آخر الإعلانات',
+        add_ad_title: 'إعلان جديد',
+        ad_title: 'عنوان الإعلان',
+        ad_category: 'الفئة',
+        ad_price: 'السعر (تومان)',
+        next: 'التالي',
+        prev: 'السابق',
+        ad_desc: 'الوصف',
+        ad_location: 'الموقع / المدينة',
+        ad_images: 'الصور (حد أقصى ٤)',
+        upload_click: 'اضغط للتحميل',
+        ad_phone: 'رقم الهاتف',
+        ad_type_label: 'نوع الإعلان',
+        normal_ad: 'عادي',
+        special_ad: 'مميز',
+        plan_label: 'مدة التميز',
+        submit_ad: 'نشر الإعلان',
+        charge_wallet: 'شحن المحفظة',
+        bank_tab: 'تحويل بنكي',
+        crypto_tab: 'كريبتو USDT',
+        bank_instructions: 'تعليمات الدفع:',
+        bank_details: 'قم بالتحويل إلى البطاقة التالية وارفع الإيصال.',
+        crypto_instructions: 'عنوان USDT (TRC20):',
+        charge_amount: 'المبلغ (تومان)',
+        receipt_label: 'صورة الإيصال',
+        upload_receipt: 'اضغط لرفع الإيصال',
+        send_charge: 'إرسال الطلب',
+        vip_title: 'اشتراك VIP',
+        vip_desc: 'مع اشتراك VIP، انشر إعلانات غير محدودة.',
+        month: 'شهر',
+        months_3: 'شهور',
+        months_6: 'شهور',
+        buy: 'شراء',
+        vip_loading: 'جاري التحميل...',
+        call: 'اتصال',
+        whatsapp: 'واتساب',
+        add_fav: 'أضف للمفضلة',
+        review_title: 'تقييم',
+        review_comment: 'تعليقك',
+        review_placeholder: 'اكتب تعليقك...',
+        submit_review: 'إرسال',
+        profile_title: 'الملف الشخصي',
+        profile_name: 'اسم المستخدم',
+        profile_phone: 'رقم الهاتف',
+        profile_trust: 'نقاط الثقة',
+        save: 'حفظ',
+        refresh: 'تحديث',
+        logout: 'خروج',
+        my_ads_title: 'إعلاناتي',
+        fav_title: 'المفضلة',
+        login_title: 'تسجيل الدخول',
+        login_desc: 'لنشر الإعلانات والوصول إلى الميزات الكاملة، يرجى تسجيل الدخول.',
+        login_btn: 'دخول بالتلغرام',
+        login_hint: 'سجل بنقرة واحدة وعد للبرنامج',
+        just_now: 'الآن',
+        minute_ago: 'دقيقة',
+        minutes_ago_plural: 'دقائق',
+        hour_ago: 'ساعة',
+        hours_ago: 'ساعات',
+        day_ago: 'يوم',
+        days_ago: 'أيام',
+        week_ago: 'أسبوع',
+        weeks_ago: 'أسابيع',
+        month_ago: 'شهر',
+        months_ago: 'أشهر',
+        expired: 'منتهي',
+        no_ads: 'لا توجد إعلانات',
+        guest_mode: 'زائر',
+        login_required: 'مطلوب تسجيل الدخول لهذا الإجراء',
+        name_change_limit: 'تغيير الاسم المتبقي: {count} مرات',
+        name_changed: 'تم تغيير اسم المستخدم بنجاح. يمكنك تغييره {count} مرات أخرى.'
       }
     };
 
@@ -2122,15 +2455,13 @@
       return LANG[currentLang]?.[key] || key;
     }
 
-    // ===== سیستم ضد بات (محدودیت نرخ درخواست ساده) =====
+    // ===== سیستم ضد بات =====
     const rateLimit = {
       lastCall: 0,
-      minInterval: 800, // میلی‌ثانیه
+      minInterval: 800,
       check() {
         const now = Date.now();
-        if (now - this.lastCall < this.minInterval) {
-          return false;
-        }
+        if (now - this.lastCall < this.minInterval) return false;
         this.lastCall = now;
         return true;
       }
@@ -2203,7 +2534,6 @@
       history.replaceState(null, '', window.location.pathname);
       fetchUserProfile();
       fetchAds();
-      // اگر عملیات معلق بود، ادامه بده
       if (pendingAction) {
         setTimeout(pendingAction, 500);
         pendingAction = null;
@@ -2223,7 +2553,6 @@
       document.getElementById('loginOverlay').classList.remove('show');
       pendingAction = null;
       showToast('شما به عنوان مهمان وارد شدید', 'warning');
-      // نمایش پیام حالت مهمان در کنار لوگو یا جای دیگر
       document.querySelector('.logo-text').innerHTML = 'J-DAR <span style="font-size:10px;color:#7b5aff;">(مهمان)</span>';
     }
 
@@ -2240,11 +2569,10 @@
       document.getElementById('walletBalance').innerText = '0';
       document.getElementById('trustScore').innerText = '50';
       document.getElementById('vipBadge').style.display = 'none';
-      // پاک کردن اطلاعات محلی مهمان
       localStorage.removeItem('jedar_favorites');
       favorites = [];
       showToast('خارج شدید', 'warning');
-      fetchAds(); // نمایش آگهی‌ها به صورت مهمان
+      fetchAds();
       document.querySelector('.logo-text').innerHTML = 'J-DAR <span style="font-size:10px;color:#7b5aff;">(مهمان)</span>';
     }
 
@@ -2253,14 +2581,12 @@
         if (callback) callback();
         return true;
       }
-      // اگر مهمان هستیم، لاگین نشان بده
       showLogin(callback);
       return false;
     }
 
     // ===== API =====
     async function apiCall(endpoint, options = {}) {
-      // بررسی ضد بات
       if (!rateLimit.check()) {
         showToast('لطفاً کمی صبر کنید...', 'warning');
         return { success: false, error: 'Rate limited' };
@@ -2284,7 +2610,6 @@
         document.getElementById('trustScore').innerText = data.trust_score || 50;
         document.getElementById('profileName').value = data.first_name || 'کاربر';
         document.getElementById('profilePhone').value = data.phone || '';
-        document.getElementById('profileCode').innerText = data.unique_code || 'ندارد';
         document.getElementById('profileTrust').value = data.trust_score || 50;
         if (data.is_vip) {
           document.getElementById('vipBadge').style.display = 'inline-flex';
@@ -2292,28 +2617,67 @@
           document.getElementById('vipBadge').style.display = 'none';
         }
         isLoggedIn = true;
-        // به‌روزرسانی لوگو
         document.querySelector('.logo-text').innerHTML = 'J-DAR';
-      } else if (data.need_register) {
-        // ثبت‌نام خودکار در صورت نیاز (از طریق /start لاگین انجام می‌شود)
+        // بازیابی تعداد تغییر نام از سرور
+        if (data.name_change_count !== undefined) {
+          nameChangeCount = data.name_change_count;
+          localStorage.setItem('jedar_name_change_count', nameChangeCount);
+          document.getElementById('nameChangeCount').innerText = nameChangeCount;
+        }
       }
     }
 
-    function saveProfile() {
-      const name = document.getElementById('profileName').value;
-      const phone = document.getElementById('profilePhone').value;
-      localStorage.setItem('jedar_user_name', name);
-      localStorage.setItem('jedar_user_phone', phone);
-      // در صورت لاگین بودن، به سرور هم ارسال شود
+    async function saveProfile() {
+      const name = document.getElementById('profileName').value.trim();
+      const phone = document.getElementById('profilePhone').value.trim();
+      
+      if (!name) {
+        showToast('لطفاً نام کاربری را وارد کنید', 'warning');
+        return;
+      }
+
+      // بررسی تعداد تغییر نام
       if (isLoggedIn && telegramUserId) {
-        apiCall('/api/user/update', {
-          method: 'POST',
-          body: JSON.stringify({ userId: telegramUserId, name, phone })
-        }).then(data => {
-          if (data.success) showToast('پروفایل ذخیره شد', 'success');
-          else showToast('خطا در ذخیره', 'error');
-        });
+        // چک کردن تغییر نام
+        const currentName = currentUser?.first_name || '';
+        if (name !== currentName) {
+          if (nameChangeCount <= 0) {
+            showToast('شما دیگر نمی‌توانید نام کاربری خود را تغییر دهید', 'error');
+            return;
+          }
+          // کاهش تعداد تغییر نام
+          nameChangeCount--;
+          localStorage.setItem('jedar_name_change_count', nameChangeCount);
+          document.getElementById('nameChangeCount').innerText = nameChangeCount;
+          
+          // ارسال به سرور
+          const data = await apiCall('/api/user/update', {
+            method: 'POST',
+            body: JSON.stringify({ userId: telegramUserId, name, phone, name_change_count: nameChangeCount })
+          });
+          if (data.success) {
+            showToast(t('name_changed').replace('{count}', nameChangeCount), 'success');
+            fetchUserProfile();
+          } else {
+            showToast('خطا در ذخیره', 'error');
+          }
+        } else {
+          // فقط شماره تلفن تغییر کرده
+          const data = await apiCall('/api/user/update', {
+            method: 'POST',
+            body: JSON.stringify({ userId: telegramUserId, name, phone })
+          });
+          if (data.success) {
+            showToast('پروفایل ذخیره شد', 'success');
+            fetchUserProfile();
+          } else {
+            showToast('خطا در ذخیره', 'error');
+          }
+        }
       } else {
+        // حالت مهمان: ذخیره محلی
+        localStorage.setItem('jedar_user_name', name);
+        localStorage.setItem('jedar_user_phone', phone);
         showToast('ذخیره شد (محلی)', 'success');
       }
     }
@@ -2496,7 +2860,6 @@
         img.parentElement.innerHTML = `<div class="no-image-placeholder"><i class="fa-solid fa-image" style="font-size:32px;"></i></div>`;
       }
 
-      // شماره تماس از آگهی یا از پروفایل کاربر
       let contact = ad.phone || '';
       if (!contact && currentUser && currentUser.phone) {
         contact = currentUser.phone;
@@ -2506,6 +2869,14 @@
 
       const isFav = favorites.includes(ad.id);
       document.getElementById('favBtnText').innerText = isFav ? 'حذف از علاقه‌مندی' : 'افزودن به علاقه‌مندی';
+      document.getElementById('reviewAdId').value = ad.id;
+      document.getElementById('reviewRating').value = 0;
+      reviewRating = 0;
+      document.querySelectorAll('.review-stars span').forEach(el => {
+        el.classList.remove('active');
+        el.innerText = '☆';
+      });
+      document.getElementById('reviewComment').value = '';
 
       loadReviews(ad.id);
       document.getElementById('adDetailsModal').classList.add('active');
@@ -2525,7 +2896,7 @@
       document.getElementById('galleryCounter').innerText = `${galleryIndex + 1} / ${galleryImages.length}`;
     }
 
-    // ===== علاقه‌مندی‌ها (با پشتیبانی از حالت مهمان و ذخیره محلی) =====
+    // ===== علاقه‌مندی‌ها =====
     async function toggleFavorite(adId) {
       const isFav = favorites.includes(adId);
       if (isFav) {
@@ -2533,10 +2904,8 @@
       } else {
         favorites.push(adId);
       }
-      // ذخیره محلی
       localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
       
-      // اگر لاگین هستیم، به سرور هم ارسال شود
       if (isLoggedIn && telegramUserId) {
         const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
         await apiCall(endpoint, {
@@ -2545,7 +2914,6 @@
         });
       }
       
-      // به‌روزرسانی نمایش
       fetchAds();
       if (currentAd && currentAd.id === adId) {
         document.getElementById('favBtnText').innerText = isFav ? 'افزودن به علاقه‌مندی' : 'حذف از علاقه‌مندی';
@@ -2554,13 +2922,11 @@
 
     async function fetchFavorites() {
       const container = document.getElementById('favoritesContent');
-      // اگر مهمان هستیم، از localStorage استفاده می‌کنیم
       if (!isLoggedIn || !telegramUserId) {
         if (favorites.length === 0) {
           container.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">هیچ موردی در علاقه‌مندی‌ها نیست</div>';
           return;
         }
-        // نمایش آگهی‌های مورد علاقه از allAds
         const favAds = allAds.filter(ad => favorites.includes(ad.id));
         if (favAds.length === 0) {
           container.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">هیچ موردی در علاقه‌مندی‌ها نیست</div>';
@@ -2590,7 +2956,6 @@
         return;
       }
 
-      // حالت لاگین: دریافت از سرور
       container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
       const data = await apiCall(`/api/favorites?user_id=${telegramUserId}`);
       if (data.success && data.favorites) {
@@ -2716,14 +3081,19 @@
     function setReviewRating(val) {
       reviewRating = val;
       document.getElementById('reviewRating').value = val;
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById('star' + i).innerText = i <= val ? '★' : '☆';
-        document.getElementById('star' + i).style.color = i <= val ? '#daa520' : '#888';
-      }
+      document.querySelectorAll('.review-stars span').forEach((el, idx) => {
+        if (idx < val) {
+          el.classList.add('active');
+          el.innerText = '★';
+        } else {
+          el.classList.remove('active');
+          el.innerText = '☆';
+        }
+      });
     }
 
     async function submitReview() {
-      if (!requireLogin()) return;
+      if (!requireLogin(() => submitReview())) return;
       const adId = document.getElementById('reviewAdId').value;
       const rating = parseInt(document.getElementById('reviewRating').value);
       const comment = document.getElementById('reviewComment').value;
@@ -2737,8 +3107,14 @@
       });
       if (data.success) {
         showToast('نظر شما ثبت شد', 'success');
-        closeModal('reviewModal');
         if (currentAd) loadReviews(currentAd.id);
+        document.getElementById('reviewRating').value = 0;
+        reviewRating = 0;
+        document.querySelectorAll('.review-stars span').forEach(el => {
+          el.classList.remove('active');
+          el.innerText = '☆';
+        });
+        document.getElementById('reviewComment').value = '';
       } else {
         showToast('خطا: ' + (data.error || 'نامشخص'), 'error');
       }
@@ -3019,7 +3395,6 @@
 
     // ===== مودال =====
     function openAddModal() {
-      // اگر لاگین نیست، لاگین نشان بده
       if (!isLoggedIn || !telegramUserId) {
         showLogin(() => openAddModal());
         return;
@@ -3031,6 +3406,20 @@
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
     }
+
+    // ===== منوی همبرگر =====
+    document.getElementById('menuToggle').addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('dropdownMenu').classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('dropdownMenu');
+      const btn = document.getElementById('menuToggle');
+      if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
 
     // ===== تم و زبان =====
     document.getElementById('themeToggle').addEventListener('click', () => {
@@ -3060,6 +3449,11 @@
           }
         }
       });
+      // بروزرسانی hint تغییر نام
+      const hint = document.getElementById('nameChangeHint');
+      if (hint) {
+        hint.innerHTML = t('name_change_limit').replace('{count}', nameChangeCount);
+      }
       if (document.getElementById('loginOverlay').classList.contains('show')) {
         document.getElementById('loginTitle').innerText = t('login_title');
         document.getElementById('loginDesc').innerText = t('login_desc');
@@ -3082,7 +3476,6 @@
 
     if (telegramUserId) {
       fetchUserProfile();
-      // همگام‌سازی علاقه‌مندی‌ها با سرور
       apiCall(`/api/favorites?user_id=${telegramUserId}`).then(data => {
         if (data.success && data.favorites) {
           favorites = data.favorites.map(f => f.ad_id || f.id);
@@ -3090,15 +3483,15 @@
         }
       });
     } else {
-      // حالت مهمان: فقط از localStorage استفاده می‌کنیم
       document.querySelector('.logo-text').innerHTML = 'J-DAR <span style="font-size:10px;color:#7b5aff;">(مهمان)</span>';
     }
 
     document.getElementById('langToggle').innerText = 'FA';
     currentLang = 'fa';
     updateLanguage();
+    document.getElementById('nameChangeCount').innerText = nameChangeCount;
 
-    console.log('🚀 J-DAR miniapp v4.0 - با پشتیبانی از مهمان و بدون چت');
+    console.log('🚀 J-DAR miniapp v5.0 - نهایی با تمام امکانات');
   </script>
 </body>
-  </html>
+                                                                                                        </html>
