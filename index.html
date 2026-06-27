@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ===== RESET & VARIABLES ===== */
+        /* ============================================================
+           RESET & VARIABLES
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -315,7 +317,7 @@
         .action-item i { font-size: 22px; color: var(--primary); }
         .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* ===== SEARCH & FILTER TOGGLE ===== */
+        /* ===== SEARCH & FILTER TOGGLE (پیشرفته) ===== */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -326,6 +328,7 @@
             gap: 10px;
             margin-bottom: 14px;
             transition: border-color var(--transition), box-shadow var(--transition);
+            position: relative;
         }
         .search-box:focus-within {
             border-color: var(--primary);
@@ -352,6 +355,8 @@
             transition: var(--transition);
         }
         .search-box button:hover { opacity: 0.9; }
+
+        /* دکمه فیلتر با انیمیشن چرخش */
         .search-box .filter-toggle {
             background: var(--primary-light);
             color: var(--primary);
@@ -359,31 +364,57 @@
             padding: 6px 12px;
             border-radius: var(--radius-full);
             font-size: 15px;
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            min-height: 38px;
         }
         .search-box .filter-toggle:hover {
             background: var(--primary);
             color: #fff;
+            transform: scale(1.05);
+        }
+        .search-box .filter-toggle.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+        .search-box .filter-toggle i {
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-size: 16px;
+        }
+        .search-box .filter-toggle.active i {
+            transform: rotate(180deg);
         }
 
-        /* ===== FILTER PANEL (کشویی مخفی) ===== */
+        /* ===== FILTER PANEL (انیمیشن پیشرفته کشویی) ===== */
         .filter-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 18px;
+            padding: 0 18px;
             margin-bottom: 14px;
-            display: none;
-            animation: slideDown 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        padding 0.3s ease;
             box-shadow: var(--shadow-sm);
+            will-change: max-height, opacity, transform;
         }
         .filter-panel.open {
-            display: block;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            max-height: 600px; /* به اندازه کافی بزرگ برای محتوا */
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            padding: 18px;
+            box-shadow: var(--shadow-md);
         }
         .filter-panel .filter-row {
             display: grid;
@@ -1218,15 +1249,17 @@
             <div class="action-item" onclick="filterAds('vehicles')"><i class="fa-solid fa-car"></i><span id="actVehicles">خودرو</span></div>
         </div>
 
-        <!-- SEARCH + FILTER TOGGLE -->
+        <!-- ===== SEARCH + FILTER TOGGLE (پیشرفته) ===== -->
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
             <button id="searchBtn" onclick="searchAds()">جستجو</button>
-            <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()"><i class="fa-solid fa-sliders"></i></button>
+            <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()">
+                <i class="fa-solid fa-sliders"></i>
+            </button>
         </div>
 
-        <!-- FILTER PANEL (کشویی مخفی) -->
+        <!-- ===== FILTER PANEL (انیمیشن پیشرفته) ===== -->
         <div class="filter-panel" id="filterPanel">
             <div class="filter-row">
                 <div class="filter-group"><label id="filterCountryLabel">کشور</label>
@@ -1424,7 +1457,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – نسخه نهایی کامل با پنل فیلتر کشویی و کشور ایران -->
+    <!-- JAVASCRIPT – نسخه نهایی با حرکت زیبا و پیشرفته فیلتر -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1809,7 +1842,6 @@
                 if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
                 else if (opt.value === '') opt.textContent = t('all');
             });
-            // کشورها (با پرچم)
             const countryOpts = document.querySelectorAll('#adCountry option, #filterCountry option');
             const countryKeys = ['country_iran','country_iraq','country_uae','country_turkey'];
             const flags = ['🇮🇷','🇮🇶','🇦🇪','🇹🇷'];
@@ -1927,15 +1959,31 @@
         }
 
         // ============================================================
-        // FILTER PANEL TOGGLE (کشویی مخفی)
+        // FILTER PANEL TOGGLE (حرکت زیبا و پیشرفته)
         // ============================================================
         function toggleFilterPanel() {
             filterPanelOpen = !filterPanelOpen;
             const panel = document.getElementById('filterPanel');
+            const toggleBtn = document.getElementById('filterToggle');
+            
             if (filterPanelOpen) {
                 panel.classList.add('open');
+                toggleBtn.classList.add('active');
+                // بستن خودکار با کلیک خارج از پنل و دکمه
+                document.addEventListener('click', closeFilterOnOutsideClick);
             } else {
                 panel.classList.remove('open');
+                toggleBtn.classList.remove('active');
+                document.removeEventListener('click', closeFilterOnOutsideClick);
+            }
+        }
+
+        function closeFilterOnOutsideClick(e) {
+            const panel = document.getElementById('filterPanel');
+            const toggleBtn = document.getElementById('filterToggle');
+            const isClickInside = panel.contains(e.target) || toggleBtn.contains(e.target);
+            if (!isClickInside && filterPanelOpen) {
+                toggleFilterPanel(); // بستن پنل
             }
         }
 
@@ -1966,7 +2014,7 @@
         }
 
         // ============================================================
-        // ADS – اصلاح شده برای نمایش درست آگهی‌ها
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2106,7 +2154,7 @@
         }
 
         // ============================================================
-        // FILTERS (اعمال و لغو)
+        // FILTERS
         // ============================================================
         function applyFilters() {
             const country = document.getElementById('filterCountry').value;
@@ -2152,7 +2200,7 @@
         }
 
         // ============================================================
-        // AD DETAIL (همانند قبل)
+        // AD DETAIL
         // ============================================================
         async function openAdDetail(adId) {
             try {
@@ -2302,7 +2350,7 @@
         }
 
         // ============================================================
-        // FAVORITES (همانند قبل)
+        // FAVORITES
         // ============================================================
         async function toggleFavorite(adId) {
             const isFav = favorites.includes(adId);
@@ -2366,7 +2414,7 @@
         }
 
         // ============================================================
-        // MY ADS (همانند قبل)
+        // MY ADS
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
@@ -2441,7 +2489,7 @@
         }
 
         // ============================================================
-        // ADD AD WIZARD (همانند قبل)
+        // ADD AD WIZARD
         // ============================================================
         function wizardNext() {
             if (wizardStep < 3) { wizardStep++; updateWizard(); }
@@ -2558,7 +2606,7 @@
         }
 
         // ============================================================
-        // WALLET & VIP & GIFT (همانند قبل)
+        // WALLET & VIP & GIFT
         // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
@@ -2711,7 +2759,6 @@
                     data.categories.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
                 }
             } catch (err) {}
-            // کشورها قبلاً در HTML به صورت دستی اضافه شده‌اند.
         }
 
         // ============================================================
@@ -2752,7 +2799,7 @@
         });
 
         // ============================================================
-        // AUTO CHECK (هر ۱۰ ثانیه)
+        // AUTO CHECK
         // ============================================================
         function startPendingCheck() {
             if (pendingCheckInterval) clearInterval(pendingCheckInterval);
@@ -2788,14 +2835,13 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        // اصلاح switchTab برای restart کردن چک‌کننده
         const originalSwitchTab = switchTab;
         switchTab = function(tab) {
             originalSwitchTab(tab);
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v13.0 - پلتفرم جهانی با فیلتر کشویی و کشور ایران`);
+        console.log(`🚀 ${APP_NAME} v13.1 - حرکت زیبا و پیشرفته فیلتر`);
     </script>
 </body>
     </html>
