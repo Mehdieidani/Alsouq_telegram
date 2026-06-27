@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
+        /* ============================================================
+           RESET & VARIABLES
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -15,49 +18,44 @@
             -webkit-tap-highlight-color: transparent;
         }
         :root {
-            --bg-primary: #f4f4f9;
+            --bg-primary: #f8fafc;
             --bg-card: #ffffff;
-            --bg-input: #f0f0f5;
-            --text-primary: #121212;
-            --text-secondary: #555555;
-            --text-muted: #888888;
-            --border-color: #e2e2ea;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
-            --radius-sm: 10px;
+            --bg-input: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --radius-sm: 8px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
-            --primary: #7c3aed;
-            --primary-hover: #6d28d9;
-            --primary-light: rgba(124, 58, 237, 0.12);
-            --primary-gradient: linear-gradient(135deg, #7c3aed, #a78bfa);
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --primary: #16a34a;        /* سبز حراج */
+            --primary-hover: #15803d;
+            --primary-light: rgba(22,163,74,0.12);
+            --primary-gradient: linear-gradient(135deg, #16a34a, #22c55e);
             --gold: #f59e0b;
             --gold-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger: #ef4444;
+            --success: #16a34a;
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
             --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
         }
         [data-theme="dark"] {
-            --bg-primary: #0c0c12;
-            --bg-card: #1a1a26;
-            --bg-input: #222230;
-            --text-primary: #f0f0f5;
-            --text-secondary: #aaaaaa;
-            --text-muted: #666677;
-            --border-color: #2a2a38;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
         }
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-        }
+        html { font-size: 16px; scroll-behavior: smooth; }
         body {
             font-family: var(--font);
             background: var(--bg-primary);
@@ -69,35 +67,16 @@
             overflow-x: hidden;
             overscroll-behavior: none;
         }
-        body.ltr {
-            direction: ltr;
-        }
-        button {
-            cursor: pointer;
-            font-family: var(--font);
-            border: none;
-            outline: none;
-            transition: var(--transition);
-        }
-        input,
-        textarea,
-        select {
-            font-family: var(--font);
-            outline: none;
-            transition: var(--transition);
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        body.ltr { direction: ltr; }
+        button { font-family: var(--font); border: none; outline: none; transition: var(--transition); cursor: pointer; }
+        input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
+        /* ============================================================
+           TOAST
+           ============================================================ */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -122,41 +101,22 @@
             box-shadow: var(--shadow-lg);
             transform: translateY(-40px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
             pointer-events: auto;
             border-right: 4px solid var(--primary);
             will-change: transform, opacity;
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast.success {
-            border-right-color: var(--success);
-        }
-        .toast.error {
-            border-right-color: var(--danger);
-        }
-        .toast.warning {
-            border-right-color: var(--warning);
-        }
-        .toast i {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .toast .close {
-            margin-right: auto;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-        .toast .close:hover {
-            color: var(--danger);
-        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-right-color: var(--success); }
+        .toast.error { border-right-color: var(--danger); }
+        .toast.warning { border-right-color: var(--gold); }
+        .toast i { font-size: 20px; flex-shrink: 0; }
+        .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
+        .toast .close:hover { color: var(--danger); }
 
+        /* ============================================================
+           APP CONTAINER
+           ============================================================ */
         #app {
             max-width: 500px;
             margin: 0 auto;
@@ -165,7 +125,9 @@
             animation: fadeIn 0.4s ease;
         }
 
-        /* Header */
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
@@ -174,9 +136,9 @@
             padding: 4px 0;
         }
         .header .logo-text {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
-            background: var(--primary-gradient);
+            background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
@@ -205,7 +167,6 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            will-change: background, border-color, color;
         }
         .header .header-actions button:hover {
             background: var(--primary-light);
@@ -213,7 +174,9 @@
             color: var(--primary);
         }
 
-        /* Wallet */
+        /* ============================================================
+           WALLET CARD
+           ============================================================ */
         .wallet-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -263,12 +226,10 @@
             align-items: center;
             gap: 4px;
         }
-        .wallet-card .vip-badge.show {
-            display: inline-flex;
-        }
+        .wallet-card .vip-badge.show { display: inline-flex; }
         .wallet-card .trust-score {
             background: var(--primary-light);
-            border: 1px solid rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(22,163,74,0.12);
             border-radius: var(--radius-full);
             padding: 2px 14px;
             font-size: 11px;
@@ -292,35 +253,29 @@
             font-size: 13px;
             min-width: 70px;
             transition: var(--transition);
-            will-change: transform, box-shadow;
         }
         .wallet-card .wallet-actions .btn-charge {
             background: var(--primary-gradient);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-charge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
+        .wallet-card .wallet-actions .btn-charge:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
         .wallet-card .wallet-actions .btn-vip {
             background: var(--gold-gradient);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-vip:hover {
-            transform: translateY(-2px);
-        }
+        .wallet-card .wallet-actions .btn-vip:hover { transform: translateY(-2px); }
         .wallet-card .wallet-actions .btn-gift {
-            background: var(--warning);
+            background: var(--gold);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-gift:hover {
-            transform: translateY(-2px);
-        }
+        .wallet-card .wallet-actions .btn-gift:hover { transform: translateY(-2px); }
 
-        /* Notice */
+        /* ============================================================
+           NOTICE
+           ============================================================ */
         .notice-card {
             background: var(--bg-card);
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245,158,11,0.2);
             border-radius: var(--radius-sm);
             padding: 12px 16px;
             margin-bottom: 16px;
@@ -328,9 +283,7 @@
             align-items: center;
             gap: 12px;
         }
-        .notice-card.show {
-            display: flex;
-        }
+        .notice-card.show { display: flex; }
         .notice-card .notice-icon {
             width: 30px;
             height: 30px;
@@ -343,14 +296,11 @@
             font-size: 14px;
             flex-shrink: 0;
         }
-        .notice-card .notice-text {
-            font-size: 13px;
-            color: var(--gold);
-            line-height: 1.5;
-            flex: 1;
-        }
+        .notice-card .notice-text { font-size: 13px; color: var(--gold); line-height: 1.5; flex: 1; }
 
-        /* Quick Actions */
+        /* ============================================================
+           QUICK ACTIONS
+           ============================================================ */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -369,7 +319,6 @@
             cursor: pointer;
             transition: var(--transition);
             color: var(--text-primary);
-            will-change: transform, background, border-color, box-shadow;
         }
         .action-item:hover {
             transform: translateY(-4px);
@@ -377,17 +326,12 @@
             background: var(--primary-light);
             box-shadow: var(--shadow-md);
         }
-        .action-item i {
-            font-size: 22px;
-            color: var(--primary);
-        }
-        .action-item span {
-            font-size: 10px;
-            font-weight: 500;
-            opacity: 0.8;
-        }
+        .action-item i { font-size: 22px; color: var(--primary); }
+        .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* Search */
+        /* ============================================================
+           SEARCH & FILTER
+           ============================================================ */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -403,10 +347,7 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .search-box i {
-            color: var(--text-muted);
-            font-size: 16px;
-        }
+        .search-box i { color: var(--text-muted); font-size: 16px; }
         .search-box input {
             flex: 1;
             background: transparent;
@@ -415,9 +356,7 @@
             font-size: 14px;
             padding: 12px 0;
         }
-        .search-box input::placeholder {
-            color: var(--text-muted);
-        }
+        .search-box input::placeholder { color: var(--text-muted); }
         .search-box button {
             background: var(--primary-gradient);
             color: #fff;
@@ -428,13 +367,11 @@
             white-space: nowrap;
             transition: var(--transition);
         }
-        .search-box button:hover {
-            opacity: 0.9;
-        }
+        .search-box button:hover { opacity: 0.9; }
         .search-box .filter-toggle {
             background: var(--primary-light);
             color: var(--primary);
-            border: 1px solid rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(22,163,74,0.12);
             padding: 6px 12px;
             border-radius: var(--radius-full);
             font-size: 15px;
@@ -445,39 +382,77 @@
             color: #fff;
         }
 
-        /* Filter */
-        .filter-panel {
+        /* ============================================================
+           FILTER MODAL
+           ============================================================ */
+        .filter-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+        .filter-modal-overlay.show { display: flex; }
+        .filter-modal-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 18px;
-            margin-bottom: 14px;
-            display: none;
-            animation: fadeInUp 0.25s ease;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            max-width: 500px;
+            width: 100%;
+            padding: 24px 20px 32px;
+            animation: slideUp 0.35s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        .filter-panel.open {
-            display: block;
+        .filter-modal-box .modal-close {
+            position: sticky;
+            top: 0;
+            left: 100%;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+            float: left;
+            margin-bottom: 10px;
         }
-        .filter-panel .filter-row {
+        .filter-modal-box .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
+        .filter-modal-box .filter-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .filter-modal-box .filter-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 12px;
         }
-        .filter-panel .filter-group {
+        .filter-modal-box .filter-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        .filter-panel .filter-group label {
+        .filter-modal-box .filter-group label {
             font-size: 10px;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .filter-panel .filter-group select,
-        .filter-panel .filter-group input {
+        .filter-modal-box .filter-group select,
+        .filter-modal-box .filter-group input {
             padding: 8px 12px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
@@ -486,16 +461,16 @@
             font-size: 13px;
             transition: border-color var(--transition);
         }
-        .filter-panel .filter-group select:focus,
-        .filter-panel .filter-group input:focus {
+        .filter-modal-box .filter-group select:focus,
+        .filter-modal-box .filter-group input:focus {
             border-color: var(--primary);
         }
-        .filter-panel .filter-actions {
+        .filter-modal-box .filter-actions {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 16px;
         }
-        .filter-panel .filter-actions button {
+        .filter-modal-box .filter-actions button {
             flex: 1;
             padding: 10px;
             border-radius: var(--radius-sm);
@@ -506,39 +481,31 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        .filter-panel .filter-actions button:hover {
-            background: var(--border-color);
-        }
-        .filter-panel .filter-actions .apply-filter {
+        .filter-modal-box .filter-actions button:hover { background: var(--border-color); }
+        .filter-modal-box .filter-actions .apply-filter {
             background: var(--primary-gradient);
             border-color: var(--primary);
             color: #fff;
         }
-        .filter-panel .filter-actions .apply-filter:hover {
-            opacity: 0.9;
+        .filter-modal-box .filter-actions .apply-filter:hover { opacity: 0.9; }
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        /* Ads */
+        /* ============================================================
+           CATEGORIES
+           ============================================================ */
         .section-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin: 14px 0 10px;
         }
-        .section-title h3 {
-            font-weight: 800;
-            font-size: 18px;
-        }
-        .section-title a {
-            color: var(--text-muted);
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-            will-change: color;
-        }
-        .section-title a:hover {
-            color: var(--primary);
-        }
+        .section-title h3 { font-weight: 800; font-size: 18px; }
+        .section-title a { color: var(--text-muted); font-size: 13px; cursor: pointer; transition: var(--transition); }
+        .section-title a:hover { color: var(--primary); }
 
         .categories {
             display: flex;
@@ -549,9 +516,7 @@
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
+        .categories::-webkit-scrollbar { display: none; }
         .category-chip {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -574,6 +539,9 @@
             border-color: var(--primary);
         }
 
+        /* ============================================================
+           ADS GRID
+           ============================================================ */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -585,13 +553,8 @@
             padding: 2px;
             scroll-behavior: smooth;
         }
-        .ads-grid::-webkit-scrollbar {
-            width: 3px;
-        }
-        .ads-grid::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        .ads-grid::-webkit-scrollbar { width: 3px; }
+        .ads-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         .ad-card {
             background: var(--bg-card);
@@ -601,7 +564,6 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            will-change: transform, border-color, box-shadow;
             transform: translateY(0);
         }
         .ad-card:hover {
@@ -622,9 +584,7 @@
             object-fit: cover;
             transition: transform 0.4s;
         }
-        .ad-card:hover .ad-image img {
-            transform: scale(1.04);
-        }
+        .ad-card:hover .ad-image img { transform: scale(1.04); }
         .ad-card .ad-image .no-image {
             display: flex;
             align-items: center;
@@ -635,27 +595,24 @@
             font-size: 14px;
             background: var(--bg-input);
         }
-        .ad-card .ad-image .no-image i {
-            font-size: 32px;
-            opacity: 0.3;
-        }
+        .ad-card .ad-image .no-image i { font-size: 32px; opacity: 0.3; }
         .ad-card .ad-image .watermark {
             position: absolute;
             bottom: 8px;
             right: 8px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
             color: #fff;
             font-size: 7px;
             padding: 2px 12px;
             border-radius: var(--radius-full);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .ad-card .ad-image .favorite {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0,0,0,0.45);
             backdrop-filter: blur(8px);
             border-radius: 50%;
             width: 32px;
@@ -667,16 +624,10 @@
             font-size: 14px;
             cursor: pointer;
             transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            will-change: background, color;
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .ad-card .ad-image .favorite:hover {
-            background: var(--danger);
-        }
-        .ad-card .ad-image .favorite.active {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.3);
-        }
+        .ad-card .ad-image .favorite:hover { background: var(--danger); }
+        .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(239,68,68,0.3); }
         .ad-card .ad-image .special-badge {
             position: absolute;
             top: 10px;
@@ -737,27 +688,24 @@
             flex-shrink: 0;
             font-weight: 700;
         }
-        .ad-card .ad-footer .username {
-            font-weight: 500;
-        }
+        .ad-card .ad-footer .username { font-weight: 500; }
         .ad-card .ad-footer .rating {
             margin-right: auto;
             color: var(--text-muted);
             font-size: 10px;
         }
-        .ad-card .ad-footer .rating i {
-            color: var(--gold);
-            margin-left: 2px;
-        }
+        .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
-        /* Modal */
+        /* ============================================================
+           MODALS
+           ============================================================ */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
             z-index: 9999;
             display: none;
@@ -767,9 +715,7 @@
             padding: 20px;
             animation: fadeIn 0.2s ease;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         .modal-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -782,15 +728,9 @@
             position: relative;
             max-height: 95vh;
             overflow-y: auto;
-            will-change: transform, opacity;
         }
-        .modal-box::-webkit-scrollbar {
-            width: 3px;
-        }
-        .modal-box::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        .modal-box::-webkit-scrollbar { width: 3px; }
+        .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         .modal-box .modal-close {
             position: absolute;
             top: 16px;
@@ -802,21 +742,15 @@
             cursor: pointer;
             transition: var(--transition);
             padding: 4px;
-            will-change: color, transform;
         }
-        .modal-box .modal-close:hover {
-            color: var(--danger);
-            transform: rotate(90deg);
-        }
+        .modal-box .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
         .modal-box .modal-title {
             font-size: 22px;
             font-weight: 800;
             margin-bottom: 20px;
             padding-left: 30px;
         }
-        .modal-box .form-group {
-            margin-bottom: 16px;
-        }
+        .modal-box .form-group { margin-bottom: 16px; }
         .modal-box .form-group label {
             display: block;
             font-size: 12px;
@@ -824,9 +758,7 @@
             color: var(--text-secondary);
             margin-bottom: 5px;
         }
-        .modal-box .form-group label .required {
-            color: var(--danger);
-        }
+        .modal-box .form-group label .required { color: var(--danger); }
         .modal-box .form-group input,
         .modal-box .form-group textarea,
         .modal-box .form-group select {
@@ -846,10 +778,7 @@
             box-shadow: 0 0 0 4px var(--primary-light);
             background: var(--bg-card);
         }
-        .modal-box .form-group textarea {
-            resize: vertical;
-            min-height: 70px;
-        }
+        .modal-box .form-group textarea { resize: vertical; min-height: 70px; }
         .modal-box .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -865,15 +794,8 @@
             font-size: 15px;
             transition: var(--transition);
         }
-        .modal-box .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
-        .modal-box .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .modal-box .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
+        .modal-box .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .modal-box .btn-secondary {
             width: 100%;
             padding: 12px;
@@ -885,30 +807,13 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        .modal-box .btn-secondary:hover {
-            background: var(--border-color);
-        }
-        .modal-box .btn-success {
-            background: var(--success);
-            color: #fff;
-        }
-        .modal-box .btn-success:hover {
-            background: #059669;
-        }
-        .modal-box .btn-danger {
-            background: var(--danger);
-            color: #fff;
-        }
-        .modal-box .btn-danger:hover {
-            background: #dc2626;
-        }
-        .modal-box .btn-gold {
-            background: var(--gold-gradient);
-            color: #fff;
-        }
-        .modal-box .btn-gold:hover {
-            opacity: 0.9;
-        }
+        .modal-box .btn-secondary:hover { background: var(--border-color); }
+        .modal-box .btn-success { background: var(--success); color: #fff; }
+        .modal-box .btn-success:hover { background: #15803d; }
+        .modal-box .btn-danger { background: var(--danger); color: #fff; }
+        .modal-box .btn-danger:hover { background: #dc2626; }
+        .modal-box .btn-gold { background: var(--gold-gradient); color: #fff; }
+        .modal-box .btn-gold:hover { opacity: 0.9; }
         .modal-box .image-upload-area {
             border: 2px dashed var(--border-color);
             border-radius: var(--radius-sm);
@@ -922,19 +827,9 @@
             border-color: var(--primary);
             background: var(--primary-light);
         }
-        .modal-box .image-upload-area i {
-            font-size: 36px;
-            color: var(--primary);
-            display: block;
-            margin-bottom: 4px;
-        }
-        .modal-box .image-upload-area p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .modal-box .image-upload-area input {
-            display: none;
-        }
+        .modal-box .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
+        .modal-box .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
+        .modal-box .image-upload-area input { display: none; }
         .modal-box .image-preview-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -949,16 +844,12 @@
             background: var(--bg-input);
             border: 1px solid var(--border-color);
         }
-        .modal-box .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .modal-box .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .modal-box .image-preview-item .remove-img {
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             border-radius: 50%;
             width: 22px;
             height: 22px;
@@ -971,12 +862,11 @@
             justify-content: center;
             transition: var(--transition);
         }
-        .modal-box .image-preview-item .remove-img:hover {
-            background: var(--danger);
-            color: #fff;
-        }
+        .modal-box .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
 
-        /* Wizard */
+        /* ============================================================
+           WIZARD
+           ============================================================ */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -1008,7 +898,6 @@
             transition: width 0.4s ease;
             width: 0%;
             border-radius: 10px;
-            will-change: width;
         }
         .wizard-progress .step {
             width: 34px;
@@ -1037,15 +926,12 @@
             background: var(--success);
             color: #fff;
         }
-        .wizard-step {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .wizard-step.active {
-            display: block;
-        }
+        .wizard-step { display: none; animation: fadeIn 0.3s ease; }
+        .wizard-step.active { display: block; }
 
-        /* Reviews */
+        /* ============================================================
+           REVIEW
+           ============================================================ */
         .review-stars {
             display: flex;
             gap: 6px;
@@ -1053,64 +939,35 @@
             font-size: 32px;
             margin-bottom: 16px;
         }
-        .review-stars span {
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: var(--transition);
-        }
-        .review-stars span:hover {
-            color: var(--gold);
-            transform: scale(1.1);
-        }
-        .review-stars span.active {
-            color: var(--gold);
-        }
+        .review-stars span { cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .review-stars span:hover { color: var(--gold); transform: scale(1.1); }
+        .review-stars span.active { color: var(--gold); }
         .review-item {
             padding: 12px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        .review-item:last-child {
-            border-bottom: none;
-        }
+        .review-item:last-child { border-bottom: none; }
         .review-item .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .review-item .header .name {
-            font-weight: 600;
-            font-size: 13px;
-        }
-        .review-item .header .stars {
-            color: var(--gold);
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
-        .review-item .comment {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            line-height: 1.5;
-        }
-        .review-item .date {
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
+        .review-item .header .name { font-weight: 600; font-size: 13px; }
+        .review-item .header .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+        .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+        .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        /* Profile & Favorites Tabs */
-        #profileTab,
-        #favoritesTab {
+        /* ============================================================
+           PROFILE & FAVORITES TABS
+           ============================================================ */
+        #profileTab, #favoritesTab {
             display: none;
             max-width: 500px;
             margin: 0 auto;
             padding: 14px 14px 80px;
             animation: fadeIn 0.3s ease;
         }
-        #profileTab.show,
-        #favoritesTab.show {
-            display: block;
-        }
+        #profileTab.show, #favoritesTab.show { display: block; }
         .profile-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1119,9 +976,7 @@
             margin-bottom: 18px;
             box-shadow: var(--shadow-sm);
         }
-        .profile-section .form-group {
-            margin-bottom: 16px;
-        }
+        .profile-section .form-group { margin-bottom: 16px; }
         .profile-section .form-group label {
             display: block;
             font-size: 12px;
@@ -1143,10 +998,7 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .profile-section .form-group input:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        .profile-section .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
         .profile-section .profile-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1166,18 +1018,13 @@
             background: var(--primary-gradient);
             color: #fff;
         }
-        .profile-section .profile-actions .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
+        .profile-section .profile-actions .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
         .profile-section .profile-actions .btn-refresh {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
-        .profile-section .profile-actions .btn-refresh:hover {
-            background: var(--border-color);
-        }
+        .profile-section .profile-actions .btn-refresh:hover { background: var(--border-color); }
 
         .my-ad-item {
             background: var(--bg-card);
@@ -1190,13 +1037,8 @@
             align-items: center;
             transition: var(--transition);
         }
-        .my-ad-item:hover {
-            border-color: var(--primary);
-        }
-        .my-ad-item .info .title {
-            font-weight: 600;
-            font-size: 14px;
-        }
+        .my-ad-item:hover { border-color: var(--primary); }
+        .my-ad-item .info .title { font-weight: 600; font-size: 14px; }
         .my-ad-item .info .sub {
             font-size: 12px;
             color: var(--text-secondary);
@@ -1211,22 +1053,10 @@
             border-radius: var(--radius-full);
             font-weight: 600;
         }
-        .my-ad-item .info .sub .status.pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-        .my-ad-item .info .sub .status.approved {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-        .my-ad-item .info .sub .status.rejected {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-        .my-ad-item .actions {
-            display: flex;
-            gap: 6px;
-        }
+        .my-ad-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
+        .my-ad-item .info .sub .status.approved { background: rgba(22,163,74,0.2); color: var(--success); }
+        .my-ad-item .info .sub .status.rejected { background: rgba(239,68,68,0.2); color: var(--danger); }
+        .my-ad-item .actions { display: flex; gap: 6px; }
         .my-ad-item .actions button {
             background: none;
             border: none;
@@ -1236,18 +1066,10 @@
             border-radius: var(--radius-sm);
             transition: var(--transition);
         }
-        .my-ad-item .actions .edit {
-            color: var(--primary);
-        }
-        .my-ad-item .actions .edit:hover {
-            background: var(--primary-light);
-        }
-        .my-ad-item .actions .delete {
-            color: var(--danger);
-        }
-        .my-ad-item .actions .delete:hover {
-            background: rgba(239, 68, 68, 0.1);
-        }
+        .my-ad-item .actions .edit { color: var(--primary); }
+        .my-ad-item .actions .edit:hover { background: var(--primary-light); }
+        .my-ad-item .actions .delete { color: var(--danger); }
+        .my-ad-item .actions .delete:hover { background: rgba(239,68,68,0.1); }
 
         .favorite-item {
             background: var(--bg-card);
@@ -1261,10 +1083,7 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .favorite-item:hover {
-            border-color: var(--primary);
-            transform: translateX(-4px);
-        }
+        .favorite-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .favorite-item img {
             width: 60px;
             height: 60px;
@@ -1273,10 +1092,7 @@
             background: var(--bg-input);
             flex-shrink: 0;
         }
-        .favorite-item .info {
-            flex: 1;
-            min-width: 0;
-        }
+        .favorite-item .info { flex: 1; min-width: 0; }
         .favorite-item .info .title {
             font-weight: 600;
             font-size: 14px;
@@ -1284,15 +1100,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .favorite-item .info .price {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 15px;
-        }
-        .favorite-item .info .meta {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+        .favorite-item .info .price { color: var(--primary); font-weight: 700; font-size: 15px; }
+        .favorite-item .info .meta { font-size: 11px; color: var(--text-muted); }
         .favorite-item .remove-fav {
             background: none;
             border: none;
@@ -1302,10 +1111,11 @@
             padding: 4px;
             transition: var(--transition);
         }
-        .favorite-item .remove-fav:hover {
-            transform: scale(1.2);
-        }
+        .favorite-item .remove-fav:hover { transform: scale(1.2); }
 
+        /* ============================================================
+           BOTTOM NAV
+           ============================================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1323,7 +1133,7 @@
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             z-index: 100;
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
             transition: background var(--transition);
         }
         .bottom-nav .nav-item {
@@ -1339,16 +1149,9 @@
             background: none;
             border: none;
         }
-        .bottom-nav .nav-item:hover {
-            color: var(--primary);
-        }
-        .bottom-nav .nav-item.active {
-            color: var(--primary);
-        }
-        .bottom-nav .nav-item i {
-            font-size: 22px;
-            margin-bottom: 2px;
-        }
+        .bottom-nav .nav-item:hover { color: var(--primary); }
+        .bottom-nav .nav-item.active { color: var(--primary); }
+        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; }
         .bottom-nav .nav-item .badge {
             position: absolute;
             top: -4px;
@@ -1360,11 +1163,11 @@
             padding: 1px 6px;
             font-weight: 700;
         }
-        .bottom-nav .nav-item .nav-label {
-            font-size: 9px;
-            font-weight: 500;
-        }
+        .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
+        /* ============================================================
+           VIP PLANS
+           ============================================================ */
         .vip-plan {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -1373,20 +1176,14 @@
             text-align: center;
             transition: var(--transition);
         }
-        .vip-plan:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
+        .vip-plan:hover { border-color: var(--primary); transform: translateY(-3px); }
         .vip-plan .plan-price {
             font-size: 24px;
             font-weight: 800;
             color: var(--primary);
             margin: 4px 0;
         }
-        .vip-plan .plan-duration {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
+        .vip-plan .plan-duration { font-size: 14px; color: var(--text-secondary); }
         .vip-plan .plan-btn {
             width: 100%;
             padding: 10px;
@@ -1396,106 +1193,53 @@
             margin-top: 8px;
             transition: var(--transition);
         }
-        .vip-plan .plan-btn.primary {
-            background: var(--primary-gradient);
-            color: #fff;
-        }
-        .vip-plan .plan-btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px var(--primary-light);
-        }
-        .vip-plan .plan-btn.gold {
-            background: var(--gold-gradient);
-            color: #fff;
-        }
-        .vip-plan .plan-btn.gold:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
+        .vip-plan .plan-btn.primary { background: var(--primary-gradient); color: #fff; }
+        .vip-plan .plan-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--primary-light); }
+        .vip-plan .plan-btn.gold { background: var(--gold-gradient); color: #fff; }
+        .vip-plan .plan-btn.gold:hover { opacity: 0.9; transform: translateY(-2px); }
 
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        .loading-spinner {
-            text-align: center;
-            padding: 40px 0;
-            color: var(--primary);
-        }
-        .loading-spinner i {
-            font-size: 34px;
-            animation: spin 1s linear infinite;
-        }
+        .loading-spinner { text-align: center; padding: 40px 0; color: var(--primary); }
+        .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
 
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 480px) {
-            .ads-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .action-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 4px;
-            }
-            .action-item {
-                padding: 10px 0;
-            }
-            .action-item i {
-                font-size: 18px;
-            }
-            .wallet-card .wallet-info .amount {
-                font-size: 22px;
-            }
-            .modal-box {
-                padding: 24px 16px 28px;
-            }
-            .header .logo-text {
-                font-size: 20px;
-            }
-            .header .logo-text span {
-                font-size: 9px;
-            }
+            .ads-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .action-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .action-item { padding: 10px 0; }
+            .action-item i { font-size: 18px; }
+            .wallet-card .wallet-info .amount { font-size: 22px; }
+            .modal-box { padding: 24px 16px 28px; }
+            .header .logo-text { font-size: 20px; }
+            .header .logo-text span { font-size: 9px; }
+            .filter-modal-box { padding: 20px 16px 28px; }
         }
         @media (max-width: 380px) {
-            .ads-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 4px;
-            }
-            .ad-card .ad-content .title {
-                font-size: 11px;
-                min-height: 30px;
-            }
-            .ad-card .ad-content .price {
-                font-size: 13px;
-            }
+            .ads-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+            .ad-card .ad-content .title { font-size: 11px; min-height: 30px; }
+            .ad-card .ad-content .price { font-size: 13px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ===== MAIN APP ===== -->
@@ -1547,37 +1291,22 @@
             <div class="action-item" onclick="filterAds('vehicles')"><i class="fa-solid fa-car"></i><span id="actVehicles">خودرو</span></div>
         </div>
 
-        <!-- SEARCH -->
+        <!-- SEARCH + FILTER TOGGLE -->
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
             <button id="searchBtn" onclick="searchAds()">جستجو</button>
-            <button class="filter-toggle" onclick="toggleFilter()"><i class="fa-solid fa-sliders"></i></button>
+            <button class="filter-toggle" onclick="openFilterModal()"><i class="fa-solid fa-sliders"></i></button>
         </div>
 
-        <!-- FILTER -->
-        <div class="filter-panel" id="filterPanel">
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCountryLabel">کشور</label><select id="filterCountry"><option value="">همه</option></select></div>
-                <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
-                <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
-                <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
-            </div>
-            <div class="filter-actions"><button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button><button id="cancelFilterBtn" onclick="resetFilters()">لغو</button></div>
-        </div>
-
-        <!-- ADS -->
+        <!-- CATEGORIES -->
         <div class="section-title">
             <h3 id="adsTitle">آخرین آگهی‌ها</h3>
             <a onclick="fetchAds()" id="refreshAdsBtn"><i class="fa-solid fa-rotate"></i></a>
         </div>
         <div class="categories" id="categoriesContainer"></div>
+
+        <!-- ADS GRID -->
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
@@ -1601,9 +1330,32 @@
         </button>
     </div>
 
-    <!-- ===== MODALS ===== -->
+    <!-- ===== FILTER MODAL ===== -->
+    <div class="filter-modal-overlay" id="filterModal">
+        <div class="filter-modal-box">
+            <button class="modal-close" onclick="closeModal('filterModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="filter-title">🔍 فیلترهای جستجو</div>
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterCountryLabel">کشور</label><select id="filterCountry"><option value="">همه</option></select></div>
+                <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
+                <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
+                <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
+            </div>
+            <div class="filter-actions">
+                <button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button>
+                <button id="cancelFilterBtn" onclick="resetFilters()">لغو</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- ADD AD -->
+    <!-- ===== OTHER MODALS ===== -->
+    <!-- ADD AD MODAL -->
     <div class="modal-overlay" id="addAdModal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1663,12 +1415,12 @@
         </div>
     </div>
 
-    <!-- AD DETAIL -->
+    <!-- AD DETAIL MODAL -->
     <div class="modal-overlay" id="adDetailsModal">
         <div class="modal-box"><button class="modal-close" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-xmark"></i></button><div id="adDetailContent"></div></div>
     </div>
 
-    <!-- CHARGE -->
+    <!-- CHARGE MODAL -->
     <div class="modal-overlay" id="chargeModal">
         <div class="modal-box"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
             <div class="form-group"><label id="chargeAmountLabel">مبلغ (تومان) <span class="required">*</span></label><input type="number" id="chargeAmount" placeholder="۰" required /></div>
@@ -1680,7 +1432,7 @@
         </div>
     </div>
 
-    <!-- VIP -->
+    <!-- VIP MODAL -->
     <div class="modal-overlay" id="vipModal">
         <div class="modal-box"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک VIP</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
@@ -1693,7 +1445,7 @@
         </div>
     </div>
 
-    <!-- GIFT -->
+    <!-- GIFT MODAL -->
     <div class="modal-overlay" id="giftModal">
         <div class="modal-box"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="giftDesc">با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.</p>
@@ -1702,7 +1454,7 @@
         </div>
     </div>
 
-    <!-- REVIEW -->
+    <!-- REVIEW MODAL -->
     <div class="modal-overlay" id="reviewModal">
         <div class="modal-box"><button class="modal-close" onclick="closeModal('reviewModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="reviewTitle">⭐ امتیاز و نظر</div>
             <div class="review-stars" id="reviewStars"><span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span></div>
@@ -1734,7 +1486,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT – نسخه نهایی با رفع مشکل نمایش آگهی و فیلترها -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1764,7 +1516,7 @@
         let pendingCheckInterval = null;
 
         // ============================================================
-        // TRANSLATIONS (فارسی و عربی - کامل)
+        // TRANSLATIONS (فارسی و عربی – کامل)
         // ============================================================
         const translations = {
             fa: {
@@ -2011,19 +1763,16 @@
             }
         };
 
-        function t(key) {
-            return translations[currentLang]?.[key] || key;
-        }
+        function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
-        // LANGUAGE UPDATE (کامل و جامع برای همه المان‌ها)
+        // LANGUAGE UPDATE
         // ============================================================
         function updateLanguage() {
             const lang = currentLang;
             const isFa = lang === 'fa';
             document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
 
-            // لیست تمام المان‌هایی که باید بروزرسانی شوند
             const elements = {
                 'walletLabel': 'wallet',
                 'currencyLabel': 'currency',
@@ -2114,85 +1863,55 @@
                 }
             }
 
-            // بروزرسانی آپشن‌های سلیکت‌ها
-            const categoryOpts = document.querySelectorAll('#adCategory option, #filterCategory option');
-            const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles',
-                'electronics', 'education'
-            ];
-            categoryOpts.forEach((opt, idx) => {
+            // آپشن‌های سلیکت‌ها
+            const catOpts = document.querySelectorAll('#adCategory option, #filterCategory option');
+            const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles','electronics','education'];
+            catOpts.forEach((opt, idx) => {
                 if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
                 else if (opt.value === '') opt.textContent = t('all');
             });
-
-            // بروزرسانی آپشن‌های کشور
             const countryOpts = document.querySelectorAll('#adCountry option, #filterCountry option');
-            const countryKeys = ['country_iran', 'country_iraq', 'country_uae', 'country_turkey'];
+            const countryKeys = ['country_iran','country_iraq','country_uae','country_turkey'];
             countryOpts.forEach((opt, idx) => {
                 if (idx < countryKeys.length) opt.textContent = t(countryKeys[idx]);
                 else if (opt.value === '') opt.textContent = t('all');
             });
-
-            // بروزرسانی آپشن‌های ترتیب
             const sortOpts = document.querySelectorAll('#filterSort option');
-            const sortKeys = ['sort_newest', 'sort_popular', 'sort_rating', 'sort_price_asc', 'sort_price_desc'];
+            const sortKeys = ['sort_newest','sort_popular','sort_rating','sort_price_asc','sort_price_desc'];
             sortOpts.forEach((opt, idx) => {
                 if (idx < sortKeys.length) opt.textContent = t(sortKeys[idx]);
             });
+            document.getElementById('filterMin').placeholder = t('from');
+            document.getElementById('filterMax').placeholder = t('to');
 
-            // بروزرسانی placeholder فیلتر قیمت
-            const minInput = document.getElementById('filterMin');
-            const maxInput = document.getElementById('filterMax');
-            if (minInput) minInput.placeholder = t('from');
-            if (maxInput) maxInput.placeholder = t('to');
-
-            // بروزرسانی دکمه‌های سریع (action items)
-            const actionLabels = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            // اکشن‌های سریع
+            const actionLabels = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
             document.querySelectorAll('.action-item span').forEach((el, idx) => {
                 if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
             });
 
-            // بروزرسانی منوی پایین (دوباره برای اطمینان)
+            // منوی پایین
             document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
-                const key = el.id.replace('nav', '').replace('Label', '').toLowerCase();
-                const map = { home: 'home', add: 'add', favorites: 'favorites', profile: 'profile' };
+                const key = el.id.replace('nav','').replace('Label','').toLowerCase();
+                const map = { home:'home', add:'add', favorites:'favorites', profile:'profile' };
                 if (map[key]) el.textContent = t(map[key]);
             });
 
-            // بروزرسانی دکمه‌های فیلتر
+            // دکمه‌های فیلتر
             document.querySelectorAll('.filter-actions .apply-filter').forEach(el => el.textContent = t('apply'));
-            document.querySelectorAll('.filter-actions button:not(.apply-filter)').forEach(el => el.textContent = t(
-            'cancel'));
-
-            // بروزرسانی دکمه جستجو
+            document.querySelectorAll('.filter-actions button:not(.apply-filter)').forEach(el => el.textContent = t('cancel'));
             const searchBtn = document.querySelector('.search-box button:not(.filter-toggle)');
             if (searchBtn) searchBtn.textContent = t('search');
+            document.getElementById('searchInput').placeholder = t('search_placeholder');
 
-            // بروزرسانی عنوان دسته‌بندی‌ها
+            // بروزرسانی category chips
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                        'vehicles'
-                    ];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+                    const catMap = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
+                    if (idx-1 < catMap.length) chip.textContent = t(catMap[idx-1]);
                 }
             });
-
-            // بروزرسانی VIP status
-            const vipStatus = document.getElementById('vipStatus');
-            if (vipStatus && !vipStatus.innerHTML.includes('✅') && !vipStatus.innerHTML.includes('❌')) {
-                vipStatus.textContent = t('loading');
-            }
-
-            // بروزرسانی دکمه رفرش
-            const refreshBtn = document.getElementById('refreshAdsBtn');
-            if (refreshBtn) refreshBtn.title = t('refresh');
-
-            // بروزرسانی placeholder جستجو
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) searchInput.placeholder = t('search_placeholder');
 
             console.log(`🌍 زبان به ${lang === 'fa' ? 'فارسی' : 'عربی'} تغییر کرد`);
         }
@@ -2203,8 +1922,7 @@
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-                '<i class="fa-solid fa-sun"></i>';
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
             localStorage.setItem('jedar_theme', currentTheme);
         }
 
@@ -2224,7 +1942,7 @@
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
+            const icons = { success:'fa-circle-check', error:'fa-circle-xmark', warning:'fa-triangle-exclamation' };
             toast.innerHTML = `
                 <i class="fa-solid ${icons[type] || icons.success}"></i>
                 <span>${msg}</span>
@@ -2274,9 +1992,7 @@
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) {
-                phoneInput.value = profile.phone;
-            }
+            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
         }
 
         function saveProfile() {
@@ -2288,14 +2004,12 @@
             };
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) {
-                phoneInput.value = profile.phone;
-            }
+            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
             showToast(t('profile_saved'), 'success');
         }
 
         // ============================================================
-        // ADS (با چک کردن خودکار برای آگهی‌های جدید تایید شده)
+        // ADS – اصلاح شده برای نمایش درست آگهی‌ها
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2306,20 +2020,27 @@
             }
             try {
                 const data = await apiCall('/api/feed');
-                if (data.success && data.ads) {
+                console.log('📦 داده‌های دریافتی از API:', data); // لاگ برای دیباگ
+                if (data.ok && data.data && data.data.length > 0) {
+                    allAds = data.data;
+                    filteredAds = [...allAds];
+                    renderAds(filteredAds);
+                    renderCategories();
+                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
+                } else if (data.success && data.ads && data.ads.length > 0) {
+                    // fallback برای ساختار قدیمی
                     allAds = data.ads;
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
                     if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else {
-                    grid.innerHTML =
-                        `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    if (showLoading) showToast('هیچ آگهی‌ای یافت نشد', 'warning');
                 }
             } catch (err) {
                 console.error('fetchAds error:', err);
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
             }
             isUpdating = false;
         }
@@ -2328,8 +2049,7 @@
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = '';
             if (!ads || ads.length === 0) {
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 return;
             }
             ads.forEach(ad => {
@@ -2337,16 +2057,27 @@
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetail(ad.id);
 
-                const img = (ad.images && ad.images.length > 0) ?
-                    `<img src="${ad.images[0]}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'" />` :
+                // پردازش تصاویر – اگر base64 است پیشوند اضافه کن
+                let imgSrc = '';
+                if (ad.images && ad.images.length > 0) {
+                    let raw = ad.images[0];
+                    if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) {
+                        imgSrc = `data:image/jpeg;base64,${raw}`;
+                    } else {
+                        imgSrc = raw;
+                    }
+                }
+                const imgHtml = imgSrc ?
+                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
+
                 const isFav = favorites.includes(ad.id);
                 const isSpecial = ad.ad_type === 'special';
                 const isExpired = ad.special_expiry && ad.special_expiry < Math.floor(Date.now() / 1000);
 
                 card.innerHTML = `
                     <div class="ad-image">
-                        ${img}
+                        ${imgHtml}
                         <div class="watermark">J-DAR</div>
                         ${isSpecial ? '<div class="special-badge">⭐ ' + t('special_badge') + '</div>' : ''}
                         ${isExpired ? '<div class="status-badge">' + t('expired') + '</div>' : ''}
@@ -2370,6 +2101,9 @@
             });
         }
 
+        // ============================================================
+        // CATEGORIES
+        // ============================================================
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             const cats = ['همه', 'زیارت', 'گردشگری', 'پزشکی', 'زیبایی', 'خدمات', 'کاریابی', 'املاک', 'خودرو'];
@@ -2386,12 +2120,12 @@
         function filterAds(cat) {
             document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
-            const map = { all: 0, زیارت: 1, گردشگری: 2, پزشکی: 3, زیبایی: 4, خدمات: 5, کاریابی: 6, املاک: 7, خودرو: 8 };
+            const map = { all:0, زیارت:1, گردشگری:2, پزشکی:3, زیبایی:4, خدمات:5, کاریابی:6, املاک:7, خودرو:8 };
             const idx = map[cat] || 0;
             if (chips[idx]) chips[idx].classList.add('active');
 
-            const catMap = { all: 'all', زیارت: 'pilgrimage', گردشگری: 'tourism', پزشکی: 'medical', زیبایی: 'beauty',
-                خدمات: 'services', کاریابی: 'jobs', املاک: 'real_estate', خودرو: 'vehicles' };
+            const catMap = { all:'all', زیارت:'pilgrimage', گردشگری:'tourism', پزشکی:'medical', زیبایی:'beauty',
+                خدمات:'services', کاریابی:'jobs', املاک:'real_estate', خودرو:'vehicles' };
             const catKey = catMap[cat] || 'all';
             if (catKey === 'all') filteredAds = [...allAds];
             else filteredAds = allAds.filter(ad => ad.category === catKey || ad.category?.includes(catKey));
@@ -2400,8 +2134,7 @@
 
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { filteredAds = [...allAds];
-                renderAds(filteredAds); return; }
+            if (!query) { filteredAds = [...allAds]; renderAds(filteredAds); return; }
             filteredAds = allAds.filter(ad =>
                 (ad.title && ad.title.toLowerCase().includes(query)) ||
                 (ad.description && ad.description.toLowerCase().includes(query)) ||
@@ -2418,10 +2151,10 @@
         }
 
         // ============================================================
-        // FILTERS
+        // FILTER MODAL
         // ============================================================
-        function toggleFilter() {
-            document.getElementById('filterPanel').classList.toggle('open');
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('show');
         }
 
         function applyFilters() {
@@ -2440,17 +2173,17 @@
             if (maxPrice) result = result.filter(ad => (ad.price || 0) <= parseInt(maxPrice));
             if (rating) result = result.filter(ad => (ad.rating_avg || 0) >= parseInt(rating));
             const sortMap = {
-                newest: (a, b) => b.created_at - a.created_at,
-                popular: (a, b) => ((b.views || 0) * 0.3 + (b.shares || 0) * 0.7) - ((a.views || 0) * 0.3 + (a.shares || 0) * 0.7),
-                rating: (a, b) => (b.rating_avg || 0) - (a.rating_avg || 0),
-                price_asc: (a, b) => (a.price || 0) - (b.price || 0),
-                price_desc: (a, b) => (b.price || 0) - (a.price || 0)
+                newest: (a,b) => b.created_at - a.created_at,
+                popular: (a,b) => ((b.views || 0)*0.3 + (b.shares || 0)*0.7) - ((a.views || 0)*0.3 + (a.shares || 0)*0.7),
+                rating: (a,b) => (b.rating_avg || 0) - (a.rating_avg || 0),
+                price_asc: (a,b) => (a.price || 0) - (b.price || 0),
+                price_desc: (a,b) => (b.price || 0) - (a.price || 0)
             };
             if (sortMap[sort]) result.sort(sortMap[sort]);
             else result.sort(sortMap.newest);
             filteredAds = result;
             renderAds(filteredAds);
-            document.getElementById('filterPanel').classList.remove('open');
+            closeModal('filterModal');
         }
 
         function resetFilters() {
@@ -2463,7 +2196,7 @@
             document.getElementById('filterSort').value = 'newest';
             filteredAds = [...allAds];
             renderAds(filteredAds);
-            document.getElementById('filterPanel').classList.remove('open');
+            closeModal('filterModal');
         }
 
         // ============================================================
@@ -2579,8 +2312,7 @@
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                 } else {
@@ -2610,12 +2342,10 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">هنوز نظری ثبت نشده است</div>`;
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">هنوز نظری ثبت نشده است</div>`;
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">خطا در بارگذاری</div>`;
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">خطا در بارگذاری</div>`;
             }
         }
 
@@ -2643,8 +2373,7 @@
                     if (currentAd && currentAd.id === adId) {
                         const btn = document.querySelector('#adDetailContent .btn-secondary');
                         if (btn) {
-                            btn.innerHTML =
-                                `<i class="fa-${isFav ? 'regular' : 'solid'} fa-heart"></i> ${isFav ? t('add_fav') : t('remove_fav')}`;
+                            btn.innerHTML = `<i class="fa-${isFav ? 'regular' : 'solid'} fa-heart"></i> ${isFav ? t('add_fav') : t('remove_fav')}`;
                         }
                     }
                 }
@@ -2654,8 +2383,7 @@
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
             if (favorites.length === 0) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                 return;
             }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -2663,15 +2391,17 @@
                 const data = await apiCall('/api/favorites?user_id=' + guestId);
                 if (data.success && data.favorites) {
                     if (data.favorites.length === 0) {
-                        container.innerHTML =
-                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                         return;
                     }
                     container.innerHTML = '';
                     data.favorites.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'favorite-item';
-                        const imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
+                        let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
+                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
+                            imgSrc = `data:image/jpeg;base64,${imgSrc}`;
+                        }
                         div.innerHTML = `
                             <img src="${imgSrc}" onerror="this.style.display='none'" />
                             <div class="info" onclick="openAdDetail(${ad.id})">
@@ -2685,8 +2415,7 @@
                     });
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
             }
         }
 
@@ -2700,17 +2429,15 @@
                 const data = await apiCall('/api/user/ads?user_id=' + guestId);
                 if (data.success && data.ads) {
                     if (data.ads.length === 0) {
-                        container.innerHTML =
-                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
+                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
                         return;
                     }
                     container.innerHTML = '';
                     data.ads.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
+                        const statusMap = { pending:'pending', approved:'approved', rejected:'rejected' };
+                        const statusLabels = { pending:t('pending'), approved:t('approved'), rejected:t('rejected') };
                         div.innerHTML = `
                             <div class="info">
                                 <div class="title">${ad.title}</div>
@@ -2729,16 +2456,14 @@
                     });
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
             }
         }
 
         async function deleteAd(adId) {
             if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
             try {
-                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId,
-                        adId }) });
+                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId, adId }) });
                 if (data.success) {
                     showToast('آگهی حذف شد', 'success');
                     fetchMyAds();
@@ -2773,22 +2498,18 @@
         // ADD AD WIZARD
         // ============================================================
         function wizardNext() {
-            if (wizardStep < 3) { wizardStep++;
-                updateWizard(); }
+            if (wizardStep < 3) { wizardStep++; updateWizard(); }
         }
-
         function wizardPrev() {
-            if (wizardStep > 1) { wizardStep--;
-                updateWizard(); }
+            if (wizardStep > 1) { wizardStep--; updateWizard(); }
         }
-
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
             document.getElementById('wizardBar').style.width = `${(wizardStep - 1) * 50}%`;
             for (let i = 1; i <= 3; i++) {
                 const step = document.getElementById(`wStep${i}`);
-                step.classList.remove('active', 'completed');
+                step.classList.remove('active','completed');
                 if (i < wizardStep) step.classList.add('completed');
                 if (i === wizardStep) step.classList.add('active');
             }
@@ -2818,8 +2539,7 @@
             wizardImagesBase64.forEach((base64, index) => {
                 const item = document.createElement('div');
                 item.className = 'image-preview-item';
-                item.innerHTML =
-                    `<img src="${base64}" /><button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+                item.innerHTML = `<img src="${base64}" /><button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
                 grid.appendChild(item);
             });
         }
@@ -2881,7 +2601,6 @@
                     document.getElementById('adImagePreview').innerHTML = '';
                     wizardStep = 1;
                     updateWizard();
-                    // بعد از ثبت، بلافاصله لیست‌ها را به‌روز کن
                     fetchAds(true);
                     fetchMyAds();
                 } else {
@@ -2893,7 +2612,7 @@
         }
 
         // ============================================================
-        // WALLET & VIP
+        // WALLET & VIP & GIFT (ساده‌سازی شده، توابع قبلی کار می‌کنند)
         // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
@@ -2901,7 +2620,6 @@
             document.getElementById('receiptPreview').style.display = 'none';
             document.getElementById('receiptInput').value = '';
         }
-
         document.getElementById('receiptInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -2912,7 +2630,6 @@
             };
             reader.readAsDataURL(file);
         });
-
         async function submitCharge() {
             const amount = document.getElementById('chargeAmount').value;
             const receiptInput = document.getElementById('receiptInput');
@@ -2932,12 +2649,7 @@
                 const user = { id: guestId, first_name: 'کاربر' };
                 const data = await apiCall('/api/submit-charge', {
                     method: 'POST',
-                    body: JSON.stringify({
-                        user: user,
-                        amount: parseInt(amount),
-                        method: 'bank',
-                        receipt: receiptBase64
-                    })
+                    body: JSON.stringify({ user, amount: parseInt(amount), method: 'bank', receipt: receiptBase64 })
                 });
                 if (data.success) {
                     showToast(t('charge_success'), 'success');
@@ -2954,14 +2666,12 @@
             document.getElementById('vipModal').classList.add('show');
             loadVipStatus();
         }
-
         async function loadVipStatus() {
             try {
                 const data = await apiCall('/api/vip/status?user_id=' + guestId);
                 if (data.success) {
                     if (data.is_vip) {
-                        document.getElementById('vipStatus').innerHTML =
-                            `✅ اشتراک فعال است (${data.days_left} روز باقی‌مانده)`;
+                        document.getElementById('vipStatus').innerHTML = `✅ اشتراک فعال است (${data.days_left} روز باقی‌مانده)`;
                     } else {
                         document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
                     }
@@ -2976,7 +2686,6 @@
                 }
             } catch (err) {}
         }
-
         async function buyVip(plan) {
             const btn = event.target;
             btn.disabled = true;
@@ -2997,20 +2706,15 @@
             btn.textContent = t('buy');
         }
 
-        // ============================================================
-        // GIFT
-        // ============================================================
         function openGiftModal() {
             document.getElementById('giftModal').classList.add('show');
             loadGiftStatus();
         }
-
         async function loadGiftStatus() {
             try {
                 const data = await apiCall('/api/gift/status?user_id=' + guestId);
                 if (data.success && data.gift) {
-                    const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
-                        rejected: t('gift_status_rejected') };
+                    const statusMap = { pending:t('gift_status_pending'), approved:t('gift_status_approved'), rejected:t('gift_status_rejected') };
                     document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status] || 'نامشخص'}`;
                 } else {
                     document.getElementById('giftStatus').innerHTML = t('no_gift');
@@ -3019,7 +2723,6 @@
                 document.getElementById('giftStatus').innerHTML = 'خطا در بارگذاری';
             }
         }
-
         async function requestGiftSubmit() {
             const btn = event.target;
             btn.disabled = true;
@@ -3053,7 +2756,6 @@
                 }
             } catch (err) {}
         }
-
         async function loadCategoriesAndCountries() {
             try {
                 const data = await apiCall('/api/categories');
@@ -3083,9 +2785,9 @@
             document.getElementById('app').style.display = tab === 'home' ? 'block' : 'none';
             document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
             document.getElementById('favoritesTab').style.display = tab === 'favorites' ? 'block' : 'none';
-            if (tab === 'profile') { loadProfile();
-                fetchMyAds(); } else if (tab === 'favorites') { fetchFavorites(); } else if (tab === 'home') { fetchAds(
-                    true); }
+            if (tab === 'profile') { loadProfile(); fetchMyAds(); }
+            else if (tab === 'favorites') { fetchFavorites(); }
+            else if (tab === 'home') { fetchAds(true); }
         }
 
         function openAddModal() {
@@ -3098,23 +2800,20 @@
             updateWizard();
             document.getElementById('planGroup').style.display = 'none';
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            if (profile.phone) {
-                document.getElementById('adContact').value = profile.phone;
-            }
+            if (profile.phone) document.getElementById('adContact').value = profile.phone;
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
-
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        document.querySelectorAll('.modal-overlay, .filter-modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('show');
             });
         });
 
         // ============================================================
-        // AUTO CHECK FOR NEW APPROVED ADS (هر ۱۰ ثانیه)
+        // AUTO CHECK FOR NEW ADS (هر ۱۰ ثانیه)
         // ============================================================
         function startPendingCheck() {
             if (pendingCheckInterval) clearInterval(pendingCheckInterval);
@@ -3131,8 +2830,7 @@
         const savedTheme = localStorage.getItem('jedar_theme') || 'light';
         currentTheme = savedTheme;
         document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-            '<i class="fa-solid fa-sun"></i>';
+        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
 
         const savedLang = localStorage.getItem('jedar_lang') || 'fa';
         currentLang = savedLang;
@@ -3151,14 +2849,14 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        // همچنین هنگام تغییر تب، چک‌کننده را ری‌استارت می‌کنیم
+        // اصلاح switchTab برای restart کردن چک‌کننده
         const originalSwitchTab = switchTab;
         switchTab = function(tab) {
             originalSwitchTab(tab);
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v12.0 - پلتفرم جهانی با زبان‌های فارسی و عربی و بروزرسانی خودکار`);
+        console.log(`🚀 ${APP_NAME} v12.1 - پلتفرم جهانی با زبان‌های فارسی و عربی و بروزرسانی خودکار`);
     </script>
 </body>
     </html>
