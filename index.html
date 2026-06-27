@@ -112,22 +112,23 @@
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
         .toast .close:hover { color: var(--danger); }
 
-        /* ===== APP CONTAINER ===== */
-        #app {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 14px 14px 80px 14px;
-            min-height: 100vh;
-            animation: fadeIn 0.4s ease;
-        }
-
-        /* ===== HEADER ===== */
+        /* ============================================================
+           HEADER (ثابت – بدون حرکت)
+           ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 18px;
             padding: 4px 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-primary);
+            backdrop-filter: blur(12px);
+            transition: background var(--transition);
+            will-change: transform;
+            transform: translateZ(0);
         }
         .header .logo-text {
             font-size: 26px;
@@ -168,6 +169,24 @@
             color: var(--primary);
         }
 
+        /* ============================================================
+           APP CONTAINER (همه محتوای متحرک)
+           ============================================================ */
+        #app {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 14px 80px 14px;
+            min-height: 100vh;
+            animation: fadeIn 0.4s ease;
+        }
+        #app > *:not(.header) {
+            animation: slideFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        @keyframes slideFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* ===== WALLET ===== */
         .wallet-card {
             background: var(--bg-card);
@@ -176,7 +195,12 @@
             padding: 18px 20px;
             margin-bottom: 16px;
             box-shadow: var(--shadow-sm);
-            transition: box-shadow var(--transition), border-color var(--transition);
+            transition: box-shadow var(--transition), border-color var(--transition), transform 0.3s ease;
+            will-change: transform;
+        }
+        .wallet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
         .wallet-card .wallet-row {
             display: flex;
@@ -272,6 +296,7 @@
             display: none;
             align-items: center;
             gap: 12px;
+            transition: all 0.4s ease;
         }
         .notice-card.show { display: flex; }
         .notice-card .notice-icon {
@@ -305,11 +330,12 @@
             align-items: center;
             gap: 2px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-primary);
+            will-change: transform, box-shadow;
         }
         .action-item:hover {
-            transform: translateY(-4px);
+            transform: translateY(-4px) scale(1.02);
             border-color: var(--primary);
             background: var(--primary-light);
             box-shadow: var(--shadow-md);
@@ -317,7 +343,7 @@
         .action-item i { font-size: 22px; color: var(--primary); }
         .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* ===== SEARCH & FILTER TOGGLE (پیشرفته) ===== */
+        /* ===== SEARCH & FILTER TOGGLE ===== */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -356,7 +382,6 @@
         }
         .search-box button:hover { opacity: 0.9; }
 
-        /* دکمه فیلتر با انیمیشن چرخش */
         .search-box .filter-toggle {
             background: var(--primary-light);
             color: var(--primary);
@@ -391,7 +416,7 @@
             transform: rotate(180deg);
         }
 
-        /* ===== FILTER PANEL (انیمیشن پیشرفته کشویی) ===== */
+        /* ===== FILTER PANEL (انیمیشن پیشرفته) ===== */
         .filter-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -410,7 +435,7 @@
             will-change: max-height, opacity, transform;
         }
         .filter-panel.open {
-            max-height: 600px; /* به اندازه کافی بزرگ برای محتوا */
+            max-height: 600px;
             opacity: 1;
             transform: translateY(0) scale(1);
             padding: 18px;
@@ -502,12 +527,13 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.25s ease;
             color: var(--text-primary);
         }
         .category-chip:hover {
             border-color: var(--primary);
             background: var(--primary-light);
+            transform: translateY(-2px);
         }
         .category-chip.active {
             background: var(--primary-gradient);
@@ -536,12 +562,13 @@
             border-radius: var(--radius-md);
             overflow: hidden;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             transform: translateY(0);
+            will-change: transform, box-shadow;
         }
         .ad-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px) scale(1.01);
             border-color: var(--primary);
             box-shadow: var(--shadow-md);
         }
@@ -556,9 +583,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s;
+            transition: transform 0.5s ease;
         }
-        .ad-card:hover .ad-image img { transform: scale(1.04); }
+        .ad-card:hover .ad-image img { transform: scale(1.05); }
         .ad-card .ad-image .no-image {
             display: flex;
             align-items: center;
@@ -597,10 +624,10 @@
             color: #fff;
             font-size: 14px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.25s ease;
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .ad-card .ad-image .favorite:hover { background: var(--danger); }
+        .ad-card .ad-image .favorite:hover { background: var(--danger); transform: scale(1.1); }
         .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(239,68,68,0.3); }
         .ad-card .ad-image .special-badge {
             position: absolute;
@@ -670,7 +697,62 @@
         }
         .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
-        /* ===== MODALS ===== */
+        /* ============================================================
+           BOTTOM NAV (ثابت)
+           ============================================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0 14px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            z-index: 100;
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
+            transition: background var(--transition);
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-size: 9px;
+            padding: 0 8px;
+            position: relative;
+            background: none;
+            border: none;
+        }
+        .bottom-nav .nav-item:hover { color: var(--primary); }
+        .bottom-nav .nav-item.active { color: var(--primary); }
+        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; transition: transform 0.2s ease; }
+        .bottom-nav .nav-item:hover i { transform: translateY(-2px); }
+        .bottom-nav .nav-item .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 8px;
+            border-radius: 50%;
+            padding: 1px 6px;
+            font-weight: 700;
+        }
+        .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
+
+        /* ============================================================
+           MODALS (همه مودال‌ها با انیمیشن)
+           ============================================================ */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -696,10 +778,14 @@
             width: 100%;
             padding: 32px 24px 36px;
             margin: auto 0;
-            animation: fadeInUp 0.35s ease;
+            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             max-height: 95vh;
             overflow-y: auto;
+        }
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal-box::-webkit-scrollbar { width: 3px; }
         .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
@@ -712,7 +798,7 @@
             font-size: 28px;
             color: var(--text-muted);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             padding: 4px;
         }
         .modal-box .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
@@ -764,7 +850,7 @@
             border-radius: var(--radius-sm);
             font-weight: 700;
             font-size: 15px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .modal-box .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
         .modal-box .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -792,7 +878,7 @@
             padding: 24px;
             text-align: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             background: var(--bg-input);
         }
         .modal-box .image-upload-area:hover {
@@ -832,7 +918,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
         .modal-box .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
 
@@ -883,7 +969,7 @@
             justify-content: center;
             position: relative;
             z-index: 3;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .wizard-progress .step.active {
             border-color: var(--primary);
@@ -907,7 +993,7 @@
             font-size: 32px;
             margin-bottom: 16px;
         }
-        .review-stars span { cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .review-stars span { cursor: pointer; color: var(--text-muted); transition: all 0.2s ease; }
         .review-stars span:hover { color: var(--gold); transform: scale(1.1); }
         .review-stars span.active { color: var(--gold); }
         .review-item {
@@ -941,7 +1027,9 @@
             padding: 20px;
             margin-bottom: 18px;
             box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
+        .profile-section:hover { box-shadow: var(--shadow-md); }
         .profile-section .form-group { margin-bottom: 16px; }
         .profile-section .form-group label {
             display: block;
@@ -958,7 +1046,7 @@
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-size: 14px;
-            transition: var(--transition);
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
         .profile-section .form-group input:focus {
             border-color: var(--primary);
@@ -978,7 +1066,7 @@
             font-weight: 600;
             font-size: 13px;
             min-width: 60px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .profile-section .profile-actions .btn-save {
             background: var(--primary-gradient);
@@ -1001,9 +1089,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
-        .my-ad-item:hover { border-color: var(--primary); }
+        .my-ad-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .my-ad-item .info .title { font-weight: 600; font-size: 14px; }
         .my-ad-item .info .sub {
             font-size: 12px;
@@ -1030,12 +1118,12 @@
             padding: 4px 6px;
             cursor: pointer;
             border-radius: var(--radius-sm);
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
         .my-ad-item .actions .edit { color: var(--primary); }
-        .my-ad-item .actions .edit:hover { background: var(--primary-light); }
+        .my-ad-item .actions .edit:hover { background: var(--primary-light); transform: scale(1.1); }
         .my-ad-item .actions .delete { color: var(--danger); }
-        .my-ad-item .actions .delete:hover { background: rgba(239,68,68,0.1); }
+        .my-ad-item .actions .delete:hover { background: rgba(239,68,68,0.1); transform: scale(1.1); }
 
         .favorite-item {
             background: var(--bg-card);
@@ -1047,7 +1135,7 @@
             gap: 14px;
             align-items: center;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .favorite-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .favorite-item img {
@@ -1075,59 +1163,9 @@
             font-size: 18px;
             cursor: pointer;
             padding: 4px;
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
         .favorite-item .remove-fav:hover { transform: scale(1.2); }
-
-        /* ===== BOTTOM NAV ===== */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 0 14px;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            z-index: 100;
-            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
-            transition: background var(--transition);
-        }
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 9px;
-            padding: 0 8px;
-            position: relative;
-            background: none;
-            border: none;
-        }
-        .bottom-nav .nav-item:hover { color: var(--primary); }
-        .bottom-nav .nav-item.active { color: var(--primary); }
-        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; }
-        .bottom-nav .nav-item .badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--danger);
-            color: #fff;
-            font-size: 8px;
-            border-radius: 50%;
-            padding: 1px 6px;
-            font-weight: 700;
-        }
-        .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
         /* ===== VIP PLANS ===== */
         .vip-plan {
@@ -1136,7 +1174,7 @@
             border-radius: var(--radius-sm);
             padding: 16px;
             text-align: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .vip-plan:hover { border-color: var(--primary); transform: translateY(-3px); }
         .vip-plan .plan-price {
@@ -1153,7 +1191,7 @@
             font-weight: 700;
             font-size: 14px;
             margin-top: 8px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .vip-plan .plan-btn.primary { background: var(--primary-gradient); color: #fff; }
         .vip-plan .plan-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--primary-light); }
@@ -1161,10 +1199,6 @@
         .vip-plan .plan-btn.gold:hover { opacity: 0.9; transform: translateY(-2px); }
 
         /* ===== ANIMATIONS ===== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.96); }
             to { opacity: 1; transform: scale(1); }
@@ -1202,7 +1236,7 @@
 
     <!-- ===== MAIN APP ===== -->
     <div id="app">
-        <!-- HEADER -->
+        <!-- HEADER (ثابت) -->
         <div class="header">
             <div class="logo-text">جـدار <span>جهانی</span></div>
             <div class="header-actions">
@@ -1249,7 +1283,7 @@
             <div class="action-item" onclick="filterAds('vehicles')"><i class="fa-solid fa-car"></i><span id="actVehicles">خودرو</span></div>
         </div>
 
-        <!-- ===== SEARCH + FILTER TOGGLE (پیشرفته) ===== -->
+        <!-- SEARCH + FILTER -->
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
@@ -1259,7 +1293,7 @@
             </button>
         </div>
 
-        <!-- ===== FILTER PANEL (انیمیشن پیشرفته) ===== -->
+        <!-- FILTER PANEL -->
         <div class="filter-panel" id="filterPanel">
             <div class="filter-row">
                 <div class="filter-group"><label id="filterCountryLabel">کشور</label>
@@ -1298,7 +1332,7 @@
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- ===== BOTTOM NAV ===== -->
+    <!-- ===== BOTTOM NAV (ثابت) ===== -->
     <div class="bottom-nav">
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -1372,7 +1406,7 @@
                         <div class="image-preview-grid" id="adImagePreview"></div>
                     </div>
                     <div class="form-group"><label id="adPhoneLabel">شماره تماس</label>
-                        <input type="tel" id="adContact" placeholder="0912..." value="" />
+                        <input type="tel" id="adContact" placeholder="شماره شما" value="" readonly />
                     </div>
                     <div class="form-group"><label id="adTypeLabel">نوع آگهی</label>
                         <select id="adType" onchange="document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none'">
@@ -1457,7 +1491,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – نسخه نهایی با حرکت زیبا و پیشرفته فیلتر -->
+    <!-- JAVASCRIPT – کامل با محدودیت آگهی، پر کردن خودکار شماره و پیام پروفایل -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1486,6 +1520,7 @@
         let isUpdating = false;
         let pendingCheckInterval = null;
         let filterPanelOpen = false;
+        let userAdsCount = 0; // تعداد آگهی‌های کاربر
 
         // ============================================================
         // TRANSLATIONS (فارسی و عربی)
@@ -1611,6 +1646,8 @@
                 filter_price: 'قیمت',
                 filter_sort: 'ترتیب',
                 filter_rating: 'امتیاز',
+                complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
+                ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید. برای ثبت آگهی بیشتر، اشتراک VIP تهیه کنید یا درخواست هدیه بدهید.',
             },
             ar: {
                 home: 'الرئيسية',
@@ -1732,6 +1769,8 @@
                 filter_price: 'السعر',
                 filter_sort: 'الترتيب',
                 filter_rating: 'التقييم',
+                complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
+                ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١). للحصول على إعلانات إضافية، اشترِ VIP أو اطلب هدية.',
             }
         };
 
@@ -1959,7 +1998,7 @@
         }
 
         // ============================================================
-        // FILTER PANEL TOGGLE (حرکت زیبا و پیشرفته)
+        // FILTER PANEL TOGGLE
         // ============================================================
         function toggleFilterPanel() {
             filterPanelOpen = !filterPanelOpen;
@@ -1969,7 +2008,6 @@
             if (filterPanelOpen) {
                 panel.classList.add('open');
                 toggleBtn.classList.add('active');
-                // بستن خودکار با کلیک خارج از پنل و دکمه
                 document.addEventListener('click', closeFilterOnOutsideClick);
             } else {
                 panel.classList.remove('open');
@@ -1983,7 +2021,7 @@
             const toggleBtn = document.getElementById('filterToggle');
             const isClickInside = panel.contains(e.target) || toggleBtn.contains(e.target);
             if (!isClickInside && filterPanelOpen) {
-                toggleFilterPanel(); // بستن پنل
+                toggleFilterPanel();
             }
         }
 
@@ -1996,8 +2034,14 @@
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
+            // پر کردن شماره در مودال ثبت آگهی
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            if (phoneInput && profile.phone) {
+                phoneInput.value = profile.phone;
+            } else if (phoneInput) {
+                phoneInput.value = '';
+                phoneInput.placeholder = 'شماره تماس (از پروفایل)';
+            }
         }
 
         function saveProfile() {
@@ -2008,9 +2052,20 @@
                 email: document.getElementById('profileEmail').value.trim(),
             };
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
+            // به‌روزرسانی شماره در مودال ثبت آگهی
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            if (phoneInput && profile.phone) {
+                phoneInput.value = profile.phone;
+            }
             showToast(t('profile_saved'), 'success');
+        }
+
+        // ============================================================
+        // CHECK PROFILE COMPLETE
+        // ============================================================
+        function isProfileComplete() {
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            return profile.phone && profile.phone.trim().length > 0;
         }
 
         // ============================================================
@@ -2182,7 +2237,6 @@
             else result.sort(sortMap.newest);
             filteredAds = result;
             renderAds(filteredAds);
-            // بستن پنل فیلتر بعد از اعمال
             if (filterPanelOpen) toggleFilterPanel();
         }
 
@@ -2238,6 +2292,9 @@
                     <div class="form-row" style="margin-top:16px;">
                         ${ad.phone ? `<a href="tel:${ad.phone}" class="btn-primary" style="text-align:center;padding:12px;border-radius:var(--radius-sm);text-decoration:none;background:var(--primary-gradient);color:#fff;font-weight:600;font-size:14px;"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
                         ${ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g,'')}" target="_blank" class="btn-primary" style="text-align:center;padding:12px;border-radius:var(--radius-sm);text-decoration:none;background:var(--success);color:#fff;font-weight:600;font-size:14px;"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                        <button class="btn-secondary" onclick="shareAd(${ad.id}, '${ad.title}')" style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);border:2px solid var(--border-color);color:var(--text-primary);font-weight:600;cursor:pointer;">
+                            <i class="fa-solid fa-share-nodes"></i> اشتراک
+                        </button>
                     </div>
                     <button class="btn-secondary" style="width:100%;margin-top:10px;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);border:2px solid var(--border-color);color:var(--text-primary);font-weight:600;cursor:pointer;" onclick="toggleFavorite(${ad.id})">
                         <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
@@ -2285,6 +2342,31 @@
                 };
             } catch (err) {
                 showToast('خطا در بارگذاری', 'error');
+            }
+        }
+
+        function shareAd(adId, title) {
+            const url = `https://your-domain.com/ad/${adId}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: `🔥 ${title} - جدار`,
+                    url: url
+                }).catch(() => {});
+            } else {
+                // کپی لینک
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('🔗 لینک آگهی کپی شد', 'success');
+                }).catch(() => {
+                    // fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast('🔗 لینک آگهی کپی شد', 'success');
+                });
             }
         }
 
@@ -2414,7 +2496,7 @@
         }
 
         // ============================================================
-        // MY ADS
+        // MY ADS (با شمارش تعداد آگهی‌ها)
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
@@ -2422,6 +2504,7 @@
             try {
                 const data = await apiCall('/api/user/ads?user_id=' + guestId);
                 if (data.success && data.ads) {
+                    userAdsCount = data.ads.length;
                     if (data.ads.length === 0) {
                         container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
                         return;
@@ -2489,7 +2572,7 @@
         }
 
         // ============================================================
-        // ADD AD WIZARD
+        // ADD AD WIZARD (با محدودیت و بررسی پروفایل)
         // ============================================================
         function wizardNext() {
             if (wizardStep < 3) { wizardStep++; updateWizard(); }
@@ -2544,6 +2627,20 @@
         }
 
         async function submitAd() {
+            // بررسی کامل بودن پروفایل
+            if (!isProfileComplete()) {
+                showToast(t('complete_profile_first'), 'warning');
+                return;
+            }
+
+            // بررسی محدودیت آگهی (۱ عدد برای کاربران عادی)
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            const isVip = profile.isVip || false; // در آینده از API دریافت می‌شود
+            if (!isVip && userAdsCount >= 1) {
+                showToast(t('ad_limit_reached'), 'warning');
+                return;
+            }
+
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
@@ -2566,9 +2663,7 @@
                 const editId = document.getElementById('addAdForm').dataset.editId;
                 const endpoint = editId ? `/api/ads/${editId}` : '/api/submit-ad';
                 const method = editId ? 'PUT' : 'POST';
-                const user = { id: guestId, first_name: 'کاربر' };
-                const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-                if (profile.fullname) user.first_name = profile.fullname;
+                const user = { id: guestId, first_name: profile.fullname || 'کاربر' };
 
                 const data = await apiCall(endpoint, {
                     method,
@@ -2777,6 +2872,11 @@
         }
 
         function openAddModal() {
+            // بررسی کامل بودن پروفایل قبل از باز کردن مودال
+            if (!isProfileComplete()) {
+                showToast(t('complete_profile_first'), 'warning');
+                return;
+            }
             document.getElementById('addAdModal').classList.add('show');
             document.getElementById('addAdForm').dataset.editId = '';
             document.getElementById('addAdForm').reset();
@@ -2786,7 +2886,13 @@
             updateWizard();
             document.getElementById('planGroup').style.display = 'none';
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            if (profile.phone) document.getElementById('adContact').value = profile.phone;
+            const phoneInput = document.getElementById('adContact');
+            if (profile.phone) {
+                phoneInput.value = profile.phone;
+            } else {
+                phoneInput.value = '';
+                phoneInput.placeholder = 'شماره تماس (از پروفایل)';
+            }
         }
 
         function closeModal(id) {
@@ -2841,7 +2947,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v13.1 - حرکت زیبا و پیشرفته فیلتر`);
+        console.log(`🚀 ${APP_NAME} v14.0 - حرکت زیبا، محدودیت آگهی و تکمیل خودکار شماره`);
     </script>
 </body>
     </html>
