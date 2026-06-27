@@ -164,7 +164,6 @@
             border-color: var(--primary);
             color: var(--primary);
         }
-        /* دکمه فیلتر در هدر - قبل از دکمه‌های تم و زبان */
         .header .header-actions .filter-btn {
             background: var(--primary-light);
             color: var(--primary);
@@ -443,10 +442,6 @@
             transition: var(--transition);
         }
         .search-box button:hover { opacity: 0.9; }
-        /* دکمه فیلتر در جستجو (اختیاری) - اما ما آن را در هدر قرار داده‌ایم، بنابراین اینجا حذف می‌کنیم */
-        .search-box .filter-toggle {
-            display: none;
-        }
 
         /* ===== FILTER PANEL ===== */
         .filter-panel {
@@ -776,9 +771,297 @@
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
         /* ============================================================
-           MODALS
+           MODAL AD DETAIL (جدید – بزرگ و شیشه‌ای)
            ============================================================ */
         .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: modalOverlayFade 0.3s ease;
+        }
+        .modal-overlay.show { display: flex; }
+        @keyframes modalOverlayFade {
+            from { opacity: 0; backdrop-filter: blur(0); }
+            to { opacity: 1; backdrop-filter: blur(20px); }
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 560px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 24px 20px 28px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: modalZoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        @keyframes modalZoomIn {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-box::-webkit-scrollbar { width: 4px; }
+        .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .modal-box .modal-close {
+            position: sticky;
+            top: 0;
+            float: left;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+        .modal-box .modal-close:hover {
+            background: var(--danger);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-box .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 8px 0 12px;
+            line-height: 1.3;
+        }
+        .modal-box .ad-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .modal-box .ad-meta span {
+            background: var(--bg-input);
+            padding: 3px 12px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+        }
+        .modal-box .ad-price {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 6px 0 10px;
+        }
+        .modal-box .ad-description {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 14px 0;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text-primary);
+        }
+        .modal-box .ad-gallery {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .modal-box .ad-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .modal-box .ad-gallery .no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+        .modal-box .gallery-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 8px 0 14px;
+        }
+        .modal-box .gallery-controls button {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .modal-box .gallery-controls button:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .modal-box .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0 10px;
+        }
+        .modal-box .action-buttons a,
+        .modal-box .action-buttons button {
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .modal-box .action-buttons .btn-call {
+            background: var(--primary-gradient);
+            color: #fff;
+        }
+        .modal-box .action-buttons .btn-whatsapp {
+            background: #25D366;
+            color: #fff;
+        }
+        .modal-box .action-buttons .btn-share {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .modal-box .action-buttons .btn-share:hover {
+            background: var(--border-color);
+        }
+        .modal-box .btn-fav {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 6px 0 16px;
+        }
+        .modal-box .btn-fav:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .modal-box .btn-fav .fa-heart {
+            color: var(--danger);
+        }
+
+        /* نظرات داخل مودال */
+        .modal-box .review-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+        .modal-box .review-section h4 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .modal-box .review-stars {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .modal-box .review-stars span {
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s ease;
+        }
+        .modal-box .review-stars span:hover,
+        .modal-box .review-stars span.active {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+        .modal-box .review-comment {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 13px;
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+        .modal-box .review-comment:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .modal-box .btn-submit-review {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .modal-box .btn-submit-review:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .modal-box .review-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-box .review-item:last-child { border-bottom: none; }
+        .modal-box .review-item .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-box .review-item .header .name { font-weight: 600; font-size: 13px; }
+        .modal-box .review-item .header .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+        .modal-box .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+        .modal-box .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ============================================================
+           سایر مودال‌ها (قدیمی ولی با همان استایل)
+           ============================================================ */
+        .modal-overlay-old {
             position: fixed;
             top: 0;
             left: 0;
@@ -792,12 +1075,10 @@
             justify-content: center;
             overflow-y: auto;
             padding: 20px;
-            animation: fadeIn 0.2s ease;
         }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
+        .modal-overlay-old.show { display: flex; }
+        .modal-box-old {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             max-width: 500px;
             width: 100%;
@@ -812,9 +1093,7 @@
             from { opacity: 0; transform: translateY(40px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .modal-box::-webkit-scrollbar { width: 3px; }
-        .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        .modal-box .modal-close {
+        .modal-box-old .modal-close {
             position: absolute;
             top: 16px;
             left: 16px;
@@ -824,27 +1103,25 @@
             color: var(--text-muted);
             cursor: pointer;
             transition: all 0.3s ease;
-            padding: 4px;
         }
-        .modal-box .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
-        .modal-box .modal-title {
+        .modal-box-old .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
+        .modal-box-old .modal-title {
             font-size: 22px;
             font-weight: 800;
             margin-bottom: 20px;
             padding-left: 30px;
         }
-        .modal-box .form-group { margin-bottom: 16px; }
-        .modal-box .form-group label {
+        .modal-box-old .form-group { margin-bottom: 16px; }
+        .modal-box-old .form-group label {
             display: block;
             font-size: 12px;
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 5px;
         }
-        .modal-box .form-group label .required { color: var(--danger); }
-        .modal-box .form-group input,
-        .modal-box .form-group textarea,
-        .modal-box .form-group select {
+        .modal-box-old .form-group input,
+        .modal-box-old .form-group textarea,
+        .modal-box-old .form-group select {
             width: 100%;
             padding: 10px 14px;
             background: var(--bg-input);
@@ -852,22 +1129,21 @@
             border-radius: var(--radius-sm);
             color: var(--text-primary);
             font-size: 14px;
-            transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .modal-box .form-group input:focus,
-        .modal-box .form-group textarea:focus,
-        .modal-box .form-group select:focus {
+        .modal-box-old .form-group input:focus,
+        .modal-box-old .form-group textarea:focus,
+        .modal-box-old .form-group select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
-            background: var(--bg-card);
         }
-        .modal-box .form-group textarea { resize: vertical; min-height: 70px; }
-        .modal-box .form-row {
+        .modal-box-old .form-group textarea { resize: vertical; min-height: 70px; }
+        .modal-box-old .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        .modal-box .btn-primary {
+        .modal-box-old .btn-primary {
             width: 100%;
             padding: 12px;
             background: var(--primary-gradient);
@@ -877,9 +1153,9 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
-        .modal-box .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
-        .modal-box .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .modal-box .btn-secondary {
+        .modal-box-old .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
+        .modal-box-old .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .modal-box-old .btn-secondary {
             width: 100%;
             padding: 12px;
             background: var(--bg-input);
@@ -890,14 +1166,8 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        .modal-box .btn-secondary:hover { background: var(--border-color); }
-        .modal-box .btn-success { background: var(--success); color: #fff; }
-        .modal-box .btn-success:hover { background: #15803d; }
-        .modal-box .btn-danger { background: var(--danger); color: #fff; }
-        .modal-box .btn-danger:hover { background: #dc2626; }
-        .modal-box .btn-gold { background: var(--gold-gradient); color: #fff; }
-        .modal-box .btn-gold:hover { opacity: 0.9; }
-        .modal-box .image-upload-area {
+        .modal-box-old .btn-secondary:hover { background: var(--border-color); }
+        .modal-box-old .image-upload-area {
             border: 2px dashed var(--border-color);
             border-radius: var(--radius-sm);
             padding: 24px;
@@ -906,20 +1176,20 @@
             transition: all 0.3s ease;
             background: var(--bg-input);
         }
-        .modal-box .image-upload-area:hover {
+        .modal-box-old .image-upload-area:hover {
             border-color: var(--primary);
             background: var(--primary-light);
         }
-        .modal-box .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
-        .modal-box .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
-        .modal-box .image-upload-area input { display: none; }
-        .modal-box .image-preview-grid {
+        .modal-box-old .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
+        .modal-box-old .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
+        .modal-box-old .image-upload-area input { display: none; }
+        .modal-box-old .image-preview-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             margin-top: 10px;
         }
-        .modal-box .image-preview-item {
+        .modal-box-old .image-preview-item {
             position: relative;
             aspect-ratio: 1/1;
             border-radius: var(--radius-sm);
@@ -927,8 +1197,8 @@
             background: var(--bg-input);
             border: 1px solid var(--border-color);
         }
-        .modal-box .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-box .image-preview-item .remove-img {
+        .modal-box-old .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-box-old .image-preview-item .remove-img {
             position: absolute;
             top: 4px;
             right: 4px;
@@ -945,7 +1215,7 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
-        .modal-box .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
+        .modal-box-old .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
 
         /* ===== WIZARD ===== */
         .wizard-progress {
@@ -1009,32 +1279,6 @@
         }
         .wizard-step { display: none; animation: fadeIn 0.3s ease; }
         .wizard-step.active { display: block; }
-
-        /* ===== REVIEW ===== */
-        .review-stars {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 16px;
-        }
-        .review-stars span { cursor: pointer; color: var(--text-muted); transition: all 0.2s ease; }
-        .review-stars span:hover { color: var(--gold); transform: scale(1.1); }
-        .review-stars span.active { color: var(--gold); }
-        .review-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .review-item:last-child { border-bottom: none; }
-        .review-item .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .review-item .header .name { font-weight: 600; font-size: 13px; }
-        .review-item .header .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
-        .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
-        .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
         /* ===== PROFILE & FAVORITES TABS ===== */
         #profileTab, #favoritesTab {
@@ -1242,7 +1486,8 @@
             .action-item { padding: 10px 0; }
             .action-item i { font-size: 18px; }
             .wallet-card .wallet-info .amount { font-size: 22px; }
-            .modal-box { padding: 24px 16px 28px; }
+            .modal-box { padding: 20px 16px 24px; }
+            .modal-box .action-buttons { grid-template-columns: 1fr; }
             .header .logo-text { font-size: 20px; }
             .header .logo-text span { font-size: 9px; }
             .filter-panel .filter-row { grid-template-columns: 1fr; }
@@ -1261,7 +1506,7 @@
 
     <!-- ===== MAIN APP ===== -->
     <div id="app">
-        <!-- HEADER با دکمه فیلتر قبل از تم و زبان -->
+        <!-- HEADER -->
         <div class="header">
             <div class="logo-text">جـدار <span>جهانی</span></div>
             <div class="header-actions">
@@ -1281,7 +1526,7 @@
             <span class="badge-icon"><i class="fa-solid fa-sliders"></i></span>
         </button>
 
-        <!-- ===== بخش بالایی (کیف پول + اکشن‌ها) ===== -->
+        <!-- ===== بخش بالایی ===== -->
         <div class="toggle-section" id="upperSection">
             <!-- WALLET -->
             <div class="wallet-card">
@@ -1387,10 +1632,18 @@
         </button>
     </div>
 
-    <!-- ===== MODALS ===== -->
+    <!-- ===== مودال جزئیات آگهی (جدید) ===== -->
+    <div class="modal-overlay" id="adDetailsModal">
+        <div class="modal-box" id="adDetailBox">
+            <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="adDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- ===== سایر مودال‌ها (با استایل قدیمی) ===== -->
     <!-- ADD AD MODAL -->
-    <div class="modal-overlay" id="addAdModal">
-        <div class="modal-box">
+    <div class="modal-overlay-old" id="addAdModal">
+        <div class="modal-box-old">
             <button class="modal-close" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-title" id="addAdTitle">ثبت آگهی جدید</div>
             <div class="wizard-progress">
@@ -1455,17 +1708,9 @@
         </div>
     </div>
 
-    <!-- AD DETAIL MODAL -->
-    <div class="modal-overlay" id="adDetailsModal">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
-            <div id="adDetailContent"></div>
-        </div>
-    </div>
-
     <!-- CHARGE MODAL -->
-    <div class="modal-overlay" id="chargeModal">
-        <div class="modal-box"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
+    <div class="modal-overlay-old" id="chargeModal">
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
             <div class="form-group"><label id="chargeAmountLabel">مبلغ (تومان) <span class="required">*</span></label><input type="number" id="chargeAmount" placeholder="۰" required /></div>
             <div class="form-group"><label id="receiptLabel">تصویر رسید <span class="required">*</span></label>
                 <div class="image-upload-area" onclick="document.getElementById('receiptInput').click()"><i class="fa-solid fa-file-invoice-dollar"></i><p id="uploadReceiptLabel">برای آپلود رسید کلیک کنید</p><input type="file" id="receiptInput" accept="image/*" /></div>
@@ -1476,8 +1721,8 @@
     </div>
 
     <!-- VIP MODAL -->
-    <div class="modal-overlay" id="vipModal">
-        <div class="modal-box"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک VIP</div>
+    <div class="modal-overlay-old" id="vipModal">
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک VIP</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
                 <div class="vip-plan"><div class="plan-duration" id="vipMonthLabel">۱ ماه</div><div class="plan-price" id="vipPrice1">۵۰,۰۰۰</div><button class="plan-btn primary" id="vipBuy1" onclick="buyVip('monthly')">خرید</button></div>
@@ -1489,17 +1734,17 @@
     </div>
 
     <!-- GIFT MODAL -->
-    <div class="modal-overlay" id="giftModal">
-        <div class="modal-box"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
+    <div class="modal-overlay-old" id="giftModal">
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="giftDesc">با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.</p>
             <button class="btn-primary" id="giftBtn" onclick="requestGiftSubmit()">درخواست هدیه</button>
             <div id="giftStatus" style="margin-top:16px;text-align:center;font-size:14px;color:var(--text-secondary);"></div>
         </div>
     </div>
 
-    <!-- REVIEW MODAL -->
-    <div class="modal-overlay" id="reviewModal">
-        <div class="modal-box"><button class="modal-close" onclick="closeModal('reviewModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="reviewTitle">⭐ امتیاز و نظر</div>
+    <!-- REVIEW MODAL (برای امتیازدهی جداگانه در صورت نیاز – اما در مودال اصلی ادغام شده) -->
+    <div class="modal-overlay-old" id="reviewModal">
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('reviewModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="reviewTitle">⭐ امتیاز و نظر</div>
             <div class="review-stars" id="reviewStars"><span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span></div>
             <input type="hidden" id="reviewAdId" /><input type="hidden" id="reviewRating" value="0" />
             <div class="form-group"><textarea id="reviewComment" rows="3" placeholder="نظر خود را بنویسید..."></textarea></div>
@@ -1529,7 +1774,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کامل با ترجمه همه اجزا و رفع خطای مشاهده آگهی -->
+    <!-- JAVASCRIPT – اصلاح شده برای رفع خطای "آگهی یافت نشد" و نمایش مودال شیشه‌ای -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1559,6 +1804,8 @@
         let pendingCheckInterval = null;
         let filterPanelOpen = false;
         let upperSectionOpen = false;
+        // برای ردیابی آگهی جاری در مودال
+        let currentAdId = null;
 
         // ============================================================
         // TRANSLATIONS (فارسی و عربی – کامل)
@@ -1691,6 +1938,11 @@
                 filter_btn: 'فیلترها',
                 filters: 'فیلترها',
                 filters_title: '🔍 فیلترهای جستجو',
+                no_reviews: 'هنوز نظری ثبت نشده است',
+                loading_reviews: 'در حال بارگذاری نظرات...',
+                ad_not_found: 'آگهی یافت نشد',
+                error_loading: 'خطا در بارگذاری',
+                share: 'اشتراک',
             },
             ar: {
                 home: 'الرئيسية',
@@ -1819,20 +2071,24 @@
                 filter_btn: 'الفلاتر',
                 filters: 'الفلاتر',
                 filters_title: '🔍 فلاتر البحث',
+                no_reviews: 'لا توجد تقييمات بعد',
+                loading_reviews: 'جاري تحميل التقييمات...',
+                ad_not_found: 'الإعلان غير موجود',
+                error_loading: 'خطأ في التحميل',
+                share: 'مشاركة',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
-        // LANGUAGE UPDATE (کامل و جامع برای همه اجزا)
+        // LANGUAGE UPDATE
         // ============================================================
         function updateLanguage() {
             const lang = currentLang;
             const isFa = lang === 'fa';
             document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
 
-            // لیست تمام المان‌هایی که باید ترجمه شوند
             const elements = {
                 'walletLabel': 'wallet',
                 'currencyLabel': 'currency',
@@ -1924,7 +2180,6 @@
                 }
             }
 
-            // ترجمه آپشن‌های سلیکت‌ها
             const catOpts = document.querySelectorAll('#adCategory option, #filterCategory option');
             const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles','electronics','education'];
             catOpts.forEach((opt, idx) => {
@@ -1949,27 +2204,23 @@
             document.getElementById('filterMin').placeholder = t('from');
             document.getElementById('filterMax').placeholder = t('to');
 
-            // ترجمه اکشن‌های سریع
             const actionLabels = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
             document.querySelectorAll('.action-item span').forEach((el, idx) => {
                 if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
             });
 
-            // ترجمه منوی پایین
             document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
                 const key = el.id.replace('nav','').replace('Label','').toLowerCase();
                 const map = { home:'home', add:'add', favorites:'favorites', profile:'profile' };
                 if (map[key]) el.textContent = t(map[key]);
             });
 
-            // ترجمه دکمه‌های فیلتر
             document.querySelectorAll('.filter-actions .apply-filter').forEach(el => el.textContent = t('apply'));
             document.querySelectorAll('.filter-actions button:not(.apply-filter)').forEach(el => el.textContent = t('cancel'));
             const searchBtn = document.querySelector('.search-box button');
             if (searchBtn) searchBtn.textContent = t('search');
             document.getElementById('searchInput').placeholder = t('search_placeholder');
 
-            // ترجمه category chips
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
@@ -1978,7 +2229,6 @@
                 }
             });
 
-            // دکمه فیلتر در هدر
             const filterBtn = document.querySelector('.header .filter-btn');
             if (filterBtn) filterBtn.title = t('filter_btn');
 
@@ -2072,7 +2322,7 @@
         }
 
         // ============================================================
-        // FILTER PANEL TOGGLE (هم از دکمه هدر و هم از دکمه داخل)
+        // FILTER PANEL TOGGLE
         // ============================================================
         function toggleFilterPanel() {
             filterPanelOpen = !filterPanelOpen;
@@ -2180,6 +2430,8 @@
             ads.forEach(ad => {
                 const card = document.createElement('div');
                 card.className = 'ad-card';
+                // ذخیره شناسه در attribute برای دسترسی آسان
+                card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
 
                 let imgSrc = '';
@@ -2320,125 +2572,136 @@
         }
 
         // ============================================================
-        // AD DETAIL (اصلاح شده برای رفع خطای "آگهی یافت نشد")
+        // AD DETAIL – نمایش در مودال شیشه‌ای با داده‌های موجود
         // ============================================================
-        async function openAdDetail(adId) {
-            // اطمینان از اینکه adId عدد است
-            const id = parseInt(adId);
-            if (isNaN(id)) {
-                showToast('شناسه آگهی نامعتبر', 'error');
+        function openAdDetail(adId) {
+            // پیدا کردن آگهی در allAds
+            const ad = allAds.find(item => item.id == adId);
+            if (!ad) {
+                showToast(t('ad_not_found'), 'error');
+                console.error('آگهی با شناسه', adId, 'در allAds یافت نشد');
                 return;
             }
-            try {
-                const data = await apiCall(`/api/ads/${id}`);
-                if (!data.success) {
-                    showToast('آگهی یافت نشد', 'error');
-                    return;
-                }
-                const ad = data.ad;
-                const galleryImages = ad.images || [];
-                let galleryIndex = 0;
 
-                // ساخت گالری
-                let galleryHtml = '';
-                if (galleryImages.length > 0) {
-                    galleryHtml = `
-                        <div style="position:relative;width:100%;aspect-ratio:1/1;background:var(--bg-input);border-radius:var(--radius-sm);overflow:hidden;">
-                            <img id="detailGalleryImg" src="${galleryImages[0]}" style="width:100%;height:100%;object-fit:cover;" />
-                        </div>
-                        ${galleryImages.length > 1 ? `
-                            <div style="display:flex;justify-content:center;gap:14px;margin-top:10px;">
-                                <button onclick="detailGalleryPrev()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">‹</button>
-                                <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;"><span id="detailGalleryIndex">1</span> / ${galleryImages.length}</span>
-                                <button onclick="detailGalleryNext()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">›</button>
-                            </div>
-                        ` : ''}
-                    `;
-                } else {
-                    galleryHtml = `
-                        <div style="display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1/1;background:var(--bg-input);border-radius:var(--radius-sm);color:var(--text-muted);">
-                            <i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i>
-                        </div>
-                    `;
-                }
+            currentAdId = adId;
+            const galleryImages = ad.images || [];
+            let galleryIndex = 0;
 
-                let html = `
-                    <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
-                    <div style="margin-bottom:16px;">
-                        ${galleryHtml}
+            // ساخت گالری
+            let galleryHtml = '';
+            if (galleryImages.length > 0) {
+                galleryHtml = `
+                    <div class="ad-gallery">
+                        <img id="detailGalleryImg" src="${galleryImages[0]}" />
                     </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                        <div style="font-size:24px;font-weight:800;color:var(--primary);">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                        <span style="font-size:12px;background:var(--primary-light);padding:4px 12px;border-radius:var(--radius-full);color:var(--primary);">${ad.category || 'دسته‌بندی نشده'}</span>
-                    </div>
-                    <div style="font-size:13px;color:var(--text-muted);margin:8px 0 12px;">
-                        <i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}
-                        <span style="margin:0 8px;">•</span>
-                        <i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}
-                        <span style="margin:0 8px;">•</span>
-                        👁 ${ad.views || 0}
-                    </div>
-                    <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:14px;margin:12px 0;">
-                        <div style="font-size:14px;line-height:1.8;white-space:pre-wrap;color:var(--text-primary);">${ad.description || 'توضیحاتی وجود ندارد'}</div>
-                    </div>
-                    <div class="form-row" style="margin-top:16px;">
-                        ${ad.phone ? `<a href="tel:${ad.phone}" class="btn-primary" style="text-align:center;padding:12px;border-radius:var(--radius-sm);text-decoration:none;background:var(--primary-gradient);color:#fff;font-weight:600;font-size:14px;"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                        ${ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g,'')}" target="_blank" class="btn-primary" style="text-align:center;padding:12px;border-radius:var(--radius-sm);text-decoration:none;background:var(--success);color:#fff;font-weight:600;font-size:14px;"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
-                        <button class="btn-secondary" onclick="shareAd(${ad.id}, '${ad.title}')" style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);border:2px solid var(--border-color);color:var(--text-primary);font-weight:600;cursor:pointer;">
-                            <i class="fa-solid fa-share-nodes"></i> اشتراک
-                        </button>
-                    </div>
-                    <button class="btn-secondary" style="width:100%;margin-top:10px;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);border:2px solid var(--border-color);color:var(--text-primary);font-weight:600;cursor:pointer;" onclick="toggleFavorite(${ad.id})">
-                        <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
-                        ${favorites.includes(ad.id) ? t('remove_fav') : t('add_fav')}
-                    </button>
-                    <div style="margin-top:20px;">
-                        <h4 style="margin-bottom:12px;font-size:17px;font-weight:700;">⭐ ${t('rate_review')}</h4>
-                        <div class="review-stars" id="detailReviewStars">
-                            <span onclick="setDetailRating(1)">☆</span>
-                            <span onclick="setDetailRating(2)">☆</span>
-                            <span onclick="setDetailRating(3)">☆</span>
-                            <span onclick="setDetailRating(4)">☆</span>
-                            <span onclick="setDetailRating(5)">☆</span>
+                    ${galleryImages.length > 1 ? `
+                        <div class="gallery-controls">
+                            <button onclick="detailGalleryPrev()">‹</button>
+                            <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;">
+                                <span id="detailGalleryIndex">1</span> / ${galleryImages.length}
+                            </span>
+                            <button onclick="detailGalleryNext()">›</button>
                         </div>
-                        <input type="hidden" id="detailReviewAdId" value="${ad.id}" />
-                        <input type="hidden" id="detailReviewRating" value="0" />
-                        <div class="form-group" style="margin:8px 0;">
-                            <textarea id="detailReviewComment" rows="2" placeholder="${t('comment')}" style="width:100%;padding:10px 14px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:var(--radius-sm);color:var(--text-primary);font-size:13px;resize:vertical;min-height:50px;"></textarea>
-                        </div>
-                        <button class="btn-primary" style="padding:10px;font-size:14px;width:100%;" onclick="submitDetailReview()">${t('submit_review')}</button>
-                    </div>
-                    <div id="detailReviews" style="margin-top:16px;">
-                        <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading')}</div>
+                    ` : ''}
+                `;
+            } else {
+                galleryHtml = `
+                    <div class="ad-gallery">
+                        <div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div>
                     </div>
                 `;
-                document.getElementById('adDetailContent').innerHTML = html;
-                document.getElementById('adDetailsModal').classList.add('show');
-                loadDetailReviews(ad.id);
+            }
 
-                // توابع گالری
-                window.detailGalleryPrev = function() {
-                    if (galleryImages.length === 0) return;
-                    galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
-                    const img = document.getElementById('detailGalleryImg');
-                    if (img) img.src = galleryImages[galleryIndex];
-                    const idx = document.getElementById('detailGalleryIndex');
-                    if (idx) idx.textContent = galleryIndex + 1;
-                };
-                window.detailGalleryNext = function() {
-                    if (galleryImages.length === 0) return;
-                    galleryIndex = (galleryIndex + 1) % galleryImages.length;
-                    const img = document.getElementById('detailGalleryImg');
-                    if (img) img.src = galleryImages[galleryIndex];
-                    const idx = document.getElementById('detailGalleryIndex');
-                    if (idx) idx.textContent = galleryIndex + 1;
-                };
-            } catch (err) {
-                console.error('خطا در بارگذاری آگهی:', err);
-                showToast('خطا در بارگذاری آگهی', 'error');
+            // بررسی وجود شماره تلفن
+            const phone = ad.phone || '';
+
+            let html = `
+                <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
+                ${galleryHtml}
+                <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                <div class="ad-meta">
+                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
+                    <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
+                </div>
+                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
+                <div class="action-buttons">
+                    ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
+                    ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                    <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
+                </div>
+                <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
+                    <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
+                    ${favorites.includes(ad.id) ? t('remove_fav') : t('add_fav')}
+                </button>
+                <div class="review-section">
+                    <h4>⭐ ${t('rate_review')}</h4>
+                    <div class="review-stars" id="detailReviewStars">
+                        <span onclick="setDetailRating(1)">☆</span>
+                        <span onclick="setDetailRating(2)">☆</span>
+                        <span onclick="setDetailRating(3)">☆</span>
+                        <span onclick="setDetailRating(4)">☆</span>
+                        <span onclick="setDetailRating(5)">☆</span>
+                    </div>
+                    <input type="hidden" id="detailReviewAdId" value="${ad.id}" />
+                    <input type="hidden" id="detailReviewRating" value="0" />
+                    <textarea class="review-comment" id="detailReviewComment" placeholder="${t('comment')}"></textarea>
+                    <button class="btn-submit-review" onclick="submitDetailReview()">${t('submit_review')}</button>
+                    <div id="detailReviews" style="margin-top:12px;">
+                        <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('adDetailContent').innerHTML = html;
+            document.getElementById('adDetailsModal').classList.add('show');
+            // بارگذاری نظرات
+            loadDetailReviews(ad.id);
+
+            // توابع گالری
+            window.detailGalleryPrev = function() {
+                if (galleryImages.length === 0) return;
+                galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+                const img = document.getElementById('detailGalleryImg');
+                if (img) img.src = galleryImages[galleryIndex];
+                const idx = document.getElementById('detailGalleryIndex');
+                if (idx) idx.textContent = galleryIndex + 1;
+            };
+            window.detailGalleryNext = function() {
+                if (galleryImages.length === 0) return;
+                galleryIndex = (galleryIndex + 1) % galleryImages.length;
+                const img = document.getElementById('detailGalleryImg');
+                if (img) img.src = galleryImages[galleryIndex];
+                const idx = document.getElementById('detailGalleryIndex');
+                if (idx) idx.textContent = galleryIndex + 1;
+            };
+        }
+
+        // بستن مودال با انیمیشن
+        function closeAdDetail() {
+            const modal = document.getElementById('adDetailsModal');
+            modal.style.animation = 'modalOverlayFade 0.3s reverse';
+            setTimeout(() => {
+                modal.classList.remove('show');
+                modal.style.animation = '';
+            }, 300);
+        }
+
+        // به‌روزرسانی دکمه علاقه‌مندی در مودال
+        async function toggleFavoriteAndUpdateDetail(adId) {
+            await toggleFavorite(adId);
+            // به‌روزرسانی دکمه در مودال
+            const btn = document.querySelector('.btn-fav');
+            if (btn) {
+                const isFav = favorites.includes(adId);
+                btn.innerHTML = `
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                    ${isFav ? t('remove_fav') : t('add_fav')}
+                `;
             }
         }
 
+        // اشتراک‌گذاری
         function shareAd(adId, title) {
             const url = `https://your-domain.com/ad/${adId}`;
             if (navigator.share) {
@@ -2462,6 +2725,7 @@
             }
         }
 
+        // امتیازدهی در مودال
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
@@ -2516,10 +2780,10 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">هنوز نظری ثبت نشده است</div>`;
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
                 }
             } catch (err) {
-                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">خطا در بارگذاری</div>`;
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
             }
         }
 
@@ -2989,7 +3253,7 @@
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        document.querySelectorAll('.modal-overlay-old').forEach(overlay => {
             overlay.addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('show');
             });
@@ -3038,7 +3302,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v15.2 - رفع خطای مشاهده آگهی، ترجمه کامل همه اجزا و دکمه فیلتر در هدر`);
+        console.log(`🚀 ${APP_NAME} v16.0 - رفع خطای مشاهده آگهی، مودال شیشه‌ای بزرگ و افکت جادویی`);
     </script>
 </body>
-    </html>
+                                                                            </html>
