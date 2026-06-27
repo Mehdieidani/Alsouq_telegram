@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ============================================================
-           RESET & VARIABLES
-           ============================================================ */
+        /* ===== RESET & VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
@@ -32,7 +30,7 @@
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
-            --primary: #16a34a;        /* سبز حراج */
+            --primary: #16a34a;
             --primary-hover: #15803d;
             --primary-light: rgba(22,163,74,0.12);
             --primary-gradient: linear-gradient(135deg, #16a34a, #22c55e);
@@ -74,9 +72,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ============================================================
-           TOAST
-           ============================================================ */
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -114,9 +110,7 @@
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
         .toast .close:hover { color: var(--danger); }
 
-        /* ============================================================
-           APP CONTAINER
-           ============================================================ */
+        /* ===== APP CONTAINER ===== */
         #app {
             max-width: 500px;
             margin: 0 auto;
@@ -125,9 +119,7 @@
             animation: fadeIn 0.4s ease;
         }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -174,9 +166,7 @@
             color: var(--primary);
         }
 
-        /* ============================================================
-           WALLET CARD
-           ============================================================ */
+        /* ===== WALLET ===== */
         .wallet-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -270,9 +260,7 @@
         }
         .wallet-card .wallet-actions .btn-gift:hover { transform: translateY(-2px); }
 
-        /* ============================================================
-           NOTICE
-           ============================================================ */
+        /* ===== NOTICE ===== */
         .notice-card {
             background: var(--bg-card);
             border: 1px solid rgba(245,158,11,0.2);
@@ -298,9 +286,7 @@
         }
         .notice-card .notice-text { font-size: 13px; color: var(--gold); line-height: 1.5; flex: 1; }
 
-        /* ============================================================
-           QUICK ACTIONS
-           ============================================================ */
+        /* ===== QUICK ACTIONS ===== */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -329,9 +315,7 @@
         .action-item i { font-size: 22px; color: var(--primary); }
         .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* ============================================================
-           SEARCH & FILTER
-           ============================================================ */
+        /* ===== SEARCH & FILTER TOGGLE ===== */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -376,83 +360,51 @@
             border-radius: var(--radius-full);
             font-size: 15px;
             transition: var(--transition);
+            cursor: pointer;
         }
         .search-box .filter-toggle:hover {
             background: var(--primary);
             color: #fff;
         }
 
-        /* ============================================================
-           FILTER MODAL
-           ============================================================ */
-        .filter-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            z-index: 9999;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeIn 0.2s ease;
-        }
-        .filter-modal-overlay.show { display: flex; }
-        .filter-modal-box {
+        /* ===== FILTER PANEL (کشویی مخفی) ===== */
+        .filter-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            max-width: 500px;
-            width: 100%;
-            padding: 24px 20px 32px;
-            animation: slideUp 0.35s ease;
-            max-height: 80vh;
-            overflow-y: auto;
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin-bottom: 14px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .filter-modal-box .modal-close {
-            position: sticky;
-            top: 0;
-            left: 100%;
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: var(--transition);
-            padding: 4px;
-            float: left;
-            margin-bottom: 10px;
+        .filter-panel.open {
+            display: block;
         }
-        .filter-modal-box .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
-        .filter-modal-box .filter-title {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-align: center;
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .filter-modal-box .filter-row {
+        .filter-panel .filter-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 12px;
         }
-        .filter-modal-box .filter-group {
+        .filter-panel .filter-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        .filter-modal-box .filter-group label {
+        .filter-panel .filter-group label {
             font-size: 10px;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .filter-modal-box .filter-group select,
-        .filter-modal-box .filter-group input {
+        .filter-panel .filter-group select,
+        .filter-panel .filter-group input {
             padding: 8px 12px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
@@ -461,16 +413,16 @@
             font-size: 13px;
             transition: border-color var(--transition);
         }
-        .filter-modal-box .filter-group select:focus,
-        .filter-modal-box .filter-group input:focus {
+        .filter-panel .filter-group select:focus,
+        .filter-panel .filter-group input:focus {
             border-color: var(--primary);
         }
-        .filter-modal-box .filter-actions {
+        .filter-panel .filter-actions {
             display: flex;
             gap: 8px;
             margin-top: 16px;
         }
-        .filter-modal-box .filter-actions button {
+        .filter-panel .filter-actions button {
             flex: 1;
             padding: 10px;
             border-radius: var(--radius-sm);
@@ -481,22 +433,15 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        .filter-modal-box .filter-actions button:hover { background: var(--border-color); }
-        .filter-modal-box .filter-actions .apply-filter {
+        .filter-panel .filter-actions button:hover { background: var(--border-color); }
+        .filter-panel .filter-actions .apply-filter {
             background: var(--primary-gradient);
             border-color: var(--primary);
             color: #fff;
         }
-        .filter-modal-box .filter-actions .apply-filter:hover { opacity: 0.9; }
+        .filter-panel .filter-actions .apply-filter:hover { opacity: 0.9; }
 
-        @keyframes slideUp {
-            from { transform: translateY(40px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* ============================================================
-           CATEGORIES
-           ============================================================ */
+        /* ===== CATEGORIES ===== */
         .section-title {
             display: flex;
             justify-content: space-between;
@@ -539,9 +484,7 @@
             border-color: var(--primary);
         }
 
-        /* ============================================================
-           ADS GRID
-           ============================================================ */
+        /* ===== ADS GRID ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -696,9 +639,7 @@
         }
         .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
-        /* ============================================================
-           MODALS
-           ============================================================ */
+        /* ===== MODALS ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -864,9 +805,7 @@
         }
         .modal-box .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
 
-        /* ============================================================
-           WIZARD
-           ============================================================ */
+        /* ===== WIZARD ===== */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -929,9 +868,7 @@
         .wizard-step { display: none; animation: fadeIn 0.3s ease; }
         .wizard-step.active { display: block; }
 
-        /* ============================================================
-           REVIEW
-           ============================================================ */
+        /* ===== REVIEW ===== */
         .review-stars {
             display: flex;
             gap: 6px;
@@ -957,9 +894,7 @@
         .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
         .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        /* ============================================================
-           PROFILE & FAVORITES TABS
-           ============================================================ */
+        /* ===== PROFILE & FAVORITES TABS ===== */
         #profileTab, #favoritesTab {
             display: none;
             max-width: 500px;
@@ -1113,9 +1048,7 @@
         }
         .favorite-item .remove-fav:hover { transform: scale(1.2); }
 
-        /* ============================================================
-           BOTTOM NAV
-           ============================================================ */
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -1165,9 +1098,7 @@
         }
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
-        /* ============================================================
-           VIP PLANS
-           ============================================================ */
+        /* ===== VIP PLANS ===== */
         .vip-plan {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -1198,9 +1129,7 @@
         .vip-plan .plan-btn.gold { background: var(--gold-gradient); color: #fff; }
         .vip-plan .plan-btn.gold:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* ============================================================
-           ANIMATIONS
-           ============================================================ */
+        /* ===== ANIMATIONS ===== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1216,9 +1145,7 @@
         .loading-spinner { text-align: center; padding: 40px 0; color: var(--primary); }
         .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .ads-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
             .action-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
@@ -1228,7 +1155,7 @@
             .modal-box { padding: 24px 16px 28px; }
             .header .logo-text { font-size: 20px; }
             .header .logo-text span { font-size: 9px; }
-            .filter-modal-box { padding: 20px 16px 28px; }
+            .filter-panel .filter-row { grid-template-columns: 1fr; }
         }
         @media (max-width: 380px) {
             .ads-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
@@ -1296,7 +1223,35 @@
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
             <button id="searchBtn" onclick="searchAds()">جستجو</button>
-            <button class="filter-toggle" onclick="openFilterModal()"><i class="fa-solid fa-sliders"></i></button>
+            <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()"><i class="fa-solid fa-sliders"></i></button>
+        </div>
+
+        <!-- FILTER PANEL (کشویی مخفی) -->
+        <div class="filter-panel" id="filterPanel">
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterCountryLabel">کشور</label>
+                    <select id="filterCountry">
+                        <option value="">همه</option>
+                        <option value="ایران">🇮🇷 ایران</option>
+                        <option value="عراق">🇮🇶 عراق</option>
+                        <option value="امارات">🇦🇪 امارات</option>
+                        <option value="ترکیه">🇹🇷 ترکیه</option>
+                    </select>
+                </div>
+                <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
+                <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
+            </div>
+            <div class="filter-row">
+                <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
+                <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
+            </div>
+            <div class="filter-actions">
+                <button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button>
+                <button id="cancelFilterBtn" onclick="resetFilters()">لغو</button>
+            </div>
         </div>
 
         <!-- CATEGORIES -->
@@ -1330,31 +1285,7 @@
         </button>
     </div>
 
-    <!-- ===== FILTER MODAL ===== -->
-    <div class="filter-modal-overlay" id="filterModal">
-        <div class="filter-modal-box">
-            <button class="modal-close" onclick="closeModal('filterModal')"><i class="fa-solid fa-xmark"></i></button>
-            <div class="filter-title">🔍 فیلترهای جستجو</div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCountryLabel">کشور</label><select id="filterCountry"><option value="">همه</option></select></div>
-                <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
-                <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
-                <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
-            </div>
-            <div class="filter-actions">
-                <button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button>
-                <button id="cancelFilterBtn" onclick="resetFilters()">لغو</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== OTHER MODALS ===== -->
+    <!-- ===== MODALS ===== -->
     <!-- ADD AD MODAL -->
     <div class="modal-overlay" id="addAdModal">
         <div class="modal-box">
@@ -1389,7 +1320,14 @@
                 <div class="wizard-step" id="wizardStep2">
                     <div class="form-group"><label id="adDescLabel">توضیحات <span class="required">*</span></label><textarea id="adDescription" rows="4" placeholder="توضیحات کامل..." required></textarea></div>
                     <div class="form-group"><label id="adLocationLabel">موقعیت / شهر <span class="required">*</span></label><input type="text" id="adLocation" placeholder="مثال: تهران" required /></div>
-                    <div class="form-group"><label id="adCountryLabel">کشور</label><select id="adCountry"><option value="ایران">ایران</option><option value="عراق">عراق</option><option value="امارات">امارات</option><option value="ترکیه">ترکیه</option></select></div>
+                    <div class="form-group"><label id="adCountryLabel">کشور</label>
+                        <select id="adCountry">
+                            <option value="ایران">🇮🇷 ایران</option>
+                            <option value="عراق">🇮🇶 عراق</option>
+                            <option value="امارات">🇦🇪 امارات</option>
+                            <option value="ترکیه">🇹🇷 ترکیه</option>
+                        </select>
+                    </div>
                     <div class="form-row" style="margin-top:8px;"><button type="button" class="btn-secondary" id="wizardPrevBtn2" onclick="wizardPrev()">قبلی</button><button type="button" class="btn-primary" id="wizardNextBtn2" onclick="wizardNext()">بعدی</button></div>
                 </div>
                 <div class="wizard-step" id="wizardStep3">
@@ -1486,7 +1424,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – نسخه نهایی با رفع مشکل نمایش آگهی و فیلترها -->
+    <!-- JAVASCRIPT – نسخه نهایی کامل با پنل فیلتر کشویی و کشور ایران -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1514,9 +1452,10 @@
         let reviewRating = 0;
         let isUpdating = false;
         let pendingCheckInterval = null;
+        let filterPanelOpen = false;
 
         // ============================================================
-        // TRANSLATIONS (فارسی و عربی – کامل)
+        // TRANSLATIONS (فارسی و عربی)
         // ============================================================
         const translations = {
             fa: {
@@ -1870,11 +1809,16 @@
                 if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
                 else if (opt.value === '') opt.textContent = t('all');
             });
+            // کشورها (با پرچم)
             const countryOpts = document.querySelectorAll('#adCountry option, #filterCountry option');
             const countryKeys = ['country_iran','country_iraq','country_uae','country_turkey'];
+            const flags = ['🇮🇷','🇮🇶','🇦🇪','🇹🇷'];
             countryOpts.forEach((opt, idx) => {
-                if (idx < countryKeys.length) opt.textContent = t(countryKeys[idx]);
-                else if (opt.value === '') opt.textContent = t('all');
+                if (idx < countryKeys.length) {
+                    opt.textContent = flags[idx] + ' ' + t(countryKeys[idx]);
+                } else if (opt.value === '') {
+                    opt.textContent = t('all');
+                }
             });
             const sortOpts = document.querySelectorAll('#filterSort option');
             const sortKeys = ['sort_newest','sort_popular','sort_rating','sort_price_asc','sort_price_desc'];
@@ -1983,6 +1927,19 @@
         }
 
         // ============================================================
+        // FILTER PANEL TOGGLE (کشویی مخفی)
+        // ============================================================
+        function toggleFilterPanel() {
+            filterPanelOpen = !filterPanelOpen;
+            const panel = document.getElementById('filterPanel');
+            if (filterPanelOpen) {
+                panel.classList.add('open');
+            } else {
+                panel.classList.remove('open');
+            }
+        }
+
+        // ============================================================
         // PROFILE (localStorage)
         // ============================================================
         function loadProfile() {
@@ -2020,7 +1977,7 @@
             }
             try {
                 const data = await apiCall('/api/feed');
-                console.log('📦 داده‌های دریافتی از API:', data); // لاگ برای دیباگ
+                console.log('📦 داده‌های دریافتی از API:', data);
                 if (data.ok && data.data && data.data.length > 0) {
                     allAds = data.data;
                     filteredAds = [...allAds];
@@ -2028,7 +1985,6 @@
                     renderCategories();
                     if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else if (data.success && data.ads && data.ads.length > 0) {
-                    // fallback برای ساختار قدیمی
                     allAds = data.ads;
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
@@ -2057,7 +2013,6 @@
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetail(ad.id);
 
-                // پردازش تصاویر – اگر base64 است پیشوند اضافه کن
                 let imgSrc = '';
                 if (ad.images && ad.images.length > 0) {
                     let raw = ad.images[0];
@@ -2151,12 +2106,8 @@
         }
 
         // ============================================================
-        // FILTER MODAL
+        // FILTERS (اعمال و لغو)
         // ============================================================
-        function openFilterModal() {
-            document.getElementById('filterModal').classList.add('show');
-        }
-
         function applyFilters() {
             const country = document.getElementById('filterCountry').value;
             const city = document.getElementById('filterCity').value;
@@ -2183,7 +2134,8 @@
             else result.sort(sortMap.newest);
             filteredAds = result;
             renderAds(filteredAds);
-            closeModal('filterModal');
+            // بستن پنل فیلتر بعد از اعمال
+            if (filterPanelOpen) toggleFilterPanel();
         }
 
         function resetFilters() {
@@ -2196,11 +2148,11 @@
             document.getElementById('filterSort').value = 'newest';
             filteredAds = [...allAds];
             renderAds(filteredAds);
-            closeModal('filterModal');
+            if (filterPanelOpen) toggleFilterPanel();
         }
 
         // ============================================================
-        // AD DETAIL
+        // AD DETAIL (همانند قبل)
         // ============================================================
         async function openAdDetail(adId) {
             try {
@@ -2350,7 +2302,7 @@
         }
 
         // ============================================================
-        // FAVORITES
+        // FAVORITES (همانند قبل)
         // ============================================================
         async function toggleFavorite(adId) {
             const isFav = favorites.includes(adId);
@@ -2370,12 +2322,6 @@
                     }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     fetchAds(false);
-                    if (currentAd && currentAd.id === adId) {
-                        const btn = document.querySelector('#adDetailContent .btn-secondary');
-                        if (btn) {
-                            btn.innerHTML = `<i class="fa-${isFav ? 'regular' : 'solid'} fa-heart"></i> ${isFav ? t('add_fav') : t('remove_fav')}`;
-                        }
-                    }
                 }
             } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
         }
@@ -2420,7 +2366,7 @@
         }
 
         // ============================================================
-        // MY ADS
+        // MY ADS (همانند قبل)
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
@@ -2495,7 +2441,7 @@
         }
 
         // ============================================================
-        // ADD AD WIZARD
+        // ADD AD WIZARD (همانند قبل)
         // ============================================================
         function wizardNext() {
             if (wizardStep < 3) { wizardStep++; updateWizard(); }
@@ -2612,7 +2558,7 @@
         }
 
         // ============================================================
-        // WALLET & VIP & GIFT (ساده‌سازی شده، توابع قبلی کار می‌کنند)
+        // WALLET & VIP & GIFT (همانند قبل)
         // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
@@ -2765,14 +2711,7 @@
                     data.categories.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.name}</option>`; });
                 }
             } catch (err) {}
-            try {
-                const data = await apiCall('/api/countries');
-                if (data.success) {
-                    const sel = document.getElementById('filterCountry');
-                    sel.innerHTML = '<option value="">همه</option>';
-                    data.countries.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; });
-                }
-            } catch (err) {}
+            // کشورها قبلاً در HTML به صورت دستی اضافه شده‌اند.
         }
 
         // ============================================================
@@ -2806,14 +2745,14 @@
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
-        document.querySelectorAll('.modal-overlay, .filter-modal-overlay').forEach(overlay => {
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('show');
             });
         });
 
         // ============================================================
-        // AUTO CHECK FOR NEW ADS (هر ۱۰ ثانیه)
+        // AUTO CHECK (هر ۱۰ ثانیه)
         // ============================================================
         function startPendingCheck() {
             if (pendingCheckInterval) clearInterval(pendingCheckInterval);
@@ -2856,7 +2795,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v12.1 - پلتفرم جهانی با زبان‌های فارسی و عربی و بروزرسانی خودکار`);
+        console.log(`🚀 ${APP_NAME} v13.0 - پلتفرم جهانی با فیلتر کشویی و کشور ایران`);
     </script>
 </body>
     </html>
