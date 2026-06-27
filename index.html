@@ -164,8 +164,18 @@
             border-color: var(--primary);
             color: var(--primary);
         }
+        /* دکمه فیلتر در هدر - قبل از دکمه‌های تم و زبان */
+        .header .header-actions .filter-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: rgba(22,163,74,0.2);
+        }
+        .header .header-actions .filter-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
 
-        /* ===== TOGGLE BUTTON (زیبا) ===== */
+        /* ===== TOGGLE BUTTON ===== */
         .toggle-section-btn {
             display: flex;
             align-items: center;
@@ -215,7 +225,7 @@
             margin-right: 4px;
         }
 
-        /* ===== TOGGLE SECTION (بخش بالایی) ===== */
+        /* ===== TOGGLE SECTION ===== */
         .toggle-section {
             overflow: hidden;
             max-height: 0;
@@ -255,7 +265,7 @@
             margin-bottom: 0;
         }
 
-        /* ===== WALLET (درون بخش) ===== */
+        /* ===== WALLET ===== */
         .wallet-card .wallet-row {
             display: flex;
             justify-content: space-between;
@@ -396,7 +406,7 @@
         .action-item i { font-size: 22px; color: var(--primary); }
         .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* ===== SEARCH & FILTER ===== */
+        /* ===== SEARCH ===== */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -433,39 +443,9 @@
             transition: var(--transition);
         }
         .search-box button:hover { opacity: 0.9; }
-
+        /* دکمه فیلتر در جستجو (اختیاری) - اما ما آن را در هدر قرار داده‌ایم، بنابراین اینجا حذف می‌کنیم */
         .search-box .filter-toggle {
-            background: var(--primary-light);
-            color: var(--primary);
-            border: 1px solid rgba(22,163,74,0.12);
-            padding: 6px 12px;
-            border-radius: var(--radius-full);
-            font-size: 15px;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 38px;
-            min-height: 38px;
-        }
-        .search-box .filter-toggle:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: scale(1.05);
-        }
-        .search-box .filter-toggle.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-        .search-box .filter-toggle i {
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            font-size: 16px;
-        }
-        .search-box .filter-toggle.active i {
-            transform: rotate(180deg);
+            display: none;
         }
 
         /* ===== FILTER PANEL ===== */
@@ -1281,17 +1261,20 @@
 
     <!-- ===== MAIN APP ===== -->
     <div id="app">
-        <!-- HEADER -->
+        <!-- HEADER با دکمه فیلتر قبل از تم و زبان -->
         <div class="header">
             <div class="logo-text">جـدار <span>جهانی</span></div>
             <div class="header-actions">
+                <button class="filter-btn" onclick="toggleFilterPanel()" title="فیلترها">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
                 <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
                 <button onclick="toggleLanguage()" id="langBtn">🇦🇪 عربي</button>
                 <button onclick="refreshAll()" title="بروزرسانی"><i class="fa-solid fa-rotate"></i></button>
             </div>
         </div>
 
-        <!-- ===== دکمه‌ی باز/بسته‌کننده‌ی زیبا ===== -->
+        <!-- ===== دکمه‌ی باز/بسته‌کننده‌ی بخش بالایی ===== -->
         <button class="toggle-section-btn" id="toggleSectionBtn" onclick="toggleUpperSection()">
             <i class="fa-solid fa-eye"></i>
             <span id="toggleSectionLabel">نمایش ابزارها</span>
@@ -1337,14 +1320,11 @@
                 <div class="notice-text" id="noticeText">...</div>
             </div>
 
-            <!-- SEARCH + FILTER -->
+            <!-- SEARCH -->
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
                 <button id="searchBtn" onclick="searchAds()">جستجو</button>
-                <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()">
-                    <i class="fa-solid fa-sliders"></i>
-                </button>
             </div>
 
             <!-- FILTER PANEL -->
@@ -1549,7 +1529,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کامل با نوار ابزار زیبا و مشاهده‌ی آگهی -->
+    <!-- JAVASCRIPT – کامل با ترجمه همه اجزا و رفع خطای مشاهده آگهی -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1581,7 +1561,7 @@
         let upperSectionOpen = false;
 
         // ============================================================
-        // TRANSLATIONS (فارسی و عربی)
+        // TRANSLATIONS (فارسی و عربی – کامل)
         // ============================================================
         const translations = {
             fa: {
@@ -1708,6 +1688,9 @@
                 ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید. برای ثبت آگهی بیشتر، اشتراک VIP تهیه کنید یا درخواست هدیه بدهید.',
                 show_tools: 'نمایش ابزارها',
                 hide_tools: 'مخفی کردن ابزارها',
+                filter_btn: 'فیلترها',
+                filters: 'فیلترها',
+                filters_title: '🔍 فیلترهای جستجو',
             },
             ar: {
                 home: 'الرئيسية',
@@ -1833,19 +1816,23 @@
                 ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١). للحصول على إعلانات إضافية، اشترِ VIP أو اطلب هدية.',
                 show_tools: 'إظهار الأدوات',
                 hide_tools: 'إخفاء الأدوات',
+                filter_btn: 'الفلاتر',
+                filters: 'الفلاتر',
+                filters_title: '🔍 فلاتر البحث',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
-        // LANGUAGE UPDATE
+        // LANGUAGE UPDATE (کامل و جامع برای همه اجزا)
         // ============================================================
         function updateLanguage() {
             const lang = currentLang;
             const isFa = lang === 'fa';
             document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
 
+            // لیست تمام المان‌هایی که باید ترجمه شوند
             const elements = {
                 'walletLabel': 'wallet',
                 'currencyLabel': 'currency',
@@ -1937,7 +1924,7 @@
                 }
             }
 
-            // آپشن‌های سلیکت‌ها
+            // ترجمه آپشن‌های سلیکت‌ها
             const catOpts = document.querySelectorAll('#adCategory option, #filterCategory option');
             const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles','electronics','education'];
             catOpts.forEach((opt, idx) => {
@@ -1962,27 +1949,27 @@
             document.getElementById('filterMin').placeholder = t('from');
             document.getElementById('filterMax').placeholder = t('to');
 
-            // اکشن‌های سریع
+            // ترجمه اکشن‌های سریع
             const actionLabels = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
             document.querySelectorAll('.action-item span').forEach((el, idx) => {
                 if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
             });
 
-            // منوی پایین
+            // ترجمه منوی پایین
             document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
                 const key = el.id.replace('nav','').replace('Label','').toLowerCase();
                 const map = { home:'home', add:'add', favorites:'favorites', profile:'profile' };
                 if (map[key]) el.textContent = t(map[key]);
             });
 
-            // دکمه‌های فیلتر
+            // ترجمه دکمه‌های فیلتر
             document.querySelectorAll('.filter-actions .apply-filter').forEach(el => el.textContent = t('apply'));
             document.querySelectorAll('.filter-actions button:not(.apply-filter)').forEach(el => el.textContent = t('cancel'));
-            const searchBtn = document.querySelector('.search-box button:not(.filter-toggle)');
+            const searchBtn = document.querySelector('.search-box button');
             if (searchBtn) searchBtn.textContent = t('search');
             document.getElementById('searchInput').placeholder = t('search_placeholder');
 
-            // بروزرسانی category chips
+            // ترجمه category chips
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
@@ -1990,6 +1977,10 @@
                     if (idx-1 < catMap.length) chip.textContent = t(catMap[idx-1]);
                 }
             });
+
+            // دکمه فیلتر در هدر
+            const filterBtn = document.querySelector('.header .filter-btn');
+            if (filterBtn) filterBtn.title = t('filter_btn');
 
             console.log(`🌍 زبان به ${lang === 'fa' ? 'فارسی' : 'عربی'} تغییر کرد`);
         }
@@ -2061,7 +2052,7 @@
         }
 
         // ============================================================
-        // TOGGLE UPPER SECTION (با دکمه‌ی زیبا)
+        // TOGGLE UPPER SECTION
         // ============================================================
         function toggleUpperSection() {
             upperSectionOpen = !upperSectionOpen;
@@ -2081,27 +2072,24 @@
         }
 
         // ============================================================
-        // FILTER PANEL TOGGLE
+        // FILTER PANEL TOGGLE (هم از دکمه هدر و هم از دکمه داخل)
         // ============================================================
         function toggleFilterPanel() {
             filterPanelOpen = !filterPanelOpen;
             const panel = document.getElementById('filterPanel');
-            const toggleBtn = document.getElementById('filterToggle');
             
             if (filterPanelOpen) {
                 panel.classList.add('open');
-                toggleBtn.classList.add('active');
                 document.addEventListener('click', closeFilterOnOutsideClick);
             } else {
                 panel.classList.remove('open');
-                toggleBtn.classList.remove('active');
                 document.removeEventListener('click', closeFilterOnOutsideClick);
             }
         }
 
         function closeFilterOnOutsideClick(e) {
             const panel = document.getElementById('filterPanel');
-            const toggleBtn = document.getElementById('filterToggle');
+            const toggleBtn = document.querySelector('.header .filter-btn');
             const isClickInside = panel.contains(e.target) || toggleBtn.contains(e.target);
             if (!isClickInside && filterPanelOpen) {
                 toggleFilterPanel();
@@ -2332,12 +2320,21 @@
         }
 
         // ============================================================
-        // AD DETAIL (کامل با گالری، دکمه‌ها و نظرات)
+        // AD DETAIL (اصلاح شده برای رفع خطای "آگهی یافت نشد")
         // ============================================================
         async function openAdDetail(adId) {
+            // اطمینان از اینکه adId عدد است
+            const id = parseInt(adId);
+            if (isNaN(id)) {
+                showToast('شناسه آگهی نامعتبر', 'error');
+                return;
+            }
             try {
-                const data = await apiCall(`/api/ads/${adId}`);
-                if (!data.success) { showToast('آگهی یافت نشد', 'error'); return; }
+                const data = await apiCall(`/api/ads/${id}`);
+                if (!data.success) {
+                    showToast('آگهی یافت نشد', 'error');
+                    return;
+                }
                 const ad = data.ad;
                 const galleryImages = ad.images || [];
                 let galleryIndex = 0;
@@ -2437,7 +2434,8 @@
                     if (idx) idx.textContent = galleryIndex + 1;
                 };
             } catch (err) {
-                showToast('خطا در بارگذاری', 'error');
+                console.error('خطا در بارگذاری آگهی:', err);
+                showToast('خطا در بارگذاری آگهی', 'error');
             }
         }
 
@@ -3040,7 +3038,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v15.1 - نوار ابزار زیبا، مشاهده‌ی کامل آگهی و حرکت هم‌راه با صفحه`);
+        console.log(`🚀 ${APP_NAME} v15.2 - رفع خطای مشاهده آگهی، ترجمه کامل همه اجزا و دکمه فیلتر در هدر`);
     </script>
 </body>
     </html>
