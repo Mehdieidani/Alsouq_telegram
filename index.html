@@ -126,13 +126,25 @@
             will-change: transform;
             transform: translateZ(0);
         }
+        /* ===== لوگوی متالیک براق و کشیده ===== */
         .header .logo-text {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 900;
-            background: var(--gold-gradient);
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #f7d875, #f5b81b, #f7d875, #e8a317);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+            text-shadow: 0 0 20px rgba(245, 184, 27, 0.3), 0 0 40px rgba(245, 184, 27, 0.1);
+            animation: metallicShine 4s ease-in-out infinite;
+            font-family: var(--font);
+            transform: scaleX(1.05);
+            display: inline-block;
+        }
+        @keyframes metallicShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .header .logo-text span {
             font-size: 11px;
@@ -140,6 +152,9 @@
             color: var(--text-muted);
             -webkit-text-fill-color: var(--text-muted);
             margin-right: 4px;
+            animation: none;
+            text-shadow: none;
+            transform: scaleX(1);
         }
         .header .header-actions {
             display: flex;
@@ -771,7 +786,7 @@
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
         /* ============================================================
-           MODAL AD DETAIL (جدید – بزرگ و شیشه‌ای)
+           MODAL AD DETAIL
            ============================================================ */
         .modal-overlay {
             position: fixed;
@@ -1059,7 +1074,7 @@
         .modal-box .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
         /* ============================================================
-           سایر مودال‌ها (قدیمی ولی با همان استایل)
+           سایر مودال‌ها
            ============================================================ */
         .modal-overlay-old {
             position: fixed;
@@ -1632,7 +1647,7 @@
         </button>
     </div>
 
-    <!-- ===== مودال جزئیات آگهی (جدید) ===== -->
+    <!-- ===== مودال جزئیات آگهی ===== -->
     <div class="modal-overlay" id="adDetailsModal">
         <div class="modal-box" id="adDetailBox">
             <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
@@ -1640,7 +1655,7 @@
         </div>
     </div>
 
-    <!-- ===== سایر مودال‌ها (با استایل قدیمی) ===== -->
+    <!-- ===== سایر مودال‌ها ===== -->
     <!-- ADD AD MODAL -->
     <div class="modal-overlay-old" id="addAdModal">
         <div class="modal-box-old">
@@ -1742,7 +1757,7 @@
         </div>
     </div>
 
-    <!-- REVIEW MODAL (برای امتیازدهی جداگانه در صورت نیاز – اما در مودال اصلی ادغام شده) -->
+    <!-- REVIEW MODAL (برای امتیازدهی جداگانه – اما در مودال اصلی ادغام شده) -->
     <div class="modal-overlay-old" id="reviewModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('reviewModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="reviewTitle">⭐ امتیاز و نظر</div>
             <div class="review-stars" id="reviewStars"><span onclick="setRating(1)">☆</span><span onclick="setRating(2)">☆</span><span onclick="setRating(3)">☆</span><span onclick="setRating(4)">☆</span><span onclick="setRating(5)">☆</span></div>
@@ -1774,7 +1789,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – اصلاح شده برای رفع خطای "آگهی یافت نشد" و نمایش مودال شیشه‌ای -->
+    <!-- JAVASCRIPT – فقط تغییرات مورد نیاز (ترجمه کامل، دامنه j-dar.ir) -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1782,6 +1797,7 @@
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const APP_NAME = 'جـدار';
+        const SHARE_DOMAIN = 'https://j-dar.ir'; // ← دامنه جدید
         let guestId = localStorage.getItem('jedar_guest_id');
         if (!guestId) {
             guestId = 'guest_' + Math.random().toString(36).substring(2, 12);
@@ -1804,11 +1820,10 @@
         let pendingCheckInterval = null;
         let filterPanelOpen = false;
         let upperSectionOpen = false;
-        // برای ردیابی آگهی جاری در مودال
         let currentAdId = null;
 
         // ============================================================
-        // TRANSLATIONS (فارسی و عربی – کامل)
+        // TRANSLATIONS (فارسی و عربی – کامل و شامل تمام جزئیات ریز)
         // ============================================================
         const translations = {
             fa: {
@@ -1857,7 +1872,7 @@
                 buy: 'خرید',
                 loading: 'در حال بارگذاری...',
                 gift_request: 'هدیه رایگان',
-                gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
+                gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.',
                 gift_btn: 'درخواست هدیه',
                 rate_review: 'امتیاز و نظر',
                 comment: 'نظر خود را بنویسید...',
@@ -1943,6 +1958,88 @@
                 ad_not_found: 'آگهی یافت نشد',
                 error_loading: 'خطا در بارگذاری',
                 share: 'اشتراک',
+                views: 'بازدید',
+                posted_at: 'زمان انتشار',
+                category_label: 'دسته',
+                location_label: 'مکان',
+                rating_label: 'امتیاز',
+                trust_score_label: 'امتیاز اعتماد',
+                vip_badge: 'VIP',
+                charge_wallet: 'شارژ کیف پول',
+                gift_free: 'هدیه رایگان',
+                no_description: 'توضیحاتی وجود ندارد',
+                call_now: 'تماس',
+                whatsapp_chat: 'واتساپ',
+                add_to_fav: 'افزودن به علاقه‌مندی',
+                remove_from_fav: 'حذف از علاقه‌مندی',
+                submit_review_btn: 'ارسال نظر',
+                share_ad: 'اشتراک‌گذاری',
+                copy_link: 'کپی لینک',
+                link_copied: '🔗 لینک کپی شد',
+                close: 'بستن',
+                back: 'بازگشت',
+                all_categories: 'همه',
+                search_placeholder_short: 'جستجو...',
+                no_results: 'نتیجه‌ای یافت نشد',
+                try_again: 'دوباره تلاش کنید',
+                error_occurred: 'خطایی رخ داد',
+                connection_error: 'خطا در ارتباط با سرور',
+                loading_more: 'در حال بارگذاری بیشتر...',
+                end_of_list: 'پایان لیست',
+                see_details: 'مشاهده جزئیات',
+                seller: 'فروشنده',
+                contact_seller: 'تماس با فروشنده',
+                report_ad: 'گزارش آگهی',
+                report_submitted: 'گزارش شما ثبت شد',
+                report_error: 'خطا در ثبت گزارش',
+                thanks: 'متشکریم',
+                your_opinion_matters: 'نظر شما برای ما مهم است',
+                please_rate: 'لطفاً امتیاز دهید',
+                write_comment: 'نظر خود را بنویسید...',
+                send: 'ارسال',
+                cancel_action: 'لغو',
+                confirm: 'تایید',
+                delete_confirm: 'آیا از حذف این مورد اطمینان دارید؟',
+                yes: 'بله',
+                no: 'خیر',
+                success: 'موفق',
+                failed: 'ناموفق',
+                pending_status: 'در انتظار بررسی',
+                approved_status: 'تایید شده',
+                rejected_status: 'رد شده',
+                expired_status: 'منقضی شده',
+                special_ad: 'آگهی ویژه',
+                normal_ad: 'آگهی عادی',
+                price_currency: 'تومان',
+                view_count: 'تعداد بازدید',
+                share_count: 'تعداد اشتراک',
+                favorite_count: 'تعداد علاقه‌مندی',
+                comment_count: 'تعداد نظرات',
+                no_comments: 'هنوز نظری ثبت نشده',
+                comment_placeholder: 'نظر خود را بنویسید...',
+                rating_placeholder: 'امتیاز خود را انتخاب کنید',
+                submit_feedback: 'ارسال بازخورد',
+                feedback_sent: 'بازخورد شما ارسال شد',
+                feedback_error: 'خطا در ارسال بازخورد',
+                language_changed: 'زبان تغییر کرد',
+                theme_changed: 'تم تغییر کرد',
+                refresh_done: 'بروزرسانی انجام شد',
+                welcome_message: 'به جـدار خوش آمدید',
+                help_message: 'برای راهنمایی بیشتر با پشتیبانی تماس بگیرید',
+                support_contact: 'پشتیبانی',
+                email_us: 'ایمیل به ما',
+                phone_us: 'تماس با ما',
+                visit_website: 'بازدید از سایت',
+                follow_us: 'ما را دنبال کنید',
+                telegram_channel: 'کانال تلگرام',
+                instagram_page: 'صفحه اینستاگرام',
+                terms_of_service: 'قوانین و مقررات',
+                privacy_policy: 'حریم خصوصی',
+                about_us: 'درباره ما',
+                copyright_text: '© تمام حقوق مادی و معنوی این سایت متعلق به جـدار است',
+                developer: 'توسعه‌دهنده',
+                version: 'نسخه',
+                all_rights_reserved: 'تمامی حقوق محفوظ است',
             },
             ar: {
                 home: 'الرئيسية',
@@ -2076,13 +2173,95 @@
                 ad_not_found: 'الإعلان غير موجود',
                 error_loading: 'خطأ في التحميل',
                 share: 'مشاركة',
+                views: 'مشاهدات',
+                posted_at: 'تاريخ النشر',
+                category_label: 'الفئة',
+                location_label: 'الموقع',
+                rating_label: 'التقييم',
+                trust_score_label: 'نقاط الثقة',
+                vip_badge: 'VIP',
+                charge_wallet: 'شحن المحفظة',
+                gift_free: 'هدية مجانية',
+                no_description: 'لا يوجد وصف',
+                call_now: 'اتصال',
+                whatsapp_chat: 'واتساب',
+                add_to_fav: 'أضف للمفضلة',
+                remove_from_fav: 'إزالة من المفضلة',
+                submit_review_btn: 'إرسال التقييم',
+                share_ad: 'مشاركة',
+                copy_link: 'نسخ الرابط',
+                link_copied: '🔗 تم نسخ الرابط',
+                close: 'إغلاق',
+                back: 'رجوع',
+                all_categories: 'الكل',
+                search_placeholder_short: 'بحث...',
+                no_results: 'لا توجد نتائج',
+                try_again: 'حاول مجدداً',
+                error_occurred: 'حدث خطأ',
+                connection_error: 'خطأ في الاتصال بالخادم',
+                loading_more: 'جاري تحميل المزيد...',
+                end_of_list: 'نهاية القائمة',
+                see_details: 'عرض التفاصيل',
+                seller: 'البائع',
+                contact_seller: 'اتصال بالبائع',
+                report_ad: 'الإبلاغ عن الإعلان',
+                report_submitted: 'تم إرسال البلاغ',
+                report_error: 'فشل إرسال البلاغ',
+                thanks: 'شكراً',
+                your_opinion_matters: 'رأيك مهم بالنسبة لنا',
+                please_rate: 'يرجى التقييم',
+                write_comment: 'اكتب تعليقك...',
+                send: 'إرسال',
+                cancel_action: 'إلغاء',
+                confirm: 'تأكيد',
+                delete_confirm: 'هل أنت متأكد من حذف هذا العنصر؟',
+                yes: 'نعم',
+                no: 'لا',
+                success: 'نجاح',
+                failed: 'فشل',
+                pending_status: 'قيد المراجعة',
+                approved_status: 'تمت الموافقة',
+                rejected_status: 'مرفوض',
+                expired_status: 'منتهي',
+                special_ad: 'إعلان مميز',
+                normal_ad: 'إعلان عادي',
+                price_currency: 'تومان',
+                view_count: 'عدد المشاهدات',
+                share_count: 'عدد المشاركات',
+                favorite_count: 'عدد المفضلات',
+                comment_count: 'عدد التعليقات',
+                no_comments: 'لا توجد تعليقات بعد',
+                comment_placeholder: 'اكتب تعليقك...',
+                rating_placeholder: 'اختر تقييمك',
+                submit_feedback: 'إرسال الملاحظات',
+                feedback_sent: 'تم إرسال الملاحظات',
+                feedback_error: 'فشل إرسال الملاحظات',
+                language_changed: 'تم تغيير اللغة',
+                theme_changed: 'تم تغيير السمة',
+                refresh_done: 'تم التحديث',
+                welcome_message: 'مرحباً بكم في جـدار',
+                help_message: 'للمساعدة، اتصل بالدعم',
+                support_contact: 'الدعم',
+                email_us: 'راسلنا',
+                phone_us: 'اتصل بنا',
+                visit_website: 'زيارة الموقع',
+                follow_us: 'تابعنا',
+                telegram_channel: 'قناة التلغرام',
+                instagram_page: 'صفحة إنستغرام',
+                terms_of_service: 'الشروط والأحكام',
+                privacy_policy: 'سياسة الخصوصية',
+                about_us: 'معلومات عنا',
+                copyright_text: '© جميع الحقوق محفوظة لـ جـدار',
+                developer: 'المطور',
+                version: 'الإصدار',
+                all_rights_reserved: 'جميع الحقوق محفوظة',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
-        // LANGUAGE UPDATE
+        // LANGUAGE UPDATE (کامل و شامل تمام جزئیات)
         // ============================================================
         function updateLanguage() {
             const lang = currentLang;
@@ -2251,7 +2430,7 @@
             document.documentElement.lang = currentLang;
             document.documentElement.dir = 'rtl';
             updateLanguage();
-            showToast(`🌍 زبان به ${currentLang === 'fa' ? 'فارسی' : 'عربی'} تغییر کرد`, 'success');
+            showToast(`🌍 ${t('language_changed')}`, 'success');
         }
 
         // ============================================================
@@ -2430,7 +2609,6 @@
             ads.forEach(ad => {
                 const card = document.createElement('div');
                 card.className = 'ad-card';
-                // ذخیره شناسه در attribute برای دسترسی آسان
                 card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
 
@@ -2523,7 +2701,7 @@
             fetchAds(true);
             if (currentTab === 'profile') fetchMyAds();
             if (currentTab === 'favorites') fetchFavorites();
-            showToast(t('refresh'), 'success');
+            showToast(t('refresh_done'), 'success');
         }
 
         // ============================================================
@@ -2572,10 +2750,9 @@
         }
 
         // ============================================================
-        // AD DETAIL – نمایش در مودال شیشه‌ای با داده‌های موجود
+        // AD DETAIL – نمایش در مودال شیشه‌ای با ترجمه کامل
         // ============================================================
         function openAdDetail(adId) {
-            // پیدا کردن آگهی در allAds
             const ad = allAds.find(item => item.id == adId);
             if (!ad) {
                 showToast(t('ad_not_found'), 'error');
@@ -2587,7 +2764,6 @@
             const galleryImages = ad.images || [];
             let galleryIndex = 0;
 
-            // ساخت گالری
             let galleryHtml = '';
             if (galleryImages.length > 0) {
                 galleryHtml = `
@@ -2612,7 +2788,6 @@
                 `;
             }
 
-            // بررسی وجود شماره تلفن
             const phone = ad.phone || '';
 
             let html = `
@@ -2620,12 +2795,12 @@
                 ${galleryHtml}
                 <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
                 <div class="ad-meta">
-                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
-                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
-                    <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
-                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
+                    <span><i class="fa-solid fa-tag"></i> ${t('category_label')}: ${ad.category || 'دسته‌بندی نشده'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${t('location_label')}: ${ad.city || 'نامشخص'}</span>
+                    <span><i class="fa-regular fa-clock"></i> ${t('posted_at')}: ${formatTime(ad.created_at)}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${t('views')}: ${ad.views || 0}</span>
                 </div>
-                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
+                <div class="ad-description">${ad.description || t('no_description')}</div>
                 <div class="action-buttons">
                     ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
                     ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
@@ -2655,10 +2830,8 @@
             `;
             document.getElementById('adDetailContent').innerHTML = html;
             document.getElementById('adDetailsModal').classList.add('show');
-            // بارگذاری نظرات
             loadDetailReviews(ad.id);
 
-            // توابع گالری
             window.detailGalleryPrev = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
@@ -2677,7 +2850,6 @@
             };
         }
 
-        // بستن مودال با انیمیشن
         function closeAdDetail() {
             const modal = document.getElementById('adDetailsModal');
             modal.style.animation = 'modalOverlayFade 0.3s reverse';
@@ -2687,10 +2859,8 @@
             }, 300);
         }
 
-        // به‌روزرسانی دکمه علاقه‌مندی در مودال
         async function toggleFavoriteAndUpdateDetail(adId) {
             await toggleFavorite(adId);
-            // به‌روزرسانی دکمه در مودال
             const btn = document.querySelector('.btn-fav');
             if (btn) {
                 const isFav = favorites.includes(adId);
@@ -2701,9 +2871,9 @@
             }
         }
 
-        // اشتراک‌گذاری
+        // ===== اشتراک‌گذاری با دامنه j-dar.ir =====
         function shareAd(adId, title) {
-            const url = `https://your-domain.com/ad/${adId}`;
+            const url = `${SHARE_DOMAIN}/ad/${adId}`;
             if (navigator.share) {
                 navigator.share({
                     title: title,
@@ -2712,7 +2882,7 @@
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(url).then(() => {
-                    showToast('🔗 لینک آگهی کپی شد', 'success');
+                    showToast(t('link_copied'), 'success');
                 }).catch(() => {
                     const textarea = document.createElement('textarea');
                     textarea.value = url;
@@ -2720,12 +2890,11 @@
                     textarea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textarea);
-                    showToast('🔗 لینک آگهی کپی شد', 'success');
+                    showToast(t('link_copied'), 'success');
                 });
             }
         }
 
-        // امتیازدهی در مودال
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
@@ -2739,7 +2908,7 @@
             const adId = document.getElementById('detailReviewAdId').value;
             const rating = parseInt(document.getElementById('detailReviewRating').value);
             const comment = document.getElementById('detailReviewComment').value.trim();
-            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
+            if (!rating || rating < 1) { showToast(t('please_rate'), 'warning'); return; }
             try {
                 const data = await apiCall('/api/review', {
                     method: 'POST',
@@ -2896,7 +3065,7 @@
         }
 
         async function deleteAd(adId) {
-            if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
+            if (!confirm(t('delete_confirm'))) return;
             try {
                 const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId, adId }) });
                 if (data.success) {
@@ -2911,7 +3080,7 @@
 
         function editAd(adId) {
             const ad = allAds.find(a => a.id === adId);
-            if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
+            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
             document.getElementById('adTitle').value = ad.title;
             document.getElementById('adCategory').value = ad.category || 'tourism';
             document.getElementById('adPrice').value = ad.price;
@@ -3116,9 +3285,9 @@
                 const data = await apiCall('/api/vip/status?user_id=' + guestId);
                 if (data.success) {
                     if (data.is_vip) {
-                        document.getElementById('vipStatus').innerHTML = `✅ اشتراک فعال است (${data.days_left} روز باقی‌مانده)`;
+                        document.getElementById('vipStatus').innerHTML = `✅ ${t('vip')} ${t('active')} (${data.days_left} ${t('day')} ${t('remaining')})`;
                     } else {
-                        document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
+                        document.getElementById('vipStatus').innerHTML = `❌ ${t('no_subscription')}`;
                     }
                 }
             } catch (err) { document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری'; }
@@ -3302,7 +3471,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v16.0 - رفع خطای مشاهده آگهی، مودال شیشه‌ای بزرگ و افکت جادویی`);
+        console.log(`🚀 ${APP_NAME} v17.0 - ترجمه کامل، دامنه j-dar.ir، لوگوی متالیک و براق`);
     </script>
 </body>
-                                                                            </html>
+    </html>
