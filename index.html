@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ============================================================
-           RESET & VARIABLES
-           ============================================================ */
+        /* ===== RESET & VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
@@ -112,15 +110,13 @@
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
         .toast .close:hover { color: var(--danger); }
 
-        /* ============================================================
-           HEADER (ثابت – بدون حرکت)
-           ============================================================ */
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
-            padding: 4px 0;
+            margin-bottom: 12px;
+            padding: 8px 0;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -169,22 +165,50 @@
             color: var(--primary);
         }
 
-        /* ============================================================
-           APP CONTAINER (همه محتوای متحرک)
-           ============================================================ */
-        #app {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 0 14px 80px 14px;
-            min-height: 100vh;
-            animation: fadeIn 0.4s ease;
+        /* ===== TOGGLE BUTTON FOR UPPER SECTION ===== */
+        .toggle-section-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        #app > *:not(.header) {
-            animation: slideFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        .toggle-section-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
         }
-        @keyframes slideFade {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        .toggle-section-btn i {
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-size: 18px;
+        }
+        .toggle-section-btn.active i {
+            transform: rotate(180deg);
+        }
+
+        /* ===== TOGGLE SECTION (کیف پول + اکشن‌ها) ===== */
+        .toggle-section {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        margin 0.3s ease;
+            margin-bottom: 0;
+        }
+        .toggle-section.open {
+            max-height: 900px;
+            opacity: 1;
+            margin-bottom: 16px;
         }
 
         /* ===== WALLET ===== */
@@ -193,7 +217,6 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             padding: 18px 20px;
-            margin-bottom: 16px;
             box-shadow: var(--shadow-sm);
             transition: box-shadow var(--transition), border-color var(--transition), transform 0.3s ease;
             will-change: transform;
@@ -318,7 +341,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
-            margin-bottom: 16px;
+            margin: 16px 0 14px;
         }
         .action-item {
             background: var(--bg-card);
@@ -416,7 +439,7 @@
             transform: rotate(180deg);
         }
 
-        /* ===== FILTER PANEL (انیمیشن پیشرفته) ===== */
+        /* ===== FILTER PANEL ===== */
         .filter-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -541,20 +564,14 @@
             border-color: var(--primary);
         }
 
-        /* ===== ADS GRID ===== */
+        /* ===== ADS GRID (بدون محدودیت ارتفاع – اسکرول با صفحه) ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 14px;
-            max-height: 70vh;
-            overflow-y: auto;
-            overscroll-behavior: contain;
             padding: 2px;
-            scroll-behavior: smooth;
         }
-        .ads-grid::-webkit-scrollbar { width: 3px; }
-        .ads-grid::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         .ad-card {
             background: var(--bg-card);
@@ -698,7 +715,7 @@
         .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
         /* ============================================================
-           BOTTOM NAV (ثابت)
+           BOTTOM NAV
            ============================================================ */
         .bottom-nav {
             position: fixed;
@@ -751,7 +768,7 @@
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
         /* ============================================================
-           MODALS (همه مودال‌ها با انیمیشن)
+           MODALS
            ============================================================ */
         .modal-overlay {
             position: fixed;
@@ -1236,7 +1253,7 @@
 
     <!-- ===== MAIN APP ===== -->
     <div id="app">
-        <!-- HEADER (ثابت) -->
+        <!-- HEADER -->
         <div class="header">
             <div class="logo-text">جـدار <span>جهانی</span></div>
             <div class="header-actions">
@@ -1246,78 +1263,87 @@
             </div>
         </div>
 
-        <!-- WALLET -->
-        <div class="wallet-card">
-            <div class="wallet-row">
-                <div class="wallet-info">
-                    <h4 id="walletLabel">کیف پول</h4>
-                    <div class="amount"><span id="walletBalance">0</span> <small id="currencyLabel">تومان</small></div>
+        <!-- ===== دکمه باز/بسته کردن بخش بالایی ===== -->
+        <button class="toggle-section-btn" id="toggleSectionBtn" onclick="toggleUpperSection()">
+            <i class="fa-solid fa-chevron-down"></i>
+            <span id="toggleSectionLabel">نمایش ابزارها</span>
+        </button>
+
+        <!-- ===== بخش بالایی (کیف پول + اکشن‌ها) ===== -->
+        <div class="toggle-section" id="upperSection">
+            <!-- WALLET -->
+            <div class="wallet-card">
+                <div class="wallet-row">
+                    <div class="wallet-info">
+                        <h4 id="walletLabel">کیف پول</h4>
+                        <div class="amount"><span id="walletBalance">0</span> <small id="currencyLabel">تومان</small></div>
+                    </div>
+                    <div class="wallet-badges">
+                        <span class="vip-badge" id="vipBadge"><i class="fa-solid fa-crown"></i> <span id="vipLabel">VIP</span></span>
+                        <div class="trust-score"><i class="fa-solid fa-star"></i> <span id="trustLabel">اعتماد:</span> <span id="trustScore">50</span></div>
+                    </div>
                 </div>
-                <div class="wallet-badges">
-                    <span class="vip-badge" id="vipBadge"><i class="fa-solid fa-crown"></i> <span id="vipLabel">VIP</span></span>
-                    <div class="trust-score"><i class="fa-solid fa-star"></i> <span id="trustLabel">اعتماد:</span> <span id="trustScore">50</span></div>
+                <div class="wallet-actions">
+                    <button class="btn-charge" onclick="openChargeModal()"><i class="fa-solid fa-wallet"></i> <span id="chargeBtnLabel">شارژ</span></button>
+                    <button class="btn-vip" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> <span id="vipBtnLabel">VIP</span></button>
+                    <button class="btn-gift" onclick="openGiftModal()"><i class="fa-solid fa-gift"></i> <span id="giftBtnLabel">هدیه</span></button>
                 </div>
             </div>
-            <div class="wallet-actions">
-                <button class="btn-charge" onclick="openChargeModal()"><i class="fa-solid fa-wallet"></i> <span id="chargeBtnLabel">شارژ</span></button>
-                <button class="btn-vip" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> <span id="vipBtnLabel">VIP</span></button>
-                <button class="btn-gift" onclick="openGiftModal()"><i class="fa-solid fa-gift"></i> <span id="giftBtnLabel">هدیه</span></button>
+
+            <!-- QUICK ACTIONS -->
+            <div class="action-grid" id="actionGrid">
+                <div class="action-item" onclick="filterAds('pilgrimage')"><i class="fa-solid fa-mosque"></i><span id="actPilgrimage">زیارت</span></div>
+                <div class="action-item" onclick="filterAds('tourism')"><i class="fa-solid fa-plane"></i><span id="actTourism">گردشگری</span></div>
+                <div class="action-item" onclick="filterAds('medical')"><i class="fa-solid fa-heartbeat"></i><span id="actMedical">پزشکی</span></div>
+                <div class="action-item" onclick="filterAds('beauty')"><i class="fa-solid fa-spa"></i><span id="actBeauty">زیبایی</span></div>
+                <div class="action-item" onclick="filterAds('services')"><i class="fa-solid fa-handshake"></i><span id="actServices">خدمات</span></div>
+                <div class="action-item" onclick="filterAds('jobs')"><i class="fa-solid fa-user-tie"></i><span id="actJobs">کاریابی</span></div>
+                <div class="action-item" onclick="filterAds('real_estate')"><i class="fa-solid fa-building"></i><span id="actRealEstate">املاک</span></div>
+                <div class="action-item" onclick="filterAds('vehicles')"><i class="fa-solid fa-car"></i><span id="actVehicles">خودرو</span></div>
             </div>
-        </div>
 
-        <!-- NOTICE -->
-        <div class="notice-card" id="noticeCard">
-            <div class="notice-icon"><i class="fa-solid fa-bullhorn"></i></div>
-            <div class="notice-text" id="noticeText">...</div>
-        </div>
+            <!-- NOTICE -->
+            <div class="notice-card" id="noticeCard">
+                <div class="notice-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                <div class="notice-text" id="noticeText">...</div>
+            </div>
 
-        <!-- QUICK ACTIONS -->
-        <div class="action-grid" id="actionGrid">
-            <div class="action-item" onclick="filterAds('pilgrimage')"><i class="fa-solid fa-mosque"></i><span id="actPilgrimage">زیارت</span></div>
-            <div class="action-item" onclick="filterAds('tourism')"><i class="fa-solid fa-plane"></i><span id="actTourism">گردشگری</span></div>
-            <div class="action-item" onclick="filterAds('medical')"><i class="fa-solid fa-heartbeat"></i><span id="actMedical">پزشکی</span></div>
-            <div class="action-item" onclick="filterAds('beauty')"><i class="fa-solid fa-spa"></i><span id="actBeauty">زیبایی</span></div>
-            <div class="action-item" onclick="filterAds('services')"><i class="fa-solid fa-handshake"></i><span id="actServices">خدمات</span></div>
-            <div class="action-item" onclick="filterAds('jobs')"><i class="fa-solid fa-user-tie"></i><span id="actJobs">کاریابی</span></div>
-            <div class="action-item" onclick="filterAds('real_estate')"><i class="fa-solid fa-building"></i><span id="actRealEstate">املاک</span></div>
-            <div class="action-item" onclick="filterAds('vehicles')"><i class="fa-solid fa-car"></i><span id="actVehicles">خودرو</span></div>
-        </div>
+            <!-- SEARCH + FILTER -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
+                <button id="searchBtn" onclick="searchAds()">جستجو</button>
+                <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()">
+                    <i class="fa-solid fa-sliders"></i>
+                </button>
+            </div>
 
-        <!-- SEARCH + FILTER -->
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
-            <button id="searchBtn" onclick="searchAds()">جستجو</button>
-            <button class="filter-toggle" id="filterToggle" onclick="toggleFilterPanel()">
-                <i class="fa-solid fa-sliders"></i>
-            </button>
-        </div>
-
-        <!-- FILTER PANEL -->
-        <div class="filter-panel" id="filterPanel">
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCountryLabel">کشور</label>
-                    <select id="filterCountry">
-                        <option value="">همه</option>
-                        <option value="ایران">🇮🇷 ایران</option>
-                        <option value="عراق">🇮🇶 عراق</option>
-                        <option value="امارات">🇦🇪 امارات</option>
-                        <option value="ترکیه">🇹🇷 ترکیه</option>
-                    </select>
+            <!-- FILTER PANEL -->
+            <div class="filter-panel" id="filterPanel">
+                <div class="filter-row">
+                    <div class="filter-group"><label id="filterCountryLabel">کشور</label>
+                        <select id="filterCountry">
+                            <option value="">همه</option>
+                            <option value="ایران">🇮🇷 ایران</option>
+                            <option value="عراق">🇮🇶 عراق</option>
+                            <option value="امارات">🇦🇪 امارات</option>
+                            <option value="ترکیه">🇹🇷 ترکیه</option>
+                        </select>
+                    </div>
+                    <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
                 </div>
-                <div class="filter-group"><label id="filterCityLabel">شهر</label><select id="filterCity"><option value="">همه</option></select></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
-                <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
-            </div>
-            <div class="filter-row">
-                <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
-                <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
-            </div>
-            <div class="filter-actions">
-                <button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button>
-                <button id="cancelFilterBtn" onclick="resetFilters()">لغو</button>
+                <div class="filter-row">
+                    <div class="filter-group"><label id="filterCategoryLabel">دسته</label><select id="filterCategory"><option value="">همه</option></select></div>
+                    <div class="filter-group"><label id="filterPriceLabel">قیمت</label><div style="display:flex;gap:6px;"><input type="number" id="filterMin" placeholder="از" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /><input type="number" id="filterMax" placeholder="تا" style="flex:1;padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;" /></div></div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group"><label id="filterSortLabel">ترتیب</label><select id="filterSort"><option value="newest">جدیدترین</option><option value="popular">محبوب‌ترین</option><option value="rating">امتیاز</option><option value="price_asc">ارزان‌ترین</option><option value="price_desc">گران‌ترین</option></select></div>
+                    <div class="filter-group"><label id="filterRatingLabel">امتیاز</label><select id="filterRating"><option value="">همه</option><option value="4">۴+</option><option value="3">۳+</option></select></div>
+                </div>
+                <div class="filter-actions">
+                    <button class="apply-filter" id="applyFilterBtn" onclick="applyFilters()">اعمال</button>
+                    <button id="cancelFilterBtn" onclick="resetFilters()">لغو</button>
+                </div>
             </div>
         </div>
 
@@ -1328,11 +1354,11 @@
         </div>
         <div class="categories" id="categoriesContainer"></div>
 
-        <!-- ADS GRID -->
+        <!-- ADS GRID (اسکرول با صفحه) -->
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- ===== BOTTOM NAV (ثابت) ===== -->
+    <!-- ===== BOTTOM NAV ===== -->
     <div class="bottom-nav">
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -1420,9 +1446,12 @@
         </div>
     </div>
 
-    <!-- AD DETAIL MODAL -->
+    <!-- AD DETAIL MODAL (کامل با تمام جزئیات) -->
     <div class="modal-overlay" id="adDetailsModal">
-        <div class="modal-box"><button class="modal-close" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-xmark"></i></button><div id="adDetailContent"></div></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('adDetailsModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div id="adDetailContent"></div>
+        </div>
     </div>
 
     <!-- CHARGE MODAL -->
@@ -1491,7 +1520,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کامل با محدودیت آگهی، پر کردن خودکار شماره و پیام پروفایل -->
+    <!-- JAVASCRIPT – کامل با دکمه مخفی‌سازی بخش بالایی -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1520,7 +1549,7 @@
         let isUpdating = false;
         let pendingCheckInterval = null;
         let filterPanelOpen = false;
-        let userAdsCount = 0; // تعداد آگهی‌های کاربر
+        let upperSectionOpen = false;
 
         // ============================================================
         // TRANSLATIONS (فارسی و عربی)
@@ -1648,6 +1677,8 @@
                 filter_rating: 'امتیاز',
                 complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
                 ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید. برای ثبت آگهی بیشتر، اشتراک VIP تهیه کنید یا درخواست هدیه بدهید.',
+                show_tools: 'نمایش ابزارها',
+                hide_tools: 'مخفی کردن ابزارها',
             },
             ar: {
                 home: 'الرئيسية',
@@ -1771,6 +1802,8 @@
                 filter_rating: 'التقييم',
                 complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
                 ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١). للحصول على إعلانات إضافية، اشترِ VIP أو اطلب هدية.',
+                show_tools: 'إظهار الأدوات',
+                hide_tools: 'إخفاء الأدوات',
             }
         };
 
@@ -1862,6 +1895,7 @@
                 'favTitle': 'favorites',
                 'refreshAdsBtn': 'refresh',
                 'searchInput': 'search_placeholder',
+                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -1998,6 +2032,26 @@
         }
 
         // ============================================================
+        // TOGGLE UPPER SECTION (مخفی‌سازی با دکمه)
+        // ============================================================
+        function toggleUpperSection() {
+            upperSectionOpen = !upperSectionOpen;
+            const section = document.getElementById('upperSection');
+            const btn = document.getElementById('toggleSectionBtn');
+            const label = document.getElementById('toggleSectionLabel');
+
+            if (upperSectionOpen) {
+                section.classList.add('open');
+                btn.classList.add('active');
+                label.textContent = t('hide_tools');
+            } else {
+                section.classList.remove('open');
+                btn.classList.remove('active');
+                label.textContent = t('show_tools');
+            }
+        }
+
+        // ============================================================
         // FILTER PANEL TOGGLE
         // ============================================================
         function toggleFilterPanel() {
@@ -2026,7 +2080,7 @@
         }
 
         // ============================================================
-        // PROFILE (localStorage)
+        // PROFILE
         // ============================================================
         function loadProfile() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
@@ -2034,7 +2088,6 @@
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
-            // پر کردن شماره در مودال ثبت آگهی
             const phoneInput = document.getElementById('adContact');
             if (phoneInput && profile.phone) {
                 phoneInput.value = profile.phone;
@@ -2052,7 +2105,6 @@
                 email: document.getElementById('profileEmail').value.trim(),
             };
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
-            // به‌روزرسانی شماره در مودال ثبت آگهی
             const phoneInput = document.getElementById('adContact');
             if (phoneInput && profile.phone) {
                 phoneInput.value = profile.phone;
@@ -2060,9 +2112,6 @@
             showToast(t('profile_saved'), 'success');
         }
 
-        // ============================================================
-        // CHECK PROFILE COMPLETE
-        // ============================================================
         function isProfileComplete() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             return profile.phone && profile.phone.trim().length > 0;
@@ -2254,7 +2303,7 @@
         }
 
         // ============================================================
-        // AD DETAIL
+        // AD DETAIL (کامل با تمام جزئیات)
         // ============================================================
         async function openAdDetail(adId) {
             try {
@@ -2264,25 +2313,42 @@
                 const galleryImages = ad.images || [];
                 let galleryIndex = 0;
 
-                let html = `
-                    <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
-                    <div style="margin-bottom:16px;">
+                // ساخت گالری
+                let galleryHtml = '';
+                if (galleryImages.length > 0) {
+                    galleryHtml = `
                         <div style="position:relative;width:100%;aspect-ratio:1/1;background:var(--bg-input);border-radius:var(--radius-sm);overflow:hidden;">
-                            ${galleryImages.length > 0 ? `<img src="${galleryImages[0]}" style="width:100%;height:100%;object-fit:cover;" />` : `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--text-muted);"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div>`}
+                            <img id="detailGalleryImg" src="${galleryImages[0]}" style="width:100%;height:100%;object-fit:cover;" />
                         </div>
                         ${galleryImages.length > 1 ? `
                             <div style="display:flex;justify-content:center;gap:14px;margin-top:10px;">
-                                <button onclick="galleryPrev()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">‹</button>
-                                <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;"><span id="galleryIndex">1</span> / ${galleryImages.length}</span>
-                                <button onclick="galleryNext()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">›</button>
+                                <button onclick="detailGalleryPrev()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">‹</button>
+                                <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;"><span id="detailGalleryIndex">1</span> / ${galleryImages.length}</span>
+                                <button onclick="detailGalleryNext()" style="background:var(--bg-input);border:1px solid var(--border-color);border-radius:50%;width:36px;height:36px;color:var(--text-primary);font-size:18px;cursor:pointer;">›</button>
                             </div>
                         ` : ''}
+                    `;
+                } else {
+                    galleryHtml = `
+                        <div style="display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1/1;background:var(--bg-input);border-radius:var(--radius-sm);color:var(--text-muted);">
+                            <i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i>
+                        </div>
+                    `;
+                }
+
+                let html = `
+                    <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
+                    <div style="margin-bottom:16px;">
+                        ${galleryHtml}
                     </div>
-                    <div style="font-size:24px;font-weight:800;color:var(--primary);margin-bottom:4px;">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
-                        <i class="fa-solid fa-location-dot"></i> ${ad.city || ''}
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                        <div style="font-size:24px;font-weight:800;color:var(--primary);">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                        <span style="font-size:12px;background:var(--primary-light);padding:4px 12px;border-radius:var(--radius-full);color:var(--primary);">${ad.category || 'دسته‌بندی نشده'}</span>
+                    </div>
+                    <div style="font-size:13px;color:var(--text-muted);margin:8px 0 12px;">
+                        <i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}
                         <span style="margin:0 8px;">•</span>
-                        ${formatTime(ad.created_at)}
+                        <i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}
                         <span style="margin:0 8px;">•</span>
                         👁 ${ad.views || 0}
                     </div>
@@ -2324,20 +2390,21 @@
                 document.getElementById('adDetailsModal').classList.add('show');
                 loadDetailReviews(ad.id);
 
-                window.galleryPrev = function() {
+                // توابع گالری
+                window.detailGalleryPrev = function() {
                     if (galleryImages.length === 0) return;
                     galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
-                    const img = document.querySelector('#adDetailContent .modal-title + div img');
+                    const img = document.getElementById('detailGalleryImg');
                     if (img) img.src = galleryImages[galleryIndex];
-                    const idx = document.getElementById('galleryIndex');
+                    const idx = document.getElementById('detailGalleryIndex');
                     if (idx) idx.textContent = galleryIndex + 1;
                 };
-                window.galleryNext = function() {
+                window.detailGalleryNext = function() {
                     if (galleryImages.length === 0) return;
                     galleryIndex = (galleryIndex + 1) % galleryImages.length;
-                    const img = document.querySelector('#adDetailContent .modal-title + div img');
+                    const img = document.getElementById('detailGalleryImg');
                     if (img) img.src = galleryImages[galleryIndex];
-                    const idx = document.getElementById('galleryIndex');
+                    const idx = document.getElementById('detailGalleryIndex');
                     if (idx) idx.textContent = galleryIndex + 1;
                 };
             } catch (err) {
@@ -2354,11 +2421,9 @@
                     url: url
                 }).catch(() => {});
             } else {
-                // کپی لینک
                 navigator.clipboard.writeText(url).then(() => {
                     showToast('🔗 لینک آگهی کپی شد', 'success');
                 }).catch(() => {
-                    // fallback
                     const textarea = document.createElement('textarea');
                     textarea.value = url;
                     document.body.appendChild(textarea);
@@ -2496,8 +2561,10 @@
         }
 
         // ============================================================
-        // MY ADS (با شمارش تعداد آگهی‌ها)
+        // MY ADS
         // ============================================================
+        let userAdsCount = 0;
+
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -2572,7 +2639,7 @@
         }
 
         // ============================================================
-        // ADD AD WIZARD (با محدودیت و بررسی پروفایل)
+        // ADD AD WIZARD
         // ============================================================
         function wizardNext() {
             if (wizardStep < 3) { wizardStep++; updateWizard(); }
@@ -2627,15 +2694,13 @@
         }
 
         async function submitAd() {
-            // بررسی کامل بودن پروفایل
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
             }
 
-            // بررسی محدودیت آگهی (۱ عدد برای کاربران عادی)
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            const isVip = profile.isVip || false; // در آینده از API دریافت می‌شود
+            const isVip = profile.isVip || false;
             if (!isVip && userAdsCount >= 1) {
                 showToast(t('ad_limit_reached'), 'warning');
                 return;
@@ -2872,7 +2937,6 @@
         }
 
         function openAddModal() {
-            // بررسی کامل بودن پروفایل قبل از باز کردن مودال
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
@@ -2947,7 +3011,7 @@
             startPendingCheck();
         };
 
-        console.log(`🚀 ${APP_NAME} v14.0 - حرکت زیبا، محدودیت آگهی و تکمیل خودکار شماره`);
+        console.log(`🚀 ${APP_NAME} v15.0 - حرکت کامل با صفحه، دکمه مخفی‌سازی بخش بالایی و مشاهده کامل آگهی`);
     </script>
 </body>
     </html>
