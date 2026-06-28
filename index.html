@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
+        /* ===== تمام استایل‌های قبلی (بدون تغییر) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -107,7 +108,6 @@
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
         .toast .close:hover { color: var(--danger); }
 
-        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -182,7 +182,6 @@
             border-color: var(--danger);
         }
 
-        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -339,7 +338,6 @@
             font-weight: 700;
         }
 
-        /* ===== TOGGLE BUTTON ===== */
         .toggle-section-btn {
             display: flex;
             align-items: center;
@@ -820,7 +818,6 @@
         }
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
-        /* ===== MODALS ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1569,7 +1566,6 @@
             <h2>J-DAR.IR</h2>
             <p>برای ورود، شماره تلفن خود را وارد کنید</p>
 
-            <!-- مرحله ۱: وارد کردن شماره -->
             <div id="loginStep1">
                 <div class="form-group">
                     <label>شماره تلفن</label>
@@ -1584,7 +1580,6 @@
                 </div>
             </div>
 
-            <!-- مرحله ۲: وارد کردن کد -->
             <div id="loginStep2" style="display:none;">
                 <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">
                     کد ۶ رقمی ارسال شده به <strong id="displayPhone">...</strong> را وارد کنید
@@ -1836,7 +1831,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کامل با رفع خطاها و پشتیبانی از شماره خط خریداری شده -->
+    <!-- JAVASCRIPT – با پشتیبانی از متد جدید SMS.ir (با username/password/line) -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1895,19 +1890,52 @@
 
         // ===== اصلاح شماره تلفن: حذف +98 و صفر ابتدایی =====
         function normalizePhone(phone) {
-            // حذف تمام کاراکترهای غیرعددی
             let cleaned = phone.replace(/\D/g, '');
-            // اگر با 98 شروع شد، 98 را حذف کن (برای مواردی که کاربر +98 وارد کرده)
-            if (cleaned.startsWith('98')) {
-                cleaned = cleaned.substring(2);
-            }
-            // اگر با 0 شروع شد، 0 را حذف کن
-            if (cleaned.startsWith('0')) {
-                cleaned = cleaned.substring(1);
-            }
-            // اطمینان از اینکه شماره با 9 شروع می‌شود (برای ایران)
-            // اگر نه، احتمالاً شماره بین‌المللی است، اما باز هم ارسال می‌کنیم
+            if (cleaned.startsWith('98')) cleaned = cleaned.substring(2);
+            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
             return cleaned;
+        }
+
+        // ============================================================
+        // 📱 ارسال پیامک مستقیم از مرورگر (با متد جدید SMS.ir)
+        // ============================================================
+        function sendVerificationCodeDirectly(mobileNumber, code) {
+            return new Promise((resolve, reject) => {
+                var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                myHeaders.append("Accept", "text/plain");
+                myHeaders.append("x-api-key", "lC6VVXKPnewCHu0n0FNQmW8fxSYo2rDm3gAYmwTrTqcmGS7N");
+
+                var raw = JSON.stringify({
+                    "username": "9332356547",
+                    "password": "Mehdi13721##",
+                    "line": "30004505975311",
+                    "mobile": mobileNumber,
+                    "text": "کد احراز هویت شما: " + code
+                });
+
+                var requestOptions = {
+                    method: 'POST',
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: 'follow'
+                };
+
+                fetch("https://api.sms.ir/v1/send/verify", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log('📩 پاسخ SMS.ir (مستقیم):', result);
+                        if (result.IsSuccessful) {
+                            resolve({ success: true, message: 'پیامک ارسال شد' });
+                        } else {
+                            resolve({ success: false, error: result.Message || 'خطا در ارسال پیامک' });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ خطا:', error);
+                        reject({ success: false, error: error.message });
+                    });
+            });
         }
 
         // ===== مرحله ۱: درخواست کد تایید =====
@@ -1936,23 +1964,47 @@
             btn.disabled = true;
             btn.innerHTML = '...در حال ارسال';
 
+            // تولید کد ۶ رقمی
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            verificationCode = code;
+
             try {
+                // ===== ارسال هم از طریق API داخلی (Worker) و هم مستقیم (برای اطمینان) =====
+                // ابتدا از طریق Worker (که با اطلاعات جدید به‌روز می‌شود) ارسال می‌کنیم
                 const response = await fetch(`${API_BASE}/api/send-verification`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         userId: guestId,
-                        phone: phone // شماره نرمال‌شده (بدون صفر و 98)
+                        phone: phone,
+                        code: code // ارسال کد به Worker تا بتواند مستقیم ارسال کند
                     })
                 });
                 const data = await response.json();
 
+                let smsSent = false;
+
                 if (data.success) {
-                    if (data.code) {
-                        verificationCode = data.code;
-                        localStorage.setItem('verification_code', data.code);
+                    smsSent = true;
+                    localStorage.setItem('verification_code', code);
+                    localStorage.setItem('verification_expiry', (Date.now() + 120000).toString());
+                } else {
+                    // اگر Worker موفق نشد، مستقیم از مرورگر ارسال می‌کنیم
+                    console.log('🔄 ارسال مستقیم از مرورگر به SMS.ir...');
+                    const directResult = await sendVerificationCodeDirectly('+98' + phone, code);
+                    if (directResult.success) {
+                        smsSent = true;
+                        localStorage.setItem('verification_code', code);
                         localStorage.setItem('verification_expiry', (Date.now() + 120000).toString());
+                    } else {
+                        showLoginError(directResult.error || 'خطا در ارسال پیامک');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ارسال کد تایید';
+                        return;
                     }
+                }
+
+                if (smsSent) {
                     localStorage.setItem('last_verify_request', Date.now().toString());
 
                     document.getElementById('loginStep1').style.display = 'none';
@@ -1971,15 +2023,16 @@
                     document.querySelector('#codeInputGroup input[data-index="0"]').focus();
 
                     startTimer();
-
-                    if (data.code) verificationCode = data.code;
-
-                } else {
-                    showLoginError(data.error || 'خطا در ارسال کد');
                 }
+
             } catch (err) {
-                showLoginError('خطا در ارتباط با سرور');
-                console.error(err);
+                // اگر همه روش‌ها شکست خورد، خطا نمایش داده می‌شود
+                // اما برای تست، کد را در کنسول نمایش می‌دهیم
+                console.warn('⚠️ ارسال پیامک با مشکل مواجه شد، کد تست:', code);
+                showLoginError('خطا در ارسال پیامک، کد تست در کنسول مرورگر نمایش داده شد');
+                // برای تست، کد را در صفحه نمایش می‌دهیم (فقط در حالت توسعه)
+                // document.getElementById('verifySuccess').textContent = '✅ کد تست: ' + code;
+                // document.getElementById('verifySuccess').style.display = 'block';
             }
 
             btn.disabled = false;
@@ -2200,7 +2253,7 @@
         }
 
         // ============================================================
-        // REST OF THE APP (تمام توابع مانند قبل)
+        // REST OF THE APP (همه توابع قبلی بدون تغییر)
         // ============================================================
         let allAds = [];
         let filteredAds = [];
@@ -3423,7 +3476,9 @@
         `;
         document.head.appendChild(styleShake);
 
-        console.log(`🚀 ${APP_NAME} با اصلاح شماره تلفن (حذف +98 و 0) و تایید پیامک راه‌اندازی شد!`);
+        console.log(`🚀 ${APP_NAME} با متد جدید SMS.ir (username/password/line) راه‌اندازی شد!`);
+        console.log('📱 شماره خط: 30004505975311');
+        console.log('📱 کلید API: lC6VVXKPnewCHu0n0FNQmW8fxSYo2rDm3gAYmwTrTqcmGS7N');
     </script>
 </body>
     </html>
