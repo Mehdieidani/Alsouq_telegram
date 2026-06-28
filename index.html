@@ -1152,7 +1152,7 @@
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ارسال کد تایید';
         }
 
-        // ===== مرحله ۲: تایید کد =====
+        // ===== مرحله ۲: تایید کد (با ارسال username) =====
         async function verifyCode() {
             let enteredCode = '';
             document.querySelectorAll('#codeInputGroup input').forEach(inp => {
@@ -1169,13 +1169,16 @@
             btn.innerHTML = '...در حال بررسی';
 
             try {
+                // ساخت یک نام کاربری پیش‌فرض بر اساس guestId
+                const defaultUsername = `user_${guestId.slice(0, 8)}`;
                 const response = await fetch(`${API_BASE}/api/verify-code`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         userId: guestId,
                         code: enteredCode,
-                        phone: phoneNumber
+                        phone: phoneNumber,
+                        username: defaultUsername  // <-- اضافه شده
                     })
                 });
                 const data = await response.json();
@@ -2579,4 +2582,4 @@
         console.log(`🚀 ${APP_NAME} v20.0 - کاملاً کامل با SMS.ir و مدیریت نشست`);
     </script>
 </body>
-    </html>
+                                </html>
