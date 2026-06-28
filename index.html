@@ -4,17 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>جـدار | پلتفرم جهانی</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ===== تمام استایل‌های قبلی (بدون تغییر) ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* ===== RESET & VARIABLES ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
             --bg-primary: #f8fafc;
             --bg-card: #ffffff;
@@ -38,8 +34,9 @@
             --gold-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
             --danger: #ef4444;
             --success: #16a34a;
-            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
             --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+            --shimmer: linear-gradient(90deg, var(--bg-input) 25%, #e2e8f0 50%, var(--bg-input) 75%);
         }
         [data-theme="dark"] {
             --bg-primary: #0f172a;
@@ -52,6 +49,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
             --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
             --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+            --shimmer: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
         }
         html { font-size: 16px; scroll-behavior: smooth; }
         body {
@@ -65,39 +63,23 @@
             overflow-x: hidden;
             overscroll-behavior: none;
         }
-        body.ltr { direction: ltr; }
-        button { font-family: var(--font); border: none; outline: none; transition: var(--transition); cursor: pointer; }
-        input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
+        button, input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
+        button { border: none; cursor: pointer; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
+        /* ===== TOAST ===== */
         .toast-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 99999;
-            max-width: 92%;
-            width: 440px;
-            pointer-events: none;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 99999; max-width: 92%; width: 440px; pointer-events: none;
         }
         .toast {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 14px 20px;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-40px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            pointer-events: auto;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 14px 20px; margin-bottom: 8px;
+            color: var(--text-primary); font-size: 14px; display: flex; align-items: center; gap: 12px;
+            box-shadow: var(--shadow-lg); transform: translateY(-40px); opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: auto;
             border-right: 4px solid var(--primary);
         }
         .toast.show { transform: translateY(0); opacity: 1; }
@@ -108,745 +90,267 @@
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
         .toast .close:hover { color: var(--danger); }
 
+        /* ===== HEADER ===== */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 8px 0;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: var(--bg-primary);
-            backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0 12px; position: sticky; top: 0; z-index: 50;
+            background: var(--bg-primary); backdrop-filter: blur(12px);
             transition: background var(--transition);
         }
-        .header .logo-text {
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, #f7d875, #f5b81b, #f7d875, #e8a317);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(245,184,27,0.3), 0 0 40px rgba(245,184,27,0.1);
-            animation: metallicShine 4s ease-in-out infinite;
-            font-family: var(--font);
-            transform: scaleX(1.05);
-            display: inline-block;
+        .logo-text {
+            font-size: 26px; font-weight: 900;
+            background: linear-gradient(135deg, #f7d875, #f5b81b, #f7d875);
+            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: metallicShine 4s ease-in-out infinite; display: inline-block;
         }
-        @keyframes metallicShine {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes metallicShine { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .logo-text span { font-size: 11px; font-weight: 400; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); margin-right: 4px; }
+        .header-actions { display: flex; gap: 6px; align-items: center; }
+        .header-actions button {
+            width: 42px; height: 42px; border-radius: var(--radius-sm);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-primary); font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .header .logo-text span {
-            font-size: 11px;
-            font-weight: 400;
-            color: var(--text-muted);
-            -webkit-text-fill-color: var(--text-muted);
-            margin-right: 4px;
-            animation: none;
-            text-shadow: none;
-            transform: scaleX(1);
-        }
-        .header .header-actions {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .header .header-actions button {
-            width: 42px;
-            height: 42px;
-            border-radius: var(--radius-sm);
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        .header .header-actions button:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        .header .header-actions .logout-btn {
-            color: var(--danger);
-            border-color: rgba(239,68,68,0.2);
-        }
-        .header .header-actions .logout-btn:hover {
-            background: rgba(239,68,68,0.1);
-            border-color: var(--danger);
-        }
+        .header-actions button:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
 
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-primary);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeIn 0.4s ease;
-        }
-        .login-overlay.hidden { display: none; }
-        .login-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            max-width: 400px;
-            width: 100%;
-            padding: 40px 28px 36px;
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-        }
-        .login-box .login-icon {
-            font-size: 56px;
-            color: var(--primary);
-            margin-bottom: 12px;
-        }
-        .login-box h2 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 6px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .login-box p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        .login-box .form-group {
-            margin-bottom: 16px;
-            text-align: right;
-        }
-        .login-box .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-        .login-box .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 16px;
-            text-align: center;
-            letter-spacing: 2px;
-            transition: border-color var(--transition), box-shadow var(--transition);
-        }
-        .login-box .form-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-            outline: none;
-        }
-        .login-box .form-group input::placeholder {
-            color: var(--text-muted);
-            font-size: 14px;
-            letter-spacing: 0;
-        }
-        .login-box .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 4px;
-        }
-        .login-box .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
-        .login-box .btn-login:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .login-box .login-error {
-            color: var(--danger);
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-        }
-        .login-box .login-error.show { display: block; }
-        .login-box .login-success {
-            color: var(--success);
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-        }
-        .login-box .login-success.show { display: block; }
-        .login-box .code-input-group {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin: 12px 0;
-        }
-        .login-box .code-input-group input {
-            width: 48px;
-            height: 56px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 700;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background: var(--bg-input);
-            color: var(--text-primary);
-            transition: 0.2s ease;
-        }
-        .login-box .code-input-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-            outline: none;
-        }
-        .login-box .code-input-group input.filled {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-        .login-box .resend-link {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 12px;
-        }
-        .login-box .resend-link a {
-            color: var(--primary);
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .login-box .resend-link a:hover { text-decoration: underline; }
-        .login-box .resend-link .timer {
-            color: var(--gold);
-            font-weight: 700;
-        }
-
+        /* ===== TOGGLE SECTION ===== */
         .toggle-section-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 14px 20px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-full);
-            font-weight: 700;
-            font-size: 15px;
-            margin-bottom: 12px;
-            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
-            box-shadow: 0 4px 14px rgba(22,163,74,0.25);
-            letter-spacing: 0.3px;
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 14px 20px;
+            background: var(--primary-gradient); color: #fff; border: none;
+            border-radius: var(--radius-full); font-weight: 700; font-size: 15px;
+            margin-bottom: 12px; transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(22,163,74,0.25); position: relative; overflow: hidden;
         }
         .toggle-section-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-            pointer-events: none;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent); pointer-events: none;
         }
-        .toggle-section-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(22,163,74,0.35);
-        }
-        .toggle-section-btn i {
-            transition: transform 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);
-            font-size: 20px;
-        }
-        .toggle-section-btn.active i {
-            transform: rotate(180deg);
-        }
+        .toggle-section-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(22,163,74,0.35); }
+        .toggle-section-btn i { transition: transform 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); font-size: 20px; }
+        .toggle-section-btn.active i { transform: rotate(180deg); }
 
         .toggle-section {
-            overflow: hidden;
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1),
-                        opacity 0.5s cubic-bezier(0.4,0,0.2,1),
-                        margin 0.4s ease;
-            margin-bottom: 0;
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 0 16px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
+            overflow: hidden; max-height: 0; opacity: 0;
+            transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease, margin 0.4s ease;
+            margin-bottom: 0; background: var(--bg-card); border-radius: var(--radius-md);
+            padding: 0 16px; border: 1px solid var(--border-color);
         }
-        .toggle-section.open {
-            max-height: 1200px;
-            opacity: 1;
-            margin-bottom: 16px;
-            padding: 16px;
-        }
+        .toggle-section.open { max-height: 1200px; opacity: 1; margin-bottom: 16px; padding: 16px; }
         .toggle-section .wallet-card { border: none; padding: 0 0 12px 0; box-shadow: none; background: transparent; }
-        .toggle-section .wallet-card:hover { transform: none; }
         .toggle-section .action-grid { margin: 12px 0 10px; }
 
         .wallet-card .wallet-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
         }
-        .wallet-card .wallet-info h4 {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .wallet-card .wallet-info .amount {
-            font-size: 28px;
-            font-weight: 800;
-        }
-        .wallet-card .wallet-info .amount small {
-            font-size: 14px;
-            color: var(--primary);
-            font-weight: 500;
-            margin-right: 4px;
-        }
-        .wallet-card .wallet-badges {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
+        .wallet-card .wallet-info h4 { font-size: 11px; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .wallet-card .wallet-info .amount { font-size: 28px; font-weight: 800; }
+        .wallet-card .wallet-info .amount small { font-size: 14px; color: var(--primary); font-weight: 500; margin-right: 4px; }
+        .wallet-card .wallet-badges { display: flex; gap: 6px; align-items: center; }
         .wallet-card .vip-badge {
-            background: var(--gold-gradient);
-            color: #fff;
-            padding: 2px 14px;
-            border-radius: var(--radius-full);
-            font-size: 10px;
-            font-weight: 700;
-            display: none;
-            align-items: center;
-            gap: 4px;
+            background: var(--gold-gradient); color: #fff; padding: 2px 14px;
+            border-radius: var(--radius-full); font-size: 10px; font-weight: 700;
+            display: none; align-items: center; gap: 4px;
         }
         .wallet-card .vip-badge.show { display: inline-flex; }
         .wallet-card .trust-score {
-            background: var(--primary-light);
-            border: 1px solid rgba(22,163,74,0.12);
-            border-radius: var(--radius-full);
-            padding: 2px 14px;
-            font-size: 11px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: 500;
+            background: var(--primary-light); border: 1px solid rgba(22,163,74,0.12);
+            border-radius: var(--radius-full); padding: 2px 14px; font-size: 11px;
+            color: var(--primary); display: flex; align-items: center; gap: 4px; font-weight: 500;
         }
         .wallet-card .wallet-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px;
-            flex-wrap: wrap;
+            display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
         }
         .wallet-card .wallet-actions button {
-            flex: 1;
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 13px;
-            min-width: 70px;
-            transition: var(--transition);
+            flex: 1; padding: 10px 12px; border-radius: var(--radius-sm);
+            font-weight: 600; font-size: 13px; min-width: 70px;
         }
-        .wallet-card .wallet-actions .btn-charge {
-            background: var(--primary-gradient);
-            color: #fff;
-        }
+        .wallet-card .wallet-actions .btn-charge { background: var(--primary-gradient); color: #fff; }
         .wallet-card .wallet-actions .btn-charge:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
-        .wallet-card .wallet-actions .btn-vip {
-            background: var(--gold-gradient);
-            color: #fff;
-        }
+        .wallet-card .wallet-actions .btn-vip { background: var(--gold-gradient); color: #fff; }
         .wallet-card .wallet-actions .btn-vip:hover { transform: translateY(-2px); }
-        .wallet-card .wallet-actions .btn-gift {
-            background: var(--gold);
-            color: #fff;
-        }
+        .wallet-card .wallet-actions .btn-gift { background: var(--gold); color: #fff; }
         .wallet-card .wallet-actions .btn-gift:hover { transform: translateY(-2px); }
 
         .notice-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(245,158,11,0.2);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            margin-bottom: 16px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.4s ease;
+            background: var(--bg-card); border: 1px solid rgba(245,158,11,0.2);
+            border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 16px;
+            display: none; align-items: center; gap: 12px;
         }
         .notice-card.show { display: flex; }
         .notice-card .notice-icon {
-            width: 30px;
-            height: 30px;
-            background: var(--gold-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 14px;
-            flex-shrink: 0;
+            width: 30px; height: 30px; background: var(--gold-gradient); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0;
         }
         .notice-card .notice-text { font-size: 13px; color: var(--gold); line-height: 1.5; flex: 1; }
 
         .action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
         }
         .action-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 12px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            color: var(--text-primary);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 12px 0;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);
         }
         .action-item:hover {
-            transform: translateY(-4px) scale(1.02);
-            border-color: var(--primary);
-            background: var(--primary-light);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-4px) scale(1.02); border-color: var(--primary);
+            background: var(--primary-light); box-shadow: var(--shadow-md);
         }
         .action-item i { font-size: 22px; color: var(--primary); }
         .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
         .search-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-full);
-            padding: 4px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-full); padding: 4px 16px;
+            display: flex; align-items: center; gap: 10px;
             transition: border-color var(--transition), box-shadow var(--transition);
-            position: relative;
         }
-        .search-box:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
+        .search-box:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
         .search-box i { color: var(--text-muted); font-size: 16px; }
         .search-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-size: 14px;
-            padding: 12px 0;
+            flex: 1; background: transparent; border: none; color: var(--text-primary);
+            font-size: 14px; padding: 12px 0;
         }
         .search-box input::placeholder { color: var(--text-muted); }
         .search-box button {
-            background: var(--primary-gradient);
-            color: #fff;
-            border-radius: var(--radius-full);
-            padding: 6px 20px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: var(--transition);
+            background: var(--primary-gradient); color: #fff; border-radius: var(--radius-full);
+            padding: 6px 20px; font-size: 12px; font-weight: 600; white-space: nowrap;
         }
         .search-box button:hover { opacity: 0.9; }
 
         .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 14px 0 10px;
+            display: flex; justify-content: space-between; align-items: center; margin: 14px 0 10px;
         }
         .section-title h3 { font-weight: 800; font-size: 18px; }
         .section-title a { color: var(--text-muted); font-size: 13px; cursor: pointer; transition: var(--transition); }
         .section-title a:hover { color: var(--primary); }
 
         .categories {
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
+            display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 12px;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch;
         }
         .categories::-webkit-scrollbar { display: none; }
         .category-chip {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-full);
-            padding: 6px 20px;
-            white-space: nowrap;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-full); padding: 6px 20px; white-space: nowrap;
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
             color: var(--text-primary);
         }
-        .category-chip:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            transform: translateY(-2px);
-        }
-        .category-chip.active {
-            background: var(--primary-gradient);
-            color: #fff;
-            border-color: var(--primary);
-        }
+        .category-chip:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); }
+        .category-chip.active { background: var(--primary-gradient); color: #fff; border-color: var(--primary); }
 
+        /* ===== ADS GRID with shimmer ===== */
         .ads-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 14px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;
         }
         .ad-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            cursor: pointer;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); overflow: hidden; cursor: pointer;
             transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            position: relative;
-            transform: translateY(0);
+            position: relative; transform: translateY(0);
             will-change: transform, box-shadow;
+            background-image: var(--shimmer);
+            background-size: 200% 100%;
+            animation: shimmerMove 3s infinite;
         }
+        @keyframes shimmerMove { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .ad-card:hover {
             transform: translateY(-6px) scale(1.01);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-md);
+            border-color: var(--primary); box-shadow: var(--shadow-md);
         }
         .ad-card .ad-image {
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: var(--bg-input);
-            position: relative;
-            overflow: hidden;
+            width: 100%; aspect-ratio: 1/1; background: var(--bg-input); position: relative; overflow: hidden;
         }
         .ad-card .ad-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;
         }
         .ad-card:hover .ad-image img { transform: scale(1.05); }
         .ad-card .ad-image .no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            color: var(--text-muted);
-            font-size: 14px;
-            background: var(--bg-input);
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; height: 100%; color: var(--text-muted); font-size: 14px; background: var(--bg-input);
         }
         .ad-card .ad-image .no-image i { font-size: 32px; opacity: 0.3; }
         .ad-card .ad-image .watermark {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            color: #fff;
-            font-size: 7px;
-            padding: 2px 12px;
-            border-radius: var(--radius-full);
-            border: 1px solid rgba(255,255,255,0.08);
+            position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); color: #fff; font-size: 7px;
+            padding: 2px 12px; border-radius: var(--radius-full); border: 1px solid rgba(255,255,255,0.08);
         }
         .ad-card .ad-image .favorite {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.45);
-            backdrop-filter: blur(8px);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            border: 1px solid rgba(255,255,255,0.08);
+            position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(8px); border-radius: 50%; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px;
+            cursor: pointer; transition: all 0.25s ease; border: 1px solid rgba(255,255,255,0.08);
         }
         .ad-card .ad-image .favorite:hover { background: var(--danger); transform: scale(1.1); }
         .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(239,68,68,0.3); }
         .ad-card .ad-image .special-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--gold-gradient);
-            color: #fff;
-            font-size: 8px;
-            padding: 2px 12px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
+            position: absolute; top: 10px; right: 10px; background: var(--gold-gradient);
+            color: #fff; font-size: 8px; padding: 2px 12px; border-radius: var(--radius-full); font-weight: 700;
         }
-        .ad-card .ad-content {
-            padding: 10px 12px 8px;
-        }
+        .ad-card .ad-content { padding: 10px 12px 8px; }
         .ad-card .ad-content .title {
-            font-weight: 600;
-            font-size: 13px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 36px;
-            line-height: 1.3;
+            font-weight: 600; font-size: 13px; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            min-height: 36px; line-height: 1.3;
         }
-        .ad-card .ad-content .price {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--primary);
-            margin-top: 2px;
-        }
-        .ad-card .ad-content .meta {
-            font-size: 10px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 2px;
-        }
+        .ad-card .ad-content .price { font-weight: 700; font-size: 16px; color: var(--primary); margin-top: 2px; }
+        .ad-card .ad-content .meta { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
         .ad-card .ad-footer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px 12px;
-            border-top: 1px solid var(--border-color);
-            font-size: 10px;
-            color: var(--text-secondary);
+            display: flex; align-items: center; gap: 8px; padding: 8px 12px 12px;
+            border-top: 1px solid var(--border-color); font-size: 10px; color: var(--text-secondary);
         }
         .ad-card .ad-footer .avatar {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            flex-shrink: 0;
-            font-weight: 700;
+            width: 22px; height: 22px; border-radius: 50%; background: var(--primary-gradient);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 9px; flex-shrink: 0; font-weight: 700;
         }
         .ad-card .ad-footer .username { font-weight: 500; }
-        .ad-card .ad-footer .rating {
-            margin-right: auto;
-            color: var(--text-muted);
-            font-size: 10px;
-        }
+        .ad-card .ad-footer .rating { margin-right: auto; color: var(--text-muted); font-size: 10px; }
         .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto;
+            background: var(--bg-card); backdrop-filter: blur(24px);
             border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 0 14px;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            z-index: 100;
-            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 8px 0 14px; border-top-left-radius: 24px; border-top-right-radius: 24px;
+            z-index: 100; box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
             transition: background var(--transition);
         }
         .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.2s ease;
-            font-size: 9px;
-            padding: 0 8px;
-            position: relative;
-            background: none;
-            border: none;
+            display: flex; flex-direction: column; align-items: center; color: var(--text-muted);
+            cursor: pointer; transition: color 0.2s ease; font-size: 9px;
+            padding: 0 8px; position: relative; background: none; border: none;
         }
         .bottom-nav .nav-item:hover { color: var(--primary); }
         .bottom-nav .nav-item.active { color: var(--primary); }
         .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; transition: transform 0.2s ease; }
         .bottom-nav .nav-item:hover i { transform: translateY(-2px); }
         .bottom-nav .nav-item .badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--danger);
-            color: #fff;
-            font-size: 8px;
-            border-radius: 50%;
-            padding: 1px 6px;
-            font-weight: 700;
+            position: absolute; top: -4px; right: -4px; background: var(--danger);
+            color: #fff; font-size: 8px; border-radius: 50%; padding: 1px 6px; font-weight: 700;
         }
         .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+        /* ===== MODALS ===== */
+        .modal-overlay, .modal-overlay-old {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); z-index: 9999;
+            display: none; align-items: center; justify-content: center; padding: 20px;
             animation: modalOverlayFade 0.3s ease;
         }
-        .modal-overlay.show { display: flex; }
+        .modal-overlay.show, .modal-overlay-old.show { display: flex; }
         @keyframes modalOverlayFade {
             from { opacity: 0; backdrop-filter: blur(0); }
             to { opacity: 1; backdrop-filter: blur(20px); }
         }
-        .modal-box {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            max-width: 560px;
-            width: 100%;
-            max-height: 92vh;
-            overflow-y: auto;
-            padding: 24px 20px 28px;
-            position: relative;
+        .modal-box, .modal-box-old {
+            background: var(--bg-card); border-radius: var(--radius-lg);
+            max-width: 560px; width: 100%; max-height: 92vh; overflow-y: auto;
+            padding: 24px 20px 28px; position: relative;
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
             animation: modalZoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
             transform-origin: center;
@@ -855,564 +359,77 @@
             from { opacity: 0; transform: scale(0.85) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .modal-box::-webkit-scrollbar { width: 4px; }
-        .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        .modal-box .modal-close {
-            position: sticky;
-            top: 0;
-            float: left;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-            margin-bottom: 10px;
+        .modal-box .modal-close, .modal-box-old .modal-close {
+            position: sticky; top: 0; float: left; background: var(--bg-input);
+            border: 1px solid var(--border-color); border-radius: 50%; width: 40px; height: 40px;
+            font-size: 22px; display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); cursor: pointer; transition: all 0.3s ease;
+            z-index: 10; margin-bottom: 10px;
         }
-        .modal-box .modal-close:hover {
-            background: var(--danger);
-            color: #fff;
-            transform: rotate(90deg);
+        .modal-box .modal-close:hover, .modal-box-old .modal-close:hover {
+            background: var(--danger); color: #fff; transform: rotate(90deg);
         }
-        .modal-box .modal-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 8px 0 12px;
-            line-height: 1.3;
+        .modal-box .modal-title, .modal-box-old .modal-title {
+            font-size: 24px; font-weight: 800; margin: 8px 0 12px; line-height: 1.3;
         }
-        .modal-box .ad-meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .modal-box .ad-meta span {
-            background: var(--bg-input);
-            padding: 3px 12px;
-            border-radius: var(--radius-full);
-            font-size: 12px;
-        }
-        .modal-box .ad-price {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 6px 0 10px;
-        }
-        .modal-box .ad-description {
-            background: var(--bg-input);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            margin: 14px 0;
-            font-size: 14px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            color: var(--text-primary);
-        }
-        .modal-box .ad-gallery {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: var(--bg-input);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .modal-box .ad-gallery img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .modal-box .ad-gallery .no-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            color: var(--text-muted);
-            font-size: 18px;
-        }
-        .modal-box .gallery-controls {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin: 8px 0 14px;
-        }
-        .modal-box .gallery-controls button {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-        .modal-box .gallery-controls button:hover {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-        }
-        .modal-box .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin: 14px 0 10px;
-        }
-        .modal-box .action-buttons a,
-        .modal-box .action-buttons button {
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 13px;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .modal-box .action-buttons .btn-call {
-            background: var(--primary-gradient);
-            color: #fff;
-        }
-        .modal-box .action-buttons .btn-whatsapp {
-            background: #25D366;
-            color: #fff;
-        }
-        .modal-box .action-buttons .btn-share {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-        .modal-box .action-buttons .btn-share:hover { background: var(--border-color); }
-        .modal-box .btn-fav {
-            width: 100%;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 6px 0 16px;
-        }
-        .modal-box .btn-fav:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-        }
-        .modal-box .btn-fav .fa-heart { color: var(--danger); }
-        .modal-box .review-section {
-            margin-top: 20px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
-        }
-        .modal-box .review-section h4 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        .modal-box .review-stars {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-        .modal-box .review-stars span {
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: 0.2s ease;
-        }
-        .modal-box .review-stars span:hover,
-        .modal-box .review-stars span.active {
-            color: var(--gold);
-            transform: scale(1.1);
-        }
-        .modal-box .review-comment {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 13px;
-            resize: vertical;
-            min-height: 60px;
-            margin-bottom: 10px;
-        }
-        .modal-box .review-comment:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        .modal-box .btn-submit-review {
-            width: 100%;
-            padding: 10px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-        .modal-box .btn-submit-review:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-        .modal-box .review-item {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .modal-box .review-item:last-child { border-bottom: none; }
-        .modal-box .review-item .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-box .review-item .header .name { font-weight: 600; font-size: 13px; }
-        .modal-box .review-item .header .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
-        .modal-box .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
-        .modal-box .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        .modal-overlay-old {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(20px);
-            z-index: 9999;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        .modal-overlay-old.show { display: flex; }
-        .modal-box-old {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            max-width: 500px;
-            width: 100%;
-            padding: 32px 24px 36px;
-            margin: auto 0;
-            animation: modalSlide 0.4s cubic-bezier(0.4,0,0.2,1);
-            position: relative;
-            max-height: 95vh;
-            overflow-y: auto;
-        }
-        @keyframes modalSlide {
-            from { opacity: 0; transform: translateY(40px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal-box-old .modal-close {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .modal-box-old .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
-        .modal-box-old .modal-title {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            padding-left: 30px;
-        }
-        .modal-box-old .form-group { margin-bottom: 16px; }
-        .modal-box-old .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-        .modal-box-old .form-group input,
-        .modal-box-old .form-group textarea,
-        .modal-box-old .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: border-color var(--transition), box-shadow var(--transition);
-        }
-        .modal-box-old .form-group input:focus,
-        .modal-box-old .form-group textarea:focus,
-        .modal-box-old .form-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-        .modal-box-old .form-group textarea { resize: vertical; min-height: 70px; }
-        .modal-box-old .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .modal-box-old .btn-primary {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-        .modal-box-old .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
-        .modal-box-old .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .modal-box-old .btn-secondary {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-primary);
-            transition: var(--transition);
-        }
-        .modal-box-old .btn-secondary:hover { background: var(--border-color); }
-        .modal-box-old .image-upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--bg-input);
-        }
-        .modal-box-old .image-upload-area:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-        .modal-box-old .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
-        .modal-box-old .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
-        .modal-box-old .image-upload-area input { display: none; }
-        .modal-box-old .image-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .modal-box-old .image-preview-item {
-            position: relative;
-            aspect-ratio: 1/1;
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-        }
-        .modal-box-old .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-box-old .image-preview-item .remove-img {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            color: var(--danger);
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        .modal-box-old .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
-
-        .wizard-progress {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            position: relative;
-            padding: 0 6px;
-        }
-        .wizard-progress::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--border-color);
-            z-index: 1;
-            transform: translateY(-50%);
-            border-radius: 10px;
-        }
-        .wizard-progress .bar {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            z-index: 2;
-            transform: translateY(-50%);
-            transition: width 0.4s ease;
-            width: 0%;
-            border-radius: 10px;
-        }
-        .wizard-progress .step {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--bg-input);
-            border: 3px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 3;
-            transition: all 0.3s ease;
-        }
-        .wizard-progress .step.active {
-            border-color: var(--primary);
-            background: var(--primary-gradient);
-            color: #fff;
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-        .wizard-progress .step.completed {
-            border-color: var(--success);
-            background: var(--success);
-            color: #fff;
-        }
-        .wizard-step { display: none; animation: fadeIn 0.3s ease; }
-        .wizard-step.active { display: block; }
-
-        #profileTab, #favoritesTab {
-            display: none;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 14px 14px 80px;
-            animation: fadeIn 0.3s ease;
-        }
-        #profileTab.show, #favoritesTab.show { display: block; }
         .profile-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            margin-bottom: 18px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 20px; margin-bottom: 18px;
+            box-shadow: var(--shadow-sm); transition: all 0.3s ease;
         }
         .profile-section:hover { box-shadow: var(--shadow-md); }
-        .profile-section .form-group { margin-bottom: 16px; }
-        .profile-section .form-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-        .profile-section .form-group input {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 14px;
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px 14px; background: var(--bg-input);
+            border: 2px solid var(--border-color); border-radius: var(--radius-sm);
+            color: var(--text-primary); font-size: 14px;
             transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .profile-section .form-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .profile-section .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
-        .profile-section .profile-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .profile-section .profile-actions button {
-            flex: 1;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 13px;
-            min-width: 60px;
+        .btn-primary {
+            width: 100%; padding: 12px; background: var(--primary-gradient); color: #fff;
+            border-radius: var(--radius-sm); font-weight: 700; font-size: 15px;
             transition: all 0.3s ease;
         }
-        .profile-section .profile-actions .btn-save {
-            background: var(--primary-gradient);
-            color: #fff;
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
+        .btn-secondary {
+            width: 100%; padding: 12px; background: var(--bg-input);
+            border: 2px solid var(--border-color); border-radius: var(--radius-sm);
+            font-weight: 600; font-size: 15px; color: var(--text-primary);
+            transition: var(--transition);
         }
-        .profile-section .profile-actions .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
+        .btn-secondary:hover { background: var(--border-color); }
 
+        .loading-spinner { text-align: center; padding: 40px 0; color: var(--primary); }
+        .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ===== MY ADS ===== */
         .my-ad-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
             transition: all 0.3s ease;
         }
         .my-ad-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .my-ad-item .info .title { font-weight: 600; font-size: 14px; }
         .my-ad-item .info .sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 2px;
+            font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px;
         }
         .my-ad-item .info .sub .status {
-            font-size: 10px;
-            padding: 1px 12px;
-            border-radius: var(--radius-full);
-            font-weight: 600;
+            font-size: 10px; padding: 1px 12px; border-radius: var(--radius-full); font-weight: 600;
         }
         .my-ad-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
         .my-ad-item .info .sub .status.approved { background: rgba(22,163,74,0.2); color: var(--success); }
         .my-ad-item .info .sub .status.rejected { background: rgba(239,68,68,0.2); color: var(--danger); }
         .my-ad-item .actions { display: flex; gap: 6px; }
         .my-ad-item .actions button {
-            background: none;
-            border: none;
-            font-size: 17px;
-            padding: 4px 6px;
-            cursor: pointer;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s ease;
+            background: none; border: none; font-size: 17px; padding: 4px 6px;
+            cursor: pointer; border-radius: var(--radius-sm); transition: all 0.2s ease;
         }
         .my-ad-item .actions .edit { color: var(--primary); }
         .my-ad-item .actions .edit:hover { background: var(--primary-light); transform: scale(1.1); }
@@ -1420,118 +437,111 @@
         .my-ad-item .actions .delete:hover { background: rgba(239,68,68,0.1); transform: scale(1.1); }
 
         .transaction-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease;
         }
         .transaction-item:hover { border-color: var(--primary); }
         .transaction-item .info .title { font-weight: 600; font-size: 14px; }
         .transaction-item .info .sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 2px;
+            font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px;
         }
         .transaction-item .info .sub .status {
-            font-size: 10px;
-            padding: 1px 12px;
-            border-radius: var(--radius-full);
-            font-weight: 600;
+            font-size: 10px; padding: 1px 12px; border-radius: var(--radius-full); font-weight: 600;
         }
         .transaction-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
         .transaction-item .info .sub .status.approved { background: rgba(22,163,74,0.2); color: var(--success); }
         .transaction-item .info .sub .status.rejected { background: rgba(239,68,68,0.2); color: var(--danger); }
 
         .favorite-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px;
+            display: flex; gap: 14px; align-items: center; cursor: pointer; transition: all 0.3s ease;
         }
         .favorite-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .favorite-item img {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-sm);
-            object-fit: cover;
-            background: var(--bg-input);
-            flex-shrink: 0;
+            width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover;
+            background: var(--bg-input); flex-shrink: 0;
         }
         .favorite-item .info { flex: 1; min-width: 0; }
-        .favorite-item .info .title {
-            font-weight: 600;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .favorite-item .info .title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .favorite-item .info .price { color: var(--primary); font-weight: 700; font-size: 15px; }
         .favorite-item .info .meta { font-size: 11px; color: var(--text-muted); }
         .favorite-item .remove-fav {
-            background: none;
-            border: none;
-            color: var(--danger);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px;
-            transition: all 0.2s ease;
+            background: none; border: none; color: var(--danger); font-size: 18px;
+            cursor: pointer; padding: 4px; transition: all 0.2s ease;
         }
         .favorite-item .remove-fav:hover { transform: scale(1.2); }
 
         .vip-plan {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            text-align: center;
-            transition: all 0.3s ease;
+            background: var(--bg-input); border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm); padding: 16px; text-align: center; transition: all 0.3s ease;
         }
         .vip-plan:hover { border-color: var(--primary); transform: translateY(-3px); }
-        .vip-plan .plan-price {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 4px 0;
-        }
+        .vip-plan .plan-price { font-size: 24px; font-weight: 800; color: var(--primary); margin: 4px 0; }
         .vip-plan .plan-duration { font-size: 14px; color: var(--text-secondary); }
         .vip-plan .plan-btn {
-            width: 100%;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 14px;
-            margin-top: 8px;
-            transition: all 0.3s ease;
+            width: 100%; padding: 10px; border-radius: var(--radius-sm);
+            font-weight: 700; font-size: 14px; margin-top: 8px; transition: all 0.3s ease;
         }
         .vip-plan .plan-btn.primary { background: var(--primary-gradient); color: #fff; }
         .vip-plan .plan-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--primary-light); }
         .vip-plan .plan-btn.gold { background: var(--gold-gradient); color: #fff; }
         .vip-plan .plan-btn.gold:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
+        .image-upload-area {
+            border: 2px dashed var(--border-color); border-radius: var(--radius-sm);
+            padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s ease;
+            background: var(--bg-input);
         }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .image-upload-area:hover { border-color: var(--primary); background: var(--primary-light); }
+        .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
+        .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
+        .image-upload-area input { display: none; }
+        .image-preview-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px;
         }
-        .loading-spinner { text-align: center; padding: 40px 0; color: var(--primary); }
-        .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
+        .image-preview-item {
+            position: relative; aspect-ratio: 1/1; border-radius: var(--radius-sm);
+            overflow: hidden; background: var(--bg-input); border: 1px solid var(--border-color);
+        }
+        .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .image-preview-item .remove-img {
+            position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6);
+            border-radius: 50%; width: 22px; height: 22px; color: var(--danger);
+            border: none; cursor: pointer; font-size: 11px;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+        }
+        .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
+
+        .wizard-progress {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; position: relative; padding: 0 6px;
+        }
+        .wizard-progress::before {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 3px;
+            background: var(--border-color); z-index: 1; transform: translateY(-50%); border-radius: 10px;
+        }
+        .wizard-progress .bar {
+            position: absolute; top: 50%; right: 0; height: 3px;
+            background: var(--primary-gradient); z-index: 2; transform: translateY(-50%);
+            transition: width 0.4s ease; width: 0%; border-radius: 10px;
+        }
+        .wizard-progress .step {
+            width: 34px; height: 34px; border-radius: 50%; background: var(--bg-input);
+            border: 3px solid var(--border-color); color: var(--text-muted); font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; position: relative; z-index: 3;
+            transition: all 0.3s ease;
+        }
+        .wizard-progress .step.active { border-color: var(--primary); background: var(--primary-gradient); color: #fff; box-shadow: 0 0 0 4px var(--primary-light); }
+        .wizard-progress .step.completed { border-color: var(--success); background: var(--success); color: #fff; }
+        .wizard-step { display: none; animation: fadeIn 0.3s ease; }
+        .wizard-step.active { display: block; }
+
+        #profileTab, #favoritesTab {
+            display: none; max-width: 500px; margin: 0 auto; padding: 14px 14px 80px; animation: fadeIn 0.3s ease;
+        }
+        #profileTab.show, #favoritesTab.show { display: block; }
 
         @media (max-width: 480px) {
             .ads-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -1543,71 +553,20 @@
             .modal-box .action-buttons { grid-template-columns: 1fr; }
             .header .logo-text { font-size: 20px; }
             .header .logo-text span { font-size: 9px; }
-            .login-box { padding: 30px 20px 28px; }
-            .login-box .code-input-group input { width: 40px; height: 48px; font-size: 20px; }
         }
         @media (max-width: 380px) {
             .ads-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
             .ad-card .ad-content .title { font-size: 11px; min-height: 30px; }
             .ad-card .ad-content .price { font-size: 13px; }
-            .login-box .code-input-group input { width: 34px; height: 42px; font-size: 18px; }
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
-
-    <!-- ===== LOGIN OVERLAY ===== -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-box">
-            <div class="login-icon">📱</div>
-            <h2>J-DAR.IR</h2>
-            <p>برای ورود، شماره تلفن خود را وارد کنید</p>
-
-            <div id="loginStep1">
-                <div class="form-group">
-                    <label>شماره تلفن</label>
-                    <input type="tel" id="phoneInput" placeholder="09123456789" maxlength="11" />
-                </div>
-                <div class="login-error" id="loginError"></div>
-                <button class="btn-login" id="sendCodeBtn" onclick="requestVerificationCode()">
-                    <i class="fa-solid fa-paper-plane"></i> ارسال کد تایید
-                </button>
-                <div class="resend-link" style="margin-top:12px;font-size:12px;color:var(--text-muted);">
-                    کد تایید از طریق پیامک ارسال می‌شود
-                </div>
-            </div>
-
-            <div id="loginStep2" style="display:none;">
-                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">
-                    کد ۶ رقمی ارسال شده به <strong id="displayPhone">...</strong> را وارد کنید
-                </p>
-                <div class="code-input-group" id="codeInputGroup">
-                    <input type="text" maxlength="1" data-index="0" />
-                    <input type="text" maxlength="1" data-index="1" />
-                    <input type="text" maxlength="1" data-index="2" />
-                    <input type="text" maxlength="1" data-index="3" />
-                    <input type="text" maxlength="1" data-index="4" />
-                    <input type="text" maxlength="1" data-index="5" />
-                </div>
-                <div class="login-error" id="verifyError"></div>
-                <div class="login-success" id="verifySuccess"></div>
-                <button class="btn-login" id="verifyBtn" onclick="verifyCode()">
-                    <i class="fa-solid fa-check"></i> تایید
-                </button>
-                <div class="resend-link">
-                    <span>کد دریافت نکردید؟</span>
-                    <a onclick="resendCode()">ارسال مجدد</a>
-                    <span class="timer" id="timerDisplay"></span>
-                </div>
-                <div style="margin-top:10px;">
-                    <a onclick="goBackToPhone()" style="color:var(--text-muted);font-size:13px;cursor:pointer;text-decoration:underline;">تغییر شماره تلفن</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ===== MAIN APP ===== -->
     <div id="app">
@@ -1617,7 +576,6 @@
                 <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
                 <button onclick="toggleLanguage()" id="langBtn">🇦🇪 عربي</button>
                 <button onclick="refreshAll()" title="بروزرسانی"><i class="fa-solid fa-rotate"></i></button>
-                <button class="logout-btn" onclick="logout()" title="خروج"><i class="fa-solid fa-sign-out-alt"></i></button>
             </div>
         </div>
 
@@ -1713,16 +671,11 @@
                     <div class="form-group"><label id="adTitleLabel">عنوان آگهی <span class="required">*</span></label><input type="text" id="adTitle" placeholder="مثال: تور مشهد" required /></div>
                     <div class="form-group"><label id="adCategoryLabel">دسته‌بندی <span class="required">*</span></label>
                         <select id="adCategory" required>
-                            <option value="pilgrimage">زیارت</option>
-                            <option value="tourism">گردشگری</option>
-                            <option value="medical">پزشکی</option>
-                            <option value="beauty">زیبایی</option>
-                            <option value="services">خدمات</option>
-                            <option value="jobs">کاریابی</option>
-                            <option value="real_estate">املاک</option>
-                            <option value="vehicles">خودرو</option>
-                            <option value="electronics">الکترونیک</option>
-                            <option value="education">آموزش</option>
+                            <option value="pilgrimage">زیارت</option><option value="tourism">گردشگری</option>
+                            <option value="medical">پزشکی</option><option value="beauty">زیبایی</option>
+                            <option value="services">خدمات</option><option value="jobs">کاریابی</option>
+                            <option value="real_estate">املاک</option><option value="vehicles">خودرو</option>
+                            <option value="electronics">الکترونیک</option><option value="education">آموزش</option>
                         </select>
                     </div>
                     <div class="form-group"><label id="adPriceLabel">قیمت (تومان) <span class="required">*</span></label><input type="number" id="adPrice" placeholder="۰" required /></div>
@@ -1732,14 +685,12 @@
                     <div class="form-group"><label id="adDescLabel">توضیحات <span class="required">*</span></label><textarea id="adDescription" rows="4" placeholder="توضیحات کامل..." required></textarea></div>
                     <div class="form-group"><label id="adLocationLabel">موقعیت / شهر <span class="required">*</span></label><input type="text" id="adLocation" placeholder="مثال: تهران" required /></div>
                     <div class="form-group"><label id="adCountryLabel">کشور</label>
-                        <select id="adCountry">
-                            <option value="ایران">🇮🇷 ایران</option>
-                            <option value="عراق">🇮🇶 عراق</option>
-                            <option value="امارات">🇦🇪 امارات</option>
-                            <option value="ترکیه">🇹🇷 ترکیه</option>
-                        </select>
+                        <select id="adCountry"><option value="ایران">🇮🇷 ایران</option><option value="عراق">🇮🇶 عراق</option><option value="امارات">🇦🇪 امارات</option><option value="ترکیه">🇹🇷 ترکیه</option></select>
                     </div>
-                    <div class="form-row" style="margin-top:8px;"><button type="button" class="btn-secondary" id="wizardPrevBtn2" onclick="wizardPrev()">قبلی</button><button type="button" class="btn-primary" id="wizardNextBtn2" onclick="wizardNext()">بعدی</button></div>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+                        <button type="button" class="btn-secondary" id="wizardPrevBtn2" onclick="wizardPrev()">قبلی</button>
+                        <button type="button" class="btn-primary" id="wizardNextBtn2" onclick="wizardNext()">بعدی</button>
+                    </div>
                 </div>
                 <div class="wizard-step" id="wizardStep3">
                     <div class="form-group"><label id="adImagesLabel">تصاویر (حداکثر ۴)</label>
@@ -1749,16 +700,17 @@
                         </div>
                         <div class="image-preview-grid" id="adImagePreview"></div>
                     </div>
-                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label>
-                        <input type="tel" id="adContact" placeholder="شماره شما" value="" readonly />
-                    </div>
+                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label><input type="tel" id="adContact" placeholder="شماره شما" value="" readonly /></div>
                     <div class="form-group"><label id="adTypeLabel">نوع آگهی</label>
                         <select id="adType" onchange="document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none'">
                             <option value="normal" id="adNormalOption">عادی</option><option value="special" id="adSpecialOption">ویژه</option>
                         </select>
                     </div>
                     <div class="form-group" id="planGroup" style="display:none;"><label id="planLabel">مدت ویژه</label><select id="adPlan"><option value="1">۱ روز</option><option value="3">۳ روز</option></select></div>
-                    <div class="form-row" style="margin-top:8px;"><button type="button" class="btn-secondary" id="wizardPrevBtn3" onclick="wizardPrev()">قبلی</button><button type="button" class="btn-primary btn-success" id="submitAdBtn" onclick="submitAd()">ثبت آگهی</button></div>
+                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+                        <button type="button" class="btn-secondary" id="wizardPrevBtn3" onclick="wizardPrev()">قبلی</button>
+                        <button type="button" class="btn-primary btn-success" id="submitAdBtn" onclick="submitAd()">ثبت آگهی</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1774,7 +726,9 @@
 
     <!-- Charge Modal -->
     <div class="modal-overlay-old" id="chargeModal">
-        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
+        <div class="modal-box-old">
+            <button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
             <div class="form-group"><label id="chargeAmountLabel">مبلغ (تومان) <span class="required">*</span></label><input type="number" id="chargeAmount" placeholder="۰" required /></div>
             <div class="form-group"><label id="receiptLabel">تصویر رسید <span class="required">*</span></label>
                 <div class="image-upload-area" onclick="document.getElementById('receiptInput').click()"><i class="fa-solid fa-file-invoice-dollar"></i><p id="uploadReceiptLabel">برای آپلود رسید کلیک کنید</p><input type="file" id="receiptInput" accept="image/*" /></div>
@@ -1786,7 +740,9 @@
 
     <!-- VIP Modal -->
     <div class="modal-overlay-old" id="vipModal">
-        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک ویژه</div>
+        <div class="modal-box-old">
+            <button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="vipModalTitle">👑 اشتراک ویژه</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک ویژه، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
                 <div class="vip-plan"><div class="plan-duration" id="vipMonthLabel">۱ ماه</div><div class="plan-price" id="vipPrice1">۵۰,۰۰۰</div><button class="plan-btn primary" id="vipBuy1" onclick="buyVip('monthly')">خرید</button></div>
@@ -1799,7 +755,9 @@
 
     <!-- Gift Modal -->
     <div class="modal-overlay-old" id="giftModal">
-        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
+        <div class="modal-box-old">
+            <button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="giftDesc">با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.</p>
             <button class="btn-primary" id="giftBtn" onclick="requestGiftSubmit()">درخواست هدیه</button>
             <div id="giftStatus" style="margin-top:16px;text-align:center;font-size:14px;color:var(--text-secondary);"></div>
@@ -1810,12 +768,18 @@
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
         <div class="profile-section">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:12px;background:var(--primary-light);border-radius:var(--radius-sm);">
+                <i class="fa-solid fa-user" style="font-size:28px;color:var(--primary);"></i>
+                <div>
+                    <div style="font-weight:700;font-size:16px;" id="profileDisplayName">کاربر مهمان</div>
+                    <div style="font-size:12px;color:var(--text-secondary);" id="profileDisplayId">شناسه: ...</div>
+                </div>
+            </div>
             <div class="form-group"><label id="profileUsernameLabel">نام کاربری</label><input type="text" id="profileUsername" placeholder="نام کاربری" /></div>
             <div class="form-group"><label id="profileFullnameLabel">نام کامل</label><input type="text" id="profileFullname" placeholder="نام و نام خانوادگی" /></div>
             <div class="form-group"><label id="profilePhoneLabel">شماره تلفن</label><input type="tel" id="profilePhone" placeholder="0912..." /></div>
             <div class="form-group"><label id="profileEmailLabel">ایمیل</label><input type="email" id="profileEmail" placeholder="ایمیل" /></div>
             <div class="form-group"><label id="profileTrustLabel">امتیاز اعتماد</label><input type="text" id="profileTrust" disabled value="50" /></div>
-            <div class="form-group"><label>تعداد تغییر شماره مجاز: <span id="phoneChangeLimit">2</span></label></div>
             <div class="profile-actions"><button class="btn-save" id="profileSaveBtn" onclick="saveProfile()">ذخیره</button></div>
         </div>
         <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3>
@@ -1831,7 +795,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – با پشتیبانی از متد جدید SMS.ir (با username/password/line) -->
+    <!-- JAVASCRIPT – کامل بدون ثبت‌نام، با ارتباط کامل با ربات -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1848,413 +812,7 @@
             localStorage.setItem('jedar_user_id', guestId);
         }
 
-        // ===== وضعیت ورود =====
-        let isLoggedIn = localStorage.getItem('jedar_logged_in') === 'true';
-        let loginPhone = localStorage.getItem('jedar_login_phone') || '';
-        let sessionExpiry = parseInt(localStorage.getItem('jedar_session_expiry') || '0');
-
-        // ===== بررسی انقضای نشست (۷ روز) =====
-        function checkSession() {
-            if (isLoggedIn) {
-                if (Date.now() > sessionExpiry) {
-                    logout();
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-
-        // ============================================================
-        // LOGIN SYSTEM
-        // ============================================================
-        let verificationCode = '';
-        let codeExpiry = 0;
-        let timerInterval = null;
-        let phoneNumber = '';
-
-        // ===== نمایش صفحه ورود =====
-        function showLogin() {
-            document.getElementById('loginOverlay').classList.remove('hidden');
-            document.getElementById('loginStep1').style.display = 'block';
-            document.getElementById('loginStep2').style.display = 'none';
-            document.getElementById('loginError').className = 'login-error';
-            document.getElementById('loginError').textContent = '';
-            document.getElementById('phoneInput').value = '';
-            document.getElementById('phoneInput').focus();
-        }
-
-        function hideLogin() {
-            document.getElementById('loginOverlay').classList.add('hidden');
-        }
-
-        // ===== اصلاح شماره تلفن: حذف +98 و صفر ابتدایی =====
-        function normalizePhone(phone) {
-            let cleaned = phone.replace(/\D/g, '');
-            if (cleaned.startsWith('98')) cleaned = cleaned.substring(2);
-            if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
-            return cleaned;
-        }
-
-        // ============================================================
-        // 📱 ارسال پیامک مستقیم از مرورگر (با متد جدید SMS.ir)
-        // ============================================================
-        function sendVerificationCodeDirectly(mobileNumber, code) {
-            return new Promise((resolve, reject) => {
-                var myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                myHeaders.append("Accept", "text/plain");
-                myHeaders.append("x-api-key", "lC6VVXKPnewCHu0n0FNQmW8fxSYo2rDm3gAYmwTrTqcmGS7N");
-
-                var raw = JSON.stringify({
-                    "username": "9332356547",
-                    "password": "Mehdi13721##",
-                    "line": "30004505975311",
-                    "mobile": mobileNumber,
-                    "text": "کد احراز هویت شما: " + code
-                });
-
-                var requestOptions = {
-                    method: 'POST',
-                    headers: myHeaders,
-                    body: raw,
-                    redirect: 'follow'
-                };
-
-                fetch("https://api.sms.ir/v1/send/verify", requestOptions)
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log('📩 پاسخ SMS.ir (مستقیم):', result);
-                        if (result.IsSuccessful) {
-                            resolve({ success: true, message: 'پیامک ارسال شد' });
-                        } else {
-                            resolve({ success: false, error: result.Message || 'خطا در ارسال پیامک' });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('❌ خطا:', error);
-                        reject({ success: false, error: error.message });
-                    });
-            });
-        }
-
-        // ===== مرحله ۱: درخواست کد تایید =====
-        async function requestVerificationCode() {
-            const phoneInput = document.getElementById('phoneInput');
-            const rawPhone = phoneInput.value.trim();
-            const phone = normalizePhone(rawPhone);
-
-            if (!phone || phone.length < 10) {
-                showLoginError('لطفاً شماره تلفن معتبر وارد کنید (مثال: 09123456789)');
-                return;
-            }
-
-            // بررسی محدودیت درخواست
-            const lastRequest = localStorage.getItem('last_verify_request');
-            if (lastRequest) {
-                const elapsed = (Date.now() - parseInt(lastRequest)) / 1000;
-                if (elapsed < 30) {
-                    showLoginError(`لطفاً ${Math.ceil(30 - elapsed)} ثانیه صبر کنید`);
-                    return;
-                }
-            }
-
-            phoneNumber = phone;
-            const btn = document.getElementById('sendCodeBtn');
-            btn.disabled = true;
-            btn.innerHTML = '...در حال ارسال';
-
-            // تولید کد ۶ رقمی
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
-            verificationCode = code;
-
-            try {
-                // ===== ارسال هم از طریق API داخلی (Worker) و هم مستقیم (برای اطمینان) =====
-                // ابتدا از طریق Worker (که با اطلاعات جدید به‌روز می‌شود) ارسال می‌کنیم
-                const response = await fetch(`${API_BASE}/api/send-verification`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: guestId,
-                        phone: phone,
-                        code: code // ارسال کد به Worker تا بتواند مستقیم ارسال کند
-                    })
-                });
-                const data = await response.json();
-
-                let smsSent = false;
-
-                if (data.success) {
-                    smsSent = true;
-                    localStorage.setItem('verification_code', code);
-                    localStorage.setItem('verification_expiry', (Date.now() + 120000).toString());
-                } else {
-                    // اگر Worker موفق نشد، مستقیم از مرورگر ارسال می‌کنیم
-                    console.log('🔄 ارسال مستقیم از مرورگر به SMS.ir...');
-                    const directResult = await sendVerificationCodeDirectly('+98' + phone, code);
-                    if (directResult.success) {
-                        smsSent = true;
-                        localStorage.setItem('verification_code', code);
-                        localStorage.setItem('verification_expiry', (Date.now() + 120000).toString());
-                    } else {
-                        showLoginError(directResult.error || 'خطا در ارسال پیامک');
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ارسال کد تایید';
-                        return;
-                    }
-                }
-
-                if (smsSent) {
-                    localStorage.setItem('last_verify_request', Date.now().toString());
-
-                    document.getElementById('loginStep1').style.display = 'none';
-                    document.getElementById('loginStep2').style.display = 'block';
-                    document.getElementById('displayPhone').textContent = phone;
-                    document.getElementById('verifyError').className = 'login-error';
-                    document.getElementById('verifyError').textContent = '';
-                    document.getElementById('verifySuccess').className = 'login-success';
-                    document.getElementById('verifySuccess').textContent = '✅ کد تایید ارسال شد';
-                    document.getElementById('verifySuccess').style.display = 'block';
-
-                    document.querySelectorAll('#codeInputGroup input').forEach(inp => {
-                        inp.value = '';
-                        inp.classList.remove('filled');
-                    });
-                    document.querySelector('#codeInputGroup input[data-index="0"]').focus();
-
-                    startTimer();
-                }
-
-            } catch (err) {
-                // اگر همه روش‌ها شکست خورد، خطا نمایش داده می‌شود
-                // اما برای تست، کد را در کنسول نمایش می‌دهیم
-                console.warn('⚠️ ارسال پیامک با مشکل مواجه شد، کد تست:', code);
-                showLoginError('خطا در ارسال پیامک، کد تست در کنسول مرورگر نمایش داده شد');
-                // برای تست، کد را در صفحه نمایش می‌دهیم (فقط در حالت توسعه)
-                // document.getElementById('verifySuccess').textContent = '✅ کد تست: ' + code;
-                // document.getElementById('verifySuccess').style.display = 'block';
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ارسال کد تایید';
-        }
-
-        // ===== مرحله ۲: تایید کد =====
-        async function verifyCode() {
-            let enteredCode = '';
-            document.querySelectorAll('#codeInputGroup input').forEach(inp => {
-                enteredCode += inp.value.trim();
-            });
-
-            if (enteredCode.length < 6) {
-                showVerifyError('لطفاً کد ۶ رقمی را کامل وارد کنید');
-                return;
-            }
-
-            const btn = document.getElementById('verifyBtn');
-            btn.disabled = true;
-            btn.innerHTML = '...در حال بررسی';
-
-            try {
-                const response = await fetch(`${API_BASE}/api/verify-code`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        userId: guestId,
-                        code: enteredCode,
-                        phone: phoneNumber
-                    })
-                });
-                const data = await response.json();
-
-                if (data.success) {
-                    isLoggedIn = true;
-                    localStorage.setItem('jedar_logged_in', 'true');
-                    localStorage.setItem('jedar_login_phone', phoneNumber);
-                    localStorage.setItem('jedar_session_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
-
-                    document.getElementById('verifySuccess').textContent = '✅ ورود با موفقیت انجام شد';
-                    document.getElementById('verifySuccess').style.display = 'block';
-                    document.getElementById('verifyError').className = 'login-error';
-                    document.getElementById('verifyError').textContent = '';
-
-                    const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-                    profile.phone = phoneNumber;
-                    profile.phoneVerified = true;
-                    localStorage.setItem('jedar_profile', JSON.stringify(profile));
-
-                    setTimeout(() => {
-                        hideLogin();
-                        loadApp();
-                        showToast('✅ خوش آمدید!', 'success');
-                    }, 1000);
-
-                } else {
-                    showVerifyError(data.error || 'کد نامعتبر است');
-                    document.querySelectorAll('#codeInputGroup input').forEach(inp => {
-                        inp.style.animation = 'shake 0.3s ease';
-                        setTimeout(() => inp.style.animation = '', 300);
-                    });
-                }
-            } catch (err) {
-                showVerifyError('خطا در ارتباط با سرور');
-                console.error(err);
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> تایید';
-        }
-
-        // ===== ارسال مجدد کد =====
-        function resendCode() {
-            document.getElementById('loginStep2').style.display = 'none';
-            document.getElementById('loginStep1').style.display = 'block';
-            requestVerificationCode();
-        }
-
-        // ===== برگشت به مرحله ۱ =====
-        function goBackToPhone() {
-            document.getElementById('loginStep2').style.display = 'none';
-            document.getElementById('loginStep1').style.display = 'block';
-            clearInterval(timerInterval);
-            document.getElementById('timerDisplay').textContent = '';
-        }
-
-        // ===== تایمر =====
-        function startTimer() {
-            const timerDisplay = document.getElementById('timerDisplay');
-            let remaining = 120;
-            timerDisplay.textContent = `(${remaining} ثانیه)`;
-
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                remaining--;
-                if (remaining <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = '(منقضی شد)';
-                    document.querySelector('.resend-link span:first-child').textContent = 'کد منقضی شد. ';
-                } else {
-                    timerDisplay.textContent = `(${remaining} ثانیه)`;
-                }
-            }, 1000);
-        }
-
-        // ===== نمایش خطاها =====
-        function showLoginError(msg) {
-            const el = document.getElementById('loginError');
-            el.textContent = msg;
-            el.className = 'login-error show';
-        }
-
-        function showVerifyError(msg) {
-            const el = document.getElementById('verifyError');
-            el.textContent = msg;
-            el.className = 'login-error show';
-            document.getElementById('verifySuccess').className = 'login-success';
-            document.getElementById('verifySuccess').textContent = '';
-        }
-
-        // ===== خروج =====
-        function logout() {
-            isLoggedIn = false;
-            localStorage.removeItem('jedar_logged_in');
-            localStorage.removeItem('jedar_login_phone');
-            localStorage.removeItem('jedar_session_expiry');
-            localStorage.removeItem('verification_code');
-            localStorage.removeItem('verification_expiry');
-            showLogin();
-            showToast('✅ از حساب خود خارج شدید', 'info');
-        }
-
-        // ============================================================
-        // SETUP CODE INPUTS
-        // ============================================================
-        function setupCodeInputs() {
-            const inputs = document.querySelectorAll('#codeInputGroup input');
-            inputs.forEach((input, index) => {
-                input.addEventListener('input', function(e) {
-                    const val = this.value.replace(/\D/g, '');
-                    this.value = val.slice(0, 1);
-                    if (val.length === 1) {
-                        this.classList.add('filled');
-                        if (index < inputs.length - 1) {
-                            inputs[index + 1].focus();
-                        } else {
-                            setTimeout(() => verifyCode(), 300);
-                        }
-                    } else {
-                        this.classList.remove('filled');
-                    }
-                });
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                        inputs[index - 1].focus();
-                        inputs[index - 1].classList.remove('filled');
-                    }
-                });
-                input.addEventListener('paste', function(e) {
-                    e.preventDefault();
-                    const paste = (e.clipboardData || window.clipboardData).getData('text');
-                    const digits = paste.replace(/\D/g, '').slice(0, 6);
-                    if (digits.length > 0) {
-                        for (let i = 0; i < Math.min(digits.length, inputs.length); i++) {
-                            inputs[i].value = digits[i] || '';
-                            inputs[i].classList.add('filled');
-                        }
-                        const nextIndex = Math.min(digits.length, inputs.length - 1);
-                        inputs[nextIndex].focus();
-                    }
-                });
-                input.addEventListener('focus', function() {
-                    this.select();
-                });
-            });
-            setTimeout(() => {
-                if (document.querySelector('#codeInputGroup input')) {
-                    document.querySelector('#codeInputGroup input[data-index="0"]').focus();
-                }
-            }, 300);
-        }
-
-        // ============================================================
-        // LOAD APP
-        // ============================================================
-        function loadApp() {
-            fetchAds(true);
-            fetchNotice();
-            loadProfile();
-            loadGiftStatus();
-            startPendingCheck();
-            if (currentTab === 'profile') { fetchMyAds();
-                fetchTransactions(); }
-            if (currentTab === 'favorites') fetchFavorites();
-        }
-
-        // ============================================================
-        // TOAST
-        // ============================================================
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation',
-                info: 'fa-circle-info' };
-            toast.innerHTML = `
-                <i class="fa-solid ${icons[type] || icons.success}"></i>
-                <span>${msg}</span>
-                <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 30);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400);
-            }, 4500);
-        }
-
-        // ============================================================
-        // REST OF THE APP (همه توابع قبلی بدون تغییر)
-        // ============================================================
+        // ===== STATE =====
         let allAds = [];
         let filteredAds = [];
         let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
@@ -2269,6 +827,9 @@
         let upperSectionOpen = false;
         let userAdsCount = 0;
 
+        // ============================================================
+        // TRANSLATIONS (فارسی و عربی)
+        // ============================================================
         const translations = {
             fa: {
                 home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل',
@@ -2334,8 +895,8 @@
                 transaction_approved: 'تایید شده', transaction_rejected: 'رد شده',
                 no_transactions: 'هیچ تراکنشی ثبت نشده است', amount_toman: 'تومان',
                 charge_request_sent: 'درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی شما افزایش می‌یابد.',
-                phone_changed: 'شماره تلفن با موفقیت تغییر کرد',
-                phone_limit_reached: 'شما بیش از ۲ بار نمی‌توانید شماره تلفن را تغییر دهید',
+                guest_label: 'کاربر مهمان',
+                guest_id_label: 'شناسه: ',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -2401,18 +962,19 @@
                 transaction_approved: 'تمت الموافقة', transaction_rejected: 'مرفوض',
                 no_transactions: 'لا توجد معاملات', amount_toman: 'تومان',
                 charge_request_sent: 'تم إرسال طلب الشحن. بعد موافقة المدير، سيتم زيادة رصيدك.',
-                phone_changed: 'تم تغيير رقم الهاتف بنجاح',
-                phone_limit_reached: 'لا يمكنك تغيير رقم الهاتف أكثر من مرتين',
+                guest_label: 'مستخدم ضيف',
+                guest_id_label: 'المعرف: ',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
+        // ============================================================
+        // LANGUAGE & THEME
+        // ============================================================
         function updateLanguage() {
             const lang = currentLang;
-            const isFa = lang === 'fa';
-            document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
-
+            document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : '🇮🇷 فارسی';
             const elements = {
                 'walletLabel': 'wallet', 'currencyLabel': 'currency', 'vipLabel': 'vip',
                 'trustLabel': 'trust', 'chargeBtnLabel': 'charge', 'vipBtnLabel': 'vip',
@@ -2443,7 +1005,8 @@
                 'profileTrustLabel': 'trust_score', 'profileSaveBtn': 'save',
                 'myAdsTitle': 'my_ads', 'transactionsTitle': 'transactions',
                 'favTitle': 'favorites', 'refreshAdsBtn': 'refresh',
-                'searchInput': 'search_placeholder', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'searchInput': 'search_placeholder',
+                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -2455,20 +1018,25 @@
                     }
                 }
             }
-            const catOpts = document.querySelectorAll('#adCategory option');
-            const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles',
-                'electronics', 'education'
-            ];
-            catOpts.forEach((opt, idx) => { if (idx < catKeys.length) opt.textContent = t(catKeys[idx]); });
-            const countryOpts = document.querySelectorAll('#adCountry option');
-            const countryKeys = ['country_iran', 'country_iraq', 'country_uae', 'country_turkey'];
-            const flags = ['🇮🇷', '🇮🇶', '🇦🇪', '🇹🇷'];
-            countryOpts.forEach((opt, idx) => { if (idx < countryKeys.length) opt.textContent = flags[idx] + ' ' + t(
-                    countryKeys[idx]); });
-            const actionLabels = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            // category chips
+            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
+                if (idx === 0) chip.textContent = t('all');
+                else {
+                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
+                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+                }
+            });
+            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
+                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles', 'electronics', 'education'];
+                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
+            });
+            document.querySelectorAll('#adCountry option').forEach((opt, idx) => {
+                const countryKeys = ['country_iran', 'country_iraq', 'country_uae', 'country_turkey'];
+                const flags = ['🇮🇷', '🇮🇶', '🇦🇪', '🇹🇷'];
+                if (idx < countryKeys.length) opt.textContent = flags[idx] + ' ' + t(countryKeys[idx]);
+            });
             document.querySelectorAll('.action-item span').forEach((el, idx) => {
+                const actionLabels = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
                 if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
             });
             document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
@@ -2476,23 +1044,15 @@
                 const map = { home: 'home', add: 'add', favorites: 'favorites', profile: 'profile' };
                 if (map[key]) el.textContent = t(map[key]);
             });
-            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
-                if (idx === 0) chip.textContent = t('all');
-                else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                        'vehicles'
-                    ];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
-                }
-            });
-            console.log(`🌍 زبان به ${lang === 'fa' ? 'فارسی' : 'عربی'} تغییر کرد`);
+            // پروفایل
+            document.getElementById('profileDisplayName').textContent = t('guest_label');
+            document.getElementById('profileDisplayId').textContent = t('guest_id_label') + guestId.slice(0, 12) + '...';
         }
 
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-                '<i class="fa-solid fa-sun"></i>';
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
             localStorage.setItem('jedar_theme', currentTheme);
         }
 
@@ -2505,6 +1065,30 @@
             showToast(`🌍 ${t('language_changed') || 'زبان تغییر کرد'}`, 'success');
         }
 
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+            toast.innerHTML = `
+                <i class="fa-solid ${icons[type] || icons.success}"></i>
+                <span>${msg}</span>
+                <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 30);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4500);
+        }
+
+        // ============================================================
+        // HELPERS
+        // ============================================================
         function formatTime(ts) {
             if (!ts) return 'لحظاتی پیش';
             const now = Math.floor(Date.now() / 1000);
@@ -2547,61 +1131,14 @@
             }
         }
 
-        function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('profileUsername').value = profile.username || '';
-            document.getElementById('profileFullname').value = profile.fullname || '';
-            document.getElementById('profilePhone').value = profile.phone || '';
-            document.getElementById('profileEmail').value = profile.email || '';
-            document.getElementById('phoneChangeLimit').textContent = profile.phoneChangeCount !== undefined ? (2 - profile
-                .phoneChangeCount) : 2;
-            const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) {
-                phoneInput.value = profile.phone;
-            }
-        }
-
-        function saveProfile() {
-            const oldProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            const newPhone = document.getElementById('profilePhone').value.trim();
-            const oldPhone = oldProfile.phone || '';
-            let phoneChangeCount = oldProfile.phoneChangeCount || 0;
-            if (newPhone && newPhone !== oldPhone) {
-                if (phoneChangeCount >= 2) {
-                    showToast(t('phone_limit_reached'), 'error');
-                    return;
-                }
-                phoneChangeCount++;
-                localStorage.setItem('jedar_login_phone', newPhone);
-            }
-            const profile = {
-                username: document.getElementById('profileUsername').value.trim(),
-                fullname: document.getElementById('profileFullname').value.trim(),
-                phone: newPhone,
-                email: document.getElementById('profileEmail').value.trim(),
-                phoneChangeCount: phoneChangeCount,
-            };
-            localStorage.setItem('jedar_profile', JSON.stringify(profile));
-            document.getElementById('phoneChangeLimit').textContent = (2 - phoneChangeCount);
-            const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) {
-                phoneInput.value = profile.phone;
-            }
-            showToast(t('profile_saved'), 'success');
-        }
-
-        function isProfileComplete() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            return profile.phone && profile.phone.trim().length > 0;
-        }
-
+        // ============================================================
+        // ADS
+        // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
             isUpdating = true;
             const grid = document.getElementById('adsGrid');
-            if (showLoading) {
-                grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            }
+            if (showLoading) grid.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
             try {
                 const data = await apiCall('/api/feed');
                 if (data.ok && data.data && data.data.length > 0) {
@@ -2609,21 +1146,16 @@
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
-                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else if (data.success && data.ads && data.ads.length > 0) {
                     allAds = data.ads;
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
-                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else {
-                    grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 }
             } catch (err) {
-                console.error('fetchAds error:', err);
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
             }
             isUpdating = false;
         }
@@ -2632,8 +1164,7 @@
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = '';
             if (!ads || ads.length === 0) {
-                grid.innerHTML =
-                `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 return;
             }
             ads.forEach(ad => {
@@ -2644,11 +1175,8 @@
                 let imgSrc = '';
                 if (ad.images && ad.images.length > 0) {
                     let raw = ad.images[0];
-                    if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) {
-                        imgSrc = `data:image/jpeg;base64,${raw}`;
-                    } else {
-                        imgSrc = raw;
-                    }
+                    if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) imgSrc = `data:image/jpeg;base64,${raw}`;
+                    else imgSrc = raw;
                 }
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'" />` :
@@ -2711,8 +1239,7 @@
 
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { filteredAds = [...allAds];
-                renderAds(filteredAds); return; }
+            if (!query) { filteredAds = [...allAds]; renderAds(filteredAds); return; }
             filteredAds = allAds.filter(ad =>
                 (ad.title && ad.title.toLowerCase().includes(query)) ||
                 (ad.description && ad.description.toLowerCase().includes(query)) ||
@@ -2723,12 +1250,14 @@
 
         function refreshAll() {
             fetchAds(true);
-            if (currentTab === 'profile') { fetchMyAds();
-                fetchTransactions(); }
+            if (currentTab === 'profile') { fetchMyAds(); fetchTransactions(); }
             if (currentTab === 'favorites') fetchFavorites();
             showToast(t('refresh'), 'success');
         }
 
+        // ============================================================
+        // SWITCH TAB
+        // ============================================================
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
@@ -2736,10 +1265,215 @@
             document.getElementById('app').style.display = tab === 'home' ? 'block' : 'none';
             document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
             document.getElementById('favoritesTab').style.display = tab === 'favorites' ? 'block' : 'none';
-            if (tab === 'profile') { loadProfile();
-                fetchMyAds();
-                fetchTransactions(); } else if (tab === 'favorites') { fetchFavorites(); } else if (tab === 'home') { fetchAds(
-                    true); }
+            if (tab === 'profile') { loadProfile(); fetchMyAds(); fetchTransactions(); }
+            if (tab === 'favorites') fetchFavorites();
+        }
+
+        // ============================================================
+        // PROFILE
+        // ============================================================
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            document.getElementById('profileUsername').value = profile.username || '';
+            document.getElementById('profileFullname').value = profile.fullname || '';
+            document.getElementById('profilePhone').value = profile.phone || '';
+            document.getElementById('profileEmail').value = profile.email || '';
+            document.getElementById('profileTrust').value = profile.trustScore || 50;
+            document.getElementById('profileDisplayName').textContent = profile.fullname || t('guest_label');
+            document.getElementById('profileDisplayId').textContent = t('guest_id_label') + guestId.slice(0, 12) + '...';
+            const phoneInput = document.getElementById('adContact');
+            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+        }
+
+        function saveProfile() {
+            const profile = {
+                username: document.getElementById('profileUsername').value.trim(),
+                fullname: document.getElementById('profileFullname').value.trim(),
+                phone: document.getElementById('profilePhone').value.trim(),
+                email: document.getElementById('profileEmail').value.trim(),
+                trustScore: parseInt(document.getElementById('profileTrust').value) || 50,
+            };
+            localStorage.setItem('jedar_profile', JSON.stringify(profile));
+            const phoneInput = document.getElementById('adContact');
+            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            document.getElementById('profileDisplayName').textContent = profile.fullname || t('guest_label');
+            showToast(t('profile_saved'), 'success');
+        }
+
+        // ============================================================
+        // FAVORITES
+        // ============================================================
+        async function toggleFavorite(adId) {
+            const isFav = favorites.includes(adId);
+            try {
+                const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
+                const data = await apiCall(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify({ userId: guestId, adId })
+                });
+                if (data.success) {
+                    if (isFav) {
+                        favorites = favorites.filter(id => id !== adId);
+                        showToast(t('favorite_removed'), 'info');
+                    } else {
+                        favorites.push(adId);
+                        showToast(t('favorite_added'), 'success');
+                    }
+                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
+                    fetchAds(false);
+                }
+            } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
+        }
+
+        async function fetchFavorites() {
+            const container = document.getElementById('favoritesList');
+            if (favorites.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                return;
+            }
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/favorites?user_id=' + guestId);
+                if (data.success && data.favorites) {
+                    if (data.favorites.length === 0) {
+                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    data.favorites.forEach(ad => {
+                        const div = document.createElement('div');
+                        div.className = 'favorite-item';
+                        let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
+                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
+                            imgSrc = `data:image/jpeg;base64,${imgSrc}`;
+                        }
+                        div.innerHTML = `
+                            <img src="${imgSrc}" onerror="this.style.display='none'" />
+                            <div class="info" onclick="openAdDetail(${ad.id})">
+                                <div class="title">${ad.title}</div>
+                                <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                                <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
+                            </div>
+                            <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+            }
+        }
+
+        // ============================================================
+        // MY ADS & TRANSACTIONS
+        // ============================================================
+        async function fetchMyAds() {
+            const container = document.getElementById('myAdsList');
+            container.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            try {
+                const data = await apiCall('/api/user/ads?user_id=' + guestId);
+                if (data.success && data.ads) {
+                    userAdsCount = data.ads.length;
+                    if (data.ads.length === 0) {
+                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    data.ads.forEach(ad => {
+                        const div = document.createElement('div');
+                        div.className = 'my-ad-item';
+                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
+                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t('rejected') };
+                        div.innerHTML = `
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">
+                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
+                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
+                                </div>
+                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
+            }
+        }
+
+        async function fetchTransactions() {
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            try {
+                const data = await apiCall('/api/transactions?user_id=' + guestId);
+                if (data.success && data.transactions) {
+                    if (data.transactions.length === 0) {
+                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    data.transactions.forEach(tx => {
+                        const div = document.createElement('div');
+                        div.className = 'transaction-item';
+                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
+                        const statusLabels = { pending: t('transaction_pending'), approved: t('transaction_approved'), rejected: t('transaction_rejected') };
+                        div.innerHTML = `
+                            <div class="info">
+                                <div class="title">${tx.type === 'charge' ? '💰 شارژ کیف پول' : tx.type}</div>
+                                <div class="sub">
+                                    <span>${tx.amount.toLocaleString()} ${t('amount_toman')}</span>
+                                    <span class="status ${statusMap[tx.status] || 'pending'}">${statusLabels[tx.status] || tx.status}</span>
+                                </div>
+                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(tx.created_at)}</div>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+            }
+        }
+
+        function editAd(adId) {
+            const ad = allAds.find(a => a.id === adId);
+            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
+            document.getElementById('adTitle').value = ad.title;
+            document.getElementById('adCategory').value = ad.category || 'tourism';
+            document.getElementById('adPrice').value = ad.price;
+            document.getElementById('adDescription').value = ad.description;
+            document.getElementById('adLocation').value = ad.city || '';
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            document.getElementById('adContact').value = profile.phone || ad.phone || '';
+            document.getElementById('adType').value = ad.ad_type || 'normal';
+            document.getElementById('planGroup').style.display = ad.ad_type === 'special' ? 'block' : 'none';
+            document.getElementById('addAdModal').classList.add('show');
+            wizardStep = 1;
+            wizardImagesBase64 = [];
+            document.getElementById('adImagePreview').innerHTML = '';
+            updateWizard();
+            document.getElementById('addAdForm').dataset.editId = adId;
+        }
+
+        async function deleteAd(adId) {
+            if (!confirm(t('delete_confirm'))) return;
+            try {
+                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId }) });
+                if (data.success) {
+                    showToast(t('ad_delete_success'), 'success');
+                    fetchMyAds();
+                    fetchAds(false);
+                } else {
+                    showToast(data.error || 'خطا در حذف', 'error');
+                }
+            } catch (err) { showToast('خطا در حذف', 'error'); }
         }
 
         // ============================================================
@@ -2767,11 +1501,7 @@
                     ` : ''}
                 `;
             } else {
-                galleryHtml = `
-                    <div class="ad-gallery">
-                        <div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div>
-                    </div>
-                `;
+                galleryHtml = `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
             }
             const phone = ad.phone || '';
             let html = `
@@ -2885,8 +1615,7 @@
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                 } else {
@@ -2916,35 +1645,11 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
             }
-        }
-
-        async function toggleFavorite(adId) {
-            const isFav = favorites.includes(adId);
-            try {
-                const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
-                const data = await apiCall(endpoint, {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: guestId, adId })
-                });
-                if (data.success) {
-                    if (isFav) {
-                        favorites = favorites.filter(id => id !== adId);
-                        showToast(t('favorite_removed'), 'info');
-                    } else {
-                        favorites.push(adId);
-                        showToast(t('favorite_added'), 'success');
-                    }
-                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
-                    fetchAds(false);
-                }
-            } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
         }
 
         async function toggleFavoriteAndUpdateDetail(adId) {
@@ -2959,173 +1664,15 @@
             }
         }
 
-        async function fetchFavorites() {
-            const container = document.getElementById('favoritesList');
-            if (favorites.length === 0) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
-                return;
-            }
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/favorites?user_id=' + guestId);
-                if (data.success && data.favorites) {
-                    if (data.favorites.length === 0) {
-                        container.innerHTML =
-                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    data.favorites.forEach(ad => {
-                        const div = document.createElement('div');
-                        div.className = 'favorite-item';
-                        let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
-                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
-                            imgSrc = `data:image/jpeg;base64,${imgSrc}`;
-                        }
-                        div.innerHTML = `
-                            <img src="${imgSrc}" onerror="this.style.display='none'" />
-                            <div class="info" onclick="openAdDetail(${ad.id})">
-                                <div class="title">${ad.title}</div>
-                                <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                                <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
-                            </div>
-                            <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
-            }
-        }
-
-        async function fetchMyAds() {
-            const container = document.getElementById('myAdsList');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/user/ads?user_id=' + guestId);
-                if (data.success && data.ads) {
-                    userAdsCount = data.ads.length;
-                    if (data.ads.length === 0) {
-                        container.innerHTML =
-                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    data.ads.forEach(ad => {
-                        const div = document.createElement('div');
-                        div.className = 'my-ad-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
-                        div.innerHTML = `
-                            <div class="info">
-                                <div class="title">${ad.title}</div>
-                                <div class="sub">
-                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
-                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
-                                </div>
-                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
-                            </div>
-                            <div class="actions">
-                                <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
-            }
-        }
-
-        async function deleteAd(adId) {
-            if (!confirm(t('delete_confirm'))) return;
-            try {
-                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId,
-                        adId }) });
-                if (data.success) {
-                    showToast(t('ad_delete_success'), 'success');
-                    fetchMyAds();
-                    fetchAds(false);
-                } else {
-                    showToast(data.error || 'خطا در حذف', 'error');
-                }
-            } catch (err) { showToast('خطا در حذف', 'error'); }
-        }
-
-        function editAd(adId) {
-            const ad = allAds.find(a => a.id === adId);
-            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
-            document.getElementById('adTitle').value = ad.title;
-            document.getElementById('adCategory').value = ad.category || 'tourism';
-            document.getElementById('adPrice').value = ad.price;
-            document.getElementById('adDescription').value = ad.description;
-            document.getElementById('adLocation').value = ad.city || '';
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('adContact').value = profile.phone || ad.phone || '';
-            document.getElementById('adType').value = ad.ad_type || 'normal';
-            document.getElementById('planGroup').style.display = ad.ad_type === 'special' ? 'block' : 'none';
-            document.getElementById('addAdModal').classList.add('show');
-            wizardStep = 1;
-            wizardImagesBase64 = [];
-            document.getElementById('adImagePreview').innerHTML = '';
-            updateWizard();
-            document.getElementById('addAdForm').dataset.editId = adId;
-        }
-
-        async function fetchTransactions() {
-            const container = document.getElementById('transactionsList');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/transactions?user_id=' + guestId);
-                if (data.success && data.transactions) {
-                    if (data.transactions.length === 0) {
-                        container.innerHTML =
-                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
-                        return;
-                    }
-                    container.innerHTML = '';
-                    data.transactions.forEach(tx => {
-                        const div = document.createElement('div');
-                        div.className = 'transaction-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('transaction_pending'), approved: t(
-                                'transaction_approved'), rejected: t('transaction_rejected') };
-                        div.innerHTML = `
-                            <div class="info">
-                                <div class="title">${tx.type === 'charge' ? '💰 شارژ کیف پول' : tx.type}</div>
-                                <div class="sub">
-                                    <span>${tx.amount.toLocaleString()} ${t('amount_toman')}</span>
-                                    <span class="status ${statusMap[tx.status] || 'pending'}">${statusLabels[tx.status] || tx.status}</span>
-                                </div>
-                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(tx.created_at)}</div>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
-            }
-        }
-
+        // ============================================================
+        // WIZARD
+        // ============================================================
         function wizardNext() {
-            if (wizardStep < 3) { wizardStep++;
-                updateWizard(); }
+            if (wizardStep < 3) { wizardStep++; updateWizard(); }
         }
 
         function wizardPrev() {
-            if (wizardStep > 1) { wizardStep--;
-                updateWizard(); }
+            if (wizardStep > 1) { wizardStep--; updateWizard(); }
         }
 
         function updateWizard() {
@@ -3164,8 +1711,7 @@
             wizardImagesBase64.forEach((base64, index) => {
                 const item = document.createElement('div');
                 item.className = 'image-preview-item';
-                item.innerHTML =
-                    `<img src="${base64}" /><button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+                item.innerHTML = `<img src="${base64}" /><button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
                 grid.appendChild(item);
             });
         }
@@ -3175,11 +1721,10 @@
             renderWizardImages();
         }
 
+        // ============================================================
+        // SUBMIT AD
+        // ============================================================
         async function submitAd() {
-            if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'), 'warning');
-                return;
-            }
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             const isVip = profile.isVip || false;
             if (!isVip && userAdsCount >= 1) {
@@ -3206,7 +1751,7 @@
                 const editId = document.getElementById('addAdForm').dataset.editId;
                 const endpoint = editId ? `/api/ads/${editId}` : '/api/submit-ad';
                 const method = editId ? 'PUT' : 'POST';
-                const user = { id: guestId, first_name: profile.fullname || 'کاربر' };
+                const user = { id: guestId, first_name: profile.fullname || 'کاربر مهمان' };
                 const data = await apiCall(endpoint, {
                     method,
                     body: JSON.stringify({
@@ -3243,10 +1788,6 @@
         }
 
         function openAddModal() {
-            if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'), 'warning');
-                return;
-            }
             document.getElementById('addAdModal').classList.add('show');
             document.getElementById('addAdForm').dataset.editId = '';
             document.getElementById('addAdForm').reset();
@@ -3257,12 +1798,7 @@
             document.getElementById('planGroup').style.display = 'none';
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             const phoneInput = document.getElementById('adContact');
-            if (profile.phone) {
-                phoneInput.value = profile.phone;
-            } else {
-                phoneInput.value = '';
-                phoneInput.placeholder = 'شماره تماس (از پروفایل)';
-            }
+            phoneInput.value = profile.phone || '';
         }
 
         function closeModal(id) {
@@ -3285,6 +1821,9 @@
             reader.readAsDataURL(file);
         });
 
+        // ============================================================
+        // CHARGE
+        // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
             document.getElementById('chargeAmount').value = '';
@@ -3324,6 +1863,9 @@
             btn.textContent = t('send_request');
         }
 
+        // ============================================================
+        // VIP
+        // ============================================================
         function openVipModal() {
             document.getElementById('vipModal').classList.add('show');
             loadVipStatus();
@@ -3334,8 +1876,7 @@
                 const data = await apiCall('/api/vip/status?user_id=' + guestId);
                 if (data.success) {
                     if (data.is_vip) {
-                        document.getElementById('vipStatus').innerHTML =
-                            `✅ ${t('vip')} ${t('active')} (${data.days_left} ${t('day')} ${t('remaining')})`;
+                        document.getElementById('vipStatus').innerHTML = `✅ ${t('vip')} ${t('active')} (${data.days_left} ${t('day')} ${t('remaining')})`;
                     } else {
                         document.getElementById('vipStatus').innerHTML = `❌ ${t('no_subscription')}`;
                     }
@@ -3374,6 +1915,9 @@
             btn.textContent = t('buy');
         }
 
+        // ============================================================
+        // GIFT
+        // ============================================================
         function openGiftModal() {
             document.getElementById('giftModal').classList.add('show');
             loadGiftStatus();
@@ -3383,8 +1927,7 @@
             try {
                 const data = await apiCall('/api/gift/status?user_id=' + guestId);
                 if (data.success && data.gift) {
-                    const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
-                        rejected: t('gift_status_rejected') };
+                    const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'), rejected: t('gift_status_rejected') };
                     document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status] || 'نامشخص'}`;
                 } else {
                     document.getElementById('giftStatus').innerHTML = t('no_gift');
@@ -3415,6 +1958,9 @@
             btn.textContent = t('gift_btn');
         }
 
+        // ============================================================
+        // NOTICE
+        // ============================================================
         async function fetchNotice() {
             try {
                 const data = await apiCall('/api/notice');
@@ -3428,9 +1974,7 @@
         function startPendingCheck() {
             if (pendingCheckInterval) clearInterval(pendingCheckInterval);
             pendingCheckInterval = setInterval(() => {
-                if (currentTab === 'home') {
-                    fetchAds(false);
-                }
+                if (currentTab === 'home') fetchAds(false);
             }, 10000);
         }
 
@@ -3440,8 +1984,7 @@
         const savedTheme = localStorage.getItem('jedar_theme') || 'light';
         currentTheme = savedTheme;
         document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-            '<i class="fa-solid fa-sun"></i>';
+        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
 
         const savedLang = localStorage.getItem('jedar_lang') || 'fa';
         currentLang = savedLang;
@@ -3449,36 +1992,23 @@
         document.documentElement.dir = 'rtl';
         updateLanguage();
 
-        setupCodeInputs();
-
-        // بررسی وضعیت ورود
-        if (checkSession() && isLoggedIn) {
-            hideLogin();
-            loadApp();
-        } else {
-            showLogin();
-        }
+        // بارگذاری اولیه
+        loadProfile();
+        fetchAds(true);
+        fetchNotice();
+        startPendingCheck();
 
         document.getElementById('searchInput').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') searchAds();
         });
 
-        // اضافه کردن استایل shake
-        const styleShake = document.createElement('style');
-        styleShake.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                20% { transform: translateX(-10px); }
-                40% { transform: translateX(10px); }
-                60% { transform: translateX(-6px); }
-                80% { transform: translateX(6px); }
-            }
-        `;
-        document.head.appendChild(styleShake);
+        // باز کردن خودکار بخش ابزارها
+        setTimeout(() => {
+            toggleUpperSection();
+        }, 500);
 
-        console.log(`🚀 ${APP_NAME} با متد جدید SMS.ir (username/password/line) راه‌اندازی شد!`);
-        console.log('📱 شماره خط: 30004505975311');
-        console.log('📱 کلید API: lC6VVXKPnewCHu0n0FNQmW8fxSYo2rDm3gAYmwTrTqcmGS7N');
+        console.log(`🚀 ${APP_NAME} بدون ثبت‌نام، با ارتباط کامل با ربات راه‌اندازی شد!`);
+        console.log('📱 شناسه مهمان:', guestId);
     </script>
 </body>
     </html>
