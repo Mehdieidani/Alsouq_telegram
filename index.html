@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>J-DAR.IR | پلتفرم جهانی</title>
+    <title>جـدار | پلتفرم جهانی</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -65,13 +64,13 @@
             overflow-x: hidden;
             overscroll-behavior: none;
         }
+        body.ltr { direction: ltr; }
         button { font-family: var(--font); border: none; outline: none; transition: var(--transition); cursor: pointer; }
         input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -1837,7 +1836,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – با ورود با کد و ماندگاری نشست -->
+    <!-- JAVASCRIPT – کامل با رفع خطای +98 و تایید پیامک -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1863,7 +1862,6 @@
         function checkSession() {
             if (isLoggedIn) {
                 if (Date.now() > sessionExpiry) {
-                    // نشست منقضی شده
                     logout();
                     return false;
                 }
@@ -1895,11 +1893,29 @@
             document.getElementById('loginOverlay').classList.add('hidden');
         }
 
+        // ===== اصلاح شماره تلفن: حذف +98 و سایر کاراکترها =====
+        function normalizePhone(phone) {
+            // حذف تمام کاراکترهای غیرعددی
+            let cleaned = phone.replace(/\D/g, '');
+            // اگر با 98 شروع شد، 98 را حذف کن (برای مواردی که کاربر +98 وارد کرده)
+            if (cleaned.startsWith('98') && cleaned.length > 10) {
+                cleaned = cleaned.substring(2);
+            }
+            // اگر با 0 شروع نشد، 0 را اضافه کن
+            if (!cleaned.startsWith('0') && cleaned.length === 10) {
+                cleaned = '0' + cleaned;
+            }
+            return cleaned;
+        }
+
         // ===== مرحله ۱: درخواست کد تایید =====
         async function requestVerificationCode() {
-            const phone = document.getElementById('phoneInput').value.trim();
+            const phoneInput = document.getElementById('phoneInput');
+            const rawPhone = phoneInput.value.trim();
+            const phone = normalizePhone(rawPhone);
+
             if (!phone || phone.length < 10) {
-                showLoginError('لطفاً شماره تلفن معتبر وارد کنید');
+                showLoginError('لطفاً شماره تلفن معتبر وارد کنید (مثال: 09123456789)');
                 return;
             }
 
@@ -1919,18 +1935,18 @@
             btn.innerHTML = '...در حال ارسال';
 
             try {
+                // شماره را بدون +98 و فقط با 0 ارسال می‌کنیم
                 const response = await fetch(`${API_BASE}/api/send-verification`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         userId: guestId,
-                        phone: phoneNumber
+                        phone: phone // شماره نرمال‌شده
                     })
                 });
                 const data = await response.json();
 
                 if (data.success) {
-                    // ذخیره کد در localStorage (برای حالت آفلاین یا نمایش)
                     if (data.code) {
                         verificationCode = data.code;
                         localStorage.setItem('verification_code', data.code);
@@ -1938,27 +1954,23 @@
                     }
                     localStorage.setItem('last_verify_request', Date.now().toString());
 
-                    // رفتن به مرحله ۲
                     document.getElementById('loginStep1').style.display = 'none';
                     document.getElementById('loginStep2').style.display = 'block';
-                    document.getElementById('displayPhone').textContent = phoneNumber;
+                    document.getElementById('displayPhone').textContent = phone;
                     document.getElementById('verifyError').className = 'login-error';
                     document.getElementById('verifyError').textContent = '';
                     document.getElementById('verifySuccess').className = 'login-success';
                     document.getElementById('verifySuccess').textContent = '✅ کد تایید ارسال شد';
                     document.getElementById('verifySuccess').style.display = 'block';
 
-                    // پاک کردن ورودی‌های کد
                     document.querySelectorAll('#codeInputGroup input').forEach(inp => {
                         inp.value = '';
                         inp.classList.remove('filled');
                     });
                     document.querySelector('#codeInputGroup input[data-index="0"]').focus();
 
-                    // شروع تایمر
                     startTimer();
 
-                    // ذخیره کد در متغیر برای تایید
                     if (data.code) verificationCode = data.code;
 
                 } else {
@@ -2002,7 +2014,6 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // ✅ ورود موفق
                     isLoggedIn = true;
                     localStorage.setItem('jedar_logged_in', 'true');
                     localStorage.setItem('jedar_login_phone', phoneNumber);
@@ -2013,7 +2024,6 @@
                     document.getElementById('verifyError').className = 'login-error';
                     document.getElementById('verifyError').textContent = '';
 
-                    // ذخیره شماره در پروفایل
                     const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
                     profile.phone = phoneNumber;
                     profile.phoneVerified = true;
@@ -2027,7 +2037,6 @@
 
                 } else {
                     showVerifyError(data.error || 'کد نامعتبر است');
-                    // لرزش ورودی‌ها
                     document.querySelectorAll('#codeInputGroup input').forEach(inp => {
                         inp.style.animation = 'shake 0.3s ease';
                         setTimeout(() => inp.style.animation = '', 300);
@@ -2044,7 +2053,6 @@
 
         // ===== ارسال مجدد کد =====
         function resendCode() {
-            // برگشت به مرحله ۱ و ارسال مجدد
             document.getElementById('loginStep2').style.display = 'none';
             document.getElementById('loginStep1').style.display = 'block';
             requestVerificationCode();
@@ -2118,7 +2126,6 @@
                         if (index < inputs.length - 1) {
                             inputs[index + 1].focus();
                         } else {
-                            // آخرین کادر: تایید خودکار
                             setTimeout(() => verifyCode(), 300);
                         }
                     } else {
@@ -2148,7 +2155,6 @@
                     this.select();
                 });
             });
-            // فوکوس روی اولین کادر
             setTimeout(() => {
                 if (document.querySelector('#codeInputGroup input')) {
                     document.querySelector('#codeInputGroup input[data-index="0"]').focus();
@@ -2193,7 +2199,7 @@
         }
 
         // ============================================================
-        // REST OF THE APP (از کد قبلی با اندکی تغییرات)
+        // REST OF THE APP
         // ============================================================
         let allAds = [];
         let filteredAds = [];
@@ -2512,7 +2518,6 @@
                     return;
                 }
                 phoneChangeCount++;
-                // به‌روزرسانی شماره در localStorage ورود
                 localStorage.setItem('jedar_login_phone', newPhone);
             }
             const profile = {
@@ -3414,8 +3419,7 @@
         `;
         document.head.appendChild(styleShake);
 
-        console.log(`🚀 ${APP_NAME} v19.0 - ورود با کد تایید از طریق SMS.ir، ماندگاری نشست ۷ روزه`);
+        console.log(`🚀 ${APP_NAME} با اصلاح شماره تلفن (حذف +98) و تایید پیامک راه‌اندازی شد!`);
     </script>
 </body>
-</html>
-```
+    </html>
