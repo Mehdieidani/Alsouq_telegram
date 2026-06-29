@@ -840,12 +840,13 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – اصلاح شده برای رفع مشکل ثبت آگهی -->
+    <!-- JAVASCRIPT – اصلاح شده با مدیریت خطای Failed to fetch -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURATION
         // ============================================================
+        // توجه: آدرس API را با آدرس واقعی Worker خود جایگزین کنید
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const APP_NAME = 'جـدار';
         let guestId = localStorage.getItem('jedar_guest_id');
@@ -917,6 +918,9 @@
                 ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید.',
                 no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...',
                 ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
+                connection_error: '❌ خطای اتصال به سرور. لطفاً اینترنت خود را بررسی کنید و دوباره تلاش کنید.',
+                server_unreachable: '❌ سرور در دسترس نیست. لطفاً بعداً تلاش کنید.',
+                unknown_error: '❌ خطای ناشناخته رخ داد.',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -960,6 +964,9 @@
                 ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١).',
                 no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
                 ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل',
+                connection_error: '❌ خطأ في الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',
+                server_unreachable: '❌ الخادم غير متاح. يرجى المحاولة لاحقاً.',
+                unknown_error: '❌ حدث خطأ غير معروف.',
             }
         };
 
@@ -1093,23 +1100,36 @@
             return Math.floor(diff/2592000) + ' ماه پیش';
         }
 
-        function apiCall(endpoint, options = {}) {
+        // ============================================================
+        // API CALL با مدیریت خطای Failed to fetch
+        // ============================================================
+        async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            return fetch(url, { ...options, headers })
-                .then(async res => {
-                    const text = await res.text();
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        // اگر پاسخ JSON نبود، خطا برگردانیم
-                        throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
-                    }
-                })
-                .catch(err => {
-                    console.error('❌ API Error:', err);
-                    return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
-                });
+            
+            try {
+                const response = await fetch(url, { ...options, headers });
+                // اگر پاسخ OK نبود، خطا抛出
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                }
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error('❌ API Error:', err);
+                // تشخیص خطای Failed to fetch
+                if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('Network request failed')) {
+                    return { success: false, error: 'connection_error' };
+                }
+                if (err.message.includes('HTTP 404')) {
+                    return { success: false, error: 'not_found' };
+                }
+                if (err.message.includes('HTTP 500')) {
+                    return { success: false, error: 'server_error' };
+                }
+                return { success: false, error: err.message || 'unknown_error' };
+            }
         }
 
         // ============================================================
@@ -1730,7 +1750,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD – اصلاح شده با خطاگیری کامل
+        // SUBMIT AD – با مدیریت کامل خطا
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -1802,7 +1822,18 @@
                     fetchAds(true);
                     fetchMyAds();
                 } else {
-                    showToast(data.error || t('ad_error'), 'error');
+                    // خطاهای خاص
+                    let errorMsg = data.error;
+                    if (data.error === 'connection_error') {
+                        errorMsg = t('connection_error');
+                    } else if (data.error === 'not_found') {
+                        errorMsg = t('server_unreachable');
+                    } else if (data.error === 'server_error') {
+                        errorMsg = '❌ خطا در سرور. لطفاً بعداً تلاش کنید.';
+                    } else if (data.error === 'unknown_error') {
+                        errorMsg = t('unknown_error');
+                    }
+                    showToast(errorMsg || t('ad_error'), 'error');
                 }
             } catch (err) {
                 console.error('❌ خطا در ثبت آگهی:', err);
@@ -1885,7 +1916,9 @@
                     showToast(t('charge_success'), 'success');
                     closeModal('chargeModal');
                 } else {
-                    showToast(data.error || t('charge_error'), 'error');
+                    let errorMsg = data.error;
+                    if (data.error === 'connection_error') errorMsg = t('connection_error');
+                    showToast(errorMsg || t('charge_error'), 'error');
                 }
             } catch (err) { showToast(t('charge_error'), 'error'); }
             btn.disabled = false;
@@ -1934,7 +1967,9 @@
                     showToast(t('vip_success'), 'success');
                     closeModal('vipModal');
                 } else {
-                    showToast(data.error || t('vip_error'), 'error');
+                    let errorMsg = data.error;
+                    if (data.error === 'connection_error') errorMsg = t('connection_error');
+                    showToast(errorMsg || t('vip_error'), 'error');
                 }
             } catch (err) { showToast(t('vip_error'), 'error'); }
             btn.disabled = false;
@@ -1977,7 +2012,9 @@
                     closeModal('giftModal');
                     loadGiftStatus();
                 } else {
-                    showToast(data.error || t('gift_error'), 'error');
+                    let errorMsg = data.error;
+                    if (data.error === 'connection_error') errorMsg = t('connection_error');
+                    showToast(errorMsg || t('gift_error'), 'error');
                 }
             } catch (err) { showToast(t('gift_error'), 'error'); }
             btn.disabled = false;
@@ -2029,7 +2066,7 @@
             toggleUpperSection();
         }, 500);
 
-        console.log(`🚀 ${APP_NAME} – نسخه اصلاح‌شده با رفع خطای ثبت آگهی`);
+        console.log(`🚀 ${APP_NAME} – نسخه با مدیریت خطای Failed to fetch`);
     </script>
 </body>
-                                                                                                    </html>
+    </html>
