@@ -840,7 +840,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – اصلاح شده برای رفع مشکل نمایش تصاویر و ثبت آگهی -->
+    <!-- JAVASCRIPT – اصلاح شده برای رفع مشکل ثبت آگهی -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1097,7 +1097,15 @@
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
             return fetch(url, { ...options, headers })
-                .then(res => res.json())
+                .then(async res => {
+                    const text = await res.text();
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        // اگر پاسخ JSON نبود، خطا برگردانیم
+                        throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
+                    }
+                })
                 .catch(err => {
                     console.error('❌ API Error:', err);
                     return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
@@ -1157,7 +1165,7 @@
         }
 
         // ============================================================
-        // ADS – اصلاح‌شده برای نمایش تصاویر از base64
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -1167,24 +1175,17 @@
                 grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             }
             try {
-                // استفاده از endpoint /api/ads که در Worker موجود است
                 const data = await apiCall('/api/ads');
                 console.log('📦 داده‌های دریافتی از /api/ads:', data);
 
                 if (data.success && data.ads && data.ads.length > 0) {
-                    // پردازش تصاویر: Worker تصاویر را در فیلد image_ids (به صورت JSON) برمی‌گرداند
                     allAds = data.ads.map(ad => {
-                        // اگر image_ids وجود دارد و رشته است، آن را parse کن
                         if (ad.image_ids && typeof ad.image_ids === 'string') {
-                            try {
-                                ad.images = JSON.parse(ad.image_ids);
-                            } catch (e) {
-                                ad.images = [];
-                            }
+                            try { ad.images = JSON.parse(ad.image_ids); } catch(e) { ad.images = []; }
                         } else if (ad.image_ids && Array.isArray(ad.image_ids)) {
                             ad.images = ad.image_ids;
                         } else if (ad.images && Array.isArray(ad.images)) {
-                            // اگر قبلاً images وجود دارد
+                            // already set
                         } else {
                             ad.images = [];
                         }
@@ -1219,11 +1220,9 @@
                 card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
 
-                // پردازش تصاویر – از فیلد images (که از image_ids ساخته شده) استفاده می‌کنیم
                 let imgSrc = '';
                 if (ad.images && ad.images.length > 0) {
                     let raw = ad.images[0];
-                    // اگر تصویر با data:image شروع نشد و با http شروع نشد، احتمالاً base64 خام است
                     if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) {
                         imgSrc = `data:image/jpeg;base64,${raw}`;
                     } else {
@@ -1328,13 +1327,12 @@
         }
 
         // ============================================================
-        // AD DETAIL – باز کردن در مودال شیشه‌ای
+        // AD DETAIL
         // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
             if (!ad) {
                 showToast(t('ad_not_found'), 'error');
-                console.error('❌ آگهی با شناسه', adId, 'در allAds یافت نشد');
                 return;
             }
 
@@ -1409,7 +1407,6 @@
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
 
-            // توابع گالری
             window.detailGalleryPrev = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
@@ -1733,7 +1730,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD – استفاده از مسیر صحیح /api/submit-ad
+        // SUBMIT AD – اصلاح شده با خطاگیری کامل
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -1752,7 +1749,7 @@
             const price = document.getElementById('adPrice').value;
             const desc = document.getElementById('adDescription').value.trim();
             const location = document.getElementById('adLocation').value.trim();
-            const contact = document.getElementById('adContact').value.trim();
+            const contact = document.getElementById('adContact').value.trim() || profile.phone || '';
             const country = document.getElementById('adCountry').value;
             const adType = document.getElementById('adType').value;
             const plan = parseInt(document.getElementById('adPlan').value) || 1;
@@ -1765,34 +1762,36 @@
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.textContent = '...در حال ثبت';
-            try {
-                const editId = document.getElementById('addAdForm').dataset.editId;
-                // برای ویرایش: Worker مسیر /api/ads/:id با PUT را ندارد، بنابراین فعلاً از ثبت جدید استفاده می‌کنیم
-                // اما برای ویرایش، می‌توانیم از /api/ad/update استفاده کنیم (اگر Worker از آن پشتیبانی کند)
-                // در Worker فعلی، ویرایش از طریق PUT روی /api/ads/:id انجام می‌شود، اما ما مسیر اشتباهی می‌فرستادیم.
-                // بنابراین برای سادگی، ویرایش را فعلاً به عنوان ثبت جدید می‌فرستیم (می‌توانید بعداً اصلاح کنید)
-                const endpoint = editId ? '/api/submit-ad' : '/api/submit-ad';
-                const method = 'POST';
-                const user = { id: guestId, first_name: profile.fullname || 'کاربر' };
 
-                const data = await apiCall(endpoint, {
-                    method,
-                    body: JSON.stringify({
-                        user: user,
-                        title,
-                        category,
-                        price: parseInt(price),
-                        description: desc,
-                        location,
-                        contact: contact || profile.phone || '',
-                        country,
-                        ad_type: adType,
-                        plan: adType === 'special' ? plan : undefined,
-                        images: wizardImagesBase64
-                    })
+            try {
+                const payload = {
+                    user: {
+                        id: guestId,
+                        first_name: profile.fullname || 'کاربر'
+                    },
+                    title,
+                    category,
+                    price: parseInt(price),
+                    description: desc,
+                    location,
+                    contact: contact,
+                    country,
+                    ad_type: adType,
+                    plan: adType === 'special' ? plan : undefined,
+                    images: wizardImagesBase64
+                };
+
+                console.log('📤 ارسال آگهی:', payload);
+
+                const data = await apiCall('/api/submit-ad', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
                 });
+
+                console.log('📥 پاسخ سرور:', data);
+
                 if (data.success) {
-                    showToast(editId ? 'آگهی ویرایش شد' : t('ad_success'), 'success');
+                    showToast(t('ad_success'), 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -1805,9 +1804,13 @@
                 } else {
                     showToast(data.error || t('ad_error'), 'error');
                 }
-            } catch (err) { showToast(t('ad_error'), 'error'); }
-            btn.disabled = false;
-            btn.textContent = t('submit');
+            } catch (err) {
+                console.error('❌ خطا در ثبت آگهی:', err);
+                showToast(err.message || t('ad_error'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = t('submit');
+            }
         }
 
         function openAddModal() {
@@ -2026,7 +2029,7 @@
             toggleUpperSection();
         }, 500);
 
-        console.log(`🚀 ${APP_NAME} – نسخه اصلاح‌شده برای نمایش تصاویر و رفع خطای ثبت آگهی`);
+        console.log(`🚀 ${APP_NAME} – نسخه اصلاح‌شده با رفع خطای ثبت آگهی`);
     </script>
 </body>
-                </html>
+                                                                                                    </html>
