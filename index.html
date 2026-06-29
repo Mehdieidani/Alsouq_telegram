@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -93,6 +94,7 @@
             border-radius: 10px;
         }
 
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -151,6 +153,7 @@
             color: var(--danger);
         }
 
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -174,15 +177,9 @@
             display: inline-block;
         }
         @keyframes metallicShine {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .logo-text span {
             font-size: 11px;
@@ -214,6 +211,7 @@
             color: var(--primary);
         }
 
+        /* ===== TOGGLE SECTION ===== */
         .toggle-section-btn {
             display: flex;
             align-items: center;
@@ -778,14 +776,8 @@
             display: flex;
         }
         @keyframes modalOverlayFade {
-            from {
-                opacity: 0;
-                backdrop-filter: blur(0);
-            }
-            to {
-                opacity: 1;
-                backdrop-filter: blur(20px);
-            }
+            from { opacity: 0; backdrop-filter: blur(0); }
+            to { opacity: 1; backdrop-filter: blur(20px); }
         }
         .modal-box {
             background: var(--bg-card);
@@ -801,14 +793,8 @@
             transform-origin: center;
         }
         @keyframes modalZoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.85) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .modal-box::-webkit-scrollbar {
             width: 4px;
@@ -1016,14 +1002,8 @@
             overflow-y: auto;
         }
         @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal-box-old .modal-close {
             position: absolute;
@@ -1514,12 +1494,8 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .review-section {
@@ -1596,7 +1572,7 @@
             color: var(--text-muted);
         }
 
-        @media (max-width: 480px) {
+        @media (max-width:480px) {
             .ads-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 8px;
@@ -1627,7 +1603,7 @@
                 font-size: 9px;
             }
         }
-        @media (max-width: 380px) {
+        @media (max-width:380px) {
             .ads-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 4px;
@@ -1641,14 +1617,8 @@
             }
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
@@ -1860,8 +1830,6 @@
         </div>
         <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3>
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
-        <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="transactionsTitle">💰 تراکنش‌ها</h3>
-        <div id="transactionsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <!-- Favorites Tab -->
@@ -1871,16 +1839,18 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کاملاً هماهنگ با Worker (مسیرهای صحیح)          -->
+    <!-- JAVASCRIPT – کاملاً هماهنگ با Worker (رفع مشکل تصاویر و ثبت)   -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
-        // CONFIGURATION – منطبق با فایل deepseek_javascript_20260629_26d8cf.js
+        // CONFIGURATION
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const APP_NAME = 'جـدار';
+        // دیگر نیازی به IMAGE_BASE نداریم چون خود Worker مسیر /image/ را برمی‌گرداند
+        // اما برای اطمینان از مواردی که تصویر به صورت path نسبی است:
+        const IMAGE_BASE = API_BASE; // برای استفاده با new URL
 
-        // ===== شناسه کاربر مهمان =====
         let guestId = localStorage.getItem('jedar_guest_id');
         if (!guestId) {
             guestId = 'guest_' + Math.random().toString(36).substring(2, 12);
@@ -1905,7 +1875,7 @@
         let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
 
         // ============================================================
-        // TRANSLATIONS (کوتاه شده)
+        // TRANSLATIONS
         // ============================================================
         const translations = {
             fa: {
@@ -2019,6 +1989,7 @@
                 balance: 'موجودی',
                 all: 'همه',
                 not_found: 'مسیر یافت نشد',
+                loading_ads: 'در حال بارگذاری آگهی‌ها...',
             },
             ar: {
                 home: 'الرئيسية',
@@ -2131,6 +2102,7 @@
                 balance: 'الرصيد',
                 all: 'الجميع',
                 not_found: 'لم يتم العثور على المسار',
+                loading_ads: 'جاري تحميل الإعلانات...',
             }
         };
 
@@ -2268,10 +2240,10 @@
             const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation',
                 info: 'fa-circle-info' };
             toast.innerHTML = `
-                    <i class="fa-solid ${icons[type] || icons.success}"></i>
-                    <span>${msg}</span>
-                    <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
-                `;
+                <i class="fa-solid ${icons[type] || icons.success}"></i>
+                <span>${msg}</span>
+                <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+            `;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 30);
             setTimeout(() => {
@@ -2295,6 +2267,20 @@
             if (diff < 2592000) return Math.floor(diff / 604800) + ' هفته پیش';
             if (diff < 5184000) return '۱ ماه پیش';
             return Math.floor(diff / 2592000) + ' ماه پیش';
+        }
+
+        // تابع جدید برای تبدیل صحیح تصاویر
+        function normalizeImageUrl(img) {
+            if (!img) return null;
+            // اگر با http یا https شروع شود، همان است
+            if (img.startsWith('http://') || img.startsWith('https://')) return img;
+            // اگر با '/' شروع شود، آن را به آدرس پایه اضافه می‌کنیم
+            if (img.startsWith('/')) {
+                // از new URL استفاده می‌کنیم تا درست ترکیب شود
+                return new URL(img, API_BASE).href;
+            }
+            // در غیر این صورت، فرض می‌کنیم یک file_id است و از پراکسی استفاده می‌کنیم
+            return `${API_BASE}/image/${img}`;
         }
 
         function apiCall(endpoint, options = {}) {
@@ -2393,7 +2379,7 @@
         }
 
         // ============================================================
-        // ADS – دریافت از Worker (فقط تایید شده‌ها)
+        // ADS – دریافت از Worker با تصاویر اصلاح‌شده
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2406,21 +2392,11 @@
                 const data = await apiCall('/api/ads');
                 if (data.success && data.data && data.data.length > 0) {
                     allAds = data.data.map(ad => {
-                        if (ad.images && typeof ad.images === 'string') {
-                            try { ad.images = JSON.parse(ad.images); } catch (e) { ad.images = []; }
-                        } else if (ad.images && Array.isArray(ad.images)) {
-                            // already set
+                        // پردازش تصاویر: استفاده از normalizeImageUrl
+                        if (ad.images && Array.isArray(ad.images)) {
+                            ad.images = ad.images.map(img => normalizeImageUrl(img)).filter(url => url !== null);
                         } else {
                             ad.images = [];
-                        }
-                        if (ad.images && ad.images.length > 0) {
-                            ad.images = ad.images.map(img => {
-                                if (img && typeof img === 'string' && !img.startsWith('data:') && !img
-                                    .startsWith('http')) {
-                                    return `data:image/jpeg;base64,${img}`;
-                                }
-                                return img;
-                            });
                         }
                         return ad;
                     });
@@ -2466,26 +2442,26 @@
                 const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
 
                 card.innerHTML = `
-                        <div class="ad-image">
-                            ${imgHtml}
-                            <div class="watermark">J-DAR</div>
-                            ${isSpecial ? '<div class="special-badge">⭐ ' + t('special_badge') + '</div>' : ''}
-                            <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
-                                <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                            </div>
+                    <div class="ad-image">
+                        ${imgHtml}
+                        <div class="watermark">J-DAR</div>
+                        ${isSpecial ? '<div class="special-badge">⭐ ' + t('special_badge') + '</div>' : ''}
+                        <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
+                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </div>
-                        <div class="ad-content">
-                            <div class="title">${ad.title || 'بدون عنوان'}</div>
-                            <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                            <div class="meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ''}</div>
-                            <div class="meta" style="font-size:9px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
-                        </div>
-                        <div class="ad-footer">
-                            <div class="avatar">${ad.userFullname ? ad.userFullname.charAt(0).toUpperCase() : '👤'}</div>
-                            <span class="username">${ad.userFullname || ad.username || 'کاربر'}</span>
-                            <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
-                        </div>
-                    `;
+                    </div>
+                    <div class="ad-content">
+                        <div class="title">${ad.title || 'بدون عنوان'}</div>
+                        <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                        <div class="meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ''}</div>
+                        <div class="meta" style="font-size:9px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
+                    </div>
+                    <div class="ad-footer">
+                        <div class="avatar">${ad.userFullname ? ad.userFullname.charAt(0).toUpperCase() : '👤'}</div>
+                        <span class="username">${ad.userFullname || ad.username || 'کاربر'}</span>
+                        <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
+                    </div>
+                `;
                 grid.appendChild(card);
             });
         }
@@ -2565,25 +2541,26 @@
                 return;
             }
 
-            const galleryImages = ad.images || [];
+            // استفاده از normalizeImageUrl برای تصاویر
+            const galleryImages = (ad.images || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
             let galleryIndex = 0;
             let galleryHtml = '';
             if (galleryImages.length > 0) {
                 let imgSrc = galleryImages[0];
                 galleryHtml = `
-                        <div class="ad-gallery">
-                            <img id="detailGalleryImg" src="${imgSrc}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
+                    <div class="ad-gallery">
+                        <img id="detailGalleryImg" src="${imgSrc}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
+                    </div>
+                    ${galleryImages.length > 1 ? `
+                        <div class="gallery-controls">
+                            <button onclick="detailGalleryPrev()">‹</button>
+                            <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;">
+                                <span id="detailGalleryIndex">1</span> / ${galleryImages.length}
+                            </span>
+                            <button onclick="detailGalleryNext()">›</button>
                         </div>
-                        ${galleryImages.length > 1 ? `
-                            <div class="gallery-controls">
-                                <button onclick="detailGalleryPrev()">‹</button>
-                                <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;">
-                                    <span id="detailGalleryIndex">1</span> / ${galleryImages.length}
-                                </span>
-                                <button onclick="detailGalleryNext()">›</button>
-                            </div>
-                        ` : ''}
-                    `;
+                    ` : ''}
+                `;
             } else {
                 galleryHtml =
                     `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
@@ -2593,43 +2570,43 @@
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
 
             let html = `
-                    <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
-                    ${galleryHtml}
-                    <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                    <div class="ad-meta">
-                        <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
-                        <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
-                        <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
-                        <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
+                <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
+                ${galleryHtml}
+                <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                <div class="ad-meta">
+                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
+                    <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
+                </div>
+                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
+                <div class="action-buttons">
+                    ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
+                    ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                    <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
+                </div>
+                <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
+                    <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
+                    ${favorites.includes(ad.id) ? t('remove_fav') : t('add_fav')}
+                </button>
+                <div class="review-section">
+                    <h4>⭐ ${t('rate_review')}</h4>
+                    <div class="review-stars" id="detailReviewStars">
+                        <span onclick="setDetailRating(1)">☆</span>
+                        <span onclick="setDetailRating(2)">☆</span>
+                        <span onclick="setDetailRating(3)">☆</span>
+                        <span onclick="setDetailRating(4)">☆</span>
+                        <span onclick="setDetailRating(5)">☆</span>
                     </div>
-                    <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
-                    <div class="action-buttons">
-                        ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                        ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
-                        <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
+                    <input type="hidden" id="detailReviewAdId" value="${ad.id}" />
+                    <input type="hidden" id="detailReviewRating" value="0" />
+                    <textarea class="review-comment" id="detailReviewComment" placeholder="${t('comment')}"></textarea>
+                    <button class="btn-submit-review" onclick="submitDetailReview()">${t('submit_review')}</button>
+                    <div id="detailReviews" style="margin-top:12px;">
+                        <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div>
                     </div>
-                    <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
-                        <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
-                        ${favorites.includes(ad.id) ? t('remove_fav') : t('add_fav')}
-                    </button>
-                    <div class="review-section">
-                        <h4>⭐ ${t('rate_review')}</h4>
-                        <div class="review-stars" id="detailReviewStars">
-                            <span onclick="setDetailRating(1)">☆</span>
-                            <span onclick="setDetailRating(2)">☆</span>
-                            <span onclick="setDetailRating(3)">☆</span>
-                            <span onclick="setDetailRating(4)">☆</span>
-                            <span onclick="setDetailRating(5)">☆</span>
-                        </div>
-                        <input type="hidden" id="detailReviewAdId" value="${ad.id}" />
-                        <input type="hidden" id="detailReviewRating" value="0" />
-                        <textarea class="review-comment" id="detailReviewComment" placeholder="${t('comment')}"></textarea>
-                        <button class="btn-submit-review" onclick="submitDetailReview()">${t('submit_review')}</button>
-                        <div id="detailReviews" style="margin-top:12px;">
-                            <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div>
-                        </div>
-                    </div>
-                `;
+                </div>
+            `;
             document.getElementById('adDetailContent').innerHTML = html;
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
@@ -2690,9 +2667,9 @@
             if (btn) {
                 const isFav = favorites.includes(adId);
                 btn.innerHTML = `
-                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                        ${isFav ? t('remove_fav') : t('add_fav')}
-                    `;
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                    ${isFav ? t('remove_fav') : t('add_fav')}
+                `;
             }
         }
 
@@ -2740,13 +2717,13 @@
                         const div = document.createElement('div');
                         div.className = 'review-item';
                         div.innerHTML = `
-                                <div class="header">
-                                    <span class="name">${r.username || 'کاربر'}</span>
-                                    <span class="stars">☆☆☆☆☆</span>
-                                </div>
-                                <div class="comment">${r.text || ''}</div>
-                                <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
-                            `;
+                            <div class="header">
+                                <span class="name">${r.username || 'کاربر'}</span>
+                                <span class="stars">☆☆☆☆☆</span>
+                            </div>
+                            <div class="comment">${r.text || ''}</div>
+                            <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
+                        `;
                         container.appendChild(div);
                     });
                 } else {
@@ -2802,18 +2779,16 @@
                         const div = document.createElement('div');
                         div.className = 'favorite-item';
                         let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
-                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
-                            imgSrc = `data:image/jpeg;base64,${imgSrc}`;
-                        }
+                        if (imgSrc) imgSrc = normalizeImageUrl(imgSrc);
                         div.innerHTML = `
-                                <img src="${imgSrc}" onerror="this.style.display='none'" />
-                                <div class="info" onclick="openAdDetail(${ad.id})">
-                                    <div class="title">${ad.title}</div>
-                                    <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
-                                    <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
-                                </div>
-                                <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
-                            `;
+                            <img src="${imgSrc}" onerror="this.style.display='none'" />
+                            <div class="info" onclick="openAdDetail(${ad.id})">
+                                <div class="title">${ad.title}</div>
+                                <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                                <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
+                            </div>
+                            <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
+                        `;
                         container.appendChild(div);
                     });
                 } else {
@@ -2843,19 +2818,19 @@
                         const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
                             'rejected') };
                         div.innerHTML = `
-                                <div class="info">
-                                    <div class="title">${ad.title}</div>
-                                    <div class="sub">
-                                        <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
-                                        <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
-                                    </div>
-                                    <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">
+                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
+                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
                                 </div>
-                                <div class="actions">
-                                    <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
-                                </div>
-                            `;
+                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        `;
                         container.appendChild(div);
                     });
                 } else {
@@ -2966,7 +2941,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD – ارسال به Worker با مسیر صحیح /api/ad/submit
+        // SUBMIT AD – ارسال به Worker با مسیر صحیح
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -3274,9 +3249,8 @@
         console.log(`🚀 ${APP_NAME} – متصل به Worker (مسیر /api/ad/submit برای ثبت آگهی)`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
+        console.log(`🖼 تصاویر با normalizeImageUrl اصلاح شدند.`);
         console.log(`✅ تمام مسیرها با Worker هماهنگ شده‌اند.`);
-        console.log(`📝 ثبت آگهی از مسیر /api/ad/submit انجام می‌شود.`);
-        console.log(`🖼 تصاویر به صورت Base64 با پیشوند data:image/jpeg;base64 نمایش داده می‌شوند.`);
     </script>
 </body>
     </html>
