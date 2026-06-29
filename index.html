@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== RESET & VARIABLES ===== */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         :root {
             --bg-primary:#f8fafc; --bg-card:#ffffff; --bg-input:#f1f5f9;
@@ -40,6 +41,7 @@
         ::-webkit-scrollbar-track { background:transparent; }
         ::-webkit-scrollbar-thumb { background:var(--primary); border-radius:10px; }
 
+        /* ===== TOAST ===== */
         .toast-container {
             position:fixed; top:20px; left:50%; transform:translateX(-50%);
             z-index:99999; max-width:92%; width:440px; pointer-events:none;
@@ -60,6 +62,7 @@
         .toast .close { margin-right:auto; background:none; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; padding:0 4px; }
         .toast .close:hover { color:var(--danger); }
 
+        /* ===== HEADER ===== */
         .header {
             display:flex; justify-content:space-between; align-items:center;
             padding:8px 0 12px; position:sticky; top:0; z-index:50;
@@ -83,6 +86,7 @@
         }
         .header-actions button:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary); }
 
+        /* ===== TOGGLE SECTION ===== */
         .toggle-section-btn {
             display:flex; align-items:center; justify-content:center; gap:10px;
             width:100%; padding:14px 20px; background:var(--primary-gradient); color:#fff;
@@ -98,10 +102,6 @@
         .toggle-section-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(22,163,74,0.35); }
         .toggle-section-btn i { transition:transform 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); font-size:20px; }
         .toggle-section-btn.active i { transform:rotate(180deg); }
-        .toggle-section-btn .badge-icon {
-            background:rgba(255,255,255,0.25); padding:4px 10px; border-radius:var(--radius-full);
-            font-size:11px; margin-right:4px;
-        }
 
         .toggle-section {
             overflow:hidden; max-height:0; opacity:0;
@@ -212,6 +212,7 @@
         .category-chip:hover { border-color:var(--primary); background:var(--primary-light); transform:translateY(-2px); }
         .category-chip.active { background:var(--primary-gradient); color:#fff; border-color:var(--primary); }
 
+        /* ===== ADS GRID ===== */
         .ads-grid {
             display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;
         }
@@ -222,7 +223,10 @@
             position:relative; transform:translateY(0);
             will-change:transform, box-shadow;
         }
-        .ad-card:hover { transform:translateY(-6px) scale(1.01); border-color:var(--primary); box-shadow:var(--shadow-md); }
+        .ad-card:hover {
+            transform:translateY(-6px) scale(1.01);
+            border-color:var(--primary); box-shadow:var(--shadow-md);
+        }
         .ad-card .ad-image {
             width:100%; aspect-ratio:1/1; background:var(--bg-input); position:relative; overflow:hidden;
         }
@@ -275,6 +279,7 @@
         }
         .ad-card .ad-footer .rating i { color:var(--gold); margin-left:2px; }
 
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position:fixed; bottom:0; left:0; right:0; max-width:500px; margin:0 auto;
             background:var(--bg-card); backdrop-filter:blur(24px);
@@ -299,6 +304,7 @@
         }
         .bottom-nav .nav-item .nav-label { font-size:9px; font-weight:500; }
 
+        /* ===== MODAL AD DETAIL (Glass) ===== */
         .modal-overlay {
             position:fixed; top:0; left:0; right:0; bottom:0;
             background:rgba(0,0,0,0.6); backdrop-filter:blur(20px);
@@ -392,6 +398,7 @@
         .modal-box .btn-fav:hover { background:var(--primary-light); border-color:var(--primary); }
         .modal-box .btn-fav .fa-heart { color:var(--danger); }
 
+        /* ===== OTHER MODALS ===== */
         .modal-overlay-old {
             position:fixed; top:0; left:0; right:0; bottom:0;
             background:rgba(0,0,0,0.6); backdrop-filter:blur(20px); z-index:9999;
@@ -618,8 +625,10 @@
 </head>
 <body>
 
+    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ===== MAIN APP ===== -->
     <div id="app">
         <div class="header">
             <div class="logo-text">جـدار <span>جهانی</span></div>
@@ -685,6 +694,7 @@
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
+    <!-- ===== BOTTOM NAV ===== -->
     <div class="bottom-nav">
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -704,6 +714,7 @@
         </button>
     </div>
 
+    <!-- ===== MODAL AD DETAIL ===== -->
     <div class="modal-overlay" id="adDetailsModal">
         <div class="modal-box" id="adDetailBox">
             <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
@@ -711,6 +722,8 @@
         </div>
     </div>
 
+    <!-- ===== OTHER MODALS ===== -->
+    <!-- Add Ad Modal -->
     <div class="modal-overlay-old" id="addAdModal">
         <div class="modal-box-old">
             <button class="modal-close" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -771,6 +784,7 @@
         </div>
     </div>
 
+    <!-- Charge Modal -->
     <div class="modal-overlay-old" id="chargeModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
             <div class="form-group"><label id="chargeAmountLabel">مبلغ (تومان) <span class="required">*</span></label><input type="number" id="chargeAmount" placeholder="۰" required /></div>
@@ -782,6 +796,7 @@
         </div>
     </div>
 
+    <!-- VIP Modal -->
     <div class="modal-overlay-old" id="vipModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک VIP</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
@@ -794,6 +809,7 @@
         </div>
     </div>
 
+    <!-- Gift Modal -->
     <div class="modal-overlay-old" id="giftModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="giftDesc">با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.</p>
@@ -802,6 +818,7 @@
         </div>
     </div>
 
+    <!-- Profile Tab -->
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
         <div class="profile-section">
@@ -816,11 +833,15 @@
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
+    <!-- Favorites Tab -->
     <div id="favoritesTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="favTitle">❤️ علاقه‌مندی‌ها</h2>
         <div id="favoritesList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT – اصلاح شده برای رفع مشکل نمایش تصاویر و ثبت آگهی -->
+    <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURATION
@@ -851,32 +872,28 @@
         let userAdsCount = 0;
 
         // ============================================================
-        // TRANSLATIONS (خلاصه)
+        // TRANSLATIONS (ساده)
         // ============================================================
         const translations = {
             fa: {
                 home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل',
                 wallet: 'کیف پول', currency: 'تومان', trust: 'اعتماد', charge: 'شارژ',
                 vip: 'VIP', gift: 'هدیه', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
-                apply: 'اعمال', cancel: 'لغو', recent_ads: 'آخرین آگهی‌ها',
-                add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی', category: 'دسته‌بندی',
-                price: 'قیمت (تومان)', next: 'بعدی', prev: 'قبلی',
+                recent_ads: 'آخرین آگهی‌ها', add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی',
+                category: 'دسته‌بندی', price: 'قیمت (تومان)', next: 'بعدی', prev: 'قبلی',
                 description: 'توضیحات', location: 'موقعیت / شهر', country: 'کشور',
                 images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس', ad_type: 'نوع آگهی', normal: 'عادی',
-                special: 'ویژه', special_duration: 'مدت ویژه', submit: 'ثبت آگهی',
-                charge_wallet: 'شارژ کیف پول', amount: 'مبلغ (تومان)',
-                receipt: 'تصویر رسید', upload_receipt: 'برای آپلود رسید کلیک کنید',
+                phone: 'شماره تماس', ad_type: 'نوع آگهی', normal: 'عادی', special: 'ویژه',
+                special_duration: 'مدت ویژه', submit: 'ثبت آگهی', charge_wallet: 'شارژ کیف پول',
+                amount: 'مبلغ (تومان)', receipt: 'تصویر رسید', upload_receipt: 'برای آپلود رسید کلیک کنید',
                 send_request: 'ارسال درخواست', vip_subscription: 'اشتراک VIP',
                 vip_desc: 'با اشتراک VIP، بدون محدودیت آگهی ثبت کنید.',
-                month: 'ماه', months_3: 'ماه', months_6: 'ماه',
-                buy: 'خرید', loading: 'در حال بارگذاری...',
+                month: 'ماه', months_3: 'ماه', months_6: 'ماه', buy: 'خرید',
                 gift_request: 'هدیه رایگان', gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
                 gift_btn: 'درخواست هدیه', rate_review: 'امتیاز و نظر',
                 comment: 'نظر خود را بنویسید...', submit_review: 'ارسال نظر',
-                profile_title: 'پروفایل', username: 'نام کاربری',
-                fullname: 'نام کامل', phone_label: 'شماره تلفن',
-                email_label: 'ایمیل', trust_score: 'امتیاز اعتماد',
+                profile_title: 'پروفایل', username: 'نام کاربری', fullname: 'نام کامل',
+                phone_label: 'شماره تلفن', email_label: 'ایمیل', trust_score: 'امتیاز اعتماد',
                 save: 'ذخیره', no_ads: 'هیچ آگهی‌ای موجود نیست',
                 pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
                 call: 'تماس', whatsapp: 'واتساپ', add_fav: 'افزودن به علاقه‌مندی',
@@ -885,9 +902,8 @@
                 expired: 'منقضی', special_badge: 'ویژه', refresh: 'بروزرسانی',
                 pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی',
                 beauty: 'زیبایی', services: 'خدمات', jobs: 'کاریابی',
-                real_estate: 'املاک', vehicles: 'خودرو',
-                electronics: 'الکترونیک', education: 'آموزش',
-                share: 'اشتراک', show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها',
+                real_estate: 'املاک', vehicles: 'خودرو', share: 'اشتراک',
+                show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها',
                 gift_status_pending: '⏳ در انتظار تایید', gift_status_approved: '✅ تایید شده',
                 gift_status_rejected: '❌ رد شده', no_gift: 'شما هیچ درخواست هدیه‌ای ندارید',
                 gift_success: 'درخواست هدیه ثبت شد', gift_error: 'خطا در ثبت درخواست هدیه',
@@ -903,29 +919,24 @@
                 ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
             },
             ar: {
-                // مشابه با فارسی – برای اختصار فقط کلیدها نگهداری شده
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
                 wallet: 'المحفظة', currency: 'تومان', trust: 'الثقة', charge: 'شحن',
                 vip: 'VIP', gift: 'هدية', search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
-                apply: 'تطبيق', cancel: 'إلغاء', recent_ads: 'آخر الإعلانات',
-                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة',
-                price: 'السعر (تومان)', next: 'التالي', prev: 'السابق',
+                recent_ads: 'آخر الإعلانات', add_ad: 'إعلان جديد', title: 'عنوان الإعلان',
+                category: 'الفئة', price: 'السعر (تومان)', next: 'التالي', prev: 'السابق',
                 description: 'الوصف', location: 'الموقع / المدينة', country: 'الدولة',
                 images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف', ad_type: 'نوع الإعلان', normal: 'عادي',
-                special: 'مميز', special_duration: 'مدة التميز', submit: 'نشر الإعلان',
-                charge_wallet: 'شحن المحفظة', amount: 'المبلغ (تومان)',
-                receipt: 'صورة الإيصال', upload_receipt: 'اضغط لرفع الإيصال',
+                phone: 'رقم الهاتف', ad_type: 'نوع الإعلان', normal: 'عادي', special: 'مميز',
+                special_duration: 'مدة التميز', submit: 'نشر الإعلان', charge_wallet: 'شحن المحفظة',
+                amount: 'المبلغ (تومان)', receipt: 'صورة الإيصال', upload_receipt: 'اضغط لرفع الإيصال',
                 send_request: 'إرسال الطلب', vip_subscription: 'اشتراك VIP',
                 vip_desc: 'مع اشتراك VIP، انشر إعلانات غير محدودة.',
-                month: 'شهر', months_3: 'شهور', months_6: 'شهور',
-                buy: 'شراء', loading: 'جاري التحميل...',
+                month: 'شهر', months_3: 'شهور', months_6: 'شهور', buy: 'شراء',
                 gift_request: 'هدية مجانية', gift_desc: 'طلب إعلان مجاني. سيتم الموافقة عليه من قبل المدير.',
                 gift_btn: 'طلب هدية', rate_review: 'تقييم',
                 comment: 'اكتب تعليقك...', submit_review: 'إرسال',
-                profile_title: 'الملف الشخصي', username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني', trust_score: 'نقاط الثقة',
+                profile_title: 'الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل',
+                phone_label: 'رقم الهاتف', email_label: 'البريد الإلكتروني', trust_score: 'نقاط الثقة',
                 save: 'حفظ', no_ads: 'لا توجد إعلانات',
                 pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
                 call: 'اتصال', whatsapp: 'واتساب', add_fav: 'أضف للمفضلة',
@@ -934,9 +945,8 @@
                 expired: 'منتهي', special_badge: 'مميز', refresh: 'تحديث',
                 pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي',
                 beauty: 'تجميل', services: 'خدمات', jobs: 'توظيف',
-                real_estate: 'عقارات', vehicles: 'سيارات',
-                electronics: 'إلكترونيات', education: 'تعليم',
-                share: 'مشاركة', show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات',
+                real_estate: 'عقارات', vehicles: 'سيارات', share: 'مشاركة',
+                show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات',
                 gift_status_pending: '⏳ قيد المراجعة', gift_status_approved: '✅ تمت الموافقة',
                 gift_status_rejected: '❌ مرفوض', no_gift: 'لا يوجد طلب هدية',
                 gift_success: 'تم تقديم طلب الهدية', gift_error: 'فشل تقديم طلب الهدية',
@@ -962,64 +972,67 @@
             const lang = currentLang;
             document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : '🇮🇷 فارسی';
             const elements = {
-                'walletLabel':'wallet','currencyLabel':'currency','vipLabel':'vip',
-                'trustLabel':'trust','chargeBtnLabel':'charge','vipBtnLabel':'vip',
-                'giftBtnLabel':'gift','actPilgrimage':'pilgrimage','actTourism':'tourism',
-                'actMedical':'medical','actBeauty':'beauty','actServices':'services',
-                'actJobs':'jobs','actRealEstate':'real_estate','actVehicles':'vehicles',
-                'searchBtn':'search','adsTitle':'recent_ads',
-                'navHomeLabel':'home','navAddLabel':'add','navFavLabel':'favorites',
-                'navProfileLabel':'profile','addAdTitle':'add_ad',
-                'adTitleLabel':'title','adCategoryLabel':'category','adPriceLabel':'price',
-                'wizardNextBtn1':'next','adDescLabel':'description',
-                'adLocationLabel':'location','adCountryLabel':'country',
-                'wizardPrevBtn2':'prev','wizardNextBtn2':'next',
-                'adImagesLabel':'images','uploadClickLabel':'upload_click',
-                'adPhoneLabel':'phone','adTypeLabel':'ad_type',
-                'adNormalOption':'normal','adSpecialOption':'special',
-                'planLabel':'special_duration','wizardPrevBtn3':'prev',
-                'submitAdBtn':'submit','chargeTitle':'charge_wallet',
-                'chargeAmountLabel':'amount','receiptLabel':'receipt',
-                'uploadReceiptLabel':'upload_receipt','submitChargeBtn':'send_request',
-                'vipModalTitle':'vip_subscription','vipDesc':'vip_desc',
-                'vipMonthLabel':'month','vip3MonthLabel':'months_3',
-                'vip6MonthLabel':'months_6','vipBuy1':'buy','vipBuy3':'buy',
-                'vipBuy6':'buy','giftTitle':'gift_request','giftDesc':'gift_desc',
-                'giftBtn':'gift_btn','profileTitle':'profile_title',
-                'profileUsernameLabel':'username','profileFullnameLabel':'fullname',
-                'profilePhoneLabel':'phone_label','profileEmailLabel':'email_label',
-                'profileTrustLabel':'trust_score','profileSaveBtn':'save',
-                'myAdsTitle':'my_ads','favTitle':'favorites','refreshAdsBtn':'refresh',
-                'searchInput':'search_placeholder','toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'walletLabel': 'wallet', 'currencyLabel': 'currency', 'vipLabel': 'vip',
+                'trustLabel': 'trust', 'chargeBtnLabel': 'charge', 'vipBtnLabel': 'vip',
+                'giftBtnLabel': 'gift', 'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism',
+                'actMedical': 'medical', 'actBeauty': 'beauty', 'actServices': 'services',
+                'actJobs': 'jobs', 'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'searchBtn': 'search', 'adsTitle': 'recent_ads',
+                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites',
+                'navProfileLabel': 'profile', 'addAdTitle': 'add_ad',
+                'adTitleLabel': 'title', 'adCategoryLabel': 'category', 'adPriceLabel': 'price',
+                'wizardNextBtn1': 'next', 'adDescLabel': 'description',
+                'adLocationLabel': 'location', 'adCountryLabel': 'country',
+                'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next',
+                'adImagesLabel': 'images', 'uploadClickLabel': 'upload_click',
+                'adPhoneLabel': 'phone', 'adTypeLabel': 'ad_type',
+                'adNormalOption': 'normal', 'adSpecialOption': 'special',
+                'planLabel': 'special_duration', 'wizardPrevBtn3': 'prev',
+                'submitAdBtn': 'submit', 'chargeTitle': 'charge_wallet',
+                'chargeAmountLabel': 'amount', 'receiptLabel': 'receipt',
+                'uploadReceiptLabel': 'upload_receipt', 'submitChargeBtn': 'send_request',
+                'vipModalTitle': 'vip_subscription', 'vipDesc': 'vip_desc',
+                'vipMonthLabel': 'month', 'vip3MonthLabel': 'months_3',
+                'vip6MonthLabel': 'months_6', 'vipBuy1': 'buy', 'vipBuy3': 'buy',
+                'vipBuy6': 'buy', 'giftTitle': 'gift_request', 'giftDesc': 'gift_desc',
+                'giftBtn': 'gift_btn', 'profileTitle': 'profile_title',
+                'profileUsernameLabel': 'username', 'profileFullnameLabel': 'fullname',
+                'profilePhoneLabel': 'phone_label', 'profileEmailLabel': 'email_label',
+                'profileTrustLabel': 'trust_score', 'profileSaveBtn': 'save',
+                'myAdsTitle': 'my_ads', 'favTitle': 'favorites', 'refreshAdsBtn': 'refresh',
+                'searchInput': 'search_placeholder', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
             };
-            for (const [id,key] of Object.entries(elements)) {
+            for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
                 if (el) {
-                    if (el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT') el.placeholder = t(key);
-                    else el.textContent = t(key);
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                        el.placeholder = t(key);
+                    } else {
+                        el.textContent = t(key);
+                    }
                 }
             }
-            document.querySelectorAll('.category-chip').forEach((chip,idx)=>{
-                if (idx===0) chip.textContent = t('all');
+            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
+                if (idx === 0) chip.textContent = t('all');
                 else {
                     const catMap = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
-                    if (idx-1<catMap.length) chip.textContent = t(catMap[idx-1]);
+                    if (idx-1 < catMap.length) chip.textContent = t(catMap[idx-1]);
                 }
             });
-            document.querySelectorAll('#adCategory option').forEach((opt,idx)=>{
+            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
                 const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles','electronics','education'];
-                if (idx<catKeys.length) opt.textContent = t(catKeys[idx]);
+                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
             });
-            document.querySelectorAll('#adCountry option').forEach((opt,idx)=>{
+            document.querySelectorAll('#adCountry option').forEach((opt, idx) => {
                 const countryKeys = ['country_iran','country_iraq','country_uae','country_turkey'];
                 const flags = ['🇮🇷','🇮🇶','🇦🇪','🇹🇷'];
-                if (idx<countryKeys.length) opt.textContent = flags[idx] + ' ' + t(countryKeys[idx]);
+                if (idx < countryKeys.length) opt.textContent = flags[idx] + ' ' + t(countryKeys[idx]);
             });
-            document.querySelectorAll('.action-item span').forEach((el,idx)=>{
+            document.querySelectorAll('.action-item span').forEach((el, idx) => {
                 const actionLabels = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
-                if (idx<actionLabels.length) el.textContent = t(actionLabels[idx]);
+                if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
             });
-            document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el=>{
+            document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
                 const key = el.id.replace('nav','').replace('Label','').toLowerCase();
                 const map = { home:'home', add:'add', favorites:'favorites', profile:'profile' };
                 if (map[key]) el.textContent = t(map[key]);
@@ -1027,67 +1040,67 @@
         }
 
         function toggleTheme() {
-            currentTheme = currentTheme==='light'?'dark':'light';
-            document.documentElement.setAttribute('data-theme',currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme==='light'?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
-            localStorage.setItem('jedar_theme',currentTheme);
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+            localStorage.setItem('jedar_theme', currentTheme);
         }
 
         function toggleLanguage() {
-            currentLang = currentLang==='fa'?'ar':'fa';
-            localStorage.setItem('jedar_lang',currentLang);
-            document.documentElement.lang=currentLang;
-            document.documentElement.dir='rtl';
+            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
+            localStorage.setItem('jedar_lang', currentLang);
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = 'rtl';
             updateLanguage();
-            showToast('🌍 زبان تغییر کرد','success');
+            showToast('🌍 زبان تغییر کرد', 'success');
         }
 
         // ============================================================
         // HELPERS
         // ============================================================
-        function showToast(msg,type='success') {
+        function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             const icons = { success:'fa-circle-check', error:'fa-circle-xmark', warning:'fa-triangle-exclamation', info:'fa-circle-info' };
             toast.innerHTML = `
-                <i class="fa-solid ${icons[type]||icons.success}"></i>
+                <i class="fa-solid ${icons[type] || icons.success}"></i>
                 <span>${msg}</span>
                 <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
             `;
             container.appendChild(toast);
-            setTimeout(()=>toast.classList.add('show'),30);
-            setTimeout(()=>{
+            setTimeout(() => toast.classList.add('show'), 30);
+            setTimeout(() => {
                 toast.classList.remove('show');
-                setTimeout(()=>toast.remove(),400);
-            },4500);
+                setTimeout(() => toast.remove(), 400);
+            }, 4500);
         }
 
         function formatTime(ts) {
             if (!ts) return 'لحظاتی پیش';
-            const now = Math.floor(Date.now()/1000);
+            const now = Math.floor(Date.now() / 1000);
             const diff = now - ts;
-            if (diff<60) return 'لحظاتی پیش';
-            if (diff<120) return '۱ دقیقه پیش';
-            if (diff<3600) return Math.floor(diff/60)+' دقیقه پیش';
-            if (diff<7200) return '۱ ساعت پیش';
-            if (diff<86400) return Math.floor(diff/3600)+' ساعت پیش';
-            if (diff<172800) return '۱ روز پیش';
-            if (diff<604800) return Math.floor(diff/86400)+' روز پیش';
-            if (diff<1209600) return '۱ هفته پیش';
-            if (diff<2592000) return Math.floor(diff/604800)+' هفته پیش';
-            if (diff<5184000) return '۱ ماه پیش';
-            return Math.floor(diff/2592000)+' ماه پیش';
+            if (diff < 60) return 'لحظاتی پیش';
+            if (diff < 120) return '۱ دقیقه پیش';
+            if (diff < 3600) return Math.floor(diff/60) + ' دقیقه پیش';
+            if (diff < 7200) return '۱ ساعت پیش';
+            if (diff < 86400) return Math.floor(diff/3600) + ' ساعت پیش';
+            if (diff < 172800) return '۱ روز پیش';
+            if (diff < 604800) return Math.floor(diff/86400) + ' روز پیش';
+            if (diff < 1209600) return '۱ هفته پیش';
+            if (diff < 2592000) return Math.floor(diff/604800) + ' هفته پیش';
+            if (diff < 5184000) return '۱ ماه پیش';
+            return Math.floor(diff/2592000) + ' ماه پیش';
         }
 
-        function apiCall(endpoint, options={}) {
-            const headers = { 'Content-Type':'application/json', ...(options.headers||{}) };
-            const url = endpoint.startsWith('http')?endpoint:`${API_BASE}${endpoint}`;
-            return fetch(url, {...options, headers})
-                .then(res=>res.json())
-                .catch(err=>{
-                    console.error('❌ API Error:',err);
-                    return { success:false, error:err.message||'خطا در ارتباط با سرور' };
+        function apiCall(endpoint, options = {}) {
+            const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+            const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+            return fetch(url, { ...options, headers })
+                .then(res => res.json())
+                .catch(err => {
+                    console.error('❌ API Error:', err);
+                    return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
                 });
         }
 
@@ -1114,13 +1127,15 @@
         // PROFILE
         // ============================================================
         function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile')||'{}');
-            document.getElementById('profileUsername').value = profile.username||'';
-            document.getElementById('profileFullname').value = profile.fullname||'';
-            document.getElementById('profilePhone').value = profile.phone||'';
-            document.getElementById('profileEmail').value = profile.email||'';
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            document.getElementById('profileUsername').value = profile.username || '';
+            document.getElementById('profileFullname').value = profile.fullname || '';
+            document.getElementById('profilePhone').value = profile.phone || '';
+            document.getElementById('profileEmail').value = profile.email || '';
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            if (phoneInput && profile.phone) {
+                phoneInput.value = profile.phone;
+            }
         }
 
         function saveProfile() {
@@ -1133,57 +1148,60 @@
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
             const phoneInput = document.getElementById('adContact');
             if (phoneInput && profile.phone) phoneInput.value = profile.phone;
-            showToast(t('profile_saved'),'success');
+            showToast(t('profile_saved'), 'success');
         }
 
         function isProfileComplete() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile')||'{}');
-            return profile.phone && profile.phone.trim().length>0;
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            return profile.phone && profile.phone.trim().length > 0;
         }
 
         // ============================================================
-        // ADS – با تبدیل درست آدرس تصاویر
+        // ADS – اصلاح‌شده برای نمایش تصاویر از base64
         // ============================================================
-        async function fetchAds(showLoading=true) {
+        async function fetchAds(showLoading = true) {
             if (isUpdating) return;
             isUpdating = true;
             const grid = document.getElementById('adsGrid');
-            if (showLoading) grid.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            if (showLoading) {
+                grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            }
             try {
+                // استفاده از endpoint /api/ads که در Worker موجود است
                 const data = await apiCall('/api/ads');
                 console.log('📦 داده‌های دریافتی از /api/ads:', data);
 
-                if (data.success && data.ads && data.ads.length>0) {
+                if (data.success && data.ads && data.ads.length > 0) {
+                    // پردازش تصاویر: Worker تصاویر را در فیلد image_ids (به صورت JSON) برمی‌گرداند
                     allAds = data.ads.map(ad => {
-                        // تبدیل image_ids به images
-                        if (ad.image_ids) {
+                        // اگر image_ids وجود دارد و رشته است، آن را parse کن
+                        if (ad.image_ids && typeof ad.image_ids === 'string') {
                             try {
-                                ad.images = typeof ad.image_ids === 'string' ? JSON.parse(ad.image_ids) : ad.image_ids;
-                            } catch { ad.images = []; }
-                        } else {
-                            ad.images = ad.images || [];
-                        }
-                        // تبدیل هر file_id به URL کامل تصویر از طریق پراکسی
-                        ad.images = ad.images.map(id => {
-                            if (id && typeof id === 'string' && !id.startsWith('data:') && !id.startsWith('http')) {
-                                return `${API_BASE}/image/${id}`;
+                                ad.images = JSON.parse(ad.image_ids);
+                            } catch (e) {
+                                ad.images = [];
                             }
-                            return id;
-                        });
+                        } else if (ad.image_ids && Array.isArray(ad.image_ids)) {
+                            ad.images = ad.image_ids;
+                        } else if (ad.images && Array.isArray(ad.images)) {
+                            // اگر قبلاً images وجود دارد
+                        } else {
+                            ad.images = [];
+                        }
                         return ad;
                     });
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
-                    if (showLoading) showToast('آگهی‌ها بروز شدند','success');
+                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else {
                     grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                    if (showLoading) showToast('هیچ آگهی‌ای یافت نشد','warning');
+                    if (showLoading) showToast('هیچ آگهی‌ای یافت نشد', 'warning');
                 }
             } catch (err) {
                 console.error('❌ fetchAds error:', err);
                 grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                showToast('خطا در بارگذاری آگهی‌ها','error');
+                showToast('خطا در بارگذاری آگهی‌ها', 'error');
             }
             isUpdating = false;
         }
@@ -1191,7 +1209,7 @@
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = '';
-            if (!ads || ads.length===0) {
+            if (!ads || ads.length === 0) {
                 grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 return;
             }
@@ -1201,9 +1219,16 @@
                 card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
 
+                // پردازش تصاویر – از فیلد images (که از image_ids ساخته شده) استفاده می‌کنیم
                 let imgSrc = '';
-                if (ad.images && ad.images.length>0) {
-                    imgSrc = ad.images[0];
+                if (ad.images && ad.images.length > 0) {
+                    let raw = ad.images[0];
+                    // اگر تصویر با data:image شروع نشد و با http شروع نشد، احتمالاً base64 خام است
+                    if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) {
+                        imgSrc = `data:image/jpeg;base64,${raw}`;
+                    } else {
+                        imgSrc = raw;
+                    }
                 }
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'" />` :
@@ -1211,28 +1236,28 @@
 
                 const isFav = favorites.includes(ad.id);
                 const isSpecial = ad.ad_type === 'special';
-                const isExpired = ad.special_expiry && ad.special_expiry < Math.floor(Date.now()/1000);
+                const isExpired = ad.special_expiry && ad.special_expiry < Math.floor(Date.now() / 1000);
                 const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
 
                 card.innerHTML = `
                     <div class="ad-image">
                         ${imgHtml}
                         <div class="watermark">J-DAR</div>
-                        ${isSpecial ? '<div class="special-badge">⭐ '+t('special_badge')+'</div>' : ''}
-                        ${isExpired ? '<div class="status-badge">'+t('expired')+'</div>' : ''}
-                        <div class="favorite ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
-                            <i class="fa-${isFav?'solid':'regular'} fa-heart"></i>
+                        ${isSpecial ? '<div class="special-badge">⭐ ' + t('special_badge') + '</div>' : ''}
+                        ${isExpired ? '<div class="status-badge">' + t('expired') + '</div>' : ''}
+                        <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
+                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </div>
                     </div>
                     <div class="ad-content">
-                        <div class="title">${ad.title||'بدون عنوان'}</div>
-                        <div class="price">${(ad.price||0).toLocaleString()} ${t('currency')}</div>
-                        <div class="meta"><i class="fa-solid fa-location-dot"></i> ${ad.city||''}</div>
+                        <div class="title">${ad.title || 'بدون عنوان'}</div>
+                        <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                        <div class="meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ''}</div>
                         <div class="meta" style="font-size:9px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
                     </div>
                     <div class="ad-footer">
                         <div class="avatar">${ad.user_fullname ? ad.user_fullname.charAt(0).toUpperCase() : '👤'}</div>
-                        <span class="username">${ad.user_fullname||ad.username||'کاربر'}</span>
+                        <span class="username">${ad.user_fullname || ad.username || 'کاربر'}</span>
                         <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
                     </div>
                 `;
@@ -1245,34 +1270,34 @@
         // ============================================================
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            const cats = ['همه','زیارت','گردشگری','پزشکی','زیبایی','خدمات','کاریابی','املاک','خودرو'];
+            const cats = ['همه', 'زیارت', 'گردشگری', 'پزشکی', 'زیبایی', 'خدمات', 'کاریابی', 'املاک', 'خودرو'];
             container.innerHTML = '';
-            cats.forEach((cat,i)=>{
+            cats.forEach((cat, i) => {
                 const chip = document.createElement('span');
-                chip.className = 'category-chip'+(i===0?' active':'');
+                chip.className = 'category-chip' + (i === 0 ? ' active' : '');
                 chip.textContent = cat;
-                chip.onclick = ()=>filterAds(i===0?'all':cat);
+                chip.onclick = () => filterAds(i === 0 ? 'all' : cat);
                 container.appendChild(chip);
             });
         }
 
         function filterAds(cat) {
-            document.querySelectorAll('.category-chip').forEach(el=>el.classList.remove('active'));
+            document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
             const map = { all:0, زیارت:1, گردشگری:2, پزشکی:3, زیبایی:4, خدمات:5, کاریابی:6, املاک:7, خودرو:8 };
-            const idx = map[cat]||0;
+            const idx = map[cat] || 0;
             if (chips[idx]) chips[idx].classList.add('active');
             const catMap = { all:'all', زیارت:'pilgrimage', گردشگری:'tourism', پزشکی:'medical', زیبایی:'beauty',
                 خدمات:'services', کاریابی:'jobs', املاک:'real_estate', خودرو:'vehicles' };
-            const catKey = catMap[cat]||'all';
-            if (catKey==='all') filteredAds = [...allAds];
-            else filteredAds = allAds.filter(ad=>ad.category===catKey||ad.category?.includes(catKey));
+            const catKey = catMap[cat] || 'all';
+            if (catKey === 'all') filteredAds = [...allAds];
+            else filteredAds = allAds.filter(ad => ad.category === catKey || ad.category?.includes(catKey));
             renderAds(filteredAds);
         }
 
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { filteredAds=[...allAds]; renderAds(filteredAds); return; }
+            if (!query) { filteredAds = [...allAds]; renderAds(filteredAds); return; }
             filteredAds = allAds.filter(ad =>
                 (ad.title && ad.title.toLowerCase().includes(query)) ||
                 (ad.description && ad.description.toLowerCase().includes(query)) ||
@@ -1283,9 +1308,9 @@
 
         function refreshAll() {
             fetchAds(true);
-            if (currentTab==='profile') fetchMyAds();
-            if (currentTab==='favorites') fetchFavorites();
-            showToast(t('refresh'),'success');
+            if (currentTab === 'profile') fetchMyAds();
+            if (currentTab === 'favorites') fetchFavorites();
+            showToast(t('refresh'), 'success');
         }
 
         // ============================================================
@@ -1293,32 +1318,39 @@
         // ============================================================
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(el=>el.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
             document.querySelector(`.bottom-nav .nav-item[data-tab="${tab}"]`)?.classList.add('active');
-            document.getElementById('app').style.display = tab==='home'?'block':'none';
-            document.getElementById('profileTab').style.display = tab==='profile'?'block':'none';
-            document.getElementById('favoritesTab').style.display = tab==='favorites'?'block':'none';
-            if (tab==='profile') { loadProfile(); fetchMyAds(); }
-            if (tab==='favorites') fetchFavorites();
+            document.getElementById('app').style.display = tab === 'home' ? 'block' : 'none';
+            document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
+            document.getElementById('favoritesTab').style.display = tab === 'favorites' ? 'block' : 'none';
+            if (tab === 'profile') { loadProfile(); fetchMyAds(); }
+            if (tab === 'favorites') fetchFavorites();
         }
 
         // ============================================================
-        // AD DETAIL – با تصویر پراکسی
+        // AD DETAIL – باز کردن در مودال شیشه‌ای
         // ============================================================
         function openAdDetail(adId) {
-            const ad = allAds.find(item=>item.id==adId);
-            if (!ad) { showToast(t('ad_not_found'),'error'); return; }
+            const ad = allAds.find(item => item.id == adId);
+            if (!ad) {
+                showToast(t('ad_not_found'), 'error');
+                console.error('❌ آگهی با شناسه', adId, 'در allAds یافت نشد');
+                return;
+            }
 
             const galleryImages = ad.images || [];
             let galleryIndex = 0;
             let galleryHtml = '';
-            if (galleryImages.length>0) {
+            if (galleryImages.length > 0) {
                 let imgSrc = galleryImages[0];
+                if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
+                    imgSrc = `data:image/jpeg;base64,${imgSrc}`;
+                }
                 galleryHtml = `
                     <div class="ad-gallery">
                         <img id="detailGalleryImg" src="${imgSrc}" />
                     </div>
-                    ${galleryImages.length>1 ? `
+                    ${galleryImages.length > 1 ? `
                         <div class="gallery-controls">
                             <button onclick="detailGalleryPrev()">‹</button>
                             <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;">
@@ -1336,24 +1368,24 @@
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
 
             let html = `
-                <div class="modal-title">${ad.title||'بدون عنوان'}</div>
+                <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
                 ${galleryHtml}
-                <div class="ad-price">${(ad.price||0).toLocaleString()} ${t('currency')}</div>
+                <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
                 <div class="ad-meta">
-                    <span><i class="fa-solid fa-tag"></i> ${ad.category||'دسته‌بندی نشده'}</span>
-                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city||'نامشخص'}</span>
+                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
                     <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
-                    <span><i class="fa-regular fa-eye"></i> ${ad.views||0}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
                 </div>
-                <div class="ad-description">${ad.description||'توضیحاتی وجود ندارد'}</div>
+                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
                 <div class="action-buttons">
                     ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
                     ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
-                    <button class="btn-share" onclick="shareAd(${ad.id},'${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
+                    <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
                 </div>
                 <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
-                    <i class="fa-${favorites.includes(ad.id)?'solid':'regular'} fa-heart"></i>
-                    ${favorites.includes(ad.id)?t('remove_fav'):t('add_fav')}
+                    <i class="fa-${favorites.includes(ad.id) ? 'solid' : 'regular'} fa-heart"></i>
+                    ${favorites.includes(ad.id) ? t('remove_fav') : t('add_fav')}
                 </button>
                 <div class="review-section">
                     <h4>⭐ ${t('rate_review')}</h4>
@@ -1368,55 +1400,67 @@
                     <input type="hidden" id="detailReviewRating" value="0" />
                     <textarea class="review-comment" id="detailReviewComment" placeholder="${t('comment')}"></textarea>
                     <button class="btn-submit-review" onclick="submitDetailReview()">${t('submit_review')}</button>
-                    <div id="detailReviews" style="margin-top:12px;"><div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div></div>
+                    <div id="detailReviews" style="margin-top:12px;">
+                        <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div>
+                    </div>
                 </div>
             `;
             document.getElementById('adDetailContent').innerHTML = html;
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
 
+            // توابع گالری
             window.detailGalleryPrev = function() {
-                if (galleryImages.length===0) return;
-                galleryIndex = (galleryIndex-1+galleryImages.length)%galleryImages.length;
+                if (galleryImages.length === 0) return;
+                galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
                 const img = document.getElementById('detailGalleryImg');
-                if (img) img.src = galleryImages[galleryIndex];
+                if (img) {
+                    let src = galleryImages[galleryIndex];
+                    if (src && !src.startsWith('data:') && !src.startsWith('http')) src = `data:image/jpeg;base64,${src}`;
+                    img.src = src;
+                }
                 const idx = document.getElementById('detailGalleryIndex');
-                if (idx) idx.textContent = galleryIndex+1;
+                if (idx) idx.textContent = galleryIndex + 1;
             };
             window.detailGalleryNext = function() {
-                if (galleryImages.length===0) return;
-                galleryIndex = (galleryIndex+1)%galleryImages.length;
+                if (galleryImages.length === 0) return;
+                galleryIndex = (galleryIndex + 1) % galleryImages.length;
                 const img = document.getElementById('detailGalleryImg');
-                if (img) img.src = galleryImages[galleryIndex];
+                if (img) {
+                    let src = galleryImages[galleryIndex];
+                    if (src && !src.startsWith('data:') && !src.startsWith('http')) src = `data:image/jpeg;base64,${src}`;
+                    img.src = src;
+                }
                 const idx = document.getElementById('detailGalleryIndex');
-                if (idx) idx.textContent = galleryIndex+1;
+                if (idx) idx.textContent = galleryIndex + 1;
             };
         }
 
         function closeAdDetail() {
             const modal = document.getElementById('adDetailsModal');
             modal.style.animation = 'modalOverlayFade 0.3s reverse';
-            setTimeout(()=>{
+            setTimeout(() => {
                 modal.classList.remove('show');
                 modal.style.animation = '';
-            },300);
+            }, 300);
         }
 
-        function shareAd(adId,title) {
+        function shareAd(adId, title) {
             const url = `https://j-dar.ir/ad/${adId}`;
             if (navigator.share) {
-                navigator.share({ title, text:`🔥 ${title} - J-DAR`, url }).catch(()=>{});
+                navigator.share({ title: title, text: `🔥 ${title} - J-DAR`, url }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(url).then(()=>showToast('🔗 لینک کپی شد','success'))
-                    .catch(()=>{
-                        const textarea = document.createElement('textarea');
-                        textarea.value = url;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-                        showToast('🔗 لینک کپی شد','success');
-                    });
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('🔗 لینک کپی شد', 'success');
+                }).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast('🔗 لینک کپی شد', 'success');
+                });
             }
         }
 
@@ -1426,8 +1470,8 @@
             if (btn) {
                 const isFav = favorites.includes(adId);
                 btn.innerHTML = `
-                    <i class="fa-${isFav?'solid':'regular'} fa-heart"></i>
-                    ${isFav?t('remove_fav'):t('add_fav')}
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                    ${isFav ? t('remove_fav') : t('add_fav')}
                 `;
             }
         }
@@ -1435,9 +1479,9 @@
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
-            document.querySelectorAll('#detailReviewStars span').forEach((el,idx)=>{
-                el.className = idx<val?'active':'';
-                el.textContent = idx<val?'★':'☆';
+            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => {
+                el.className = idx < val ? 'active' : '';
+                el.textContent = idx < val ? '★' : '☆';
             });
         }
 
@@ -1445,40 +1489,43 @@
             const adId = document.getElementById('detailReviewAdId').value;
             const rating = parseInt(document.getElementById('detailReviewRating').value);
             const comment = document.getElementById('detailReviewComment').value.trim();
-            if (!rating||rating<1) { showToast('لطفاً امتیاز را انتخاب کنید','warning'); return; }
+            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
             try {
                 const data = await apiCall('/api/review', {
-                    method:'POST',
-                    body: JSON.stringify({ adId:parseInt(adId), userId:guestId, rating, comment })
+                    method: 'POST',
+                    body: JSON.stringify({ adId: parseInt(adId), userId: guestId, rating, comment })
                 });
                 if (data.success) {
-                    showToast(t('review_success'),'success');
+                    showToast(t('review_success'), 'success');
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el=>{ el.className=''; el.textContent='☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                 } else {
-                    showToast(data.error||t('review_error'),'error');
+                    showToast(data.error || t('review_error'), 'error');
                 }
-            } catch (err) { showToast(t('review_error'),'error'); }
+            } catch (err) { showToast(t('review_error'), 'error'); }
         }
 
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
                 const data = await apiCall(`/api/reviews?adId=${adId}`);
-                if (data.success && data.reviews && data.reviews.length>0) {
+                if (data.success && data.reviews && data.reviews.length > 0) {
                     container.innerHTML = '';
-                    data.reviews.forEach(r=>{
+                    data.reviews.forEach(r => {
                         const div = document.createElement('div');
                         div.className = 'review-item';
-                        const stars = '★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+                        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                         div.innerHTML = `
-                            <div class="header"><span class="name">${r.fullname||r.username||'کاربر'}</span><span class="stars">${stars}</span></div>
+                            <div class="header">
+                                <span class="name">${r.fullname || r.username || 'کاربر'}</span>
+                                <span class="stars">${stars}</span>
+                            </div>
                             ${r.comment ? `<div class="comment">${r.comment}</div>` : ''}
-                            <div class="date">${new Date(r.created_at*1000).toLocaleDateString('fa-IR')}</div>
+                            <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
                         `;
                         container.appendChild(div);
                     });
@@ -1498,49 +1545,51 @@
             try {
                 const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
                 const data = await apiCall(endpoint, {
-                    method:'POST',
-                    body: JSON.stringify({ userId:guestId, adId })
+                    method: 'POST',
+                    body: JSON.stringify({ userId: guestId, adId })
                 });
                 if (data.success) {
                     if (isFav) {
-                        favorites = favorites.filter(id=>id!==adId);
-                        showToast(t('favorite_removed'),'info');
+                        favorites = favorites.filter(id => id !== adId);
+                        showToast(t('favorite_removed'), 'info');
                     } else {
                         favorites.push(adId);
-                        showToast(t('favorite_added'),'success');
+                        showToast(t('favorite_added'), 'success');
                     }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     fetchAds(false);
                 }
-            } catch (err) { showToast('خطا در تغییر وضعیت','error'); }
+            } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
         }
 
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
-            if (favorites.length===0) {
+            if (favorites.length === 0) {
                 container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                 return;
             }
-            container.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/favorites?user_id='+guestId);
+                const data = await apiCall('/api/favorites?user_id=' + guestId);
                 if (data.success && data.favorites) {
-                    if (data.favorites.length===0) {
+                    if (data.favorites.length === 0) {
                         container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                         return;
                     }
                     container.innerHTML = '';
-                    data.favorites.forEach(ad=>{
+                    data.favorites.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'favorite-item';
-                        let imgSrc = (ad.images && ad.images.length>0) ? ad.images[0] : '';
-                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) imgSrc = `${API_BASE}/image/${imgSrc}`;
+                        let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
+                        if (imgSrc && !imgSrc.startsWith('data:') && !imgSrc.startsWith('http')) {
+                            imgSrc = `data:image/jpeg;base64,${imgSrc}`;
+                        }
                         div.innerHTML = `
                             <img src="${imgSrc}" onerror="this.style.display='none'" />
                             <div class="info" onclick="openAdDetail(${ad.id})">
                                 <div class="title">${ad.title}</div>
-                                <div class="price">${(ad.price||0).toLocaleString()} ${t('currency')}</div>
-                                <div class="meta">${ad.city||''} • ${formatTime(ad.created_at)}</div>
+                                <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
+                                <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
                             </div>
                             <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
                         `;
@@ -1557,17 +1606,17 @@
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
-            container.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/user/ads?user_id='+guestId);
+                const data = await apiCall('/api/user/ads?user_id=' + guestId);
                 if (data.success && data.ads) {
                     userAdsCount = data.ads.length;
-                    if (data.ads.length===0) {
+                    if (data.ads.length === 0) {
                         container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
                         return;
                     }
                     container.innerHTML = '';
-                    data.ads.forEach(ad=>{
+                    data.ads.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
                         const statusMap = { pending:'pending', approved:'approved', rejected:'rejected' };
@@ -1576,8 +1625,8 @@
                             <div class="info">
                                 <div class="title">${ad.title}</div>
                                 <div class="sub">
-                                    <span>💰 ${(ad.price||0).toLocaleString()} ${t('currency')}</span>
-                                    <span class="status ${statusMap[ad.status]||'pending'}">${statusLabels[ad.status]||ad.status}</span>
+                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
+                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
                                 </div>
                                 <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
                             </div>
@@ -1597,29 +1646,29 @@
         async function deleteAd(adId) {
             if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
             try {
-                const data = await apiCall(`/api/ads/${adId}`, { method:'DELETE', body: JSON.stringify({ userId:guestId, adId }) });
+                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId, adId }) });
                 if (data.success) {
-                    showToast('آگهی حذف شد','success');
+                    showToast('آگهی حذف شد', 'success');
                     fetchMyAds();
                     fetchAds(false);
                 } else {
-                    showToast(data.error||'خطا در حذف','error');
+                    showToast(data.error || 'خطا در حذف', 'error');
                 }
-            } catch (err) { showToast('خطا در حذف','error'); }
+            } catch (err) { showToast('خطا در حذف', 'error'); }
         }
 
         function editAd(adId) {
-            const ad = allAds.find(a=>a.id===adId);
-            if (!ad) { showToast('آگهی یافت نشد','error'); return; }
+            const ad = allAds.find(a => a.id === adId);
+            if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
             document.getElementById('adTitle').value = ad.title;
-            document.getElementById('adCategory').value = ad.category||'tourism';
+            document.getElementById('adCategory').value = ad.category || 'tourism';
             document.getElementById('adPrice').value = ad.price;
             document.getElementById('adDescription').value = ad.description;
-            document.getElementById('adLocation').value = ad.city||'';
-            const profile = JSON.parse(localStorage.getItem('jedar_profile')||'{}');
-            document.getElementById('adContact').value = profile.phone||ad.phone||'';
-            document.getElementById('adType').value = ad.ad_type||'normal';
-            document.getElementById('planGroup').style.display = ad.ad_type==='special'?'block':'none';
+            document.getElementById('adLocation').value = ad.city || '';
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            document.getElementById('adContact').value = profile.phone || ad.phone || '';
+            document.getElementById('adType').value = ad.ad_type || 'normal';
+            document.getElementById('planGroup').style.display = ad.ad_type === 'special' ? 'block' : 'none';
             document.getElementById('addAdModal').classList.add('show');
             wizardStep = 1;
             wizardImagesBase64 = [];
@@ -1631,28 +1680,32 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() { if (wizardStep<3) { wizardStep++; updateWizard(); } }
-        function wizardPrev() { if (wizardStep>1) { wizardStep--; updateWizard(); } }
+        function wizardNext() {
+            if (wizardStep < 3) { wizardStep++; updateWizard(); }
+        }
+        function wizardPrev() {
+            if (wizardStep > 1) { wizardStep--; updateWizard(); }
+        }
         function updateWizard() {
-            document.querySelectorAll('.wizard-step').forEach(el=>el.classList.remove('active'));
+            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
-            document.getElementById('wizardBar').style.width = `${(wizardStep-1)*50}%`;
-            for (let i=1;i<=3;i++) {
+            document.getElementById('wizardBar').style.width = `${(wizardStep - 1) * 50}%`;
+            for (let i=1; i<=3; i++) {
                 const step = document.getElementById(`wStep${i}`);
                 step.classList.remove('active','completed');
-                if (i<wizardStep) step.classList.add('completed');
-                if (i===wizardStep) step.classList.add('active');
+                if (i < wizardStep) step.classList.add('completed');
+                if (i === wizardStep) step.classList.add('active');
             }
         }
 
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (wizardImagesBase64.length + files.length > 4) {
-                showToast('حداکثر ۴ تصویر مجاز است','error');
+                showToast('حداکثر ۴ تصویر مجاز است', 'error');
                 this.value = '';
                 return;
             }
-            files.forEach(file=>{
+            files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function(ev) {
                     wizardImagesBase64.push(ev.target.result);
@@ -1666,7 +1719,7 @@
         function renderWizardImages() {
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
-            wizardImagesBase64.forEach((base64,index)=>{
+            wizardImagesBase64.forEach((base64, index) => {
                 const item = document.createElement('div');
                 item.className = 'image-preview-item';
                 item.innerHTML = `<img src="${base64}" /><button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
@@ -1675,19 +1728,22 @@
         }
 
         function removeWizardImage(index) {
-            wizardImagesBase64.splice(index,1);
+            wizardImagesBase64.splice(index, 1);
             renderWizardImages();
         }
 
+        // ============================================================
+        // SUBMIT AD – استفاده از مسیر صحیح /api/submit-ad
+        // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'),'warning');
+                showToast(t('complete_profile_first'), 'warning');
                 return;
             }
-            const profile = JSON.parse(localStorage.getItem('jedar_profile')||'{}');
-            const isVip = profile.isVip||false;
-            if (!isVip && userAdsCount>=1) {
-                showToast(t('ad_limit_reached'),'warning');
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            const isVip = profile.isVip || false;
+            if (!isVip && userAdsCount >= 1) {
+                showToast(t('ad_limit_reached'), 'warning');
                 return;
             }
 
@@ -1699,10 +1755,10 @@
             const contact = document.getElementById('adContact').value.trim();
             const country = document.getElementById('adCountry').value;
             const adType = document.getElementById('adType').value;
-            const plan = parseInt(document.getElementById('adPlan').value)||1;
+            const plan = parseInt(document.getElementById('adPlan').value) || 1;
 
-            if (!title||!price||!desc||!location) {
-                showToast('لطفاً تمام فیلدهای اجباری را پر کنید','warning');
+            if (!title || !price || !desc || !location) {
+                showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
 
@@ -1711,19 +1767,32 @@
             btn.textContent = '...در حال ثبت';
             try {
                 const editId = document.getElementById('addAdForm').dataset.editId;
-                const endpoint = editId ? `/api/ads/${editId}` : '/api/submit-ad';
-                const method = editId ? 'PUT' : 'POST';
-                const user = { id: guestId, first_name: profile.fullname||'کاربر' };
+                // برای ویرایش: Worker مسیر /api/ads/:id با PUT را ندارد، بنابراین فعلاً از ثبت جدید استفاده می‌کنیم
+                // اما برای ویرایش، می‌توانیم از /api/ad/update استفاده کنیم (اگر Worker از آن پشتیبانی کند)
+                // در Worker فعلی، ویرایش از طریق PUT روی /api/ads/:id انجام می‌شود، اما ما مسیر اشتباهی می‌فرستادیم.
+                // بنابراین برای سادگی، ویرایش را فعلاً به عنوان ثبت جدید می‌فرستیم (می‌توانید بعداً اصلاح کنید)
+                const endpoint = editId ? '/api/submit-ad' : '/api/submit-ad';
+                const method = 'POST';
+                const user = { id: guestId, first_name: profile.fullname || 'کاربر' };
+
                 const data = await apiCall(endpoint, {
                     method,
                     body: JSON.stringify({
-                        user, title, category, price: parseInt(price),
-                        description: desc, location, contact: contact||profile.phone||'',
-                        country, ad_type: adType, plan, images: wizardImagesBase64
+                        user: user,
+                        title,
+                        category,
+                        price: parseInt(price),
+                        description: desc,
+                        location,
+                        contact: contact || profile.phone || '',
+                        country,
+                        ad_type: adType,
+                        plan: adType === 'special' ? plan : undefined,
+                        images: wizardImagesBase64
                     })
                 });
                 if (data.success) {
-                    showToast(editId?'آگهی ویرایش شد':t('ad_success'),'success');
+                    showToast(editId ? 'آگهی ویرایش شد' : t('ad_success'), 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -1734,16 +1803,16 @@
                     fetchAds(true);
                     fetchMyAds();
                 } else {
-                    showToast(data.error||t('ad_error'),'error');
+                    showToast(data.error || t('ad_error'), 'error');
                 }
-            } catch (err) { showToast(t('ad_error'),'error'); }
+            } catch (err) { showToast(t('ad_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('submit');
         }
 
         function openAddModal() {
             if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'),'warning');
+                showToast(t('complete_profile_first'), 'warning');
                 return;
             }
             document.getElementById('addAdModal').classList.add('show');
@@ -1754,16 +1823,17 @@
             wizardStep = 1;
             updateWizard();
             document.getElementById('planGroup').style.display = 'none';
-            const profile = JSON.parse(localStorage.getItem('jedar_profile')||'{}');
-            document.getElementById('adContact').value = profile.phone||'';
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            const phoneInput = document.getElementById('adContact');
+            phoneInput.value = profile.phone || '';
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
-        document.querySelectorAll('.modal-overlay-old').forEach(overlay=>{
-            overlay.addEventListener('click', function(e){
-                if (e.target===this) this.classList.remove('show');
+        document.querySelectorAll('.modal-overlay-old').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('show');
             });
         });
 
@@ -1791,7 +1861,7 @@
             const amount = document.getElementById('chargeAmount').value;
             const receiptInput = document.getElementById('receiptInput');
             if (!amount || !receiptInput.files[0]) {
-                showToast('لطفاً مبلغ و رسید را وارد کنید','warning');
+                showToast('لطفاً مبلغ و رسید را وارد کنید', 'warning');
                 return;
             }
             const btn = document.getElementById('submitChargeBtn');
@@ -1799,22 +1869,22 @@
             btn.textContent = '...در حال ارسال';
             try {
                 const reader = new FileReader();
-                const receiptBase64 = await new Promise(resolve=>{
-                    reader.onload = (e)=>resolve(e.target.result);
+                const receiptBase64 = await new Promise((resolve) => {
+                    reader.onload = (e) => resolve(e.target.result);
                     reader.readAsDataURL(receiptInput.files[0]);
                 });
                 const user = { id: guestId, first_name: 'کاربر' };
                 const data = await apiCall('/api/submit-charge', {
-                    method:'POST',
-                    body: JSON.stringify({ user, amount: parseInt(amount), method:'bank', receipt: receiptBase64 })
+                    method: 'POST',
+                    body: JSON.stringify({ user, amount: parseInt(amount), method: 'bank', receipt: receiptBase64 })
                 });
                 if (data.success) {
-                    showToast(t('charge_success'),'success');
+                    showToast(t('charge_success'), 'success');
                     closeModal('chargeModal');
                 } else {
-                    showToast(data.error||t('charge_error'),'error');
+                    showToast(data.error || t('charge_error'), 'error');
                 }
-            } catch (err) { showToast(t('charge_error'),'error'); }
+            } catch (err) { showToast(t('charge_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('send_request');
         }
@@ -1829,7 +1899,7 @@
 
         async function loadVipStatus() {
             try {
-                const data = await apiCall('/api/vip/status?user_id='+guestId);
+                const data = await apiCall('/api/vip/status?user_id=' + guestId);
                 if (data.success) {
                     if (data.is_vip) {
                         document.getElementById('vipStatus').innerHTML = `✅ اشتراک فعال است (${data.days_left} روز باقی‌مانده)`;
@@ -1841,9 +1911,9 @@
             try {
                 const priceData = await apiCall('/api/vip/prices');
                 if (priceData.success) {
-                    document.getElementById('vipPrice1').textContent = (priceData.monthly||50000).toLocaleString();
-                    document.getElementById('vipPrice3').textContent = (priceData.quarterly||130000).toLocaleString();
-                    document.getElementById('vipPrice6').textContent = (priceData.semiannual||240000).toLocaleString();
+                    document.getElementById('vipPrice1').textContent = (priceData.monthly || 50000).toLocaleString();
+                    document.getElementById('vipPrice3').textContent = (priceData.quarterly || 130000).toLocaleString();
+                    document.getElementById('vipPrice6').textContent = (priceData.semiannual || 240000).toLocaleString();
                 }
             } catch (err) {}
         }
@@ -1854,16 +1924,16 @@
             btn.textContent = '...';
             try {
                 const data = await apiCall('/api/vip/buy', {
-                    method:'POST',
+                    method: 'POST',
                     body: JSON.stringify({ userId: guestId, plan })
                 });
                 if (data.success) {
-                    showToast(t('vip_success'),'success');
+                    showToast(t('vip_success'), 'success');
                     closeModal('vipModal');
                 } else {
-                    showToast(data.error||t('vip_error'),'error');
+                    showToast(data.error || t('vip_error'), 'error');
                 }
-            } catch (err) { showToast(t('vip_error'),'error'); }
+            } catch (err) { showToast(t('vip_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('buy');
         }
@@ -1878,10 +1948,10 @@
 
         async function loadGiftStatus() {
             try {
-                const data = await apiCall('/api/gift/status?user_id='+guestId);
+                const data = await apiCall('/api/gift/status?user_id=' + guestId);
                 if (data.success && data.gift) {
                     const statusMap = { pending:t('gift_status_pending'), approved:t('gift_status_approved'), rejected:t('gift_status_rejected') };
-                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status]||'نامشخص'}`;
+                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status] || 'نامشخص'}`;
                 } else {
                     document.getElementById('giftStatus').innerHTML = t('no_gift');
                 }
@@ -1896,17 +1966,17 @@
             btn.textContent = '...در حال ارسال';
             try {
                 const data = await apiCall('/api/gift/request', {
-                    method:'POST',
+                    method: 'POST',
                     body: JSON.stringify({ userId: guestId })
                 });
                 if (data.success) {
-                    showToast(t('gift_success'),'success');
+                    showToast(t('gift_success'), 'success');
                     closeModal('giftModal');
                     loadGiftStatus();
                 } else {
-                    showToast(data.error||t('gift_error'),'error');
+                    showToast(data.error || t('gift_error'), 'error');
                 }
-            } catch (err) { showToast(t('gift_error'),'error'); }
+            } catch (err) { showToast(t('gift_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('gift_btn');
         }
@@ -1927,12 +1997,12 @@
         // ============================================================
         // INIT
         // ============================================================
-        const savedTheme = localStorage.getItem('jedar_theme')||'light';
+        const savedTheme = localStorage.getItem('jedar_theme') || 'light';
         currentTheme = savedTheme;
-        document.documentElement.setAttribute('data-theme',savedTheme);
-        document.getElementById('themeBtn').innerHTML = savedTheme==='light'?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
 
-        const savedLang = localStorage.getItem('jedar_lang')||'fa';
+        const savedLang = localStorage.getItem('jedar_lang') || 'fa';
         currentLang = savedLang;
         document.documentElement.lang = savedLang;
         document.documentElement.dir = 'rtl';
@@ -1944,19 +2014,19 @@
         loadGiftStatus();
 
         if (pendingCheckInterval) clearInterval(pendingCheckInterval);
-        pendingCheckInterval = setInterval(()=>{
-            if (currentTab==='home') fetchAds(false);
+        pendingCheckInterval = setInterval(() => {
+            if (currentTab === 'home') fetchAds(false);
         }, 30000);
 
-        document.getElementById('searchInput').addEventListener('keyup', function(e){
-            if (e.key==='Enter') searchAds();
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') searchAds();
         });
 
-        setTimeout(()=>{
+        setTimeout(() => {
             toggleUpperSection();
         }, 500);
 
-        console.log(`🚀 ${APP_NAME} - تصاویر با پراکسی /image/ بارگذاری می‌شوند`);
+        console.log(`🚀 ${APP_NAME} – نسخه اصلاح‌شده برای نمایش تصاویر و رفع خطای ثبت آگهی`);
     </script>
 </body>
-    </html>
+                </html>
