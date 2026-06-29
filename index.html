@@ -367,6 +367,15 @@
         .wallet-card .wallet-actions .btn-gift:hover {
             transform: translateY(-2px);
         }
+        .wallet-card .wallet-actions .btn-earnings {
+            background: var(--primary-gradient);
+            color: #fff;
+            opacity: 0.8;
+        }
+        .wallet-card .wallet-actions .btn-earnings:hover {
+            transform: translateY(-2px);
+            opacity: 1;
+        }
 
         .notice-card {
             background: var(--bg-card);
@@ -531,6 +540,7 @@
             border-color: var(--primary);
         }
 
+        /* ===== ADS GRID ===== */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -694,6 +704,7 @@
             margin-left: 2px;
         }
 
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -757,6 +768,7 @@
             font-weight: 500;
         }
 
+        /* ===== MODAL AD DETAIL ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -971,6 +983,7 @@
             color: var(--danger);
         }
 
+        /* ===== OTHER MODALS ===== */
         .modal-overlay-old {
             position: fixed;
             top: 0;
@@ -1230,7 +1243,8 @@
         }
 
         #profileTab,
-        #favoritesTab {
+        #favoritesTab,
+        #adminTab {
             display: none;
             max-width: 500px;
             margin: 0 auto;
@@ -1238,7 +1252,8 @@
             animation: fadeIn 0.3s ease;
         }
         #profileTab.show,
-        #favoritesTab.show {
+        #favoritesTab.show,
+        #adminTab.show {
             display: block;
         }
 
@@ -1306,6 +1321,90 @@
             box-shadow: 0 6px 20px var(--primary-light);
         }
 
+        /* ===== ADMIN SECTION ===== */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .admin-grid button {
+            padding: 12px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .admin-grid button:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .admin-grid button.danger:hover {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .admin-grid button.success:hover {
+            background: var(--primary-light);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .admin-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .admin-section h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .admin-section .admin-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .admin-section .admin-row input,
+        .admin-section .admin-row select {
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+        .admin-section .admin-row button {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            background: var(--primary-gradient);
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+        .admin-section .admin-row button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .admin-section .admin-row button.danger {
+            background: var(--danger);
+        }
+
         .my-ad-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1350,6 +1449,10 @@
         .my-ad-item .info .sub .status.rejected {
             background: rgba(239,68,68,0.2);
             color: var(--danger);
+        }
+        .my-ad-item .info .sub .status.pending_payment {
+            background: rgba(59,130,246,0.2);
+            color: #3b82f6;
         }
         .my-ad-item .actions {
             display: flex;
@@ -1572,6 +1675,23 @@
             color: var(--text-muted);
         }
 
+        /* ===== EARNINGS ===== */
+        .earnings-card {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        .earnings-card .amount {
+            font-size: 32px;
+            font-weight: 800;
+        }
+        .earnings-card .label {
+            opacity: 0.8;
+            font-size: 13px;
+        }
+
         @media (max-width:480px) {
             .ads-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1601,6 +1721,9 @@
             }
             .header .logo-text span {
                 font-size: 9px;
+            }
+            .admin-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
         @media (max-width:380px) {
@@ -1659,6 +1782,7 @@
                     <button class="btn-charge" onclick="openChargeModal()"><i class="fa-solid fa-wallet"></i> <span id="chargeBtnLabel">شارژ</span></button>
                     <button class="btn-vip" onclick="openVipModal()"><i class="fa-solid fa-crown"></i> <span id="vipBtnLabel">VIP</span></button>
                     <button class="btn-gift" onclick="openGiftModal()"><i class="fa-solid fa-gift"></i> <span id="giftBtnLabel">هدیه</span></button>
+                    <button class="btn-earnings" onclick="openEarningsModal()"><i class="fa-solid fa-coins"></i> <span id="earningsBtnLabel">درآمد</span></button>
                 </div>
             </div>
 
@@ -1710,6 +1834,10 @@
         <button class="nav-item" data-tab="profile" onclick="switchTab('profile')">
             <i class="fa-solid fa-user"></i>
             <span class="nav-label" id="navProfileLabel">پروفایل</span>
+        </button>
+        <button class="nav-item" data-tab="admin" onclick="switchTab('admin')" id="adminTabBtn" style="display:none;">
+            <i class="fa-solid fa-crown"></i>
+            <span class="nav-label" id="navAdminLabel">مدیریت</span>
         </button>
     </div>
 
@@ -1817,6 +1945,25 @@
         </div>
     </div>
 
+    <!-- Earnings Modal -->
+    <div class="modal-overlay-old" id="earningsModal">
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('earningsModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="earningsTitle">💰 درآمد</div>
+            <div class="earnings-card">
+                <div class="label" id="earningsTotalLabel">درآمد کل</div>
+                <div class="amount" id="earningsTotal">0</div>
+                <div style="font-size:13px;opacity:0.8;margin-top:4px;" id="earningsCurrency">تومان</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">امروز</div><div style="font-size:20px;font-weight:700;color:var(--primary);" id="earningsToday">0</div></div>
+                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">این هفته</div><div style="font-size:20px;font-weight:700;color:var(--primary);" id="earningsWeek">0</div></div>
+                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">این ماه</div><div style="font-size:20px;font-weight:700;color:var(--primary);" id="earningsMonth">0</div></div>
+            </div>
+            <div class="admin-section"><h4>📜 تاریخچه تراکنش‌ها</h4><div id="earningsHistory"><div class="text-secondary">در حال بارگذاری...</div></div></div>
+            <button class="btn-primary" id="transferEarningsBtn" onclick="transferEarnings()" style="margin-top:12px;">💸 انتقال به کیف پول اصلی</button>
+        </div>
+    </div>
+
     <!-- Profile Tab -->
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
@@ -1838,8 +1985,33 @@
         <div id="favoritesList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
+    <!-- Admin Tab -->
+    <div id="adminTab">
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="adminTitle">🔧 پنل مدیریت</h2>
+
+        <div class="admin-grid">
+            <button onclick="adminPendingAds()" id="adminPendingBtn"><i class="fa-solid fa-clock"></i> <span id="adminPendingLabel">در انتظار</span></button>
+            <button onclick="adminAllAds()" id="adminAllAdsBtn"><i class="fa-solid fa-list"></i> <span id="adminAllAdsLabel">همه آگهی‌ها</span></button>
+            <button onclick="adminUsers()" id="adminUsersBtn"><i class="fa-solid fa-users"></i> <span id="adminUsersLabel">کاربران</span></button>
+            <button onclick="adminAdmins()" id="adminAdminsBtn"><i class="fa-solid fa-user-shield"></i> <span id="adminAdminsLabel">ادمین‌ها</span></button>
+            <button onclick="adminSupport()" id="adminSupportBtn"><i class="fa-solid fa-headset"></i> <span id="adminSupportLabel">پشتیبانی</span></button>
+            <button onclick="adminAnnounce()" id="adminAnnounceBtn"><i class="fa-solid fa-bullhorn"></i> <span id="adminAnnounceLabel">اطلاعیه</span></button>
+            <button onclick="adminStats()" id="adminStatsBtn"><i class="fa-solid fa-chart-bar"></i> <span id="adminStatsLabel">آمار</span></button>
+            <button onclick="adminSettings()" id="adminSettingsBtn"><i class="fa-solid fa-cog"></i> <span id="adminSettingsLabel">تنظیمات</span></button>
+            <button onclick="adminPayments()" id="adminPaymentsBtn"><i class="fa-solid fa-credit-card"></i> <span id="adminPaymentsLabel">پرداخت</span></button>
+            <button onclick="adminExport()" id="adminExportBtn"><i class="fa-solid fa-file-export"></i> <span id="adminExportLabel">خروجی</span></button>
+        </div>
+
+        <div id="adminContent" class="admin-section">
+            <h4 id="adminContentTitle">مدیریت</h4>
+            <div id="adminResult" style="margin-top:10px;">
+                <div class="text-secondary">از دکمه‌های بالا برای مدیریت استفاده کنید.</div>
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – کاملاً هماهنگ با Worker (رفع مشکل تصاویر و ثبت)   -->
+    <!-- JAVASCRIPT – کامل با تمام قابلیت‌ها -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
@@ -1847,9 +2019,6 @@
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const APP_NAME = 'جـدار';
-        // دیگر نیازی به IMAGE_BASE نداریم چون خود Worker مسیر /image/ را برمی‌گرداند
-        // اما برای اطمینان از مواردی که تصویر به صورت path نسبی است:
-        const IMAGE_BASE = API_BASE; // برای استفاده با new URL
 
         let guestId = localStorage.getItem('jedar_guest_id');
         if (!guestId) {
@@ -1873,236 +2042,148 @@
         let pendingCheckInterval = null;
         let upperSectionOpen = false;
         let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+        let isAdmin = false;
+        let isSuperAdmin = false;
 
         // ============================================================
-        // TRANSLATIONS
+        // TRANSLATIONS (کامل)
         // ============================================================
         const translations = {
             fa: {
-                home: 'خانه',
-                add: 'ثبت',
-                favorites: 'علاقه‌مندی',
-                profile: 'پروفایل',
-                wallet: 'کیف پول',
-                currency: 'تومان',
-                trust: 'اعتماد',
-                charge: 'شارژ',
-                vip: 'VIP',
-                gift: 'هدیه',
-                search: 'جستجو',
-                search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها',
-                add_ad: 'ثبت آگهی جدید',
-                title: 'عنوان آگهی',
-                category: 'دسته‌بندی',
-                price: 'قیمت (تومان)',
-                next: 'بعدی',
-                prev: 'قبلی',
-                description: 'توضیحات',
-                location: 'موقعیت / شهر',
-                country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)',
-                upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس',
-                ad_type: 'نوع آگهی',
-                normal: 'عادی',
-                special: 'ویژه',
-                special_duration: 'مدت ویژه',
-                submit: 'ثبت آگهی',
-                charge_wallet: 'شارژ کیف پول',
-                amount: 'مبلغ (تومان)',
-                receipt: 'تصویر رسید',
-                upload_receipt: 'برای آپلود رسید کلیک کنید',
-                send_request: 'ارسال درخواست',
-                vip_subscription: 'اشتراک ویژه',
+                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل',
+                admin: 'مدیریت', wallet: 'کیف پول', currency: 'تومان', trust: 'اعتماد',
+                charge: 'شارژ', vip: 'VIP', gift: 'هدیه', earnings: 'درآمد',
+                search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
+                recent_ads: 'آخرین آگهی‌ها', add_ad: 'ثبت آگهی جدید',
+                title: 'عنوان آگهی', category: 'دسته‌بندی', price: 'قیمت (تومان)',
+                next: 'بعدی', prev: 'قبلی', description: 'توضیحات',
+                location: 'موقعیت / شهر', country: 'کشور',
+                images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید',
+                phone: 'شماره تماس', ad_type: 'نوع آگهی', normal: 'عادی',
+                special: 'ویژه', special_duration: 'مدت ویژه', submit: 'ثبت آگهی',
+                charge_wallet: 'شارژ کیف پول', amount: 'مبلغ (تومان)',
+                receipt: 'تصویر رسید', upload_receipt: 'برای آپلود رسید کلیک کنید',
+                send_request: 'ارسال درخواست', vip_subscription: 'اشتراک ویژه',
                 vip_desc: 'با اشتراک ویژه، بدون محدودیت آگهی ثبت کنید.',
-                month: 'ماه',
-                months_3: 'ماه',
-                months_6: 'ماه',
-                buy: 'خرید',
-                gift_request: 'هدیه رایگان',
-                gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
-                gift_btn: 'درخواست هدیه',
-                rate_review: 'امتیاز و نظر',
-                comment: 'نظر خود را بنویسید...',
-                submit_review: 'ارسال نظر',
-                profile_title: 'پروفایل',
-                username: 'نام کاربری',
-                fullname: 'نام کامل',
-                phone_label: 'شماره تلفن',
-                email_label: 'ایمیل',
-                trust_score: 'امتیاز اعتماد',
-                save: 'ذخیره',
-                no_ads: 'هیچ آگهی‌ای موجود نیست',
-                pending: 'در انتظار',
-                approved: 'تایید شده',
-                rejected: 'رد شده',
-                call: 'تماس',
-                whatsapp: 'واتساپ',
-                add_fav: 'افزودن به علاقه‌مندی',
-                remove_fav: 'حذف از علاقه‌مندی',
-                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
-                my_ads: 'آگهی‌های من',
-                edit: 'ویرایش',
-                delete: 'حذف',
-                expired: 'منقضی',
-                special_badge: 'ویژه',
-                refresh: 'بروزرسانی',
-                pilgrimage: 'زیارت',
-                tourism: 'گردشگری',
-                medical: 'پزشکی',
-                beauty: 'زیبایی',
-                services: 'خدمات',
-                jobs: 'کاریابی',
-                real_estate: 'املاک',
-                vehicles: 'خودرو',
-                share: 'اشتراک',
-                show_tools: 'نمایش ابزارها',
-                hide_tools: 'مخفی کردن ابزارها',
-                gift_status_pending: '⏳ در انتظار تایید',
-                gift_status_approved: '✅ تایید شده',
-                gift_status_rejected: '❌ رد شده',
-                no_gift: 'شما هیچ درخواست هدیه‌ای ندارید',
-                gift_success: 'درخواست هدیه ثبت شد',
-                gift_error: 'خطا در ثبت درخواست هدیه',
-                ad_success: '✅ آگهی شما ثبت شد و برای تایید به ربات ارسال گردید.',
-                ad_error: 'خطا در ثبت آگهی',
-                charge_success: 'درخواست شارژ ارسال شد',
+                month: 'ماه', months_3: 'ماه', months_6: 'ماه',
+                buy: 'خرید', loading: 'در حال بارگذاری...',
+                gift_request: 'هدیه رایگان', gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
+                gift_btn: 'درخواست هدیه', rate_review: 'امتیاز و نظر',
+                comment: 'نظر خود را بنویسید...', submit_review: 'ارسال نظر',
+                profile_title: 'پروفایل', username: 'نام کاربری',
+                fullname: 'نام کامل', phone_label: 'شماره تلفن',
+                email_label: 'ایمیل', trust_score: 'امتیاز اعتماد',
+                save: 'ذخیره', no_ads: 'هیچ آگهی‌ای موجود نیست',
+                pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
+                pending_payment: 'در انتظار پرداخت', call: 'تماس',
+                whatsapp: 'واتساپ', add_fav: 'افزودن به علاقه‌مندی',
+                remove_fav: 'حذف از علاقه‌مندی', no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
+                my_ads: 'آگهی‌های من', edit: 'ویرایش', delete: 'حذف',
+                expired: 'منقضی', special_badge: 'ویژه', refresh: 'بروزرسانی',
+                pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی',
+                beauty: 'زیبایی', services: 'خدمات', jobs: 'کاریابی',
+                real_estate: 'املاک', vehicles: 'خودرو', share: 'اشتراک',
+                show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها',
+                gift_status_pending: '⏳ در انتظار تایید', gift_status_approved: '✅ تایید شده',
+                gift_status_rejected: '❌ رد شده', no_gift: 'شما هیچ درخواست هدیه‌ای ندارید',
+                gift_success: 'درخواست هدیه ثبت شد', gift_error: 'خطا در ثبت درخواست هدیه',
+                ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.',
+                ad_error: 'خطا در ثبت آگهی', charge_success: 'درخواست شارژ ارسال شد',
                 charge_error: 'خطا در ارسال درخواست شارژ',
-                vip_success: 'اشتراک ویژه خریداری شد',
-                vip_error: 'خطا در خرید اشتراک ویژه',
-                review_success: 'نظر شما ثبت شد',
-                review_error: 'خطا در ثبت نظر',
-                favorite_added: 'به علاقه‌مندی اضافه شد',
-                favorite_removed: 'از علاقه‌مندی حذف شد',
-                profile_saved: 'پروفایل ذخیره شد',
-                profile_error: 'خطا در ذخیره پروفایل',
+                vip_success: 'اشتراک ویژه خریداری شد', vip_error: 'خطا در خرید اشتراک ویژه',
+                review_success: 'نظر شما ثبت شد', review_error: 'خطا در ثبت نظر',
+                favorite_added: 'به علاقه‌مندی اضافه شد', favorite_removed: 'از علاقه‌مندی حذف شد',
+                profile_saved: 'پروفایل ذخیره شد', profile_error: 'خطا در ذخیره پروفایل',
                 complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
                 ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی مجاز رسیده‌اید.',
-                no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...',
-                ad_not_found: 'آگهی یافت نشد',
-                error_loading: 'خطا در بارگذاری',
-                vip_monthly: '۱ ماهه',
-                vip_quarterly: '۳ ماهه',
-                vip_semiannual: '۶ ماهه',
-                balance: 'موجودی',
-                all: 'همه',
-                not_found: 'مسیر یافت نشد',
-                loading_ads: 'در حال بارگذاری آگهی‌ها...',
+                no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...',
+                ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
+                vip_monthly: '۱ ماهه', vip_quarterly: '۳ ماهه', vip_semiannual: '۶ ماهه',
+                balance: 'موجودی', all: 'همه',
+                not_found: 'مسیر یافت نشد', loading_ads: 'در حال بارگذاری آگهی‌ها...',
+                pending_ads: 'آگهی‌های در انتظار', all_ads: 'همه آگهی‌ها',
+                users: 'کاربران', admins: 'ادمین‌ها', support: 'پشتیبانی',
+                announcement: 'اطلاعیه', stats: 'آمار', settings: 'تنظیمات',
+                payment: 'پرداخت', export: 'خروجی', approve: 'تایید',
+                reject: 'رد', block: 'مسدود', unblock: 'رفع انسداد',
+                delete_user: 'حذف کاربر', add_admin: 'افزودن ادمین',
+                remove_admin: 'حذف ادمین', reply: 'پاسخ', send: 'ارسال',
+                earnings_total: 'درآمد کل', today: 'امروز', week: 'این هفته',
+                month: 'این ماه', transfer: 'انتقال به کیف پول',
+                no_data: 'هیچ داده‌ای موجود نیست', confirm_delete: 'آیا از حذف اطمینان دارید؟',
+                ad_approved: 'آگهی تایید شد', ad_rejected: 'آگهی رد شد',
+                user_blocked: 'کاربر مسدود شد', user_unblocked: 'انسداد کاربر رفع شد',
+                admin_added: 'ادمین اضافه شد', admin_removed: 'ادمین حذف شد',
+                announcement_sent: 'اطلاعیه ارسال شد', reply_sent: 'پاسخ ارسال شد',
+                price_updated: 'قیمت به‌روزرسانی شد', payment_updated: 'پرداخت به‌روزرسانی شد',
             },
             ar: {
-                home: 'الرئيسية',
-                add: 'إضافة',
-                favorites: 'المفضلة',
-                profile: 'الملف الشخصي',
-                wallet: 'المحفظة',
-                currency: 'تومان',
-                trust: 'الثقة',
-                charge: 'شحن',
-                vip: 'VIP',
-                gift: 'هدية',
-                search: 'بحث',
-                search_placeholder: 'ابحث في الإعلانات...',
-                recent_ads: 'آخر الإعلانات',
-                add_ad: 'إعلان جديد',
-                title: 'عنوان الإعلان',
-                category: 'الفئة',
-                price: 'السعر (تومان)',
-                next: 'التالي',
-                prev: 'السابق',
-                description: 'الوصف',
-                location: 'الموقع / المدينة',
-                country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)',
-                upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف',
-                ad_type: 'نوع الإعلان',
-                normal: 'عادي',
-                special: 'مميز',
-                special_duration: 'مدة التميز',
-                submit: 'نشر الإعلان',
-                charge_wallet: 'شحن المحفظة',
-                amount: 'المبلغ (تومان)',
-                receipt: 'صورة الإيصال',
-                upload_receipt: 'اضغط لرفع الإيصال',
-                send_request: 'إرسال الطلب',
-                vip_subscription: 'اشتراك مميز',
+                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
+                admin: 'الإدارة', wallet: 'المحفظة', currency: 'تومان', trust: 'الثقة',
+                charge: 'شحن', vip: 'VIP', gift: 'هدية', earnings: 'الأرباح',
+                search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
+                recent_ads: 'آخر الإعلانات', add_ad: 'إعلان جديد',
+                title: 'عنوان الإعلان', category: 'الفئة', price: 'السعر (تومان)',
+                next: 'التالي', prev: 'السابق', description: 'الوصف',
+                location: 'الموقع / المدينة', country: 'الدولة',
+                images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل',
+                phone: 'رقم الهاتف', ad_type: 'نوع الإعلان', normal: 'عادي',
+                special: 'مميز', special_duration: 'مدة التميز', submit: 'نشر الإعلان',
+                charge_wallet: 'شحن المحفظة', amount: 'المبلغ (تومان)',
+                receipt: 'صورة الإيصال', upload_receipt: 'اضغط لرفع الإيصال',
+                send_request: 'إرسال الطلب', vip_subscription: 'اشتراك مميز',
                 vip_desc: 'مع اشتراك مميز، انشر إعلانات غير محدودة.',
-                month: 'شهر',
-                months_3: 'شهور',
-                months_6: 'شهور',
-                buy: 'شراء',
-                gift_request: 'هدية مجانية',
-                gift_desc: 'طلب إعلان مجاني. سيتم الموافقة عليه من قبل المدير.',
-                gift_btn: 'طلب هدية',
-                rate_review: 'تقييم',
-                comment: 'اكتب تعليقك...',
-                submit_review: 'إرسال',
-                profile_title: 'الملف الشخصي',
-                username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني',
-                trust_score: 'نقاط الثقة',
-                save: 'حفظ',
-                no_ads: 'لا توجد إعلانات',
-                pending: 'قيد المراجعة',
-                approved: 'تمت الموافقة',
-                rejected: 'مرفوض',
-                call: 'اتصال',
-                whatsapp: 'واتساب',
-                add_fav: 'أضف للمفضلة',
-                remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات',
-                my_ads: 'إعلاناتي',
-                edit: 'تعديل',
-                delete: 'حذف',
-                expired: 'منتهي',
-                special_badge: 'مميز',
-                refresh: 'تحديث',
-                pilgrimage: 'زيارة',
-                tourism: 'سياحة',
-                medical: 'طبي',
-                beauty: 'تجميل',
-                services: 'خدمات',
-                jobs: 'توظيف',
-                real_estate: 'عقارات',
-                vehicles: 'سيارات',
-                share: 'مشاركة',
-                show_tools: 'إظهار الأدوات',
-                hide_tools: 'إخفاء الأدوات',
-                gift_status_pending: '⏳ قيد المراجعة',
-                gift_status_approved: '✅ تمت الموافقة',
-                gift_status_rejected: '❌ مرفوض',
-                no_gift: 'لا يوجد طلب هدية',
-                gift_success: 'تم تقديم طلب الهدية',
-                gift_error: 'فشل تقديم طلب الهدية',
+                month: 'شهر', months_3: 'شهور', months_6: 'شهور',
+                buy: 'شراء', loading: 'جاري التحميل...',
+                gift_request: 'هدية مجانية', gift_desc: 'طلب إعلان مجاني. سيتم الموافقة عليه من قبل المدير.',
+                gift_btn: 'طلب هدية', rate_review: 'تقييم',
+                comment: 'اكتب تعليقك...', submit_review: 'إرسال',
+                profile_title: 'الملف الشخصي', username: 'اسم المستخدم',
+                fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف',
+                email_label: 'البريد الإلكتروني', trust_score: 'نقاط الثقة',
+                save: 'حفظ', no_ads: 'لا توجد إعلانات',
+                pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
+                pending_payment: 'في انتظار الدفع', call: 'اتصال',
+                whatsapp: 'واتساب', add_fav: 'أضف للمفضلة',
+                remove_fav: 'إزالة من المفضلة', no_favorites: 'لا توجد مفضلات',
+                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف',
+                expired: 'منتهي', special_badge: 'مميز', refresh: 'تحديث',
+                pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي',
+                beauty: 'تجميل', services: 'خدمات', jobs: 'توظيف',
+                real_estate: 'عقارات', vehicles: 'سيارات', share: 'مشاركة',
+                show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات',
+                gift_status_pending: '⏳ قيد المراجعة', gift_status_approved: '✅ تمت الموافقة',
+                gift_status_rejected: '❌ مرفوض', no_gift: 'لا يوجد طلب هدية',
+                gift_success: 'تم تقديم طلب الهدية', gift_error: 'فشل تقديم طلب الهدية',
                 ad_success: '✅ تم إرسال إعلانك للمراجعة.',
-                ad_error: 'فشل نشر الإعلان',
-                charge_success: 'تم تقديم طلب الشحن',
+                ad_error: 'فشل نشر الإعلان', charge_success: 'تم تقديم طلب الشحن',
                 charge_error: 'فشل تقديم طلب الشحن',
-                vip_success: 'تم شراء اشتراك مميز',
-                vip_error: 'فشل شراء اشتراك مميز',
-                review_success: 'تم إرسال التقييم',
-                review_error: 'فشل إرسال التقييم',
-                favorite_added: 'تمت الإضافة إلى المفضلة',
-                favorite_removed: 'تمت الإزالة من المفضلة',
-                profile_saved: 'تم حفظ الملف الشخصي',
-                profile_error: 'فشل حفظ الملف الشخصي',
+                vip_success: 'تم شراء اشتراك مميز', vip_error: 'فشل شراء اشتراك مميز',
+                review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم',
+                favorite_added: 'تمت الإضافة إلى المفضلة', favorite_removed: 'تمت الإزالة من المفضلة',
+                profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
                 complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
                 ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات.',
-                no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...',
-                ad_not_found: 'الإعلان غير موجود',
-                error_loading: 'خطأ في التحميل',
-                vip_monthly: 'شهر واحد',
-                vip_quarterly: '٣ شهور',
-                vip_semiannual: '٦ شهور',
-                balance: 'الرصيد',
-                all: 'الجميع',
-                not_found: 'لم يتم العثور على المسار',
-                loading_ads: 'جاري تحميل الإعلانات...',
+                no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
+                ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل',
+                vip_monthly: 'شهر واحد', vip_quarterly: '٣ شهور', vip_semiannual: '٦ شهور',
+                balance: 'الرصيد', all: 'الجميع',
+                not_found: 'لم يتم العثور على المسار', loading_ads: 'جاري تحميل الإعلانات...',
+                pending_ads: 'الإعلانات قيد المراجعة', all_ads: 'جميع الإعلانات',
+                users: 'المستخدمين', admins: 'المشرفين', support: 'الدعم',
+                announcement: 'إشعار', stats: 'الإحصائيات', settings: 'الإعدادات',
+                payment: 'الدفع', export: 'تصدير', approve: 'موافقة',
+                reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر',
+                delete_user: 'حذف المستخدم', add_admin: 'إضافة مشرف',
+                remove_admin: 'حذف مشرف', reply: 'رد', send: 'إرسال',
+                earnings_total: 'إجمالي الأرباح', today: 'اليوم', week: 'هذا الأسبوع',
+                month: 'هذا الشهر', transfer: 'تحويل إلى المحفظة',
+                no_data: 'لا توجد بيانات', confirm_delete: 'هل أنت متأكد من الحذف؟',
+                ad_approved: 'تمت الموافقة على الإعلان', ad_rejected: 'تم رفض الإعلان',
+                user_blocked: 'تم حظر المستخدم', user_unblocked: 'تم إلغاء حظر المستخدم',
+                admin_added: 'تمت إضافة المشرف', admin_removed: 'تم حذف المشرف',
+                announcement_sent: 'تم إرسال الإشعار', reply_sent: 'تم إرسال الرد',
+                price_updated: 'تم تحديث السعر', payment_updated: 'تم تحديث الدفع',
             }
         };
 
@@ -2117,74 +2198,47 @@
             const lang = currentLang;
             document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : '🇮🇷 فارسی';
             const elements = {
-                'walletLabel': 'wallet',
-                'currencyLabel': 'currency',
-                'vipLabel': 'vip',
-                'trustLabel': 'trust',
-                'chargeBtnLabel': 'charge',
-                'vipBtnLabel': 'vip',
-                'giftBtnLabel': 'gift',
-                'actPilgrimage': 'pilgrimage',
-                'actTourism': 'tourism',
-                'actMedical': 'medical',
-                'actBeauty': 'beauty',
-                'actServices': 'services',
-                'actJobs': 'jobs',
-                'actRealEstate': 'real_estate',
-                'actVehicles': 'vehicles',
-                'searchBtn': 'search',
-                'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home',
-                'navAddLabel': 'add',
-                'navFavLabel': 'favorites',
-                'navProfileLabel': 'profile',
-                'addAdTitle': 'add_ad',
-                'adTitleLabel': 'title',
-                'adCategoryLabel': 'category',
-                'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next',
-                'adDescLabel': 'description',
-                'adLocationLabel': 'location',
-                'adCountryLabel': 'country',
-                'wizardPrevBtn2': 'prev',
-                'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images',
-                'uploadClickLabel': 'upload_click',
-                'adPhoneLabel': 'phone',
-                'adTypeLabel': 'ad_type',
-                'adNormalOption': 'normal',
-                'adSpecialOption': 'special',
-                'planLabel': 'special_duration',
-                'wizardPrevBtn3': 'prev',
-                'submitAdBtn': 'submit',
-                'chargeTitle': 'charge_wallet',
-                'chargeAmountLabel': 'amount',
-                'receiptLabel': 'receipt',
-                'uploadReceiptLabel': 'upload_receipt',
-                'submitChargeBtn': 'send_request',
-                'vipModalTitle': 'vip_subscription',
-                'vipDesc': 'vip_desc',
-                'vipMonthLabel': 'vip_monthly',
-                'vip3MonthLabel': 'vip_quarterly',
-                'vip6MonthLabel': 'vip_semiannual',
-                'vipBuy1': 'buy',
-                'vipBuy3': 'buy',
-                'vipBuy6': 'buy',
-                'giftTitle': 'gift_request',
-                'giftDesc': 'gift_desc',
-                'giftBtn': 'gift_btn',
-                'profileTitle': 'profile_title',
-                'profileUsernameLabel': 'username',
-                'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label',
-                'profileEmailLabel': 'email_label',
-                'profileTrustLabel': 'trust_score',
-                'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads',
-                'favTitle': 'favorites',
-                'refreshAdsBtn': 'refresh',
-                'searchInput': 'search_placeholder',
+                'walletLabel': 'wallet', 'currencyLabel': 'currency', 'vipLabel': 'vip',
+                'trustLabel': 'trust', 'chargeBtnLabel': 'charge', 'vipBtnLabel': 'vip',
+                'giftBtnLabel': 'gift', 'earningsBtnLabel': 'earnings',
+                'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism',
+                'actMedical': 'medical', 'actBeauty': 'beauty',
+                'actServices': 'services', 'actJobs': 'jobs',
+                'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'searchBtn': 'search', 'adsTitle': 'recent_ads',
+                'navHomeLabel': 'home', 'navAddLabel': 'add',
+                'navFavLabel': 'favorites', 'navProfileLabel': 'profile',
+                'navAdminLabel': 'admin', 'addAdTitle': 'add_ad',
+                'adTitleLabel': 'title', 'adCategoryLabel': 'category',
+                'adPriceLabel': 'price', 'wizardNextBtn1': 'next',
+                'adDescLabel': 'description', 'adLocationLabel': 'location',
+                'adCountryLabel': 'country', 'wizardPrevBtn2': 'prev',
+                'wizardNextBtn2': 'next', 'adImagesLabel': 'images',
+                'uploadClickLabel': 'upload_click', 'adPhoneLabel': 'phone',
+                'adTypeLabel': 'ad_type', 'adNormalOption': 'normal',
+                'adSpecialOption': 'special', 'planLabel': 'special_duration',
+                'wizardPrevBtn3': 'prev', 'submitAdBtn': 'submit',
+                'chargeTitle': 'charge_wallet', 'chargeAmountLabel': 'amount',
+                'receiptLabel': 'receipt', 'uploadReceiptLabel': 'upload_receipt',
+                'submitChargeBtn': 'send_request', 'vipModalTitle': 'vip_subscription',
+                'vipDesc': 'vip_desc', 'vipMonthLabel': 'vip_monthly',
+                'vip3MonthLabel': 'vip_quarterly', 'vip6MonthLabel': 'vip_semiannual',
+                'vipBuy1': 'buy', 'vipBuy3': 'buy', 'vipBuy6': 'buy',
+                'giftTitle': 'gift_request', 'giftDesc': 'gift_desc',
+                'giftBtn': 'gift_btn', 'profileTitle': 'profile_title',
+                'profileUsernameLabel': 'username', 'profileFullnameLabel': 'fullname',
+                'profilePhoneLabel': 'phone_label', 'profileEmailLabel': 'email_label',
+                'profileTrustLabel': 'trust_score', 'profileSaveBtn': 'save',
+                'myAdsTitle': 'my_ads', 'favTitle': 'favorites',
+                'refreshAdsBtn': 'refresh', 'searchInput': 'search_placeholder',
                 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'adminTitle': 'admin', 'adminPendingLabel': 'pending_ads',
+                'adminAllAdsLabel': 'all_ads', 'adminUsersLabel': 'users',
+                'adminAdminsLabel': 'admins', 'adminSupportLabel': 'support',
+                'adminAnnounceLabel': 'announcement', 'adminStatsLabel': 'stats',
+                'adminSettingsLabel': 'settings', 'adminPaymentsLabel': 'payment',
+                'adminExportLabel': 'export', 'earningsTitle': 'earnings',
+                'earningsTotalLabel': 'earnings_total',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -2196,6 +2250,7 @@
                     }
                 }
             }
+            // Categories
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
@@ -2269,17 +2324,12 @@
             return Math.floor(diff / 2592000) + ' ماه پیش';
         }
 
-        // تابع جدید برای تبدیل صحیح تصاویر
         function normalizeImageUrl(img) {
             if (!img) return null;
-            // اگر با http یا https شروع شود، همان است
             if (img.startsWith('http://') || img.startsWith('https://')) return img;
-            // اگر با '/' شروع شود، آن را به آدرس پایه اضافه می‌کنیم
             if (img.startsWith('/')) {
-                // از new URL استفاده می‌کنیم تا درست ترکیب شود
                 return new URL(img, API_BASE).href;
             }
-            // در غیر این صورت، فرض می‌کنیم یک file_id است و از پراکسی استفاده می‌کنیم
             return `${API_BASE}/image/${img}`;
         }
 
@@ -2350,6 +2400,17 @@
                         } else {
                             document.getElementById('vipBadge').classList.remove('show');
                         }
+                        // Check admin status
+                        if (user.is_admin || user.is_super_admin) {
+                            isAdmin = true;
+                            document.getElementById('adminTabBtn').style.display = 'flex';
+                            if (user.is_super_admin) {
+                                isSuperAdmin = true;
+                            }
+                        } else {
+                            isAdmin = false;
+                            document.getElementById('adminTabBtn').style.display = 'none';
+                        }
                     }
                 })
                 .catch(() => {});
@@ -2379,7 +2440,7 @@
         }
 
         // ============================================================
-        // ADS – دریافت از Worker با تصاویر اصلاح‌شده
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2392,7 +2453,6 @@
                 const data = await apiCall('/api/ads');
                 if (data.success && data.data && data.data.length > 0) {
                     allAds = data.data.map(ad => {
-                        // پردازش تصاویر: استفاده از normalizeImageUrl
                         if (ad.images && Array.isArray(ad.images)) {
                             ad.images = ad.images.map(img => normalizeImageUrl(img)).filter(url => url !== null);
                         } else {
@@ -2526,9 +2586,14 @@
             document.getElementById('app').style.display = tab === 'home' ? 'block' : 'none';
             document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
             document.getElementById('favoritesTab').style.display = tab === 'favorites' ? 'block' : 'none';
+            document.getElementById('adminTab').style.display = tab === 'admin' ? 'block' : 'none';
             if (tab === 'profile') { loadProfile();
                 fetchMyAds(); }
             if (tab === 'favorites') fetchFavorites();
+            if (tab === 'admin' && isAdmin) {
+                document.getElementById('adminResult').innerHTML =
+                    '<div class="text-secondary">از دکمه‌های بالا برای مدیریت استفاده کنید.</div>';
+            }
         }
 
         // ============================================================
@@ -2541,7 +2606,6 @@
                 return;
             }
 
-            // استفاده از normalizeImageUrl برای تصاویر
             const galleryImages = (ad.images || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
             let galleryIndex = 0;
             let galleryHtml = '';
@@ -2802,7 +2866,7 @@
         }
 
         // ============================================================
-        // MY ADS (از Worker)
+        // MY ADS
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
@@ -2814,9 +2878,10 @@
                     data.data.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
+                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected',
+                            pending_payment: 'pending_payment' };
                         const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
+                                'rejected'), pending_payment: t('pending_payment') };
                         div.innerHTML = `
                             <div class="info">
                                 <div class="title">${ad.title}</div>
@@ -2844,7 +2909,7 @@
         }
 
         async function deleteAd(adId) {
-            if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
+            if (!confirm(t('confirm_delete'))) return;
             try {
                 const data = await apiCall('/api/ad/delete', {
                     method: 'POST',
@@ -2941,7 +3006,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD – ارسال به Worker با مسیر صحیح
+        // SUBMIT AD
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -2983,7 +3048,7 @@
                     images: wizardImagesBase64
                 };
 
-                console.log('📤 ارسال آگهی به Worker (مسیر /api/ad/submit):', payload);
+                console.log('📤 ارسال آگهی:', payload);
 
                 const data = await apiCall('/api/ad/submit', {
                     method: 'POST',
@@ -2991,7 +3056,11 @@
                 });
 
                 if (data.success) {
-                    showToast(t('ad_success'), 'success');
+                    if (data.isPaid) {
+                        showToast('💳 آگهی شما نیاز به پرداخت دارد. لطفاً مراحل پرداخت را در ربات تکمیل کنید.', 'warning');
+                    } else {
+                        showToast(t('ad_success'), 'success');
+                    }
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -3041,7 +3110,7 @@
         });
 
         // ============================================================
-        // CHARGE – ارسال درخواست به Worker
+        // CHARGE
         // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
@@ -3080,177 +3149,4 @@
                     method: 'POST',
                     body: JSON.stringify({
                         username: guestId,
-                        amount: parseInt(amount),
-                        receipt: receiptBase64
-                    })
-                });
-                if (data.success) {
-                    showToast(t('charge_success'), 'success');
-                    closeModal('chargeModal');
-                    fetchUserData();
-                } else {
-                    showToast(data.error || t('charge_error'), 'error');
-                }
-            } catch (err) { showToast(t('charge_error'), 'error'); }
-            btn.disabled = false;
-            btn.textContent = t('send_request');
-        }
-
-        // ============================================================
-        // VIP – خرید از Worker
-        // ============================================================
-        function openVipModal() {
-            document.getElementById('vipModal').classList.add('show');
-            loadVipStatus();
-        }
-
-        async function loadVipStatus() {
-            try {
-                const data = await apiCall(`/api/vip/status/${guestId}`);
-                if (data.success && data.data && data.data.isVip) {
-                    document.getElementById('vipStatus').innerHTML =
-                        `✅ اشتراک فعال است (${data.data.daysLeft || 0} روز باقی‌مانده)`;
-                    document.getElementById('vipBadge').classList.add('show');
-                } else {
-                    document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
-                    document.getElementById('vipBadge').classList.remove('show');
-                }
-            } catch (err) {
-                document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری';
-            }
-            try {
-                const priceData = await apiCall('/api/prices');
-                if (priceData.success) {
-                    document.getElementById('vipPrice1').textContent = (priceData.prices?.price_vip1 || 50000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice3').textContent = (priceData.prices?.price_vip3 || 130000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice6').textContent = (priceData.prices?.price_vip6 || 240000)
-                    .toLocaleString();
-                }
-            } catch (err) {}
-        }
-
-        async function buyVip(plan) {
-            const btn = event.target;
-            btn.disabled = true;
-            btn.textContent = '...';
-            try {
-                const data = await apiCall('/api/vip/buy', {
-                    method: 'POST',
-                    body: JSON.stringify({ username: guestId, plan })
-                });
-                if (data.success) {
-                    showToast(t('vip_success'), 'success');
-                    closeModal('vipModal');
-                    fetchUserData();
-                    loadVipStatus();
-                } else {
-                    showToast(data.error || t('vip_error'), 'error');
-                }
-            } catch (err) { showToast(t('vip_error'), 'error'); }
-            btn.disabled = false;
-            btn.textContent = t('buy');
-        }
-
-        // ============================================================
-        // GIFT – درخواست از Worker
-        // ============================================================
-        function openGiftModal() {
-            document.getElementById('giftModal').classList.add('show');
-            loadGiftStatus();
-        }
-
-        async function loadGiftStatus() {
-            try {
-                const data = await apiCall(`/api/gift/status/${guestId}`);
-                if (data.success && data.data) {
-                    const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
-                        rejected: t('gift_status_rejected') };
-                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.data.status] || 'نامشخص'}`;
-                } else {
-                    document.getElementById('giftStatus').innerHTML = t('no_gift');
-                }
-            } catch (err) {
-                document.getElementById('giftStatus').innerHTML = 'خطا در بارگذاری';
-            }
-        }
-
-        async function requestGiftSubmit() {
-            const btn = event.target;
-            btn.disabled = true;
-            btn.textContent = '...در حال ارسال';
-            try {
-                const data = await apiCall('/api/gift/request', {
-                    method: 'POST',
-                    body: JSON.stringify({ username: guestId })
-                });
-                if (data.success) {
-                    showToast(t('gift_success'), 'success');
-                    closeModal('giftModal');
-                    loadGiftStatus();
-                } else {
-                    showToast(data.error || t('gift_error'), 'error');
-                }
-            } catch (err) { showToast(t('gift_error'), 'error'); }
-            btn.disabled = false;
-            btn.textContent = t('gift_btn');
-        }
-
-        // ============================================================
-        // NOTICE
-        // ============================================================
-        async function fetchNotice() {
-            try {
-                const data = await apiCall('/api/notice');
-                if (data.success && data.notice) {
-                    document.getElementById('noticeText').textContent = data.notice.text;
-                    document.getElementById('noticeCard').classList.add('show');
-                }
-            } catch (err) {}
-        }
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        const savedTheme = localStorage.getItem('jedar_theme') || 'light';
-        currentTheme = savedTheme;
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-            '<i class="fa-solid fa-sun"></i>';
-
-        const savedLang = localStorage.getItem('jedar_lang') || 'fa';
-        currentLang = savedLang;
-        document.documentElement.lang = savedLang;
-        document.documentElement.dir = 'rtl';
-        updateLanguage();
-
-        // بارگذاری اولیه
-        fetchAds(true);
-        fetchNotice();
-        loadProfile();
-        fetchUserData();
-        loadGiftStatus();
-
-        if (pendingCheckInterval) clearInterval(pendingCheckInterval);
-        pendingCheckInterval = setInterval(() => {
-            if (currentTab === 'home') fetchAds(false);
-            fetchUserData();
-        }, 30000);
-
-        document.getElementById('searchInput').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') searchAds();
-        });
-
-        setTimeout(() => {
-            toggleUpperSection();
-        }, 500);
-
-        console.log(`🚀 ${APP_NAME} – متصل به Worker (مسیر /api/ad/submit برای ثبت آگهی)`);
-        console.log(`👤 Guest ID: ${guestId}`);
-        console.log(`📡 API Base: ${API_BASE}`);
-        console.log(`🖼 تصاویر با normalizeImageUrl اصلاح شدند.`);
-        console.log(`✅ تمام مسیرها با Worker هماهنگ شده‌اند.`);
-    </script>
-</body>
-    </html>
+                        amount:
