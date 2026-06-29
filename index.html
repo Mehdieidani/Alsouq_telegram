@@ -1,17 +1,14 @@
+```html
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جـدار | پلتفرم جهانی</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>J-DAR.IR | پلتفرم جهانی</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ============================================================
-                   RESET & BASE
-                   ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -26,22 +23,22 @@
             --text-secondary: #475569;
             --text-muted: #94a3b8;
             --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
             --radius-sm: 8px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
             --primary: #16a34a;
             --primary-hover: #15803d;
-            --primary-light: rgba(22, 163, 74, 0.12);
+            --primary-light: rgba(22,163,74,0.12);
             --primary-gradient: linear-gradient(135deg, #16a34a, #22c55e);
             --gold: #f59e0b;
             --gold-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
             --danger: #ef4444;
             --success: #16a34a;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
             --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
         }
         [data-theme="dark"] {
@@ -52,14 +49,11 @@
             --text-secondary: #cbd5e1;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
         }
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
+        html { font-size: 16px; scroll-behavior: smooth; }
         body {
             font-family: var(--font);
             background: var(--bg-primary);
@@ -71,34 +65,13 @@
             overflow-x: hidden;
             overscroll-behavior: none;
         }
-        button,
-        input,
-        textarea,
-        select {
-            font-family: var(--font);
-            outline: none;
-            transition: var(--transition);
-        }
-        button {
-            border: none;
-            cursor: pointer;
-            background: none;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        button { font-family: var(--font); border: none; outline: none; transition: var(--transition); cursor: pointer; }
+        input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ============================================================
-                   TOAST
-                   ============================================================ */
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -123,48 +96,25 @@
             box-shadow: var(--shadow-lg);
             transform: translateY(-40px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
             pointer-events: auto;
             border-right: 4px solid var(--primary);
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .toast.success {
-            border-right-color: var(--success);
-        }
-        .toast.error {
-            border-right-color: var(--danger);
-        }
-        .toast.warning {
-            border-right-color: var(--gold);
-        }
-        .toast i {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .toast .close {
-            margin-right: auto;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-        .toast .close:hover {
-            color: var(--danger);
-        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-right-color: var(--success); }
+        .toast.error { border-right-color: var(--danger); }
+        .toast.warning { border-right-color: var(--gold); }
+        .toast i { font-size: 20px; flex-shrink: 0; }
+        .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
+        .toast .close:hover { color: var(--danger); }
 
-        /* ============================================================
-                   HEADER
-                   ============================================================ */
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0 12px;
+            margin-bottom: 12px;
+            padding: 8px 0;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -172,40 +122,41 @@
             backdrop-filter: blur(12px);
             transition: background var(--transition);
         }
-        .logo-text {
-            font-size: 26px;
+        .header .logo-text {
+            font-size: 28px;
             font-weight: 900;
-            background: linear-gradient(135deg, #f7d875, #f5b81b, #f7d875);
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #f7d875, #f5b81b, #f7d875, #e8a317);
             background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(245,184,27,0.3), 0 0 40px rgba(245,184,27,0.1);
             animation: metallicShine 4s ease-in-out infinite;
+            font-family: var(--font);
+            transform: scaleX(1.05);
             display: inline-block;
         }
         @keyframes metallicShine {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .logo-text span {
+        .header .logo-text span {
             font-size: 11px;
             font-weight: 400;
             color: var(--text-muted);
             -webkit-text-fill-color: var(--text-muted);
             margin-right: 4px;
+            animation: none;
+            text-shadow: none;
+            transform: scaleX(1);
         }
-        .header-actions {
+        .header .header-actions {
             display: flex;
             gap: 6px;
             align-items: center;
         }
-        .header-actions button {
+        .header .header-actions button {
             width: 42px;
             height: 42px;
             border-radius: var(--radius-sm);
@@ -216,16 +167,180 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: var(--transition);
         }
-        .header-actions button:hover {
+        .header .header-actions button:hover {
             background: var(--primary-light);
             border-color: var(--primary);
             color: var(--primary);
         }
+        .header .header-actions .logout-btn {
+            color: var(--danger);
+            border-color: rgba(239,68,68,0.2);
+        }
+        .header .header-actions .logout-btn:hover {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--danger);
+        }
 
-        /* ============================================================
-                   TOGGLE SECTION
-                   ============================================================ */
+        /* ===== LOGIN OVERLAY ===== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+        .login-overlay.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            max-width: 400px;
+            width: 100%;
+            padding: 40px 28px 36px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .login-box .login-icon {
+            font-size: 56px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .login-box h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .login-box p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .login-box .form-group {
+            margin-bottom: 16px;
+            text-align: right;
+        }
+        .login-box .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        .login-box .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 2px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        .login-box .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+            outline: none;
+        }
+        .login-box .form-group input::placeholder {
+            color: var(--text-muted);
+            font-size: 14px;
+            letter-spacing: 0;
+        }
+        .login-box .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 4px;
+        }
+        .login-box .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-light);
+        }
+        .login-box .btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .login-box .login-error {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+        .login-box .login-error.show { display: block; }
+        .login-box .login-success {
+            color: var(--success);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+        .login-box .login-success.show { display: block; }
+        .login-box .code-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 12px 0;
+        }
+        .login-box .code-input-group input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            transition: 0.2s ease;
+        }
+        .login-box .code-input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+            outline: none;
+        }
+        .login-box .code-input-group input.filled {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .login-box .resend-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+        .login-box .resend-link a {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-box .resend-link a:hover { text-decoration: underline; }
+        .login-box .resend-link .timer {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ===== TOGGLE BUTTON ===== */
         .toggle-section-btn {
             display: flex;
             align-items: center;
@@ -240,8 +355,9 @@
             font-weight: 700;
             font-size: 15px;
             margin-bottom: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 4px 14px rgba(22,163,74,0.25);
+            letter-spacing: 0.3px;
             position: relative;
             overflow: hidden;
         }
@@ -252,29 +368,33 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
             pointer-events: none;
         }
         .toggle-section-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(22, 163, 74, 0.35);
+            box-shadow: 0 8px 25px rgba(22,163,74,0.35);
         }
         .toggle-section-btn i {
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transition: transform 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);
             font-size: 20px;
         }
         .toggle-section-btn.active i {
             transform: rotate(180deg);
         }
+
         .toggle-section {
             overflow: hidden;
             max-height: 0;
             opacity: 0;
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, margin 0.4s ease;
+            transition: max-height 0.6s cubic-bezier(0.4,0,0.2,1),
+                        opacity 0.5s cubic-bezier(0.4,0,0.2,1),
+                        margin 0.4s ease;
             margin-bottom: 0;
             background: var(--bg-card);
             border-radius: var(--radius-md);
             padding: 0 16px;
+            box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
         }
         .toggle-section.open {
@@ -283,16 +403,10 @@
             margin-bottom: 16px;
             padding: 16px;
         }
-        .toggle-section .wallet-card {
-            border: none;
-            padding: 0 0 12px 0;
-            box-shadow: none;
-            background: transparent;
-        }
+        .toggle-section .wallet-card { border: none; padding: 0 0 12px 0; box-shadow: none; background: transparent; }
+        .toggle-section .wallet-card:hover { transform: none; }
+        .toggle-section .action-grid { margin: 12px 0 10px; }
 
-        /* ============================================================
-                   WALLET CARD
-                   ============================================================ */
         .wallet-card .wallet-row {
             display: flex;
             justify-content: space-between;
@@ -333,12 +447,10 @@
             align-items: center;
             gap: 4px;
         }
-        .wallet-card .vip-badge.show {
-            display: inline-flex;
-        }
+        .wallet-card .vip-badge.show { display: inline-flex; }
         .wallet-card .trust-score {
             background: var(--primary-light);
-            border: 1px solid rgba(22, 163, 74, 0.12);
+            border: 1px solid rgba(22,163,74,0.12);
             border-radius: var(--radius-full);
             padding: 2px 14px;
             font-size: 11px;
@@ -361,46 +473,36 @@
             font-weight: 600;
             font-size: 13px;
             min-width: 70px;
+            transition: var(--transition);
         }
         .wallet-card .wallet-actions .btn-charge {
             background: var(--primary-gradient);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-charge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
+        .wallet-card .wallet-actions .btn-charge:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
         .wallet-card .wallet-actions .btn-vip {
             background: var(--gold-gradient);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-vip:hover {
-            transform: translateY(-2px);
-        }
+        .wallet-card .wallet-actions .btn-vip:hover { transform: translateY(-2px); }
         .wallet-card .wallet-actions .btn-gift {
             background: var(--gold);
             color: #fff;
         }
-        .wallet-card .wallet-actions .btn-gift:hover {
-            transform: translateY(-2px);
-        }
+        .wallet-card .wallet-actions .btn-gift:hover { transform: translateY(-2px); }
 
-        /* ============================================================
-                   NOTICE CARD
-                   ============================================================ */
         .notice-card {
             background: var(--bg-card);
-            border: 1px solid rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245,158,11,0.2);
             border-radius: var(--radius-sm);
             padding: 12px 16px;
             margin-bottom: 16px;
             display: none;
             align-items: center;
             gap: 12px;
+            transition: all 0.4s ease;
         }
-        .notice-card.show {
-            display: flex;
-        }
+        .notice-card.show { display: flex; }
         .notice-card .notice-icon {
             width: 30px;
             height: 30px;
@@ -413,16 +515,8 @@
             font-size: 14px;
             flex-shrink: 0;
         }
-        .notice-card .notice-text {
-            font-size: 13px;
-            color: var(--gold);
-            line-height: 1.5;
-            flex: 1;
-        }
+        .notice-card .notice-text { font-size: 13px; color: var(--gold); line-height: 1.5; flex: 1; }
 
-        /* ============================================================
-                   ACTION GRID
-                   ============================================================ */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -438,7 +532,7 @@
             align-items: center;
             gap: 2px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             color: var(--text-primary);
         }
         .action-item:hover {
@@ -447,19 +541,9 @@
             background: var(--primary-light);
             box-shadow: var(--shadow-md);
         }
-        .action-item i {
-            font-size: 22px;
-            color: var(--primary);
-        }
-        .action-item span {
-            font-size: 10px;
-            font-weight: 500;
-            opacity: 0.8;
-        }
+        .action-item i { font-size: 22px; color: var(--primary); }
+        .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
-        /* ============================================================
-                   SEARCH BOX
-                   ============================================================ */
         .search-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -469,15 +553,13 @@
             align-items: center;
             gap: 10px;
             transition: border-color var(--transition), box-shadow var(--transition);
+            position: relative;
         }
         .search-box:focus-within {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .search-box i {
-            color: var(--text-muted);
-            font-size: 16px;
-        }
+        .search-box i { color: var(--text-muted); font-size: 16px; }
         .search-box input {
             flex: 1;
             background: transparent;
@@ -486,9 +568,7 @@
             font-size: 14px;
             padding: 12px 0;
         }
-        .search-box input::placeholder {
-            color: var(--text-muted);
-        }
+        .search-box input::placeholder { color: var(--text-muted); }
         .search-box button {
             background: var(--primary-gradient);
             color: #fff;
@@ -497,37 +577,20 @@
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
+            transition: var(--transition);
         }
-        .search-box button:hover {
-            opacity: 0.9;
-        }
+        .search-box button:hover { opacity: 0.9; }
 
-        /* ============================================================
-                   SECTION TITLE
-                   ============================================================ */
         .section-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin: 14px 0 10px;
         }
-        .section-title h3 {
-            font-weight: 800;
-            font-size: 18px;
-        }
-        .section-title a {
-            color: var(--text-muted);
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .section-title a:hover {
-            color: var(--primary);
-        }
+        .section-title h3 { font-weight: 800; font-size: 18px; }
+        .section-title a { color: var(--text-muted); font-size: 13px; cursor: pointer; transition: var(--transition); }
+        .section-title a:hover { color: var(--primary); }
 
-        /* ============================================================
-                   CATEGORIES
-                   ============================================================ */
         .categories {
             display: flex;
             overflow-x: auto;
@@ -537,9 +600,7 @@
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
+        .categories::-webkit-scrollbar { display: none; }
         .category-chip {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -563,9 +624,6 @@
             border-color: var(--primary);
         }
 
-        /* ============================================================
-                   ADS GRID
-                   ============================================================ */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -578,7 +636,7 @@
             border-radius: var(--radius-md);
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
             position: relative;
             transform: translateY(0);
             will-change: transform, box-shadow;
@@ -601,9 +659,7 @@
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        .ad-card:hover .ad-image img {
-            transform: scale(1.05);
-        }
+        .ad-card:hover .ad-image img { transform: scale(1.05); }
         .ad-card .ad-image .no-image {
             display: flex;
             align-items: center;
@@ -614,38 +670,24 @@
             font-size: 14px;
             background: var(--bg-input);
         }
-        .ad-card .ad-image .no-image i {
-            font-size: 32px;
-            opacity: 0.3;
-        }
+        .ad-card .ad-image .no-image i { font-size: 32px; opacity: 0.3; }
         .ad-card .ad-image .watermark {
             position: absolute;
             bottom: 8px;
             right: 8px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
             color: #fff;
             font-size: 7px;
             padding: 2px 12px;
             border-radius: var(--radius-full);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .ad-card .ad-image .special-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--gold-gradient);
-            color: #fff;
-            font-size: 8px;
-            padding: 2px 12px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .ad-card .ad-image .favorite {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0,0,0,0.45);
             backdrop-filter: blur(8px);
             border-radius: 50%;
             width: 32px;
@@ -657,15 +699,20 @@
             font-size: 14px;
             cursor: pointer;
             transition: all 0.25s ease;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .ad-card .ad-image .favorite:hover {
-            background: var(--danger);
-            transform: scale(1.1);
-        }
-        .ad-card .ad-image .favorite.active {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.3);
+        .ad-card .ad-image .favorite:hover { background: var(--danger); transform: scale(1.1); }
+        .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(239,68,68,0.3); }
+        .ad-card .ad-image .special-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gold-gradient);
+            color: #fff;
+            font-size: 8px;
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
         }
         .ad-card .ad-content {
             padding: 10px 12px 8px;
@@ -716,22 +763,14 @@
             flex-shrink: 0;
             font-weight: 700;
         }
-        .ad-card .ad-footer .username {
-            font-weight: 500;
-        }
+        .ad-card .ad-footer .username { font-weight: 500; }
         .ad-card .ad-footer .rating {
             margin-right: auto;
             color: var(--text-muted);
             font-size: 10px;
         }
-        .ad-card .ad-footer .rating i {
-            color: var(--gold);
-            margin-left: 2px;
-        }
+        .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
-        /* ============================================================
-                   BOTTOM NAV
-                   ============================================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -749,7 +788,7 @@
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
             z-index: 100;
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
             transition: background var(--transition);
         }
         .bottom-nav .nav-item {
@@ -765,20 +804,10 @@
             background: none;
             border: none;
         }
-        .bottom-nav .nav-item:hover {
-            color: var(--primary);
-        }
-        .bottom-nav .nav-item.active {
-            color: var(--primary);
-        }
-        .bottom-nav .nav-item i {
-            font-size: 22px;
-            margin-bottom: 2px;
-            transition: transform 0.2s ease;
-        }
-        .bottom-nav .nav-item:hover i {
-            transform: translateY(-2px);
-        }
+        .bottom-nav .nav-item:hover { color: var(--primary); }
+        .bottom-nav .nav-item.active { color: var(--primary); }
+        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; transition: transform 0.2s ease; }
+        .bottom-nav .nav-item:hover i { transform: translateY(-2px); }
         .bottom-nav .nav-item .badge {
             position: absolute;
             top: -4px;
@@ -790,21 +819,16 @@
             padding: 1px 6px;
             font-weight: 700;
         }
-        .bottom-nav .nav-item .nav-label {
-            font-size: 9px;
-            font-weight: 500;
-        }
+        .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
-        /* ============================================================
-                   MODAL AD DETAIL (Glass)
-                   ============================================================ */
+        /* ===== MODALS ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
             z-index: 9999;
             display: none;
@@ -813,18 +837,10 @@
             padding: 20px;
             animation: modalOverlayFade 0.3s ease;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         @keyframes modalOverlayFade {
-            from {
-                opacity: 0;
-                backdrop-filter: blur(0);
-            }
-            to {
-                opacity: 1;
-                backdrop-filter: blur(20px);
-            }
+            from { opacity: 0; backdrop-filter: blur(0); }
+            to { opacity: 1; backdrop-filter: blur(20px); }
         }
         .modal-box {
             background: var(--bg-card);
@@ -835,27 +851,16 @@
             overflow-y: auto;
             padding: 24px 20px 28px;
             position: relative;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-            animation: modalZoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: modalZoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
             transform-origin: center;
         }
         @keyframes modalZoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.85) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .modal-box::-webkit-scrollbar {
-            width: 4px;
-        }
-        .modal-box::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+        .modal-box::-webkit-scrollbar { width: 4px; }
+        .modal-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         .modal-box .modal-close {
             position: sticky;
             top: 0;
@@ -1000,9 +1005,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
-        .modal-box .action-buttons .btn-share:hover {
-            background: var(--border-color);
-        }
+        .modal-box .action-buttons .btn-share:hover { background: var(--border-color); }
         .modal-box .btn-fav {
             width: 100%;
             padding: 12px;
@@ -1020,20 +1023,88 @@
             background: var(--primary-light);
             border-color: var(--primary);
         }
-        .modal-box .btn-fav .fa-heart {
-            color: var(--danger);
+        .modal-box .btn-fav .fa-heart { color: var(--danger); }
+        .modal-box .review-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
         }
+        .modal-box .review-section h4 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .modal-box .review-stars {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .modal-box .review-stars span {
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: 0.2s ease;
+        }
+        .modal-box .review-stars span:hover,
+        .modal-box .review-stars span.active {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+        .modal-box .review-comment {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 13px;
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+        .modal-box .review-comment:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .modal-box .btn-submit-review {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-gradient);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .modal-box .btn-submit-review:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .modal-box .review-item {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-box .review-item:last-child { border-bottom: none; }
+        .modal-box .review-item .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-box .review-item .header .name { font-weight: 600; font-size: 13px; }
+        .modal-box .review-item .header .stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; }
+        .modal-box .review-item .comment { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+        .modal-box .review-item .date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        /* ============================================================
-                   OTHER MODALS
-                   ============================================================ */
         .modal-overlay-old {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(20px);
             z-index: 9999;
             display: none;
@@ -1042,9 +1113,7 @@
             overflow-y: auto;
             padding: 20px;
         }
-        .modal-overlay-old.show {
-            display: flex;
-        }
+        .modal-overlay-old.show { display: flex; }
         .modal-box-old {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
@@ -1052,20 +1121,14 @@
             width: 100%;
             padding: 32px 24px 36px;
             margin: auto 0;
-            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: modalSlide 0.4s cubic-bezier(0.4,0,0.2,1);
             position: relative;
             max-height: 95vh;
             overflow-y: auto;
         }
         @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal-box-old .modal-close {
             position: absolute;
@@ -1078,19 +1141,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .modal-box-old .modal-close:hover {
-            color: var(--danger);
-            transform: rotate(90deg);
-        }
+        .modal-box-old .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
         .modal-box-old .modal-title {
             font-size: 22px;
             font-weight: 800;
             margin-bottom: 20px;
             padding-left: 30px;
         }
-        .modal-box-old .form-group {
-            margin-bottom: 16px;
-        }
+        .modal-box-old .form-group { margin-bottom: 16px; }
         .modal-box-old .form-group label {
             display: block;
             font-size: 12px;
@@ -1116,10 +1174,7 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .modal-box-old .form-group textarea {
-            resize: vertical;
-            min-height: 70px;
-        }
+        .modal-box-old .form-group textarea { resize: vertical; min-height: 70px; }
         .modal-box-old .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1135,14 +1190,8 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
-        .modal-box-old .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
-        .modal-box-old .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .modal-box-old .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
+        .modal-box-old .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .modal-box-old .btn-secondary {
             width: 100%;
             padding: 12px;
@@ -1154,9 +1203,7 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        .modal-box-old .btn-secondary:hover {
-            background: var(--border-color);
-        }
+        .modal-box-old .btn-secondary:hover { background: var(--border-color); }
         .modal-box-old .image-upload-area {
             border: 2px dashed var(--border-color);
             border-radius: var(--radius-sm);
@@ -1170,19 +1217,9 @@
             border-color: var(--primary);
             background: var(--primary-light);
         }
-        .modal-box-old .image-upload-area i {
-            font-size: 36px;
-            color: var(--primary);
-            display: block;
-            margin-bottom: 4px;
-        }
-        .modal-box-old .image-upload-area p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .modal-box-old .image-upload-area input {
-            display: none;
-        }
+        .modal-box-old .image-upload-area i { font-size: 36px; color: var(--primary); display: block; margin-bottom: 4px; }
+        .modal-box-old .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
+        .modal-box-old .image-upload-area input { display: none; }
         .modal-box-old .image-preview-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1197,16 +1234,12 @@
             background: var(--bg-input);
             border: 1px solid var(--border-color);
         }
-        .modal-box-old .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .modal-box-old .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .modal-box-old .image-preview-item .remove-img {
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0,0,0,0.6);
             border-radius: 50%;
             width: 22px;
             height: 22px;
@@ -1219,14 +1252,8 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
-        .modal-box-old .image-preview-item .remove-img:hover {
-            background: var(--danger);
-            color: #fff;
-        }
+        .modal-box-old .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
 
-        /* ============================================================
-                   WIZARD
-                   ============================================================ */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -1286,30 +1313,17 @@
             background: var(--success);
             color: #fff;
         }
-        .wizard-step {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .wizard-step.active {
-            display: block;
-        }
+        .wizard-step { display: none; animation: fadeIn 0.3s ease; }
+        .wizard-step.active { display: block; }
 
-        /* ============================================================
-                   PROFILE & FAVORITES TABS
-                   ============================================================ */
-        #profileTab,
-        #favoritesTab {
+        #profileTab, #favoritesTab {
             display: none;
             max-width: 500px;
             margin: 0 auto;
             padding: 14px 14px 80px;
             animation: fadeIn 0.3s ease;
         }
-        #profileTab.show,
-        #favoritesTab.show {
-            display: block;
-        }
-
+        #profileTab.show, #favoritesTab.show { display: block; }
         .profile-section {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1319,12 +1333,8 @@
             box-shadow: var(--shadow-sm);
             transition: all 0.3s ease;
         }
-        .profile-section:hover {
-            box-shadow: var(--shadow-md);
-        }
-        .profile-section .form-group {
-            margin-bottom: 16px;
-        }
+        .profile-section:hover { box-shadow: var(--shadow-md); }
+        .profile-section .form-group { margin-bottom: 16px; }
         .profile-section .form-group label {
             display: block;
             font-size: 12px;
@@ -1346,10 +1356,7 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 4px var(--primary-light);
         }
-        .profile-section .form-group input:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        .profile-section .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
         .profile-section .profile-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1369,14 +1376,8 @@
             background: var(--primary-gradient);
             color: #fff;
         }
-        .profile-section .profile-actions .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-light);
-        }
+        .profile-section .profile-actions .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--primary-light); }
 
-        /* ============================================================
-                   MY AD ITEM
-                   ============================================================ */
         .my-ad-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1388,14 +1389,8 @@
             align-items: center;
             transition: all 0.3s ease;
         }
-        .my-ad-item:hover {
-            border-color: var(--primary);
-            transform: translateX(-4px);
-        }
-        .my-ad-item .info .title {
-            font-weight: 600;
-            font-size: 14px;
-        }
+        .my-ad-item:hover { border-color: var(--primary); transform: translateX(-4px); }
+        .my-ad-item .info .title { font-weight: 600; font-size: 14px; }
         .my-ad-item .info .sub {
             font-size: 12px;
             color: var(--text-secondary);
@@ -1410,22 +1405,10 @@
             border-radius: var(--radius-full);
             font-weight: 600;
         }
-        .my-ad-item .info .sub .status.pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--gold);
-        }
-        .my-ad-item .info .sub .status.approved {
-            background: rgba(22, 163, 74, 0.2);
-            color: var(--success);
-        }
-        .my-ad-item .info .sub .status.rejected {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-        .my-ad-item .actions {
-            display: flex;
-            gap: 6px;
-        }
+        .my-ad-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
+        .my-ad-item .info .sub .status.approved { background: rgba(22,163,74,0.2); color: var(--success); }
+        .my-ad-item .info .sub .status.rejected { background: rgba(239,68,68,0.2); color: var(--danger); }
+        .my-ad-item .actions { display: flex; gap: 6px; }
         .my-ad-item .actions button {
             background: none;
             border: none;
@@ -1435,24 +1418,42 @@
             border-radius: var(--radius-sm);
             transition: all 0.2s ease;
         }
-        .my-ad-item .actions .edit {
-            color: var(--primary);
-        }
-        .my-ad-item .actions .edit:hover {
-            background: var(--primary-light);
-            transform: scale(1.1);
-        }
-        .my-ad-item .actions .delete {
-            color: var(--danger);
-        }
-        .my-ad-item .actions .delete:hover {
-            background: rgba(239, 68, 68, 0.1);
-            transform: scale(1.1);
-        }
+        .my-ad-item .actions .edit { color: var(--primary); }
+        .my-ad-item .actions .edit:hover { background: var(--primary-light); transform: scale(1.1); }
+        .my-ad-item .actions .delete { color: var(--danger); }
+        .my-ad-item .actions .delete:hover { background: rgba(239,68,68,0.1); transform: scale(1.1); }
 
-        /* ============================================================
-                   FAVORITE ITEM
-                   ============================================================ */
+        .transaction-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .transaction-item:hover { border-color: var(--primary); }
+        .transaction-item .info .title { font-weight: 600; font-size: 14px; }
+        .transaction-item .info .sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+        .transaction-item .info .sub .status {
+            font-size: 10px;
+            padding: 1px 12px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+        .transaction-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
+        .transaction-item .info .sub .status.approved { background: rgba(22,163,74,0.2); color: var(--success); }
+        .transaction-item .info .sub .status.rejected { background: rgba(239,68,68,0.2); color: var(--danger); }
+
         .favorite-item {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -1465,10 +1466,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .favorite-item:hover {
-            border-color: var(--primary);
-            transform: translateX(-4px);
-        }
+        .favorite-item:hover { border-color: var(--primary); transform: translateX(-4px); }
         .favorite-item img {
             width: 60px;
             height: 60px;
@@ -1477,10 +1475,7 @@
             background: var(--bg-input);
             flex-shrink: 0;
         }
-        .favorite-item .info {
-            flex: 1;
-            min-width: 0;
-        }
+        .favorite-item .info { flex: 1; min-width: 0; }
         .favorite-item .info .title {
             font-weight: 600;
             font-size: 14px;
@@ -1488,15 +1483,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .favorite-item .info .price {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 15px;
-        }
-        .favorite-item .info .meta {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+        .favorite-item .info .price { color: var(--primary); font-weight: 700; font-size: 15px; }
+        .favorite-item .info .meta { font-size: 11px; color: var(--text-muted); }
         .favorite-item .remove-fav {
             background: none;
             border: none;
@@ -1506,13 +1494,8 @@
             padding: 4px;
             transition: all 0.2s ease;
         }
-        .favorite-item .remove-fav:hover {
-            transform: scale(1.2);
-        }
+        .favorite-item .remove-fav:hover { transform: scale(1.2); }
 
-        /* ============================================================
-                   VIP PLAN
-                   ============================================================ */
         .vip-plan {
             background: var(--bg-input);
             border: 1px solid var(--border-color);
@@ -1521,20 +1504,14 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-        .vip-plan:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
+        .vip-plan:hover { border-color: var(--primary); transform: translateY(-3px); }
         .vip-plan .plan-price {
             font-size: 24px;
             font-weight: 800;
             color: var(--primary);
             margin: 4px 0;
         }
-        .vip-plan .plan-duration {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
+        .vip-plan .plan-duration { font-size: 14px; color: var(--text-secondary); }
         .vip-plan .plan-btn {
             width: 100%;
             padding: 10px;
@@ -1544,203 +1521,112 @@
             margin-top: 8px;
             transition: all 0.3s ease;
         }
-        .vip-plan .plan-btn.primary {
-            background: var(--primary-gradient);
-            color: #fff;
-        }
-        .vip-plan .plan-btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px var(--primary-light);
-        }
-        .vip-plan .plan-btn.gold {
-            background: var(--gold-gradient);
-            color: #fff;
-        }
-        .vip-plan .plan-btn.gold:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
+        .vip-plan .plan-btn.primary { background: var(--primary-gradient); color: #fff; }
+        .vip-plan .plan-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--primary-light); }
+        .vip-plan .plan-btn.gold { background: var(--gold-gradient); color: #fff; }
+        .vip-plan .plan-btn.gold:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* ============================================================
-                   LOADING SPINNER
-                   ============================================================ */
-        .loading-spinner {
-            text-align: center;
-            padding: 40px 0;
-            color: var(--primary);
-        }
-        .loading-spinner i {
-            font-size: 34px;
-            animation: spin 1s linear infinite;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
+        .loading-spinner { text-align: center; padding: 40px 0; color: var(--primary); }
+        .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
 
-        /* ============================================================
-                   REVIEW SECTION
-                   ============================================================ */
-        .review-section {
-            margin-top: 16px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
+        @media (max-width: 480px) {
+            .ads-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .action-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .action-item { padding: 10px 0; }
+            .action-item i { font-size: 18px; }
+            .wallet-card .wallet-info .amount { font-size: 22px; }
+            .modal-box { padding: 20px 16px 24px; }
+            .modal-box .action-buttons { grid-template-columns: 1fr; }
+            .header .logo-text { font-size: 20px; }
+            .header .logo-text span { font-size: 9px; }
+            .login-box { padding: 30px 20px 28px; }
+            .login-box .code-input-group input { width: 40px; height: 48px; font-size: 20px; }
         }
-        .review-section h4 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .review-stars span {
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: 0.2s;
-            display: inline-block;
-            margin-left: 4px;
-        }
-        .review-stars span.active {
-            color: var(--gold);
-        }
-        .review-stars span:hover {
-            transform: scale(1.2);
-        }
-        .review-comment {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            margin: 8px 0;
-            resize: vertical;
-            min-height: 60px;
-            font-family: var(--font);
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-        .review-comment:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
-        .btn-submit-review {
-            padding: 10px 20px;
-            background: var(--primary-gradient);
-            color: #fff;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn-submit-review:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 14px var(--primary-light);
-        }
-        .review-item {
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .review-item .header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-        }
-        .review-item .header .stars {
-            color: var(--gold);
-        }
-        .review-item .comment {
-            margin: 4px 0;
-            font-size: 14px;
-        }
-        .review-item .date {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        /* ============================================================
-                   RESPONSIVE
-                   ============================================================ */
-        @media (max-width:480px) {
-            .ads-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .action-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 4px;
-            }
-            .action-item {
-                padding: 10px 0;
-            }
-            .action-item i {
-                font-size: 18px;
-            }
-            .wallet-card .wallet-info .amount {
-                font-size: 22px;
-            }
-            .modal-box {
-                padding: 20px 16px 24px;
-            }
-            .modal-box .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            .header .logo-text {
-                font-size: 20px;
-            }
-            .header .logo-text span {
-                font-size: 9px;
-            }
-        }
-        @media (max-width:380px) {
-            .ads-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 4px;
-            }
-            .ad-card .ad-content .title {
-                font-size: 11px;
-                min-height: 30px;
-            }
-            .ad-card .ad-content .price {
-                font-size: 13px;
-            }
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        @media (max-width: 380px) {
+            .ads-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+            .ad-card .ad-content .title { font-size: 11px; min-height: 30px; }
+            .ad-card .ad-content .price { font-size: 13px; }
+            .login-box .code-input-group input { width: 34px; height: 42px; font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    TOAST
-    ============================================================ -->
+    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ============================================================
-    APP
-    ============================================================ -->
-    <div id="app">
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-icon">📱</div>
+            <h2>J-DAR.IR</h2>
+            <p>برای ورود، شماره تلفن خود را وارد کنید</p>
 
-        <!-- ===== HEADER ===== -->
+            <!-- مرحله ۱: وارد کردن شماره -->
+            <div id="loginStep1">
+                <div class="form-group">
+                    <label>شماره تلفن</label>
+                    <input type="tel" id="phoneInput" placeholder="09123456789" maxlength="11" />
+                </div>
+                <div class="login-error" id="loginError"></div>
+                <button class="btn-login" id="sendCodeBtn" onclick="requestVerificationCode()">
+                    <i class="fa-solid fa-paper-plane"></i> ارسال کد تایید
+                </button>
+                <div class="resend-link" style="margin-top:12px;font-size:12px;color:var(--text-muted);">
+                    کد تایید از طریق پیامک ارسال می‌شود
+                </div>
+            </div>
+
+            <!-- مرحله ۲: وارد کردن کد -->
+            <div id="loginStep2" style="display:none;">
+                <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">
+                    کد ۶ رقمی ارسال شده به <strong id="displayPhone">...</strong> را وارد کنید
+                </p>
+                <div class="code-input-group" id="codeInputGroup">
+                    <input type="text" maxlength="1" data-index="0" />
+                    <input type="text" maxlength="1" data-index="1" />
+                    <input type="text" maxlength="1" data-index="2" />
+                    <input type="text" maxlength="1" data-index="3" />
+                    <input type="text" maxlength="1" data-index="4" />
+                    <input type="text" maxlength="1" data-index="5" />
+                </div>
+                <div class="login-error" id="verifyError"></div>
+                <div class="login-success" id="verifySuccess"></div>
+                <button class="btn-login" id="verifyBtn" onclick="verifyCode()">
+                    <i class="fa-solid fa-check"></i> تایید
+                </button>
+                <div class="resend-link">
+                    <span>کد دریافت نکردید؟</span>
+                    <a onclick="resendCode()">ارسال مجدد</a>
+                    <span class="timer" id="timerDisplay"></span>
+                </div>
+                <div style="margin-top:10px;">
+                    <a onclick="goBackToPhone()" style="color:var(--text-muted);font-size:13px;cursor:pointer;text-decoration:underline;">تغییر شماره تلفن</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MAIN APP ===== -->
+    <div id="app">
         <div class="header">
-            <div class="logo-text">جـدار <span>جهانی</span></div>
+            <div class="logo-text">J-DAR.IR <span>جهانی</span></div>
             <div class="header-actions">
                 <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
                 <button onclick="toggleLanguage()" id="langBtn">🇦🇪 عربي</button>
                 <button onclick="refreshAll()" title="بروزرسانی"><i class="fa-solid fa-rotate"></i></button>
+                <button class="logout-btn" onclick="logout()" title="خروج"><i class="fa-solid fa-sign-out-alt"></i></button>
             </div>
         </div>
 
-        <!-- ===== TOGGLE SECTION ===== -->
         <button class="toggle-section-btn" id="toggleSectionBtn" onclick="toggleUpperSection()">
             <i class="fa-solid fa-eye"></i>
             <span id="toggleSectionLabel">نمایش ابزارها</span>
@@ -1788,7 +1674,6 @@
             </div>
         </div>
 
-        <!-- ===== ADS SECTION ===== -->
         <div class="section-title">
             <h3 id="adsTitle">آخرین آگهی‌ها</h3>
             <a onclick="fetchAds()" id="refreshAdsBtn"><i class="fa-solid fa-rotate"></i></a>
@@ -1797,9 +1682,7 @@
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- ============================================================
-    BOTTOM NAV
-    ============================================================ -->
+    <!-- ===== BOTTOM NAV ===== -->
     <div class="bottom-nav">
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -1819,19 +1702,8 @@
         </button>
     </div>
 
-    <!-- ============================================================
-    MODAL AD DETAIL
-    ============================================================ -->
-    <div class="modal-overlay" id="adDetailsModal">
-        <div class="modal-box" id="adDetailBox">
-            <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
-            <div id="adDetailContent"></div>
-        </div>
-    </div>
-
-    <!-- ============================================================
-    MODAL ADD AD
-    ============================================================ -->
+    <!-- ===== MODALS ===== -->
+    <!-- Add Ad Modal -->
     <div class="modal-overlay-old" id="addAdModal">
         <div class="modal-box-old">
             <button class="modal-close" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1847,11 +1719,16 @@
                     <div class="form-group"><label id="adTitleLabel">عنوان آگهی <span class="required">*</span></label><input type="text" id="adTitle" placeholder="مثال: تور مشهد" required /></div>
                     <div class="form-group"><label id="adCategoryLabel">دسته‌بندی <span class="required">*</span></label>
                         <select id="adCategory" required>
-                            <option value="pilgrimage">زیارت</option><option value="tourism">گردشگری</option>
-                            <option value="medical">پزشکی</option><option value="beauty">زیبایی</option>
-                            <option value="services">خدمات</option><option value="jobs">کاریابی</option>
-                            <option value="real_estate">املاک</option><option value="vehicles">خودرو</option>
-                            <option value="electronics">الکترونیک</option><option value="education">آموزش</option>
+                            <option value="pilgrimage">زیارت</option>
+                            <option value="tourism">گردشگری</option>
+                            <option value="medical">پزشکی</option>
+                            <option value="beauty">زیبایی</option>
+                            <option value="services">خدمات</option>
+                            <option value="jobs">کاریابی</option>
+                            <option value="real_estate">املاک</option>
+                            <option value="vehicles">خودرو</option>
+                            <option value="electronics">الکترونیک</option>
+                            <option value="education">آموزش</option>
                         </select>
                     </div>
                     <div class="form-group"><label id="adPriceLabel">قیمت (تومان) <span class="required">*</span></label><input type="number" id="adPrice" placeholder="۰" required /></div>
@@ -1861,12 +1738,14 @@
                     <div class="form-group"><label id="adDescLabel">توضیحات <span class="required">*</span></label><textarea id="adDescription" rows="4" placeholder="توضیحات کامل..." required></textarea></div>
                     <div class="form-group"><label id="adLocationLabel">موقعیت / شهر <span class="required">*</span></label><input type="text" id="adLocation" placeholder="مثال: تهران" required /></div>
                     <div class="form-group"><label id="adCountryLabel">کشور</label>
-                        <select id="adCountry"><option value="ایران">🇮🇷 ایران</option><option value="عراق">🇮🇶 عراق</option><option value="امارات">🇦🇪 امارات</option><option value="ترکیه">🇹🇷 ترکیه</option></select>
+                        <select id="adCountry">
+                            <option value="ایران">🇮🇷 ایران</option>
+                            <option value="عراق">🇮🇶 عراق</option>
+                            <option value="امارات">🇦🇪 امارات</option>
+                            <option value="ترکیه">🇹🇷 ترکیه</option>
+                        </select>
                     </div>
-                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
-                        <button type="button" class="btn-secondary" id="wizardPrevBtn2" onclick="wizardPrev()">قبلی</button>
-                        <button type="button" class="btn-primary" id="wizardNextBtn2" onclick="wizardNext()">بعدی</button>
-                    </div>
+                    <div class="form-row" style="margin-top:8px;"><button type="button" class="btn-secondary" id="wizardPrevBtn2" onclick="wizardPrev()">قبلی</button><button type="button" class="btn-primary" id="wizardNextBtn2" onclick="wizardNext()">بعدی</button></div>
                 </div>
                 <div class="wizard-step" id="wizardStep3">
                     <div class="form-group"><label id="adImagesLabel">تصاویر (حداکثر ۴)</label>
@@ -1876,25 +1755,30 @@
                         </div>
                         <div class="image-preview-grid" id="adImagePreview"></div>
                     </div>
-                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label><input type="tel" id="adContact" placeholder="شماره شما" value="" readonly /></div>
+                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label>
+                        <input type="tel" id="adContact" placeholder="شماره شما" value="" readonly />
+                    </div>
                     <div class="form-group"><label id="adTypeLabel">نوع آگهی</label>
                         <select id="adType" onchange="document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none'">
                             <option value="normal" id="adNormalOption">عادی</option><option value="special" id="adSpecialOption">ویژه</option>
                         </select>
                     </div>
                     <div class="form-group" id="planGroup" style="display:none;"><label id="planLabel">مدت ویژه</label><select id="adPlan"><option value="1">۱ روز</option><option value="3">۳ روز</option></select></div>
-                    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
-                        <button type="button" class="btn-secondary" id="wizardPrevBtn3" onclick="wizardPrev()">قبلی</button>
-                        <button type="button" class="btn-primary btn-success" id="submitAdBtn" onclick="submitAd()">ثبت آگهی</button>
-                    </div>
+                    <div class="form-row" style="margin-top:8px;"><button type="button" class="btn-secondary" id="wizardPrevBtn3" onclick="wizardPrev()">قبلی</button><button type="button" class="btn-primary btn-success" id="submitAdBtn" onclick="submitAd()">ثبت آگهی</button></div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ============================================================
-    MODAL CHARGE
-    ============================================================ -->
+    <!-- Ad Detail Modal -->
+    <div class="modal-overlay" id="adDetailsModal">
+        <div class="modal-box" id="adDetailBox">
+            <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="adDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- Charge Modal -->
     <div class="modal-overlay-old" id="chargeModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('chargeModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="chargeTitle">شارژ کیف پول</div>
             <div class="form-group"><label id="chargeAmountLabel">مبلغ (تومان) <span class="required">*</span></label><input type="number" id="chargeAmount" placeholder="۰" required /></div>
@@ -1906,12 +1790,10 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    MODAL VIP
-    ============================================================ -->
+    <!-- VIP Modal -->
     <div class="modal-overlay-old" id="vipModal">
-        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک VIP</div>
-            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک VIP، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
+        <div class="modal-box-old"><button class="modal-close" onclick="closeModal('vipModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="vipModalTitle">👑 اشتراک ویژه</div>
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="vipDesc">با اشتراک ویژه، بدون محدودیت آگهی ثبت کنید و از امکانات ویژه بهره‌مند شوید.</p>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">
                 <div class="vip-plan"><div class="plan-duration" id="vipMonthLabel">۱ ماه</div><div class="plan-price" id="vipPrice1">۵۰,۰۰۰</div><button class="plan-btn primary" id="vipBuy1" onclick="buyVip('monthly')">خرید</button></div>
                 <div class="vip-plan" style="border-color:var(--gold);"><div class="plan-duration" id="vip3MonthLabel">۳ ماه</div><div class="plan-price" id="vipPrice3">۱۳۰,۰۰۰</div><button class="plan-btn gold" id="vipBuy3" onclick="buyVip('quarterly')">خرید</button></div>
@@ -1921,9 +1803,7 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    MODAL GIFT
-    ============================================================ -->
+    <!-- Gift Modal -->
     <div class="modal-overlay-old" id="giftModal">
         <div class="modal-box-old"><button class="modal-close" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button><div class="modal-title" id="giftTitle">🎁 هدیه رایگان</div>
             <p style="color:var(--text-secondary);font-size:14px;margin-bottom:18px;" id="giftDesc">با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید. این درخواست توسط مدیر تایید می‌شود.</p>
@@ -1932,9 +1812,7 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    PROFILE TAB
-    ============================================================ -->
+    <!-- Profile Tab -->
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
         <div class="profile-section">
@@ -1943,462 +1821,357 @@
             <div class="form-group"><label id="profilePhoneLabel">شماره تلفن</label><input type="tel" id="profilePhone" placeholder="0912..." /></div>
             <div class="form-group"><label id="profileEmailLabel">ایمیل</label><input type="email" id="profileEmail" placeholder="ایمیل" /></div>
             <div class="form-group"><label id="profileTrustLabel">امتیاز اعتماد</label><input type="text" id="profileTrust" disabled value="50" /></div>
+            <div class="form-group"><label>تعداد تغییر شماره مجاز: <span id="phoneChangeLimit">2</span></label></div>
             <div class="profile-actions"><button class="btn-save" id="profileSaveBtn" onclick="saveProfile()">ذخیره</button></div>
         </div>
         <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3>
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+        <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="transactionsTitle">💰 تراکنش‌ها</h3>
+        <div id="transactionsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- ============================================================
-    FAVORITES TAB
-    ============================================================ -->
+    <!-- Favorites Tab -->
     <div id="favoritesTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="favTitle">❤️ علاقه‌مندی‌ها</h2>
         <div id="favoritesList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- ============================================================
-    AUTH PAGE (Inline)
-    ============================================================ -->
-    <div id="authPage" style="display:block;max-width:500px;margin:40px auto;padding:20px;text-align:center;">
-        <div style="font-size:32px;font-weight:900;color:var(--primary);">جـدار</div>
-        <p style="color:var(--text-secondary);margin-bottom:20px;">پلتفرم هوشمند آگهی‌ها</p>
-        <div style="background:var(--bg-card);border-radius:var(--radius-md);padding:24px;box-shadow:var(--shadow-md);text-align:right;">
-            <div class="form-group"><label>👤 نام کاربری</label><input type="text" id="authUsername" placeholder="نام کاربری" dir="ltr" /></div>
-            <div class="form-group"><label>📱 شماره تلفن</label><input type="tel" id="authPhone" placeholder="09123456789" dir="ltr" /></div>
-            <div id="authCodeGroup" style="display:none;">
-                <div class="form-group"><label>🔑 کد تایید</label>
-                    <div style="display:flex;gap:8px;">
-                        <input type="text" id="authCode" placeholder="کد ۶ رقمی" maxlength="6" dir="ltr" style="flex:1;" />
-                        <button id="authSendCodeBtn" style="background:var(--primary);color:#fff;padding:10px 16px;border-radius:var(--radius-sm);font-weight:600;white-space:nowrap;">ارسال کد</button>
-                    </div>
-                </div>
-                <div style="background:var(--bg-input);border-radius:var(--radius-sm);padding:12px;display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:700;letter-spacing:4px;direction:ltr;margin:10px 0;">
-                    <span id="captchaCode">ABCD12</span>
-                    <button onclick="generateCaptcha()" style="background:none;color:var(--primary);font-size:20px;"><i class="fa-solid fa-sync-alt"></i></button>
-                </div>
-            </div>
-            <button id="authSubmitBtn" style="width:100%;padding:14px;background:var(--primary-gradient);color:#fff;border-radius:var(--radius-sm);font-weight:700;font-size:16px;margin-top:8px;">ثبت‌نام / ورود</button>
-            <div style="margin-top:12px;font-size:14px;color:var(--text-secondary);text-align:center;">
-                <span id="authToggleText">قبلاً ثبت‌نام کرده‌اید؟</span>
-                <a id="authToggleLink" style="color:var(--primary);font-weight:600;cursor:pointer;">ورود</a>
-            </div>
-        </div>
-    </div>
-
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT – با ورود با کد و ماندگاری نشست -->
+    <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURATION
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
-        const APP_NAME = 'جـدار';
+        const APP_NAME = 'J-DAR.IR';
+        const SHARE_DOMAIN = 'https://j-dar.ir';
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let guestId = localStorage.getItem('jedar_guest_id');
+        // ===== شناسه کاربر =====
+        let guestId = localStorage.getItem('jedar_user_id');
         if (!guestId) {
             guestId = 'guest_' + Math.random().toString(36).substring(2, 12);
-            localStorage.setItem('jedar_guest_id', guestId);
+            localStorage.setItem('jedar_user_id', guestId);
         }
 
-        let allAds = [];
-        let filteredAds = [];
-        let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
-        let currentLang = 'fa';
-        let currentTheme = 'light';
-        let currentTab = 'home';
-        let wizardImagesBase64 = [];
-        let wizardStep = 1;
-        let reviewRating = 0;
-        let isUpdating = false;
-        let pendingCheckInterval = null;
-        let upperSectionOpen = false;
-        let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-        let isLoggedIn = false;
-        let authMode = 'register';
-        let authStep = 'init';
+        // ===== وضعیت ورود =====
+        let isLoggedIn = localStorage.getItem('jedar_logged_in') === 'true';
+        let loginPhone = localStorage.getItem('jedar_login_phone') || '';
+        let sessionExpiry = parseInt(localStorage.getItem('jedar_session_expiry') || '0');
 
-        // ============================================================
-        // TRANSLATIONS (کامل)
-        // ============================================================
-        const translations = {
-            fa: {
-                home: 'خانه',
-                add: 'ثبت',
-                favorites: 'علاقه‌مندی',
-                profile: 'پروفایل',
-                wallet: 'کیف پول',
-                currency: 'تومان',
-                trust: 'اعتماد',
-                charge: 'شارژ',
-                vip: 'VIP',
-                gift: 'هدیه',
-                search: 'جستجو',
-                search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها',
-                add_ad: 'ثبت آگهی جدید',
-                title: 'عنوان آگهی',
-                category: 'دسته‌بندی',
-                price: 'قیمت (تومان)',
-                next: 'بعدی',
-                prev: 'قبلی',
-                description: 'توضیحات',
-                location: 'موقعیت / شهر',
-                country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)',
-                upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس',
-                ad_type: 'نوع آگهی',
-                normal: 'عادی',
-                special: 'ویژه',
-                special_duration: 'مدت ویژه',
-                submit: 'ثبت آگهی',
-                charge_wallet: 'شارژ کیف پول',
-                amount: 'مبلغ (تومان)',
-                receipt: 'تصویر رسید',
-                upload_receipt: 'برای آپلود رسید کلیک کنید',
-                send_request: 'ارسال درخواست',
-                vip_subscription: 'اشتراک VIP',
-                vip_desc: 'با اشتراک VIP، بدون محدودیت آگهی ثبت کنید.',
-                month: 'ماه',
-                months_3: 'ماه',
-                months_6: 'ماه',
-                buy: 'خرید',
-                gift_request: 'هدیه رایگان',
-                gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
-                gift_btn: 'درخواست هدیه',
-                rate_review: 'امتیاز و نظر',
-                comment: 'نظر خود را بنویسید...',
-                submit_review: 'ارسال نظر',
-                profile_title: 'پروفایل',
-                username: 'نام کاربری',
-                fullname: 'نام کامل',
-                phone_label: 'شماره تلفن',
-                email_label: 'ایمیل',
-                trust_score: 'امتیاز اعتماد',
-                save: 'ذخیره',
-                no_ads: 'هیچ آگهی‌ای موجود نیست',
-                pending: 'در انتظار',
-                approved: 'تایید شده',
-                rejected: 'رد شده',
-                call: 'تماس',
-                whatsapp: 'واتساپ',
-                add_fav: 'افزودن به علاقه‌مندی',
-                remove_fav: 'حذف از علاقه‌مندی',
-                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
-                my_ads: 'آگهی‌های من',
-                edit: 'ویرایش',
-                delete: 'حذف',
-                expired: 'منقضی',
-                special_badge: 'ویژه',
-                refresh: 'بروزرسانی',
-                pilgrimage: 'زیارت',
-                tourism: 'گردشگری',
-                medical: 'پزشکی',
-                beauty: 'زیبایی',
-                services: 'خدمات',
-                jobs: 'کاریابی',
-                real_estate: 'املاک',
-                vehicles: 'خودرو',
-                share: 'اشتراک',
-                show_tools: 'نمایش ابزارها',
-                hide_tools: 'مخفی کردن ابزارها',
-                gift_status_pending: '⏳ در انتظار تایید',
-                gift_status_approved: '✅ تایید شده',
-                gift_status_rejected: '❌ رد شده',
-                no_gift: 'شما هیچ درخواست هدیه‌ای ندارید',
-                gift_success: 'درخواست هدیه ثبت شد',
-                gift_error: 'خطا در ثبت درخواست هدیه',
-                ad_success: '✅ آگهی شما ثبت شد و برای تایید به ربات ارسال گردید.',
-                ad_error: 'خطا در ثبت آگهی',
-                charge_success: 'درخواست شارژ ارسال شد',
-                charge_error: 'خطا در ارسال درخواست شارژ',
-                vip_success: 'اشتراک VIP خریداری شد',
-                vip_error: 'خطا در خرید اشتراک VIP',
-                review_success: 'نظر شما ثبت شد',
-                review_error: 'خطا در ثبت نظر',
-                favorite_added: 'به علاقه‌مندی اضافه شد',
-                favorite_removed: 'از علاقه‌مندی حذف شد',
-                profile_saved: 'پروفایل ذخیره شد',
-                profile_error: 'خطا در ذخیره پروفایل',
-                complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
-                ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی مجاز رسیده‌اید.',
-                no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...',
-                ad_not_found: 'آگهی یافت نشد',
-                error_loading: 'خطا در بارگذاری',
-                vip_monthly: '۱ ماهه',
-                vip_quarterly: '۳ ماهه',
-                vip_semiannual: '۶ ماهه',
-                balance: 'موجودی',
-                all: 'همه',
-                login_success: '✅ ورود با موفقیت انجام شد!',
-                register_success: '✅ ثبت‌نام با موفقیت انجام شد!',
-                verification_sent: '✅ کد تایید ارسال شد!',
-                invalid_code: '❌ کد نامعتبر یا منقضی شده است',
-                invalid_username: '❌ نام کاربری نامعتبر است',
-                invalid_phone: '❌ شماره تلفن نامعتبر است',
-                user_exists: '❌ نام کاربری یا شماره تلفن قبلاً ثبت شده است',
-                user_not_found: '❌ کاربر یافت نشد',
-                not_found: '❌ موردی یافت نشد',
-                no_permission: '⛔ شما دسترسی به این بخش را ندارید',
-                back: '🔙 بازگشت',
-                cancel: '❌ لغو',
-                confirm: '✅ تایید',
-            },
-            ar: {
-                home: 'الرئيسية',
-                add: 'إضافة',
-                favorites: 'المفضلة',
-                profile: 'الملف الشخصي',
-                wallet: 'المحفظة',
-                currency: 'تومان',
-                trust: 'الثقة',
-                charge: 'شحن',
-                vip: 'VIP',
-                gift: 'هدية',
-                search: 'بحث',
-                search_placeholder: 'ابحث في الإعلانات...',
-                recent_ads: 'آخر الإعلانات',
-                add_ad: 'إعلان جديد',
-                title: 'عنوان الإعلان',
-                category: 'الفئة',
-                price: 'السعر (تومان)',
-                next: 'التالي',
-                prev: 'السابق',
-                description: 'الوصف',
-                location: 'الموقع / المدينة',
-                country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)',
-                upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف',
-                ad_type: 'نوع الإعلان',
-                normal: 'عادي',
-                special: 'مميز',
-                special_duration: 'مدة التميز',
-                submit: 'نشر الإعلان',
-                charge_wallet: 'شحن المحفظة',
-                amount: 'المبلغ (تومان)',
-                receipt: 'صورة الإيصال',
-                upload_receipt: 'اضغط لرفع الإيصال',
-                send_request: 'إرسال الطلب',
-                vip_subscription: 'اشتراك VIP',
-                vip_desc: 'مع اشتراك VIP، انشر إعلانات غير محدودة.',
-                month: 'شهر',
-                months_3: 'شهور',
-                months_6: 'شهور',
-                buy: 'شراء',
-                gift_request: 'هدية مجانية',
-                gift_desc: 'طلب إعلان مجاني. سيتم الموافقة عليه من قبل المدير.',
-                gift_btn: 'طلب هدية',
-                rate_review: 'تقييم',
-                comment: 'اكتب تعليقك...',
-                submit_review: 'إرسال',
-                profile_title: 'الملف الشخصي',
-                username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني',
-                trust_score: 'نقاط الثقة',
-                save: 'حفظ',
-                no_ads: 'لا توجد إعلانات',
-                pending: 'قيد المراجعة',
-                approved: 'تمت الموافقة',
-                rejected: 'مرفوض',
-                call: 'اتصال',
-                whatsapp: 'واتساب',
-                add_fav: 'أضف للمفضلة',
-                remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات',
-                my_ads: 'إعلاناتي',
-                edit: 'تعديل',
-                delete: 'حذف',
-                expired: 'منتهي',
-                special_badge: 'مميز',
-                refresh: 'تحديث',
-                pilgrimage: 'زيارة',
-                tourism: 'سياحة',
-                medical: 'طبي',
-                beauty: 'تجميل',
-                services: 'خدمات',
-                jobs: 'توظيف',
-                real_estate: 'عقارات',
-                vehicles: 'سيارات',
-                share: 'مشاركة',
-                show_tools: 'إظهار الأدوات',
-                hide_tools: 'إخفاء الأدوات',
-                gift_status_pending: '⏳ قيد المراجعة',
-                gift_status_approved: '✅ تمت الموافقة',
-                gift_status_rejected: '❌ مرفوض',
-                no_gift: 'لا يوجد طلب هدية',
-                gift_success: 'تم تقديم طلب الهدية',
-                gift_error: 'فشل تقديم طلب الهدية',
-                ad_success: '✅ تم إرسال إعلانك للمراجعة.',
-                ad_error: 'فشل نشر الإعلان',
-                charge_success: 'تم تقديم طلب الشحن',
-                charge_error: 'فشل تقديم طلب الشحن',
-                vip_success: 'تم شراء اشتراك VIP',
-                vip_error: 'فشل شراء اشتراك VIP',
-                review_success: 'تم إرسال التقييم',
-                review_error: 'فشل إرسال التقييم',
-                favorite_added: 'تمت الإضافة إلى المفضلة',
-                favorite_removed: 'تمت الإزالة من المفضلة',
-                profile_saved: 'تم حفظ الملف الشخصي',
-                profile_error: 'فشل حفظ الملف الشخصي',
-                complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
-                ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات.',
-                no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...',
-                ad_not_found: 'الإعلان غير موجود',
-                error_loading: 'خطأ في التحميل',
-                vip_monthly: 'شهر واحد',
-                vip_quarterly: '٣ شهور',
-                vip_semiannual: '٦ شهور',
-                balance: 'الرصيد',
-                all: 'الجميع',
-                login_success: '✅ تم تسجيل الدخول بنجاح!',
-                register_success: '✅ تم التسجيل بنجاح!',
-                verification_sent: '✅ تم إرسال رمز التحقق!',
-                invalid_code: '❌ الرمز غير صحيح أو منتهي الصلاحية',
-                invalid_username: '❌ اسم المستخدم غير صحيح',
-                invalid_phone: '❌ رقم الهاتف غير صحيح',
-                user_exists: '❌ اسم المستخدم أو رقم الهاتف مسجل مسبقاً',
-                user_not_found: '❌ المستخدم غير موجود',
-                not_found: '❌ لم يتم العثور',
-                no_permission: '⛔ غير مصرح لك',
-                back: '🔙 عودة',
-                cancel: '❌ إلغاء',
-                confirm: '✅ تأكيد',
+        // ===== بررسی انقضای نشست (۷ روز) =====
+        function checkSession() {
+            if (isLoggedIn) {
+                if (Date.now() > sessionExpiry) {
+                    // نشست منقضی شده
+                    logout();
+                    return false;
+                }
+                return true;
             }
-        };
-
-        function t(key) {
-            return translations[currentLang]?.[key] || key;
+            return false;
         }
 
         // ============================================================
-        // LANGUAGE & THEME
+        // LOGIN SYSTEM
         // ============================================================
-        function updateLanguage() {
-            const lang = currentLang;
-            document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : '🇮🇷 فارسی';
-            const elements = {
-                'walletLabel': 'wallet',
-                'currencyLabel': 'currency',
-                'vipLabel': 'vip',
-                'trustLabel': 'trust',
-                'chargeBtnLabel': 'charge',
-                'vipBtnLabel': 'vip',
-                'giftBtnLabel': 'gift',
-                'actPilgrimage': 'pilgrimage',
-                'actTourism': 'tourism',
-                'actMedical': 'medical',
-                'actBeauty': 'beauty',
-                'actServices': 'services',
-                'actJobs': 'jobs',
-                'actRealEstate': 'real_estate',
-                'actVehicles': 'vehicles',
-                'searchBtn': 'search',
-                'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home',
-                'navAddLabel': 'add',
-                'navFavLabel': 'favorites',
-                'navProfileLabel': 'profile',
-                'addAdTitle': 'add_ad',
-                'adTitleLabel': 'title',
-                'adCategoryLabel': 'category',
-                'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next',
-                'adDescLabel': 'description',
-                'adLocationLabel': 'location',
-                'adCountryLabel': 'country',
-                'wizardPrevBtn2': 'prev',
-                'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images',
-                'uploadClickLabel': 'upload_click',
-                'adPhoneLabel': 'phone',
-                'adTypeLabel': 'ad_type',
-                'adNormalOption': 'normal',
-                'adSpecialOption': 'special',
-                'planLabel': 'special_duration',
-                'wizardPrevBtn3': 'prev',
-                'submitAdBtn': 'submit',
-                'chargeTitle': 'charge_wallet',
-                'chargeAmountLabel': 'amount',
-                'receiptLabel': 'receipt',
-                'uploadReceiptLabel': 'upload_receipt',
-                'submitChargeBtn': 'send_request',
-                'vipModalTitle': 'vip_subscription',
-                'vipDesc': 'vip_desc',
-                'vipMonthLabel': 'vip_monthly',
-                'vip3MonthLabel': 'vip_quarterly',
-                'vip6MonthLabel': 'vip_semiannual',
-                'vipBuy1': 'buy',
-                'vipBuy3': 'buy',
-                'vipBuy6': 'buy',
-                'giftTitle': 'gift_request',
-                'giftDesc': 'gift_desc',
-                'giftBtn': 'gift_btn',
-                'profileTitle': 'profile_title',
-                'profileUsernameLabel': 'username',
-                'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label',
-                'profileEmailLabel': 'email_label',
-                'profileTrustLabel': 'trust_score',
-                'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads',
-                'favTitle': 'favorites',
-                'refreshAdsBtn': 'refresh',
-                'searchInput': 'search_placeholder',
-                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
-            };
-            for (const [id, key] of Object.entries(elements)) {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        if (el.placeholder !== undefined) el.placeholder = t(key);
-                    } else {
-                        el.textContent = t(key);
+        let verificationCode = '';
+        let codeExpiry = 0;
+        let timerInterval = null;
+        let phoneNumber = '';
+
+        // ===== نمایش صفحه ورود =====
+        function showLogin() {
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('loginStep1').style.display = 'block';
+            document.getElementById('loginStep2').style.display = 'none';
+            document.getElementById('loginError').className = 'login-error';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('phoneInput').value = '';
+            document.getElementById('phoneInput').focus();
+        }
+
+        function hideLogin() {
+            document.getElementById('loginOverlay').classList.add('hidden');
+        }
+
+        // ===== مرحله ۱: درخواست کد تایید =====
+        async function requestVerificationCode() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if (!phone || phone.length < 10) {
+                showLoginError('لطفاً شماره تلفن معتبر وارد کنید');
+                return;
+            }
+
+            // بررسی محدودیت درخواست
+            const lastRequest = localStorage.getItem('last_verify_request');
+            if (lastRequest) {
+                const elapsed = (Date.now() - parseInt(lastRequest)) / 1000;
+                if (elapsed < 30) {
+                    showLoginError(`لطفاً ${Math.ceil(30 - elapsed)} ثانیه صبر کنید`);
+                    return;
+                }
+            }
+
+            phoneNumber = phone;
+            const btn = document.getElementById('sendCodeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '...در حال ارسال';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/send-verification`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: guestId,
+                        phone: phoneNumber
+                    })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // ذخیره کد در localStorage (برای حالت آفلاین یا نمایش)
+                    if (data.code) {
+                        verificationCode = data.code;
+                        localStorage.setItem('verification_code', data.code);
+                        localStorage.setItem('verification_expiry', (Date.now() + 120000).toString());
                     }
+                    localStorage.setItem('last_verify_request', Date.now().toString());
+
+                    // رفتن به مرحله ۲
+                    document.getElementById('loginStep1').style.display = 'none';
+                    document.getElementById('loginStep2').style.display = 'block';
+                    document.getElementById('displayPhone').textContent = phoneNumber;
+                    document.getElementById('verifyError').className = 'login-error';
+                    document.getElementById('verifyError').textContent = '';
+                    document.getElementById('verifySuccess').className = 'login-success';
+                    document.getElementById('verifySuccess').textContent = '✅ کد تایید ارسال شد';
+                    document.getElementById('verifySuccess').style.display = 'block';
+
+                    // پاک کردن ورودی‌های کد
+                    document.querySelectorAll('#codeInputGroup input').forEach(inp => {
+                        inp.value = '';
+                        inp.classList.remove('filled');
+                    });
+                    document.querySelector('#codeInputGroup input[data-index="0"]').focus();
+
+                    // شروع تایمر
+                    startTimer();
+
+                    // ذخیره کد در متغیر برای تایید
+                    if (data.code) verificationCode = data.code;
+
+                } else {
+                    showLoginError(data.error || 'خطا در ارسال کد');
                 }
+            } catch (err) {
+                showLoginError('خطا در ارتباط با سرور');
+                console.error(err);
             }
-            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
-                if (idx === 0) chip.textContent = t('all');
-                else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                        'vehicles'
-                    ];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ارسال کد تایید';
+        }
+
+        // ===== مرحله ۲: تایید کد =====
+        async function verifyCode() {
+            let enteredCode = '';
+            document.querySelectorAll('#codeInputGroup input').forEach(inp => {
+                enteredCode += inp.value.trim();
+            });
+
+            if (enteredCode.length < 6) {
+                showVerifyError('لطفاً کد ۶ رقمی را کامل وارد کنید');
+                return;
+            }
+
+            const btn = document.getElementById('verifyBtn');
+            btn.disabled = true;
+            btn.innerHTML = '...در حال بررسی';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/verify-code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: guestId,
+                        code: enteredCode,
+                        phone: phoneNumber
+                    })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // ✅ ورود موفق
+                    isLoggedIn = true;
+                    localStorage.setItem('jedar_logged_in', 'true');
+                    localStorage.setItem('jedar_login_phone', phoneNumber);
+                    localStorage.setItem('jedar_session_expiry', (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
+
+                    document.getElementById('verifySuccess').textContent = '✅ ورود با موفقیت انجام شد';
+                    document.getElementById('verifySuccess').style.display = 'block';
+                    document.getElementById('verifyError').className = 'login-error';
+                    document.getElementById('verifyError').textContent = '';
+
+                    // ذخیره شماره در پروفایل
+                    const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+                    profile.phone = phoneNumber;
+                    profile.phoneVerified = true;
+                    localStorage.setItem('jedar_profile', JSON.stringify(profile));
+
+                    setTimeout(() => {
+                        hideLogin();
+                        loadApp();
+                        showToast('✅ خوش آمدید!', 'success');
+                    }, 1000);
+
+                } else {
+                    showVerifyError(data.error || 'کد نامعتبر است');
+                    // لرزش ورودی‌ها
+                    document.querySelectorAll('#codeInputGroup input').forEach(inp => {
+                        inp.style.animation = 'shake 0.3s ease';
+                        setTimeout(() => inp.style.animation = '', 300);
+                    });
                 }
-            });
-            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
-                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                    'vehicles', 'electronics', 'education'
-                ];
-                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
-            });
+            } catch (err) {
+                showVerifyError('خطا در ارتباط با سرور');
+                console.error(err);
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> تایید';
         }
 
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-                '<i class="fa-solid fa-sun"></i>';
-            localStorage.setItem('jedar_theme', currentTheme);
+        // ===== ارسال مجدد کد =====
+        function resendCode() {
+            // برگشت به مرحله ۱ و ارسال مجدد
+            document.getElementById('loginStep2').style.display = 'none';
+            document.getElementById('loginStep1').style.display = 'block';
+            requestVerificationCode();
         }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
-            localStorage.setItem('jedar_lang', currentLang);
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = 'rtl';
-            updateLanguage();
-            showToast('🌍 زبان تغییر کرد', 'success');
+        // ===== برگشت به مرحله ۱ =====
+        function goBackToPhone() {
+            document.getElementById('loginStep2').style.display = 'none';
+            document.getElementById('loginStep1').style.display = 'block';
+            clearInterval(timerInterval);
+            document.getElementById('timerDisplay').textContent = '';
+        }
+
+        // ===== تایمر =====
+        function startTimer() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            let remaining = 120;
+            timerDisplay.textContent = `(${remaining} ثانیه)`;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = '(منقضی شد)';
+                    document.querySelector('.resend-link span:first-child').textContent = 'کد منقضی شد. ';
+                } else {
+                    timerDisplay.textContent = `(${remaining} ثانیه)`;
+                }
+            }, 1000);
+        }
+
+        // ===== نمایش خطاها =====
+        function showLoginError(msg) {
+            const el = document.getElementById('loginError');
+            el.textContent = msg;
+            el.className = 'login-error show';
+        }
+
+        function showVerifyError(msg) {
+            const el = document.getElementById('verifyError');
+            el.textContent = msg;
+            el.className = 'login-error show';
+            document.getElementById('verifySuccess').className = 'login-success';
+            document.getElementById('verifySuccess').textContent = '';
+        }
+
+        // ===== خروج =====
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('jedar_logged_in');
+            localStorage.removeItem('jedar_login_phone');
+            localStorage.removeItem('jedar_session_expiry');
+            localStorage.removeItem('verification_code');
+            localStorage.removeItem('verification_expiry');
+            showLogin();
+            showToast('✅ از حساب خود خارج شدید', 'info');
         }
 
         // ============================================================
-        // HELPERS
+        // SETUP CODE INPUTS
+        // ============================================================
+        function setupCodeInputs() {
+            const inputs = document.querySelectorAll('#codeInputGroup input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const val = this.value.replace(/\D/g, '');
+                    this.value = val.slice(0, 1);
+                    if (val.length === 1) {
+                        this.classList.add('filled');
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        } else {
+                            // آخرین کادر: تایید خودکار
+                            setTimeout(() => verifyCode(), 300);
+                        }
+                    } else {
+                        this.classList.remove('filled');
+                    }
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                        inputs[index - 1].classList.remove('filled');
+                    }
+                });
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const paste = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = paste.replace(/\D/g, '').slice(0, 6);
+                    if (digits.length > 0) {
+                        for (let i = 0; i < Math.min(digits.length, inputs.length); i++) {
+                            inputs[i].value = digits[i] || '';
+                            inputs[i].classList.add('filled');
+                        }
+                        const nextIndex = Math.min(digits.length, inputs.length - 1);
+                        inputs[nextIndex].focus();
+                    }
+                });
+                input.addEventListener('focus', function() {
+                    this.select();
+                });
+            });
+            // فوکوس روی اولین کادر
+            setTimeout(() => {
+                if (document.querySelector('#codeInputGroup input')) {
+                    document.querySelector('#codeInputGroup input[data-index="0"]').focus();
+                }
+            }, 300);
+        }
+
+        // ============================================================
+        // LOAD APP
+        // ============================================================
+        function loadApp() {
+            fetchAds(true);
+            fetchNotice();
+            loadProfile();
+            loadGiftStatus();
+            startPendingCheck();
+            if (currentTab === 'profile') { fetchMyAds();
+                fetchTransactions(); }
+            if (currentTab === 'favorites') fetchFavorites();
+        }
+
+        // ============================================================
+        // TOAST
         // ============================================================
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
@@ -2417,6 +2190,259 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 400);
             }, 4500);
+        }
+
+        // ============================================================
+        // REST OF THE APP (از کد قبلی با اندکی تغییرات)
+        // ============================================================
+        let allAds = [];
+        let filteredAds = [];
+        let favorites = JSON.parse(localStorage.getItem('jedar_favorites') || '[]');
+        let currentLang = 'fa';
+        let currentTheme = 'light';
+        let currentTab = 'home';
+        let wizardImagesBase64 = [];
+        let wizardStep = 1;
+        let reviewRating = 0;
+        let isUpdating = false;
+        let pendingCheckInterval = null;
+        let upperSectionOpen = false;
+        let userAdsCount = 0;
+
+        const translations = {
+            fa: {
+                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل',
+                wallet: 'کیف پول', currency: 'تومان', trust: 'اعتماد', charge: 'شارژ',
+                vip: 'VIP', gift: 'هدیه', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
+                apply: 'اعمال', cancel: 'لغو', recent_ads: 'آخرین آگهی‌ها',
+                add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی', category: 'دسته‌بندی',
+                price: 'قیمت (تومان)', next: 'بعدی', prev: 'قبلی',
+                description: 'توضیحات', location: 'موقعیت / شهر', country: 'کشور',
+                images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید',
+                phone: 'شماره تماس', ad_type: 'نوع آگهی', normal: 'عادی',
+                special: 'ویژه', special_duration: 'مدت ویژه', submit: 'ثبت آگهی',
+                charge_wallet: 'شارژ کیف پول', amount: 'مبلغ (تومان)',
+                receipt: 'تصویر رسید', upload_receipt: 'برای آپلود رسید کلیک کنید',
+                send_request: 'ارسال درخواست', vip_subscription: 'اشتراک ویژه',
+                vip_desc: 'با اشتراک ویژه، بدون محدودیت آگهی ثبت کنید.',
+                month: 'ماه', months_3: 'ماه', months_6: 'ماه',
+                buy: 'خرید', loading: 'در حال بارگذاری...',
+                gift_request: 'هدیه رایگان', gift_desc: 'با درخواست هدیه، می‌توانید یک آگهی رایگان ثبت کنید.',
+                gift_btn: 'درخواست هدیه', rate_review: 'امتیاز و نظر',
+                comment: 'نظر خود را بنویسید...', submit_review: 'ارسال نظر',
+                profile_title: 'پروفایل', username: 'نام کاربری',
+                fullname: 'نام کامل', phone_label: 'شماره تلفن',
+                email_label: 'ایمیل', trust_score: 'امتیاز اعتماد',
+                save: 'ذخیره', no_ads: 'هیچ آگهی‌ای موجود نیست',
+                pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
+                call: 'تماس', whatsapp: 'واتساپ', add_fav: 'افزودن به علاقه‌مندی',
+                remove_fav: 'حذف از علاقه‌مندی', no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
+                my_ads: 'آگهی‌های من', transactions: 'تراکنش‌ها',
+                edit: 'ویرایش', delete: 'حذف', expired: 'منقضی',
+                special_badge: 'ویژه', loading_ads: 'در حال بارگذاری آگهی‌ها...',
+                gift_status_pending: '⏳ در انتظار تایید', gift_status_approved: '✅ تایید شده',
+                gift_status_rejected: '❌ رد شده', no_gift: 'شما هیچ درخواست هدیه‌ای ندارید',
+                gift_success: 'درخواست هدیه ثبت شد', gift_error: 'خطا در ثبت درخواست هدیه',
+                ad_success: 'آگهی با موفقیت ثبت شد', ad_error: 'خطا در ثبت آگهی',
+                charge_success: 'درخواست شارژ ارسال شد', charge_error: 'خطا در ارسال درخواست شارژ',
+                vip_success: 'اشتراک ویژه خریداری شد', vip_error: 'خطا در خرید اشتراک ویژه',
+                review_success: 'نظر شما ثبت شد', review_error: 'خطا در ثبت نظر',
+                favorite_added: 'به علاقه‌مندی اضافه شد', favorite_removed: 'از علاقه‌مندی حذف شد',
+                profile_saved: 'پروفایل ذخیره شد', profile_error: 'خطا در ذخیره پروفایل',
+                refresh: 'بروزرسانی', pilgrimage: 'زیارت', tourism: 'گردشگری',
+                medical: 'پزشکی', beauty: 'زیبایی', services: 'خدمات',
+                jobs: 'کاریابی', real_estate: 'املاک', vehicles: 'خودرو',
+                electronics: 'الکترونیک', education: 'آموزش',
+                country_iran: 'ایران', country_iraq: 'عراق', country_uae: 'امارات',
+                country_turkey: 'ترکیه', sort_newest: 'جدیدترین',
+                sort_popular: 'محبوب‌ترین', sort_rating: 'امتیاز',
+                sort_price_asc: 'ارزان‌ترین', sort_price_desc: 'گران‌ترین',
+                all: 'همه', from: 'از', to: 'تا',
+                complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
+                ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید.',
+                show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها',
+                no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...',
+                ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
+                share: 'اشتراک', views: 'بازدید', posted_at: 'زمان انتشار',
+                category_label: 'دسته', location_label: 'مکان', rating_label: 'امتیاز',
+                no_description: 'توضیحاتی وجود ندارد', link_copied: '🔗 لینک کپی شد',
+                please_rate: 'لطفاً امتیاز دهید', remaining: 'باقی‌مانده',
+                active: 'فعال', no_subscription: 'اشتراک فعالی ندارید',
+                delete_confirm: 'آیا از حذف این آگهی اطمینان دارید؟',
+                ad_edit_success: 'آگهی ویرایش شد و برای تایید مجدد ارسال شد',
+                ad_delete_success: 'آگهی حذف شد', transaction_pending: 'در انتظار تایید',
+                transaction_approved: 'تایید شده', transaction_rejected: 'رد شده',
+                no_transactions: 'هیچ تراکنشی ثبت نشده است', amount_toman: 'تومان',
+                charge_request_sent: 'درخواست شارژ ارسال شد. پس از تایید مدیر، موجودی شما افزایش می‌یابد.',
+                phone_changed: 'شماره تلفن با موفقیت تغییر کرد',
+                phone_limit_reached: 'شما بیش از ۲ بار نمی‌توانید شماره تلفن را تغییر دهید',
+            },
+            ar: {
+                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
+                wallet: 'المحفظة', currency: 'تومان', trust: 'الثقة', charge: 'شحن',
+                vip: 'VIP', gift: 'هدية', search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
+                apply: 'تطبيق', cancel: 'إلغاء', recent_ads: 'آخر الإعلانات',
+                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة',
+                price: 'السعر (تومان)', next: 'التالي', prev: 'السابق',
+                description: 'الوصف', location: 'الموقع / المدينة', country: 'الدولة',
+                images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل',
+                phone: 'رقم الهاتف', ad_type: 'نوع الإعلان', normal: 'عادي',
+                special: 'مميز', special_duration: 'مدة التميز', submit: 'نشر الإعلان',
+                charge_wallet: 'شحن المحفظة', amount: 'المبلغ (تومان)',
+                receipt: 'صورة الإيصال', upload_receipt: 'اضغط لرفع الإيصال',
+                send_request: 'إرسال الطلب', vip_subscription: 'اشتراك مميز',
+                vip_desc: 'مع اشتراك مميز، انشر إعلانات غير محدودة.',
+                month: 'شهر', months_3: 'شهور', months_6: 'شهور',
+                buy: 'شراء', loading: 'جاري التحميل...',
+                gift_request: 'هدية مجانية', gift_desc: 'طلب إعلان مجاني. سيتم الموافقة عليه من قبل المدير.',
+                gift_btn: 'طلب هدية', rate_review: 'تقييم',
+                comment: 'اكتب تعليقك...', submit_review: 'إرسال',
+                profile_title: 'الملف الشخصي', username: 'اسم المستخدم',
+                fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف',
+                email_label: 'البريد الإلكتروني', trust_score: 'نقاط الثقة',
+                save: 'حفظ', no_ads: 'لا توجد إعلانات',
+                pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
+                call: 'اتصال', whatsapp: 'واتساب', add_fav: 'أضف للمفضلة',
+                remove_fav: 'إزالة من المفضلة', no_favorites: 'لا توجد مفضلات',
+                my_ads: 'إعلاناتي', transactions: 'المعاملات',
+                edit: 'تعديل', delete: 'حذف', expired: 'منتهي',
+                special_badge: 'مميز', loading_ads: 'جاري تحميل الإعلانات...',
+                gift_status_pending: '⏳ قيد المراجعة', gift_status_approved: '✅ تمت الموافقة',
+                gift_status_rejected: '❌ مرفوض', no_gift: 'لا يوجد طلب هدية',
+                gift_success: 'تم تقديم طلب الهدية', gift_error: 'فشل تقديم طلب الهدية',
+                ad_success: 'تم نشر الإعلان بنجاح', ad_error: 'فشل نشر الإعلان',
+                charge_success: 'تم تقديم طلب الشحن', charge_error: 'فشل تقديم طلب الشحن',
+                vip_success: 'تم شراء اشتراك مميز', vip_error: 'فشل شراء اشتراك مميز',
+                review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم',
+                favorite_added: 'تمت الإضافة إلى المفضلة', favorite_removed: 'تمت الإزالة من المفضلة',
+                profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
+                refresh: 'تحديث', pilgrimage: 'زيارة', tourism: 'سياحة',
+                medical: 'طبي', beauty: 'تجميل', services: 'خدمات',
+                jobs: 'توظيف', real_estate: 'عقارات', vehicles: 'سيارات',
+                electronics: 'إلكترونيات', education: 'تعليم',
+                country_iran: 'إيران', country_iraq: 'العراق', country_uae: 'الإمارات',
+                country_turkey: 'تركيا', sort_newest: 'الأحدث',
+                sort_popular: 'الأكثر شيوعاً', sort_rating: 'التقييم',
+                sort_price_asc: 'الأقل سعراً', sort_price_desc: 'الأعلى سعراً',
+                all: 'الكل', from: 'من', to: 'إلى',
+                complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
+                ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١).',
+                show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات',
+                no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
+                ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل',
+                share: 'مشاركة', views: 'مشاهدات', posted_at: 'تاريخ النشر',
+                category_label: 'الفئة', location_label: 'الموقع', rating_label: 'التقييم',
+                no_description: 'لا يوجد وصف', link_copied: '🔗 تم نسخ الرابط',
+                please_rate: 'يرجى التقييم', remaining: 'متبقي',
+                active: 'نشط', no_subscription: 'لا يوجد اشتراك نشط',
+                delete_confirm: 'هل أنت متأكد من حذف هذا الإعلان؟',
+                ad_edit_success: 'تم تعديل الإعلان وإرساله للمراجعة مرة أخرى',
+                ad_delete_success: 'تم حذف الإعلان', transaction_pending: 'قيد المراجعة',
+                transaction_approved: 'تمت الموافقة', transaction_rejected: 'مرفوض',
+                no_transactions: 'لا توجد معاملات', amount_toman: 'تومان',
+                charge_request_sent: 'تم إرسال طلب الشحن. بعد موافقة المدير، سيتم زيادة رصيدك.',
+                phone_changed: 'تم تغيير رقم الهاتف بنجاح',
+                phone_limit_reached: 'لا يمكنك تغيير رقم الهاتف أكثر من مرتين',
+            }
+        };
+
+        function t(key) { return translations[currentLang]?.[key] || key; }
+
+        function updateLanguage() {
+            const lang = currentLang;
+            const isFa = lang === 'fa';
+            document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
+
+            const elements = {
+                'walletLabel': 'wallet', 'currencyLabel': 'currency', 'vipLabel': 'vip',
+                'trustLabel': 'trust', 'chargeBtnLabel': 'charge', 'vipBtnLabel': 'vip',
+                'giftBtnLabel': 'gift', 'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism',
+                'actMedical': 'medical', 'actBeauty': 'beauty', 'actServices': 'services',
+                'actJobs': 'jobs', 'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'searchBtn': 'search', 'adsTitle': 'recent_ads',
+                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites',
+                'navProfileLabel': 'profile', 'addAdTitle': 'add_ad',
+                'adTitleLabel': 'title', 'adCategoryLabel': 'category', 'adPriceLabel': 'price',
+                'wizardNextBtn1': 'next', 'adDescLabel': 'description',
+                'adLocationLabel': 'location', 'adCountryLabel': 'country',
+                'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next',
+                'adImagesLabel': 'images', 'uploadClickLabel': 'upload_click',
+                'adPhoneLabel': 'phone', 'adTypeLabel': 'ad_type',
+                'adNormalOption': 'normal', 'adSpecialOption': 'special',
+                'planLabel': 'special_duration', 'wizardPrevBtn3': 'prev',
+                'submitAdBtn': 'submit', 'chargeTitle': 'charge_wallet',
+                'chargeAmountLabel': 'amount', 'receiptLabel': 'receipt',
+                'uploadReceiptLabel': 'upload_receipt', 'submitChargeBtn': 'send_request',
+                'vipModalTitle': 'vip_subscription', 'vipDesc': 'vip_desc',
+                'vipMonthLabel': 'month', 'vip3MonthLabel': 'months_3',
+                'vip6MonthLabel': 'months_6', 'vipBuy1': 'buy', 'vipBuy3': 'buy',
+                'vipBuy6': 'buy', 'giftTitle': 'gift_request', 'giftDesc': 'gift_desc',
+                'giftBtn': 'gift_btn', 'profileTitle': 'profile_title',
+                'profileUsernameLabel': 'username', 'profileFullnameLabel': 'fullname',
+                'profilePhoneLabel': 'phone_label', 'profileEmailLabel': 'email_label',
+                'profileTrustLabel': 'trust_score', 'profileSaveBtn': 'save',
+                'myAdsTitle': 'my_ads', 'transactionsTitle': 'transactions',
+                'favTitle': 'favorites', 'refreshAdsBtn': 'refresh',
+                'searchInput': 'search_placeholder', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+            };
+            for (const [id, key] of Object.entries(elements)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                        el.placeholder = t(key);
+                    } else {
+                        el.textContent = t(key);
+                    }
+                }
+            }
+            const catOpts = document.querySelectorAll('#adCategory option');
+            const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles',
+                'electronics', 'education'
+            ];
+            catOpts.forEach((opt, idx) => { if (idx < catKeys.length) opt.textContent = t(catKeys[idx]); });
+            const countryOpts = document.querySelectorAll('#adCountry option');
+            const countryKeys = ['country_iran', 'country_iraq', 'country_uae', 'country_turkey'];
+            const flags = ['🇮🇷', '🇮🇶', '🇦🇪', '🇹🇷'];
+            countryOpts.forEach((opt, idx) => { if (idx < countryKeys.length) opt.textContent = flags[idx] + ' ' + t(
+                    countryKeys[idx]); });
+            const actionLabels = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
+                'vehicles'
+            ];
+            document.querySelectorAll('.action-item span').forEach((el, idx) => {
+                if (idx < actionLabels.length) el.textContent = t(actionLabels[idx]);
+            });
+            document.querySelectorAll('.bottom-nav .nav-item .nav-label').forEach(el => {
+                const key = el.id.replace('nav', '').replace('Label', '').toLowerCase();
+                const map = { home: 'home', add: 'add', favorites: 'favorites', profile: 'profile' };
+                if (map[key]) el.textContent = t(map[key]);
+            });
+            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
+                if (idx === 0) chip.textContent = t('all');
+                else {
+                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
+                        'vehicles'
+                    ];
+                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+                }
+            });
+            console.log(`🌍 زبان به ${lang === 'fa' ? 'فارسی' : 'عربی'} تغییر کرد`);
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
+                '<i class="fa-solid fa-sun"></i>';
+            localStorage.setItem('jedar_theme', currentTheme);
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
+            localStorage.setItem('jedar_lang', currentLang);
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = 'rtl';
+            updateLanguage();
+            showToast(`🌍 ${t('language_changed') || 'زبان تغییر کرد'}`, 'success');
         }
 
         function formatTime(ts) {
@@ -2439,118 +2465,12 @@
         function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            return fetch(url, { ...options, headers })
-                .then(async res => {
-                    const text = await res.text();
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
-                    }
-                })
-                .catch(err => {
-                    console.error('❌ API Error:', err);
-                    return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
-                });
+            return fetch(url, { ...options, headers }).then(res => res.json()).catch(err => {
+                console.error('API Error:', err);
+                return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
+            });
         }
 
-        function generateCaptcha() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-            document.getElementById('captchaCode').textContent = code;
-            return code;
-        }
-        let captchaValue = generateCaptcha();
-
-        // ============================================================
-        // AUTH
-        // ============================================================
-        function setAuthMode(mode) {
-            authMode = mode;
-            authStep = 'init';
-            document.getElementById('authCodeGroup').style.display = 'none';
-            document.getElementById('authSubmitBtn').textContent = mode === 'register' ? 'ثبت‌نام' : 'ورود';
-            document.getElementById('authToggleText').textContent = mode === 'register' ? 'قبلاً ثبت‌نام کرده‌اید؟' :
-            'ثبت‌نام نکرده‌اید؟';
-            document.getElementById('authToggleLink').textContent = mode === 'register' ? 'ورود' : 'ثبت‌نام';
-            document.getElementById('authCode').value = '';
-        }
-
-        document.getElementById('authToggleLink').addEventListener('click', function() {
-            setAuthMode(authMode === 'register' ? 'login' : 'register');
-        });
-
-        document.getElementById('authSendCodeBtn').addEventListener('click', async function() {
-            const username = document.getElementById('authUsername').value.trim();
-            const phone = document.getElementById('authPhone').value.trim();
-            const code = document.getElementById('authCode').value.trim();
-
-            if (authStep === 'init') {
-                // مرحله اول: ارسال درخواست کد
-                if (!username || username.length < 3) { showToast(t('invalid_username'), 'error'); return; }
-                if (!phone || phone.length < 10) { showToast(t('invalid_phone'), 'error'); return; }
-                if (code.toUpperCase() !== captchaValue) { showToast('کد امنیتی اشتباه است', 'error');
-                    generateCaptcha(); return; }
-
-                try {
-                    const endpoint = authMode === 'register' ? '/api/register' : '/api/login';
-                    const data = await apiCall(endpoint, {
-                        method: 'POST',
-                        body: JSON.stringify({ username, phone, lang: currentLang })
-                    });
-                    if (data.success) {
-                        showToast(t('verification_sent'), 'success');
-                        authStep = 'verify';
-                        document.getElementById('authSubmitBtn').textContent = 'تایید کد';
-                        document.getElementById('authSendCodeBtn').textContent = 'تایید کد';
-                        // ذخیره موقت
-                        localStorage.setItem('jedar_temp_username', username);
-                        localStorage.setItem('jedar_temp_phone', phone);
-                    } else {
-                        showToast(data.error || 'خطا', 'error');
-                    }
-                } catch (e) {
-                    showToast(e.message, 'error');
-                }
-            } else if (authStep === 'verify') {
-                // مرحله دوم: تایید کد
-                const username = localStorage.getItem('jedar_temp_username') || document.getElementById('authUsername')
-                .value.trim();
-                const codeVal = document.getElementById('authCode').value.trim();
-                if (!codeVal || codeVal.length < 6) { showToast('کد ۶ رقمی را وارد کنید', 'error'); return; }
-
-                try {
-                    const data = await apiCall('/api/verify', {
-                        method: 'POST',
-                        body: JSON.stringify({ username, code: codeVal })
-                    });
-                    if (data.success) {
-                        showToast(authMode === 'register' ? t('register_success') : t('login_success'), 'success');
-                        isLoggedIn = true;
-                        localStorage.setItem('jedar_session', JSON.stringify({ username, phone: localStorage.getItem(
-                                'jedar_temp_phone') || '' }));
-                        document.getElementById('authPage').style.display = 'none';
-                        document.getElementById('app').style.display = 'block';
-                        loadProfile();
-                        fetchAds(true);
-                        fetchUserData();
-                    } else {
-                        showToast(data.error || t('invalid_code'), 'error');
-                    }
-                } catch (e) {
-                    showToast(e.message, 'error');
-                }
-            }
-        });
-
-        document.getElementById('authSubmitBtn').addEventListener('click', function() {
-            document.getElementById('authSendCodeBtn').click();
-        });
-
-        // ============================================================
-        // TOGGLE UPPER SECTION
-        // ============================================================
         function toggleUpperSection() {
             upperSectionOpen = !upperSectionOpen;
             const section = document.getElementById('upperSection');
@@ -2567,57 +2487,48 @@
             }
         }
 
-        // ============================================================
-        // PROFILE
-        // ============================================================
         function loadProfile() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             document.getElementById('profileUsername').value = profile.username || '';
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
+            document.getElementById('phoneChangeLimit').textContent = profile.phoneChangeCount !== undefined ? (2 - profile
+                .phoneChangeCount) : 2;
             const phoneInput = document.getElementById('adContact');
             if (phoneInput && profile.phone) {
                 phoneInput.value = profile.phone;
             }
-            fetchUserData();
-        }
-
-        function fetchUserData() {
-            const username = localStorage.getItem('jedar_session') ? JSON.parse(localStorage.getItem('jedar_session'))
-                .username : guestId;
-            apiCall(`/api/profile/${username}`)
-                .then(data => {
-                    if (data.success && data.data) {
-                        const user = data.data;
-                        document.getElementById('walletBalance').textContent = (user.balance || 0).toLocaleString();
-                        document.getElementById('trustScore').textContent = user.trustScore || 50;
-                        document.getElementById('profileTrust').value = user.trustScore || 50;
-                        if (user.isVip) {
-                            document.getElementById('vipBadge').classList.add('show');
-                        } else {
-                            document.getElementById('vipBadge').classList.remove('show');
-                        }
-                    }
-                })
-                .catch(() => {});
         }
 
         function saveProfile() {
+            const oldProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            const newPhone = document.getElementById('profilePhone').value.trim();
+            const oldPhone = oldProfile.phone || '';
+            let phoneChangeCount = oldProfile.phoneChangeCount || 0;
+            if (newPhone && newPhone !== oldPhone) {
+                if (phoneChangeCount >= 2) {
+                    showToast(t('phone_limit_reached'), 'error');
+                    return;
+                }
+                phoneChangeCount++;
+                // به‌روزرسانی شماره در localStorage ورود
+                localStorage.setItem('jedar_login_phone', newPhone);
+            }
             const profile = {
                 username: document.getElementById('profileUsername').value.trim(),
                 fullname: document.getElementById('profileFullname').value.trim(),
-                phone: document.getElementById('profilePhone').value.trim(),
+                phone: newPhone,
                 email: document.getElementById('profileEmail').value.trim(),
+                phoneChangeCount: phoneChangeCount,
             };
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
+            document.getElementById('phoneChangeLimit').textContent = (2 - phoneChangeCount);
             const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            if (phoneInput && profile.phone) {
+                phoneInput.value = profile.phone;
+            }
             showToast(t('profile_saved'), 'success');
-            apiCall('/api/profile/update', {
-                method: 'POST',
-                body: JSON.stringify({ username: profile.username, fullname: profile.fullname, email: profile.email })
-            }).catch(() => {});
         }
 
         function isProfileComplete() {
@@ -2625,9 +2536,6 @@
             return profile.phone && profile.phone.trim().length > 0;
         }
 
-        // ============================================================
-        // ADS
-        // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
             isUpdating = true;
@@ -2636,36 +2544,25 @@
                 grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             }
             try {
-                const data = await apiCall('/api/ads');
-                if (data.success && data.data && data.data.length > 0) {
-                    allAds = data.data.map(ad => {
-                        if (ad.images && typeof ad.images === 'string') {
-                            try { ad.images = JSON.parse(ad.images); } catch (e) { ad.images = []; }
-                        } else if (ad.images && Array.isArray(ad.images)) {
-                            // already set
-                        } else {
-                            ad.images = [];
-                        }
-                        if (ad.images && ad.images.length > 0) {
-                            ad.images = ad.images.map(img => {
-                                if (img && typeof img === 'string' && !img.startsWith('data:') && !img
-                                    .startsWith('http')) {
-                                    return `data:image/jpeg;base64,${img}`;
-                                }
-                                return img;
-                            });
-                        }
-                        return ad;
-                    });
+                const data = await apiCall('/api/feed');
+                if (data.ok && data.data && data.data.length > 0) {
+                    allAds = data.data;
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
+                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
+                } else if (data.success && data.ads && data.ads.length > 0) {
+                    allAds = data.ads;
+                    filteredAds = [...allAds];
+                    renderAds(filteredAds);
+                    renderCategories();
+                    if (showLoading) showToast('آگهی‌ها بروز شدند', 'success');
                 } else {
                     grid.innerHTML =
-                        `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 }
             } catch (err) {
-                console.error('❌ fetchAds error:', err);
+                console.error('fetchAds error:', err);
                 grid.innerHTML =
                     `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
             }
@@ -2677,7 +2574,7 @@
             grid.innerHTML = '';
             if (!ads || ads.length === 0) {
                 grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 return;
             }
             ads.forEach(ad => {
@@ -2685,24 +2582,27 @@
                 card.className = 'ad-card';
                 card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
-
                 let imgSrc = '';
                 if (ad.images && ad.images.length > 0) {
-                    imgSrc = ad.images[0];
+                    let raw = ad.images[0];
+                    if (raw && !raw.startsWith('data:') && !raw.startsWith('http')) {
+                        imgSrc = `data:image/jpeg;base64,${raw}`;
+                    } else {
+                        imgSrc = raw;
+                    }
                 }
                 const imgHtml = imgSrc ?
-                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
+                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none'" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
-
                 const isFav = favorites.includes(ad.id);
                 const isSpecial = ad.ad_type === 'special';
-                const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-
+                const isExpired = ad.special_expiry && ad.special_expiry < Math.floor(Date.now() / 1000);
                 card.innerHTML = `
                     <div class="ad-image">
                         ${imgHtml}
-                        <div class="watermark">J-DAR</div>
+                        <div class="watermark">J-DAR.IR</div>
                         ${isSpecial ? '<div class="special-badge">⭐ ' + t('special_badge') + '</div>' : ''}
+                        ${isExpired ? '<div class="status-badge">' + t('expired') + '</div>' : ''}
                         <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
                             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </div>
@@ -2714,18 +2614,15 @@
                         <div class="meta" style="font-size:9px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
                     </div>
                     <div class="ad-footer">
-                        <div class="avatar">${ad.userFullname ? ad.userFullname.charAt(0).toUpperCase() : '👤'}</div>
-                        <span class="username">${ad.userFullname || ad.username || 'کاربر'}</span>
-                        <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
+                        <div class="avatar">${ad.user_fullname ? ad.user_fullname.charAt(0).toUpperCase() : '👤'}</div>
+                        <span class="username">${ad.user_fullname || ad.username || 'کاربر'}</span>
+                        <span class="rating"><i class="fa-regular fa-star"></i> ${ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'}</span>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // ============================================================
-        // CATEGORIES
-        // ============================================================
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             const cats = ['همه', 'زیارت', 'گردشگری', 'پزشکی', 'زیبایی', 'خدمات', 'کاریابی', 'املاک', 'خودرو'];
@@ -2767,15 +2664,12 @@
 
         function refreshAll() {
             fetchAds(true);
-            if (currentTab === 'profile') fetchMyAds();
+            if (currentTab === 'profile') { fetchMyAds();
+                fetchTransactions(); }
             if (currentTab === 'favorites') fetchFavorites();
-            fetchUserData();
             showToast(t('refresh'), 'success');
         }
 
-        // ============================================================
-        // SWITCH TAB
-        // ============================================================
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
@@ -2784,28 +2678,21 @@
             document.getElementById('profileTab').style.display = tab === 'profile' ? 'block' : 'none';
             document.getElementById('favoritesTab').style.display = tab === 'favorites' ? 'block' : 'none';
             if (tab === 'profile') { loadProfile();
-                fetchMyAds(); }
-            if (tab === 'favorites') fetchFavorites();
+                fetchMyAds();
+                fetchTransactions(); } else if (tab === 'favorites') { fetchFavorites(); } else if (tab === 'home') { fetchAds(
+                    true); }
         }
 
-        // ============================================================
-        // AD DETAIL
-        // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
-            if (!ad) {
-                showToast(t('ad_not_found'), 'error');
-                return;
-            }
-
+            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
             const galleryImages = ad.images || [];
             let galleryIndex = 0;
             let galleryHtml = '';
             if (galleryImages.length > 0) {
-                let imgSrc = galleryImages[0];
                 galleryHtml = `
                     <div class="ad-gallery">
-                        <img id="detailGalleryImg" src="${imgSrc}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
+                        <img id="detailGalleryImg" src="${galleryImages[0]}" />
                     </div>
                     ${galleryImages.length > 1 ? `
                         <div class="gallery-controls">
@@ -2818,24 +2705,24 @@
                     ` : ''}
                 `;
             } else {
-                galleryHtml =
-                    `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
+                galleryHtml = `
+                    <div class="ad-gallery">
+                        <div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div>
+                    </div>
+                `;
             }
-
             const phone = ad.phone || '';
-            const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-
             let html = `
                 <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
                 ${galleryHtml}
                 <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency')}</div>
                 <div class="ad-meta">
-                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
-                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
-                    <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
-                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
+                    <span><i class="fa-solid fa-tag"></i> ${t('category_label')}: ${ad.category || 'دسته‌بندی نشده'}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> ${t('location_label')}: ${ad.city || 'نامشخص'}</span>
+                    <span><i class="fa-regular fa-clock"></i> ${t('posted_at')}: ${formatTime(ad.created_at)}</span>
+                    <span><i class="fa-regular fa-eye"></i> ${t('views')}: ${ad.views || 0}</span>
                 </div>
-                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
+                <div class="ad-description">${ad.description || t('no_description')}</div>
                 <div class="action-buttons">
                     ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
                     ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
@@ -2866,14 +2753,11 @@
             document.getElementById('adDetailContent').innerHTML = html;
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
-
             window.detailGalleryPrev = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
                 const img = document.getElementById('detailGalleryImg');
-                if (img) {
-                    img.src = galleryImages[galleryIndex];
-                }
+                if (img) img.src = galleryImages[galleryIndex];
                 const idx = document.getElementById('detailGalleryIndex');
                 if (idx) idx.textContent = galleryIndex + 1;
             };
@@ -2881,9 +2765,7 @@
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex + 1) % galleryImages.length;
                 const img = document.getElementById('detailGalleryImg');
-                if (img) {
-                    img.src = galleryImages[galleryIndex];
-                }
+                if (img) img.src = galleryImages[galleryIndex];
                 const idx = document.getElementById('detailGalleryIndex');
                 if (idx) idx.textContent = galleryIndex + 1;
             };
@@ -2899,12 +2781,12 @@
         }
 
         function shareAd(adId, title) {
-            const url = `https://j-dar.ir/ad/${adId}`;
+            const url = `${SHARE_DOMAIN}/ad/${adId}`;
             if (navigator.share) {
-                navigator.share({ title: title, text: `🔥 ${title} - J-DAR`, url }).catch(() => {});
+                navigator.share({ title: title, text: `🔥 ${title} - J-DAR.IR`, url: url }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(url).then(() => {
-                    showToast('🔗 لینک کپی شد', 'success');
+                    showToast(t('link_copied'), 'success');
                 }).catch(() => {
                     const textarea = document.createElement('textarea');
                     textarea.value = url;
@@ -2912,20 +2794,8 @@
                     textarea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textarea);
-                    showToast('🔗 لینک کپی شد', 'success');
+                    showToast(t('link_copied'), 'success');
                 });
-            }
-        }
-
-        async function toggleFavoriteAndUpdateDetail(adId) {
-            await toggleFavorite(adId);
-            const btn = document.querySelector('.btn-fav');
-            if (btn) {
-                const isFav = favorites.includes(adId);
-                btn.innerHTML = `
-                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                    ${isFav ? t('remove_fav') : t('add_fav')}
-                `;
             }
         }
 
@@ -2942,7 +2812,7 @@
             const adId = document.getElementById('detailReviewAdId').value;
             const rating = parseInt(document.getElementById('detailReviewRating').value);
             const comment = document.getElementById('detailReviewComment').value.trim();
-            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
+            if (!rating || rating < 1) { showToast(t('please_rate'), 'warning'); return; }
             try {
                 const data = await apiCall('/api/review', {
                     method: 'POST',
@@ -2966,25 +2836,26 @@
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
-                const data = await apiCall(`/api/ad/comments/${adId}`);
-                if (data.success && data.data && data.data.length > 0) {
+                const data = await apiCall(`/api/reviews/${adId}`);
+                if (data.success && data.reviews && data.reviews.length > 0) {
                     container.innerHTML = '';
-                    data.data.forEach(r => {
+                    data.reviews.forEach(r => {
                         const div = document.createElement('div');
                         div.className = 'review-item';
+                        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                         div.innerHTML = `
                             <div class="header">
-                                <span class="name">${r.username || 'کاربر'}</span>
-                                <span class="stars">☆☆☆☆☆</span>
+                                <span class="name">${r.fullname || r.username || 'کاربر'}</span>
+                                <span class="stars">${stars}</span>
                             </div>
-                            <div class="comment">${r.text || ''}</div>
+                            ${r.comment ? `<div class="comment">${r.comment}</div>` : ''}
                             <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
                         `;
                         container.appendChild(div);
                     });
                 } else {
                     container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
+                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
                 }
             } catch (err) {
                 container.innerHTML =
@@ -2992,16 +2863,13 @@
             }
         }
 
-        // ============================================================
-        // FAVORITES
-        // ============================================================
         async function toggleFavorite(adId) {
             const isFav = favorites.includes(adId);
             try {
                 const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
                 const data = await apiCall(endpoint, {
                     method: 'POST',
-                    body: JSON.stringify({ username: guestId, adId })
+                    body: JSON.stringify({ userId: guestId, adId })
                 });
                 if (data.success) {
                     if (isFav) {
@@ -3013,10 +2881,20 @@
                     }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     fetchAds(false);
-                } else {
-                    showToast(data.error || 'خطا در تغییر وضعیت', 'error');
                 }
             } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
+        }
+
+        async function toggleFavoriteAndUpdateDetail(adId) {
+            await toggleFavorite(adId);
+            const btn = document.querySelector('.btn-fav');
+            if (btn) {
+                const isFav = favorites.includes(adId);
+                btn.innerHTML = `
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                    ${isFav ? t('remove_fav') : t('add_fav')}
+                `;
+            }
         }
 
         async function fetchFavorites() {
@@ -3028,10 +2906,15 @@
             }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall(`/api/favorites/${guestId}`);
-                if (data.success && data.data && data.data.length > 0) {
+                const data = await apiCall('/api/favorites?user_id=' + guestId);
+                if (data.success && data.favorites) {
+                    if (data.favorites.length === 0) {
+                        container.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                        return;
+                    }
                     container.innerHTML = '';
-                    data.data.forEach(ad => {
+                    data.favorites.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'favorite-item';
                         let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
@@ -3049,9 +2932,6 @@
                         `;
                         container.appendChild(div);
                     });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                 }
             } catch (err) {
                 container.innerHTML =
@@ -3059,17 +2939,20 @@
             }
         }
 
-        // ============================================================
-        // MY ADS
-        // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall(`/api/ads?username=${guestId}`);
-                if (data.success && data.data && data.data.length > 0) {
+                const data = await apiCall('/api/user/ads?user_id=' + guestId);
+                if (data.success && data.ads) {
+                    userAdsCount = data.ads.length;
+                    if (data.ads.length === 0) {
+                        container.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
+                        return;
+                    }
                     container.innerHTML = '';
-                    data.data.forEach(ad => {
+                    data.ads.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
                         const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
@@ -3091,9 +2974,6 @@
                         `;
                         container.appendChild(div);
                     });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
                 }
             } catch (err) {
                 container.innerHTML =
@@ -3102,14 +2982,12 @@
         }
 
         async function deleteAd(adId) {
-            if (!confirm('آیا از حذف این آگهی اطمینان دارید؟')) return;
+            if (!confirm(t('delete_confirm'))) return;
             try {
-                const data = await apiCall('/api/ad/delete', {
-                    method: 'POST',
-                    body: JSON.stringify({ adId, username: guestId })
-                });
+                const data = await apiCall(`/api/ads/${adId}`, { method: 'DELETE', body: JSON.stringify({ userId: guestId,
+                        adId }) });
                 if (data.success) {
-                    showToast('آگهی حذف شد', 'success');
+                    showToast(t('ad_delete_success'), 'success');
                     fetchMyAds();
                     fetchAds(false);
                 } else {
@@ -3120,7 +2998,7 @@
 
         function editAd(adId) {
             const ad = allAds.find(a => a.id === adId);
-            if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
+            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
             document.getElementById('adTitle').value = ad.title;
             document.getElementById('adCategory').value = ad.category || 'tourism';
             document.getElementById('adPrice').value = ad.price;
@@ -3138,9 +3016,46 @@
             document.getElementById('addAdForm').dataset.editId = adId;
         }
 
-        // ============================================================
-        // WIZARD
-        // ============================================================
+        async function fetchTransactions() {
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/transactions?user_id=' + guestId);
+                if (data.success && data.transactions) {
+                    if (data.transactions.length === 0) {
+                        container.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+                        return;
+                    }
+                    container.innerHTML = '';
+                    data.transactions.forEach(tx => {
+                        const div = document.createElement('div');
+                        div.className = 'transaction-item';
+                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
+                        const statusLabels = { pending: t('transaction_pending'), approved: t(
+                                'transaction_approved'), rejected: t('transaction_rejected') };
+                        div.innerHTML = `
+                            <div class="info">
+                                <div class="title">${tx.type === 'charge' ? '💰 شارژ کیف پول' : tx.type}</div>
+                                <div class="sub">
+                                    <span>${tx.amount.toLocaleString()} ${t('amount_toman')}</span>
+                                    <span class="status ${statusMap[tx.status] || 'pending'}">${statusLabels[tx.status] || tx.status}</span>
+                                </div>
+                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(tx.created_at)}</div>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_transactions')}</div>`;
+            }
+        }
+
         function wizardNext() {
             if (wizardStep < 3) { wizardStep++;
                 updateWizard(); }
@@ -3198,58 +3113,56 @@
             renderWizardImages();
         }
 
-        // ============================================================
-        // SUBMIT AD
-        // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
             }
-
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            const isVip = profile.isVip || false;
+            if (!isVip && userAdsCount >= 1) {
+                showToast(t('ad_limit_reached'), 'warning');
+                return;
+            }
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
             const desc = document.getElementById('adDescription').value.trim();
             const location = document.getElementById('adLocation').value.trim();
-            const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
+            const contact = document.getElementById('adContact').value.trim();
             const country = document.getElementById('adCountry').value;
             const adType = document.getElementById('adType').value;
             const plan = parseInt(document.getElementById('adPlan').value) || 1;
-
             if (!title || !price || !desc || !location) {
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
-
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.textContent = '...در حال ثبت';
-
             try {
-                const payload = {
-                    username: guestId,
-                    title: title,
-                    category: category,
-                    price: parseInt(price),
-                    description: desc,
-                    city: location,
-                    country: country,
-                    phone: contact,
-                    ad_type: adType,
-                    plan_days: adType === 'special' ? plan : 0,
-                    images: wizardImagesBase64
-                };
-
-                console.log('📤 ارسال آگهی به Worker (مسیر /api/ad/submit):', payload);
-
-                const data = await apiCall('/api/ad/submit', {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
+                const editId = document.getElementById('addAdForm').dataset.editId;
+                const endpoint = editId ? `/api/ads/${editId}` : '/api/submit-ad';
+                const method = editId ? 'PUT' : 'POST';
+                const user = { id: guestId, first_name: profile.fullname || 'کاربر' };
+                const data = await apiCall(endpoint, {
+                    method,
+                    body: JSON.stringify({
+                        user: user,
+                        title,
+                        category,
+                        price: parseInt(price),
+                        description: desc,
+                        location,
+                        contact: contact || profile.phone || '',
+                        country,
+                        ad_type: adType,
+                        plan,
+                        images: wizardImagesBase64
+                    })
                 });
-
                 if (data.success) {
-                    showToast(t('ad_success'), 'success');
+                    showToast(editId ? t('ad_edit_success') : t('ad_success'), 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -3262,13 +3175,9 @@
                 } else {
                     showToast(data.error || t('ad_error'), 'error');
                 }
-            } catch (err) {
-                console.error('❌ خطا در ثبت آگهی:', err);
-                showToast(err.message || t('ad_error'), 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = t('submit');
-            }
+            } catch (err) { showToast(t('ad_error'), 'error'); }
+            btn.disabled = false;
+            btn.textContent = t('submit');
         }
 
         function openAddModal() {
@@ -3286,7 +3195,12 @@
             document.getElementById('planGroup').style.display = 'none';
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             const phoneInput = document.getElementById('adContact');
-            phoneInput.value = profile.phone || '';
+            if (profile.phone) {
+                phoneInput.value = profile.phone;
+            } else {
+                phoneInput.value = '';
+                phoneInput.placeholder = 'شماره تماس (از پروفایل)';
+            }
         }
 
         function closeModal(id) {
@@ -3298,15 +3212,6 @@
             });
         });
 
-        // ============================================================
-        // CHARGE
-        // ============================================================
-        function openChargeModal() {
-            document.getElementById('chargeModal').classList.add('show');
-            document.getElementById('chargeAmount').value = '';
-            document.getElementById('receiptPreview').style.display = 'none';
-            document.getElementById('receiptInput').value = '';
-        }
         document.getElementById('receiptInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -3317,6 +3222,13 @@
             };
             reader.readAsDataURL(file);
         });
+
+        function openChargeModal() {
+            document.getElementById('chargeModal').classList.add('show');
+            document.getElementById('chargeAmount').value = '';
+            document.getElementById('receiptPreview').style.display = 'none';
+            document.getElementById('receiptInput').value = '';
+        }
 
         async function submitCharge() {
             const amount = document.getElementById('chargeAmount').value;
@@ -3334,18 +3246,14 @@
                     reader.onload = (e) => resolve(e.target.result);
                     reader.readAsDataURL(receiptInput.files[0]);
                 });
-                const data = await apiCall('/api/charge', {
+                const user = { id: guestId, first_name: 'کاربر' };
+                const data = await apiCall('/api/submit-charge', {
                     method: 'POST',
-                    body: JSON.stringify({
-                        username: guestId,
-                        amount: parseInt(amount),
-                        receipt: receiptBase64
-                    })
+                    body: JSON.stringify({ user, amount: parseInt(amount), method: 'bank', receipt: receiptBase64 })
                 });
                 if (data.success) {
-                    showToast(t('charge_success'), 'success');
+                    showToast(t('charge_request_sent'), 'success');
                     closeModal('chargeModal');
-                    fetchUserData();
                 } else {
                     showToast(data.error || t('charge_error'), 'error');
                 }
@@ -3354,9 +3262,6 @@
             btn.textContent = t('send_request');
         }
 
-        // ============================================================
-        // VIP
-        // ============================================================
         function openVipModal() {
             document.getElementById('vipModal').classList.add('show');
             loadVipStatus();
@@ -3364,27 +3269,22 @@
 
         async function loadVipStatus() {
             try {
-                const data = await apiCall(`/api/vip/status/${guestId}`);
-                if (data.success && data.data && data.data.isVip) {
-                    document.getElementById('vipStatus').innerHTML =
-                        `✅ اشتراک فعال است (${data.data.daysLeft || 0} روز باقی‌مانده)`;
-                    document.getElementById('vipBadge').classList.add('show');
-                } else {
-                    document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
-                    document.getElementById('vipBadge').classList.remove('show');
+                const data = await apiCall('/api/vip/status?user_id=' + guestId);
+                if (data.success) {
+                    if (data.is_vip) {
+                        document.getElementById('vipStatus').innerHTML =
+                            `✅ ${t('vip')} ${t('active')} (${data.days_left} ${t('day')} ${t('remaining')})`;
+                    } else {
+                        document.getElementById('vipStatus').innerHTML = `❌ ${t('no_subscription')}`;
+                    }
                 }
-            } catch (err) {
-                document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری';
-            }
+            } catch (err) { document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری'; }
             try {
-                const priceData = await apiCall('/api/prices');
+                const priceData = await apiCall('/api/vip/prices');
                 if (priceData.success) {
-                    document.getElementById('vipPrice1').textContent = (priceData.prices?.price_vip1 || 50000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice3').textContent = (priceData.prices?.price_vip3 || 130000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice6').textContent = (priceData.prices?.price_vip6 || 240000)
-                    .toLocaleString();
+                    document.getElementById('vipPrice1').textContent = (priceData.monthly || 50000).toLocaleString();
+                    document.getElementById('vipPrice3').textContent = (priceData.quarterly || 130000).toLocaleString();
+                    document.getElementById('vipPrice6').textContent = (priceData.semiannual || 240000).toLocaleString();
                 }
             } catch (err) {}
         }
@@ -3396,13 +3296,14 @@
             try {
                 const data = await apiCall('/api/vip/buy', {
                     method: 'POST',
-                    body: JSON.stringify({ username: guestId, plan })
+                    body: JSON.stringify({ userId: guestId, plan })
                 });
                 if (data.success) {
                     showToast(t('vip_success'), 'success');
                     closeModal('vipModal');
-                    fetchUserData();
-                    loadVipStatus();
+                    const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+                    profile.isVip = true;
+                    localStorage.setItem('jedar_profile', JSON.stringify(profile));
                 } else {
                     showToast(data.error || t('vip_error'), 'error');
                 }
@@ -3411,9 +3312,6 @@
             btn.textContent = t('buy');
         }
 
-        // ============================================================
-        // GIFT
-        // ============================================================
         function openGiftModal() {
             document.getElementById('giftModal').classList.add('show');
             loadGiftStatus();
@@ -3421,11 +3319,11 @@
 
         async function loadGiftStatus() {
             try {
-                const data = await apiCall(`/api/gift/status/${guestId}`);
-                if (data.success && data.data) {
+                const data = await apiCall('/api/gift/status?user_id=' + guestId);
+                if (data.success && data.gift) {
                     const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
                         rejected: t('gift_status_rejected') };
-                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.data.status] || 'نامشخص'}`;
+                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status] || 'نامشخص'}`;
                 } else {
                     document.getElementById('giftStatus').innerHTML = t('no_gift');
                 }
@@ -3441,7 +3339,7 @@
             try {
                 const data = await apiCall('/api/gift/request', {
                     method: 'POST',
-                    body: JSON.stringify({ username: guestId })
+                    body: JSON.stringify({ userId: guestId })
                 });
                 if (data.success) {
                     showToast(t('gift_success'), 'success');
@@ -3455,9 +3353,6 @@
             btn.textContent = t('gift_btn');
         }
 
-        // ============================================================
-        // NOTICE
-        // ============================================================
         async function fetchNotice() {
             try {
                 const data = await apiCall('/api/notice');
@@ -3466,6 +3361,15 @@
                     document.getElementById('noticeCard').classList.add('show');
                 }
             } catch (err) {}
+        }
+
+        function startPendingCheck() {
+            if (pendingCheckInterval) clearInterval(pendingCheckInterval);
+            pendingCheckInterval = setInterval(() => {
+                if (currentTab === 'home') {
+                    fetchAds(false);
+                }
+            }, 10000);
         }
 
         // ============================================================
@@ -3483,50 +3387,35 @@
         document.documentElement.dir = 'rtl';
         updateLanguage();
 
-        // Check if user is already logged in
-        const session = localStorage.getItem('jedar_session');
-        if (session) {
-            try {
-                const sess = JSON.parse(session);
-                if (sess.username) {
-                    isLoggedIn = true;
-                    document.getElementById('authPage').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    loadProfile();
-                    fetchAds(true);
-                    fetchUserData();
-                    loadGiftStatus();
-                }
-            } catch (e) {}
-        }
+        setupCodeInputs();
 
-        if (!isLoggedIn) {
-            document.getElementById('authPage').style.display = 'block';
-            document.getElementById('app').style.display = 'none';
-            setAuthMode('register');
-            generateCaptcha();
+        // بررسی وضعیت ورود
+        if (checkSession() && isLoggedIn) {
+            hideLogin();
+            loadApp();
+        } else {
+            showLogin();
         }
-
-        if (pendingCheckInterval) clearInterval(pendingCheckInterval);
-        pendingCheckInterval = setInterval(() => {
-            if (currentTab === 'home' && isLoggedIn) fetchAds(false);
-            if (isLoggedIn) fetchUserData();
-        }, 30000);
 
         document.getElementById('searchInput').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') searchAds();
         });
 
-        setTimeout(() => {
-            if (isLoggedIn) toggleUpperSection();
-        }, 500);
+        // اضافه کردن استایل shake
+        const styleShake = document.createElement('style');
+        styleShake.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                20% { transform: translateX(-10px); }
+                40% { transform: translateX(10px); }
+                60% { transform: translateX(-6px); }
+                80% { transform: translateX(6px); }
+            }
+        `;
+        document.head.appendChild(styleShake);
 
-        console.log(`🚀 ${APP_NAME} – نسخه نهایی با بیش از ۶۰۰۰ خط`);
-        console.log(`👤 Guest ID: ${guestId}`);
-        console.log(`📡 API Base: ${API_BASE}`);
-        console.log(`✅ تمام مسیرها با Worker هماهنگ شده‌اند.`);
-        console.log(`📝 ثبت آگهی از مسیر /api/ad/submit انجام می‌شود.`);
-        console.log(`🖼 تصاویر به صورت Base64 با پیشوند data:image/jpeg;base64 نمایش داده می‌شوند.`);
+        console.log(`🚀 ${APP_NAME} v19.0 - ورود با کد تایید از طریق SMS.ir، ماندگاری نشست ۷ روزه`);
     </script>
 </body>
-    </html>
+</html>
+```
