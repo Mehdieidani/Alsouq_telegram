@@ -3149,4 +3149,897 @@
                     method: 'POST',
                     body: JSON.stringify({
                         username: guestId,
-                        amount:
+                        amount: parseInt(amount),
+                        receipt: receiptBase64
+                    })
+                });
+                if (data.success) {
+                    showToast(t('charge_success'), 'success');
+                    closeModal('chargeModal');
+                    fetchUserData();
+                } else {
+                    showToast(data.error || t('charge_error'), 'error');
+                }
+            } catch (err) { showToast(t('charge_error'), 'error'); }
+            btn.disabled = false;
+            btn.textContent = t('send_request');
+        }
+
+        // ============================================================
+        // VIP
+        // ============================================================
+        function openVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+            loadVipStatus();
+        }
+
+        async function loadVipStatus() {
+            try {
+                const data = await apiCall(`/api/vip/status/${guestId}`);
+                if (data.success && data.data && data.data.isVip) {
+                    document.getElementById('vipStatus').innerHTML =
+                        `✅ اشتراک فعال است (${data.data.daysLeft || 0} روز باقی‌مانده)`;
+                    document.getElementById('vipBadge').classList.add('show');
+                } else {
+                    document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
+                    document.getElementById('vipBadge').classList.remove('show');
+                }
+            } catch (err) {
+                document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری';
+            }
+            try {
+                const priceData = await apiCall('/api/prices');
+                if (priceData.success) {
+                    document.getElementById('vipPrice1').textContent = (priceData.prices?.price_vip1 || 50000)
+                    .toLocaleString();
+                    document.getElementById('vipPrice3').textContent = (priceData.prices?.price_vip3 || 130000)
+                    .toLocaleString();
+                    document.getElementById('vipPrice6').textContent = (priceData.prices?.price_vip6 || 240000)
+                    .toLocaleString();
+                }
+            } catch (err) {}
+        }
+
+        async function buyVip(plan) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+                const data = await apiCall('/api/vip/buy', {
+                    method: 'POST',
+                    body: JSON.stringify({ username: guestId, plan })
+                });
+                if (data.success) {
+                    showToast(t('vip_success'), 'success');
+                    closeModal('vipModal');
+                    fetchUserData();
+                    loadVipStatus();
+                } else {
+                    showToast(data.error || t('vip_error'), 'error');
+                }
+            } catch (err) { showToast(t('vip_error'), 'error'); }
+            btn.disabled = false;
+            btn.textContent = t('buy');
+        }
+
+        // ============================================================
+        // GIFT
+        // ============================================================
+        function openGiftModal() {
+            document.getElementById('giftModal').classList.add('show');
+            loadGiftStatus();
+        }
+
+        async function loadGiftStatus() {
+            try {
+                const data = await apiCall(`/api/gift/status/${guestId}`);
+                if (data.success && data.data) {
+                    const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
+                        rejected: t('gift_status_rejected') };
+                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.data.status] || 'نامشخص'}`;
+                } else {
+                    document.getElementById('giftStatus').innerHTML = t('no_gift');
+                }
+            } catch (err) {
+                document.getElementById('giftStatus').innerHTML = 'خطا در بارگذاری';
+            }
+        }
+
+        async function requestGiftSubmit() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '...در حال ارسال';
+            try {
+                const data = await apiCall('/api/gift/request', {
+                    method: 'POST',
+                    body: JSON.stringify({ username: guestId })
+                });
+                if (data.success) {
+                    showToast(t('gift_success'), 'success');
+                    closeModal('giftModal');
+                    loadGiftStatus();
+                } else {
+                    showToast(data.error || t('gift_error'), 'error');
+                }
+            } catch (err) { showToast(t('gift_error'), 'error'); }
+            btn.disabled = false;
+            btn.textContent = t('gift_btn');
+        }
+
+        // ============================================================
+        // EARNINGS
+        // ============================================================
+        function openEarningsModal() {
+            document.getElementById('earningsModal').classList.add('show');
+            loadEarnings();
+        }
+
+        async function loadEarnings() {
+            try {
+                const data = await apiCall(`/api/earnings/${guestId}`);
+                if (data.success) {
+                    const e = data.data || {};
+                    document.getElementById('earningsTotal').textContent = (e.total || 0).toLocaleString();
+                    document.getElementById('earningsToday').textContent = (e.today || 0).toLocaleString();
+                    document.getElementById('earningsWeek').textContent = (e.week || 0).toLocaleString();
+                    document.getElementById('earningsMonth').textContent = (e.month || 0).toLocaleString();
+                    const history = e.history || [];
+                    const container = document.getElementById('earningsHistory');
+                    if (history.length === 0) {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    } else {
+                        container.innerHTML = '';
+                        history.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'my-ad-item';
+                            div.style.padding = '8px 12px';
+                            div.innerHTML = `
+                                <div class="info">
+                                    <div class="title">${item.description || 'تراکنش'}</div>
+                                    <div class="sub">${item.amount.toLocaleString()} ${t('currency')} • ${formatTime(item.created_at)}</div>
+                                </div>
+                                <span style="color:var(--primary);font-weight:700;">+${item.amount.toLocaleString()}</span>
+                            `;
+                            container.appendChild(div);
+                        });
+                    }
+                }
+            } catch (err) {
+                document.getElementById('earningsHistory').innerHTML =
+                `<div class="text-secondary">${t('error_loading')}</div>`;
+            }
+        }
+
+        async function transferEarnings() {
+            if (!confirm('آیا از انتقال درآمد به کیف پول اصلی اطمینان دارید؟')) return;
+            try {
+                const data = await apiCall('/api/earnings/transfer', {
+                    method: 'POST',
+                    body: JSON.stringify({ username: guestId })
+                });
+                if (data.success) {
+                    showToast('✅ انتقال با موفقیت انجام شد', 'success');
+                    loadEarnings();
+                    fetchUserData();
+                } else {
+                    showToast(data.error || 'خطا در انتقال', 'error');
+                }
+            } catch (err) { showToast('خطا در انتقال', 'error'); }
+        }
+
+        // ============================================================
+        // ADMIN FUNCTIONS
+        // ============================================================
+        function checkAdminAccess() {
+            if (!isAdmin) {
+                showToast(t('no_permission'), 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function adminPendingAds() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/ads?status=pending')
+                .then(data => {
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = `<h4>${t('pending_ads')}</h4>`;
+                        data.data.forEach(ad => {
+                            const images = ad.images || [];
+                            const imgPreview = images.length > 0 ?
+                                `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` :
+                                '';
+                            html += `
+                                <div class="my-ad-item" style="flex-wrap:wrap;">
+                                    <div class="info">
+                                        <div class="title">${ad.title}</div>
+                                        <div class="sub">👤 ${ad.username || ad.user_id} • 💰 ${ad.price} تومان</div>
+                                        <div class="sub">${imgPreview} ${formatTime(ad.created_at)}</div>
+                                    </div>
+                                    <div class="actions" style="margin-top:4px;">
+                                        <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>
+                                        <button class="delete" onclick="adminRejectAd('${ad.id}')"><i class="fa-solid fa-times" style="color:var(--danger);"></i></button>
+                                        <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminAllAds() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/ads')
+                .then(data => {
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = `<h4>${t('all_ads')}</h4>`;
+                        data.data.forEach(ad => {
+                            const statusMap = { pending: t('pending'), approved: t('approved'), rejected: t(
+                                    'rejected'), pending_payment: t('pending_payment') };
+                            html += `
+                                <div class="my-ad-item">
+                                    <div class="info">
+                                        <div class="title">${ad.title}</div>
+                                        <div class="sub">👤 ${ad.username || ad.user_id} • 💰 ${ad.price} تومان</div>
+                                        <div class="sub"><span class="status ${ad.status}">${statusMap[ad.status] || ad.status}</span></div>
+                                    </div>
+                                    <div class="actions">
+                                        <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
+                                        <button class="delete" onclick="adminDeleteAd('${ad.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminApproveAd(adId) {
+            if (!confirm(t('approve'))) return;
+            apiCall('/api/admin/ad/approve', {
+                method: 'POST',
+                body: JSON.stringify({ adId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('ad_approved'), 'success');
+                    adminPendingAds();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminRejectAd(adId) {
+            const reason = prompt('دلیل رد آگهی:');
+            if (reason === null) return;
+            apiCall('/api/admin/ad/reject', {
+                method: 'POST',
+                body: JSON.stringify({ adId, reason, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('ad_rejected'), 'success');
+                    adminPendingAds();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminDeleteAd(adId) {
+            if (!confirm(t('confirm_delete'))) return;
+            apiCall('/api/admin/ad/delete', {
+                method: 'POST',
+                body: JSON.stringify({ adId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast('آگهی حذف شد', 'success');
+                    adminAllAds();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminViewAd(adId) {
+            // نمایش آگهی در مودال
+            openAdDetail(adId);
+        }
+
+        function adminUsers() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/users')
+                .then(data => {
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = `<h4>${t('users')}</h4>`;
+                        data.data.forEach(user => {
+                            html += `
+                                <div class="my-ad-item">
+                                    <div class="info">
+                                        <div class="title">${user.fullname || user.username || user.telegram_id}</div>
+                                        <div class="sub">📱 ${user.phone || 'ندارد'} • 💰 ${user.balance || 0} تومان</div>
+                                        <div class="sub">${user.is_blocked ? '🚫 ' + t('blocked_status') : '✅ ' + t('active')}</div>
+                                    </div>
+                                    <div class="actions">
+                                        ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
+                                        `<button class="delete" onclick="adminBlockUser('${user.telegram_id}')"><i class="fa-solid fa-lock" style="color:var(--danger);"></i></button>`}
+                                        <button onclick="adminViewUser('${user.telegram_id}')"><i class="fa-solid fa-eye"></i></button>
+                                        ${isSuperAdmin ? `<button class="delete" onclick="adminDeleteUser('${user.telegram_id}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminBlockUser(userId) {
+            if (!confirm(t('block_user'))) return;
+            const reason = prompt('دلیل مسدودیت:');
+            if (reason === null) return;
+            apiCall('/api/admin/block', {
+                method: 'POST',
+                body: JSON.stringify({ userId, reason, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('user_blocked'), 'success');
+                    adminUsers();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminUnblockUser(userId) {
+            if (!confirm(t('unblock'))) return;
+            apiCall('/api/admin/unblock', {
+                method: 'POST',
+                body: JSON.stringify({ userId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('user_unblocked'), 'success');
+                    adminUsers();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminDeleteUser(userId) {
+            if (!confirm(t('user_delete_confirm'))) return;
+            apiCall('/api/admin/user/delete', {
+                method: 'POST',
+                body: JSON.stringify({ userId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast('کاربر حذف شد', 'success');
+                    adminUsers();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminViewUser(userId) {
+            // نمایش اطلاعات کاربر
+            apiCall(`/api/profile/${userId}`)
+                .then(data => {
+                    if (data.success && data.data) {
+                        const user = data.data;
+                        const ads = user.ads || [];
+                        let adsText = ads.length > 0 ? ads.map(a =>
+                            `${a.title} (${a.price} تومان)`).join('\n') : 'هیچ آگهی‌ای';
+                        alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nموجودی: ${user.balance || 0} تومان\nVIP: ${user.isVip ? '✅' : '❌'}\nتعداد آگهی: ${ads.length}\nآگهی‌ها:\n${adsText}`);
+                    } else {
+                        showToast('خطا در دریافت اطلاعات', 'error');
+                    }
+                })
+                .catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminAdmins() {
+            if (!checkAdminAccess() || !isSuperAdmin) {
+                showToast(t('no_permission'), 'error');
+                return;
+            }
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/admins')
+                .then(data => {
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = `<h4>${t('admins')}</h4>`;
+                        data.data.forEach(admin => {
+                            html += `
+                                <div class="my-ad-item">
+                                    <div class="info">
+                                        <div class="title">${admin.fullname || admin.username || admin.telegram_id}</div>
+                                        <div class="sub">${admin.role || 'admin'}</div>
+                                    </div>
+                                    <div class="actions">
+                                        ${admin.telegram_id !== '6522877528' ? `<button class="delete" onclick="adminRemoveAdmin('${admin.telegram_id}')"><i class="fa-solid fa-user-minus"></i></button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html + `
+                            <div class="admin-row" style="margin-top:12px;">
+                                <input type="text" id="newAdminId" placeholder="شناسه تلگرام کاربر" />
+                                <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminAddAdmin() {
+            const userId = document.getElementById('newAdminId').value.trim();
+            if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
+            const role = prompt('نقش: (admin / sub_admin / price_admin / payment_admin / user_manager)');
+            if (!role) return;
+            apiCall('/api/admin/add', {
+                method: 'POST',
+                body: JSON.stringify({ userId, role, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('admin_added'), 'success');
+                    adminAdmins();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminRemoveAdmin(userId) {
+            if (!confirm(t('admin_remove'))) return;
+            apiCall('/api/admin/remove', {
+                method: 'POST',
+                body: JSON.stringify({ userId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('admin_removed'), 'success');
+                    adminAdmins();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminSupport() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/tickets')
+                .then(data => {
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = `<h4>${t('support_ticket_list')}</h4>`;
+                        data.data.forEach(ticket => {
+                            const statusMap = { open: '🟢 ' + t('support_ticket_open'), closed: '🔴 ' + t(
+                                    'support_ticket_closed'), replied: '💬 ' + t('support_ticket_replied') };
+                            html += `
+                                <div class="my-ad-item">
+                                    <div class="info">
+                                        <div class="title">🎫 تیکت ${ticket.id.slice(-6)}</div>
+                                        <div class="sub">👤 ${ticket.user_id} • ${statusMap[ticket.status] || ticket.status}</div>
+                                        <div class="sub" style="font-size:11px;">${ticket.message}</div>
+                                    </div>
+                                    <div class="actions">
+                                        <button onclick="adminReplyTicket('${ticket.id}')"><i class="fa-solid fa-reply"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_tickets')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminReplyTicket(ticketId) {
+            const reply = prompt('پاسخ خود را وارد کنید:');
+            if (!reply) return;
+            apiCall('/api/admin/ticket/reply', {
+                method: 'POST',
+                body: JSON.stringify({ ticketId, reply, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('reply_sent'), 'success');
+                    adminSupport();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminAnnounce() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `
+                <h4>${t('send_announcement')}</h4>
+                <div class="admin-row">
+                    <input type="text" id="announceTitle" placeholder="عنوان" />
+                </div>
+                <div class="admin-row">
+                    <textarea id="announceMessage" placeholder="متن پیام..." rows="3" style="width:100%;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);"></textarea>
+                </div>
+                <div class="admin-row">
+                    <select id="announceTarget">
+                        <option value="all">${t('announcement_all')}</option>
+                        <option value="admins">${t('announcement_admins')}</option>
+                        <option value="users">${t('announcement_users')}</option>
+                        <option value="individual">${t('announcement_individual')}</option>
+                    </select>
+                    <input type="text" id="announceTargetId" placeholder="شناسه کاربر (اختیاری)" style="display:none;" />
+                    <button onclick="adminSendAnnounce()">📤 ${t('send')}</button>
+                </div>
+            `;
+            document.getElementById('announceTarget').addEventListener('change', function() {
+                document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' :
+                    'none';
+            });
+        }
+
+        function adminSendAnnounce() {
+            const title = document.getElementById('announceTitle').value.trim();
+            const message = document.getElementById('announceMessage').value.trim();
+            const target = document.getElementById('announceTarget').value;
+            const targetId = document.getElementById('announceTargetId').value.trim();
+            if (!title || !message) { showToast('عنوان و متن را وارد کنید', 'error'); return; }
+            if (target === 'individual' && !targetId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
+            apiCall('/api/admin/announce', {
+                method: 'POST',
+                body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('announcement_sent'), 'success');
+                    document.getElementById('announceTitle').value = '';
+                    document.getElementById('announceMessage').value = '';
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminStats() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            apiCall('/api/admin/stats')
+                .then(data => {
+                    if (data.success) {
+                        const s = data.data;
+                        container.innerHTML = `
+                            <h4>${t('stats')}</h4>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalUsers || 0}</div></div>
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalAds || 0}</div></div>
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">⭐ ${t('special_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.specialAds || 0}</div></div>
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👑 VIP</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.vipUsers || 0}</div></div>
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.todayViews || 0}</div></div>
+                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
+                    }
+                })
+                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+        }
+
+        function adminSettings() {
+            if (!checkAdminAccess() || !isSuperAdmin) {
+                showToast(t('no_permission'), 'error');
+                return;
+            }
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `
+                <h4>${t('price_settings')}</h4>
+                <div class="admin-row">
+                    <label style="min-width:100px;">قیمت عادی:</label>
+                    <input type="number" id="priceNormal" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_normal')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">ویژه ۱ روز:</label>
+                    <input type="number" id="priceSpecial1" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_special1')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">ویژه ۳ روز:</label>
+                    <input type="number" id="priceSpecial3" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_special3')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">VIP ۱ ماه:</label>
+                    <input type="number" id="priceVip1" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_vip1')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">VIP ۳ ماه:</label>
+                    <input type="number" id="priceVip3" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_vip3')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">VIP ۶ ماه:</label>
+                    <input type="number" id="priceVip6" placeholder="۰" />
+                    <button onclick="adminUpdatePrice('price_vip6')">${t('save')}</button>
+                </div>
+                <div class="admin-row" style="margin-top:12px;">
+                    <label style="min-width:100px;">تعداد آگهی رایگان:</label>
+                    <input type="number" id="freeAdsPerUser" placeholder="۳" />
+                    <button onclick="adminUpdateSetting('free_ads_per_user')">${t('save')}</button>
+                </div>
+                <div class="admin-row">
+                    <label style="min-width:100px;">نرخ کمیسیون (٪):</label>
+                    <input type="number" id="commissionRate" placeholder="۲۰" />
+                    <button onclick="adminUpdateSetting('commission_rate')">${t('save')}</button>
+                </div>
+                <div style="margin-top:12px;color:var(--text-secondary);font-size:13px;">${t('data_encrypted')}</div>
+            `;
+            // بارگذاری تنظیمات فعلی
+            apiCall('/api/settings').then(data => {
+                if (data.success) {
+                    const s = data.data || {};
+                    document.getElementById('priceNormal').value = s.price_normal || 0;
+                    document.getElementById('priceSpecial1').value = s.price_special1 || 10000;
+                    document.getElementById('priceSpecial3').value = s.price_special3 || 25000;
+                    document.getElementById('priceVip1').value = s.price_vip1 || 50000;
+                    document.getElementById('priceVip3').value = s.price_vip3 || 130000;
+                    document.getElementById('priceVip6').value = s.price_vip6 || 240000;
+                    document.getElementById('freeAdsPerUser').value = s.free_ads_per_user || 3;
+                    document.getElementById('commissionRate').value = s.commission_rate || 20;
+                }
+            }).catch(() => {});
+        }
+
+        function adminUpdatePrice(key) {
+            const idMap = {
+                'price_normal': 'priceNormal',
+                'price_special1': 'priceSpecial1',
+                'price_special3': 'priceSpecial3',
+                'price_vip1': 'priceVip1',
+                'price_vip3': 'priceVip3',
+                'price_vip6': 'priceVip6'
+            };
+            const value = document.getElementById(idMap[key]).value;
+            if (!value) { showToast('مقدار را وارد کنید', 'error'); return; }
+            apiCall('/api/admin/settings', {
+                method: 'POST',
+                body: JSON.stringify({ key, value, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('price_updated'), 'success');
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminUpdateSetting(key) {
+            const idMap = {
+                'free_ads_per_user': 'freeAdsPerUser',
+                'commission_rate': 'commissionRate'
+            };
+            const value = document.getElementById(idMap[key]).value;
+            if (!value) { showToast('مقدار را وارد کنید', 'error'); return; }
+            apiCall('/api/admin/settings', {
+                method: 'POST',
+                body: JSON.stringify({ key, value, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('settings_updated'), 'success');
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminPayments() {
+            if (!checkAdminAccess() || !isSuperAdmin) {
+                showToast(t('no_permission'), 'error');
+                return;
+            }
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `
+                <h4>${t('payment_settings')}</h4>
+                <div id="paymentMethodsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+                <div class="admin-row" style="margin-top:12px;">
+                    <select id="paymentMethodType">
+                        <option value="card">💳 ${t('payment_card')}</option>
+                        <option value="tether">💎 ${t('payment_tether')}</option>
+                        <option value="wallet">💰 ${t('payment_wallet')}</option>
+                    </select>
+                    <input type="text" id="paymentMethodNumber" placeholder="${t('payment_number')}" />
+                    <input type="text" id="paymentMethodName" placeholder="${t('payment_name')}" style="flex:0.7;" />
+                    <input type="text" id="paymentMethodBank" placeholder="${t('payment_bank')}" style="flex:0.7;" />
+                    <button onclick="adminAddPaymentMethod()">➕ ${t('add_payment_method')}</button>
+                </div>
+            `;
+            loadPaymentMethods();
+        }
+
+        function loadPaymentMethods() {
+            apiCall('/api/payment/methods')
+                .then(data => {
+                    const container = document.getElementById('paymentMethodsList');
+                    if (data.success && data.data && data.data.length > 0) {
+                        let html = '';
+                        data.data.forEach(m => {
+                            html += `
+                                <div class="my-ad-item">
+                                    <div class="info">
+                                        <div class="title">${m.type === 'card' ? '💳' : m.type === 'tether' ? '💎' : '💰'} ${m.name || m.number}</div>
+                                        <div class="sub">${m.number} ${m.bank ? '• ' + m.bank : ''}</div>
+                                    </div>
+                                    <div class="actions">
+                                        <button class="delete" onclick="adminRemovePaymentMethod('${m.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('paymentMethodsList').innerHTML =
+                    `<div class="text-secondary">${t('error_loading')}</div>`;
+                });
+        }
+
+        function adminAddPaymentMethod() {
+            const type = document.getElementById('paymentMethodType').value;
+            const number = document.getElementById('paymentMethodNumber').value.trim();
+            const name = document.getElementById('paymentMethodName').value.trim();
+            const bank = document.getElementById('paymentMethodBank').value.trim();
+            if (!number) { showToast('شماره را وارد کنید', 'error'); return; }
+            apiCall('/api/payment/method/add', {
+                method: 'POST',
+                body: JSON.stringify({ type, number, name, bank, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast(t('payment_updated'), 'success');
+                    adminPayments();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminRemovePaymentMethod(id) {
+            if (!confirm('حذف شود؟')) return;
+            apiCall('/api/payment/method/remove', {
+                method: 'POST',
+                body: JSON.stringify({ id, adminId: guestId })
+            }).then(data => {
+                if (data.success) {
+                    showToast('روش پرداخت حذف شد', 'success');
+                    adminPayments();
+                } else {
+                    showToast(data.error || 'خطا', 'error');
+                }
+            }).catch(() => showToast('خطا', 'error'));
+        }
+
+        function adminExport() {
+            if (!checkAdminAccess() || !isSuperAdmin) {
+                showToast(t('no_permission'), 'error');
+                return;
+            }
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `
+                <h4>${t('export')}</h4>
+                <div class="admin-grid" style="grid-template-columns:1fr 1fr;margin-top:8px;">
+                    <button onclick="adminExportData('users')"><i class="fa-solid fa-file-users"></i> ${t('users')}</button>
+                    <button onclick="adminExportData('ads')"><i class="fa-solid fa-file-alt"></i> ${t('all_ads')}</button>
+                    <button onclick="adminExportData('earnings')"><i class="fa-solid fa-coins"></i> ${t('earnings')}</button>
+                    <button onclick="adminExportData('transactions')"><i class="fa-solid fa-file-invoice"></i> ${t('transactions')}</button>
+                </div>
+                <div id="exportResult" style="margin-top:12px;"></div>
+            `;
+        }
+
+        function adminExportData(type) {
+            document.getElementById('exportResult').innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
+            apiCall(`/api/admin/export?type=${type}&adminId=${guestId}`)
+                .then(data => {
+                    if (data.success) {
+                        const url = data.data?.url || '';
+                        if (url) {
+                            document.getElementById('exportResult').innerHTML =
+                                `<a href="${url}" target="_blank" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
+                        } else {
+                            document.getElementById('exportResult').innerHTML =
+                                `<div class="text-secondary">فایل آماده دانلود است. در ربات نیز ارسال شد.</div>`;
+                        }
+                        showToast('خروجی با موفقیت ایجاد شد', 'success');
+                    } else {
+                        document.getElementById('exportResult').innerHTML =
+                            `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('exportResult').innerHTML =
+                        `<div class="text-secondary">${t('error_loading')}</div>`;
+                });
+        }
+
+        // ============================================================
+        // NOTICE
+        // ============================================================
+        async function fetchNotice() {
+            try {
+                const data = await apiCall('/api/notice');
+                if (data.success && data.notice) {
+                    document.getElementById('noticeText').textContent = data.notice.text;
+                    document.getElementById('noticeCard').classList.add('show');
+                }
+            } catch (err) {}
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        const savedTheme = localStorage.getItem('jedar_theme') || 'light';
+        currentTheme = savedTheme;
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeBtn').innerHTML = savedTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
+            '<i class="fa-solid fa-sun"></i>';
+
+        const savedLang = localStorage.getItem('jedar_lang') || 'fa';
+        currentLang = savedLang;
+        document.documentElement.lang = savedLang;
+        document.documentElement.dir = 'rtl';
+        updateLanguage();
+
+        fetchAds(true);
+        fetchNotice();
+        loadProfile();
+        fetchUserData();
+        loadGiftStatus();
+
+        if (pendingCheckInterval) clearInterval(pendingCheckInterval);
+        pendingCheckInterval = setInterval(() => {
+            if (currentTab === 'home') fetchAds(false);
+            fetchUserData();
+        }, 30000);
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') searchAds();
+        });
+
+        setTimeout(() => {
+            toggleUpperSection();
+        }, 500);
+
+        console.log(`🚀 ${APP_NAME} – مینی‌اپ کامل با تمام قابلیت‌های مدیریتی`);
+        console.log(`👤 Guest ID: ${guestId}`);
+        console.log(`📡 API Base: ${API_BASE}`);
+        console.log(`✅ تمام قابلیت‌ها با Worker هماهنگ شده‌اند.`);
+        console.log(`🛡️ امنیت اطلاعات کاربران خط قرمز است.`);
+    </script>
+</body>
+    </html>
