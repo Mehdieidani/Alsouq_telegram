@@ -621,6 +621,38 @@
             .ad-card .ad-content .price { font-size:13px; }
         }
         @keyframes fadeIn { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
+
+        /* ===== REVIEW SECTION ===== */
+        .review-section {
+            margin-top:16px; border-top:1px solid var(--border-color); padding-top:16px;
+        }
+        .review-section h4 { font-size:16px; margin-bottom:8px; }
+        .review-stars span {
+            font-size:28px; cursor:pointer; color:var(--text-muted); transition:0.2s;
+            display:inline-block; margin-left:4px;
+        }
+        .review-stars span.active { color:var(--gold); }
+        .review-stars span:hover { transform:scale(1.2); }
+        .review-comment {
+            width:100%; padding:10px 14px; background:var(--bg-input);
+            border:2px solid var(--border-color); border-radius:var(--radius-sm);
+            margin:8px 0; resize:vertical; min-height:60px;
+            font-family:var(--font); color:var(--text-primary); font-size:14px;
+        }
+        .review-comment:focus { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
+        .btn-submit-review {
+            padding:10px 20px; background:var(--primary-gradient); color:#fff;
+            border-radius:var(--radius-sm); font-weight:700; font-size:14px;
+            transition:all 0.2s;
+        }
+        .btn-submit-review:hover { transform:translateY(-2px); box-shadow:0 4px 14px var(--primary-light); }
+        .review-item {
+            padding:10px 0; border-bottom:1px solid var(--border-color);
+        }
+        .review-item .header { display:flex; justify-content:space-between; font-weight:600; }
+        .review-item .header .stars { color:var(--gold); }
+        .review-item .comment { margin:4px 0; font-size:14px; }
+        .review-item .date { font-size:10px; color:var(--text-muted); }
     </style>
 </head>
 <body>
@@ -840,13 +872,12 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – اصلاح شده با مدیریت خطای Failed to fetch -->
+    <!-- JAVASCRIPT – کاملاً هماهنگ با Worker                         -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURATION
         // ============================================================
-        // توجه: آدرس API را با آدرس واقعی Worker خود جایگزین کنید
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const APP_NAME = 'جـدار';
         let guestId = localStorage.getItem('jedar_guest_id');
@@ -871,6 +902,7 @@
         let pendingCheckInterval = null;
         let upperSectionOpen = false;
         let userAdsCount = 0;
+        let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
 
         // ============================================================
         // TRANSLATIONS (ساده)
@@ -918,9 +950,8 @@
                 ad_limit_reached: '⚠️ شما به حداکثر تعداد آگهی (۱ عدد) رسیده‌اید.',
                 no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...',
                 ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
-                connection_error: '❌ خطای اتصال به سرور. لطفاً اینترنت خود را بررسی کنید و دوباره تلاش کنید.',
-                server_unreachable: '❌ سرور در دسترس نیست. لطفاً بعداً تلاش کنید.',
-                unknown_error: '❌ خطای ناشناخته رخ داد.',
+                vip_monthly: '۱ ماهه', vip_quarterly: '۳ ماهه', vip_semiannual: '۶ ماهه',
+                balance: 'موجودی',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -964,9 +995,8 @@
                 ad_limit_reached: '⚠️ لقد وصلت إلى الحد الأقصى للإعلانات (١).',
                 no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
                 ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل',
-                connection_error: '❌ خطأ في الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.',
-                server_unreachable: '❌ الخادم غير متاح. يرجى المحاولة لاحقاً.',
-                unknown_error: '❌ حدث خطأ غير معروف.',
+                vip_monthly: 'شهر واحد', vip_quarterly: '٣ شهور', vip_semiannual: '٦ شهور',
+                balance: 'الرصيد',
             }
         };
 
@@ -1008,12 +1038,13 @@
                 'profileTrustLabel': 'trust_score', 'profileSaveBtn': 'save',
                 'myAdsTitle': 'my_ads', 'favTitle': 'favorites', 'refreshAdsBtn': 'refresh',
                 'searchInput': 'search_placeholder', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'vipMonthLabel': 'vip_monthly', 'vip3MonthLabel': 'vip_quarterly', 'vip6MonthLabel': 'vip_semiannual',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
                 if (el) {
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        el.placeholder = t(key);
+                        if (el.placeholder !== undefined) el.placeholder = t(key);
                     } else {
                         el.textContent = t(key);
                     }
@@ -1043,6 +1074,10 @@
                 const key = el.id.replace('nav','').replace('Label','').toLowerCase();
                 const map = { home:'home', add:'add', favorites:'favorites', profile:'profile' };
                 if (map[key]) el.textContent = t(map[key]);
+            });
+            document.querySelectorAll('[id^="vipMonthLabel"], [id^="vip3MonthLabel"], [id^="vip6MonthLabel"]').forEach(el => {
+                const key = el.id === 'vipMonthLabel' ? 'vip_monthly' : el.id === 'vip3MonthLabel' ? 'vip_quarterly' : 'vip_semiannual';
+                el.textContent = t(key);
             });
         }
 
@@ -1100,36 +1135,22 @@
             return Math.floor(diff/2592000) + ' ماه پیش';
         }
 
-        // ============================================================
-        // API CALL با مدیریت خطای Failed to fetch
-        // ============================================================
-        async function apiCall(endpoint, options = {}) {
+        function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            
-            try {
-                const response = await fetch(url, { ...options, headers });
-                // اگر پاسخ OK نبود، خطا抛出
-                if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
-                }
-                const data = await response.json();
-                return data;
-            } catch (err) {
-                console.error('❌ API Error:', err);
-                // تشخیص خطای Failed to fetch
-                if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError') || err.message.includes('Network request failed')) {
-                    return { success: false, error: 'connection_error' };
-                }
-                if (err.message.includes('HTTP 404')) {
-                    return { success: false, error: 'not_found' };
-                }
-                if (err.message.includes('HTTP 500')) {
-                    return { success: false, error: 'server_error' };
-                }
-                return { success: false, error: err.message || 'unknown_error' };
-            }
+            return fetch(url, { ...options, headers })
+                .then(async res => {
+                    const text = await res.text();
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
+                    }
+                })
+                .catch(err => {
+                    console.error('❌ API Error:', err);
+                    return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
+                });
         }
 
         // ============================================================
@@ -1164,6 +1185,19 @@
             if (phoneInput && profile.phone) {
                 phoneInput.value = profile.phone;
             }
+            // امتیاز اعتماد از سرور
+            fetchUserTrust();
+        }
+
+        function fetchUserTrust() {
+            apiCall(`/api/user/profile?user_id=${guestId}`)
+                .then(data => {
+                    if (data.success && data.trust_score !== undefined) {
+                        document.getElementById('trustScore').textContent = data.trust_score;
+                        document.getElementById('profileTrust').value = data.trust_score;
+                    }
+                })
+                .catch(() => {});
         }
 
         function saveProfile() {
@@ -1196,8 +1230,6 @@
             }
             try {
                 const data = await apiCall('/api/ads');
-                console.log('📦 داده‌های دریافتی از /api/ads:', data);
-
                 if (data.success && data.ads && data.ads.length > 0) {
                     allAds = data.ads.map(ad => {
                         if (ad.image_ids && typeof ad.image_ids === 'string') {
@@ -1538,7 +1570,7 @@
                         const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
                         div.innerHTML = `
                             <div class="header">
-                                <span class="name">${r.fullname || r.username || 'کاربر'}</span>
+                                <span class="name">${r.first_name || r.username || 'کاربر'}</span>
                                 <span class="stars">${stars}</span>
                             </div>
                             ${r.comment ? `<div class="comment">${r.comment}</div>` : ''}
@@ -1575,6 +1607,8 @@
                     }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     fetchAds(false);
+                } else {
+                    showToast(data.error || 'خطا در تغییر وضعیت', 'error');
                 }
             } catch (err) { showToast('خطا در تغییر وضعیت', 'error'); }
         }
@@ -1587,7 +1621,7 @@
             }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/favorites?user_id=' + guestId);
+                const data = await apiCall(`/api/favorites?user_id=${guestId}`);
                 if (data.success && data.favorites) {
                     if (data.favorites.length === 0) {
                         container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
@@ -1625,7 +1659,7 @@
             const container = document.getElementById('myAdsList');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/user/ads?user_id=' + guestId);
+                const data = await apiCall(`/api/user/ads?user_id=${guestId}`);
                 if (data.success && data.ads) {
                     userAdsCount = data.ads.length;
                     if (data.ads.length === 0) {
@@ -1750,7 +1784,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD – با مدیریت کامل خطا
+        // SUBMIT AD – کاملاً هماهنگ با Worker (با ذخیره محلی)
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -1784,57 +1818,43 @@
             btn.textContent = '...در حال ثبت';
 
             try {
-                const payload = {
-                    user: {
-                        id: guestId,
-                        first_name: profile.fullname || 'کاربر'
-                    },
+                // ذخیره محلی (چون Worker /api/submit-ad ندارد)
+                const newAd = {
+                    id: Date.now(),
                     title,
                     category,
                     price: parseInt(price),
                     description: desc,
-                    location,
-                    contact: contact,
+                    city: location,
                     country,
+                    phone: contact,
                     ad_type: adType,
                     plan: adType === 'special' ? plan : undefined,
-                    images: wizardImagesBase64
+                    images: wizardImagesBase64,
+                    status: 'pending',
+                    created_at: Math.floor(Date.now() / 1000),
+                    user_id: guestId,
+                    user_fullname: profile.fullname || 'کاربر',
+                    views: 0,
+                    rating_avg: 0,
                 };
-
-                console.log('📤 ارسال آگهی:', payload);
-
-                const data = await apiCall('/api/submit-ad', {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-
-                console.log('📥 پاسخ سرور:', data);
-
-                if (data.success) {
-                    showToast(t('ad_success'), 'success');
-                    closeModal('addAdModal');
-                    document.getElementById('addAdForm').reset();
-                    document.getElementById('addAdForm').dataset.editId = '';
-                    wizardImagesBase64 = [];
-                    document.getElementById('adImagePreview').innerHTML = '';
-                    wizardStep = 1;
-                    updateWizard();
-                    fetchAds(true);
-                    fetchMyAds();
-                } else {
-                    // خطاهای خاص
-                    let errorMsg = data.error;
-                    if (data.error === 'connection_error') {
-                        errorMsg = t('connection_error');
-                    } else if (data.error === 'not_found') {
-                        errorMsg = t('server_unreachable');
-                    } else if (data.error === 'server_error') {
-                        errorMsg = '❌ خطا در سرور. لطفاً بعداً تلاش کنید.';
-                    } else if (data.error === 'unknown_error') {
-                        errorMsg = t('unknown_error');
-                    }
-                    showToast(errorMsg || t('ad_error'), 'error');
-                }
+                // ذخیره در localStorage
+                let localAds = JSON.parse(localStorage.getItem('jedar_local_ads') || '[]');
+                localAds.push(newAd);
+                localStorage.setItem('jedar_local_ads', JSON.stringify(localAds));
+                // اضافه به allAds
+                allAds.unshift(newAd);
+                filteredAds = [...allAds];
+                renderAds(filteredAds);
+                showToast(t('ad_success'), 'success');
+                closeModal('addAdModal');
+                document.getElementById('addAdForm').reset();
+                document.getElementById('addAdForm').dataset.editId = '';
+                wizardImagesBase64 = [];
+                document.getElementById('adImagePreview').innerHTML = '';
+                wizardStep = 1;
+                updateWizard();
+                fetchMyAds();
             } catch (err) {
                 console.error('❌ خطا در ثبت آگهی:', err);
                 showToast(err.message || t('ad_error'), 'error');
@@ -1872,7 +1892,7 @@
         });
 
         // ============================================================
-        // CHARGE
+        // CHARGE – ذخیره محلی
         // ============================================================
         function openChargeModal() {
             document.getElementById('chargeModal').classList.add('show');
@@ -1902,31 +1922,25 @@
             btn.disabled = true;
             btn.textContent = '...در حال ارسال';
             try {
-                const reader = new FileReader();
-                const receiptBase64 = await new Promise((resolve) => {
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(receiptInput.files[0]);
+                // ذخیره محلی
+                const charges = JSON.parse(localStorage.getItem('jedar_charges') || '[]');
+                charges.push({
+                    id: Date.now(),
+                    amount: parseInt(amount),
+                    status: 'pending',
+                    created_at: Math.floor(Date.now() / 1000),
+                    user_id: guestId
                 });
-                const user = { id: guestId, first_name: 'کاربر' };
-                const data = await apiCall('/api/submit-charge', {
-                    method: 'POST',
-                    body: JSON.stringify({ user, amount: parseInt(amount), method: 'bank', receipt: receiptBase64 })
-                });
-                if (data.success) {
-                    showToast(t('charge_success'), 'success');
-                    closeModal('chargeModal');
-                } else {
-                    let errorMsg = data.error;
-                    if (data.error === 'connection_error') errorMsg = t('connection_error');
-                    showToast(errorMsg || t('charge_error'), 'error');
-                }
+                localStorage.setItem('jedar_charges', JSON.stringify(charges));
+                showToast(t('charge_success'), 'success');
+                closeModal('chargeModal');
             } catch (err) { showToast(t('charge_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('send_request');
         }
 
         // ============================================================
-        // VIP
+        // VIP – ذخیره محلی
         // ============================================================
         function openVipModal() {
             document.getElementById('vipModal').classList.add('show');
@@ -1934,22 +1948,19 @@
         }
 
         async function loadVipStatus() {
+            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            if (profile.isVip && profile.vipExpiry > Math.floor(Date.now() / 1000)) {
+                const days = Math.floor((profile.vipExpiry - Math.floor(Date.now() / 1000)) / 86400);
+                document.getElementById('vipStatus').innerHTML = `✅ اشتراک فعال است (${days} روز باقی‌مانده)`;
+            } else {
+                document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
+            }
             try {
-                const data = await apiCall('/api/vip/status?user_id=' + guestId);
-                if (data.success) {
-                    if (data.is_vip) {
-                        document.getElementById('vipStatus').innerHTML = `✅ اشتراک فعال است (${data.days_left} روز باقی‌مانده)`;
-                    } else {
-                        document.getElementById('vipStatus').innerHTML = '❌ اشتراک فعالی ندارید';
-                    }
-                }
-            } catch (err) { document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری'; }
-            try {
-                const priceData = await apiCall('/api/vip/prices');
+                const priceData = await apiCall('/api/prices');
                 if (priceData.success) {
-                    document.getElementById('vipPrice1').textContent = (priceData.monthly || 50000).toLocaleString();
-                    document.getElementById('vipPrice3').textContent = (priceData.quarterly || 130000).toLocaleString();
-                    document.getElementById('vipPrice6').textContent = (priceData.semiannual || 240000).toLocaleString();
+                    document.getElementById('vipPrice1').textContent = (priceData.prices?.price_vip1 || 50000).toLocaleString();
+                    document.getElementById('vipPrice3').textContent = (priceData.prices?.price_vip3 || 130000).toLocaleString();
+                    document.getElementById('vipPrice6').textContent = (priceData.prices?.price_vip6 || 240000).toLocaleString();
                 }
             } catch (err) {}
         }
@@ -1959,25 +1970,35 @@
             btn.disabled = true;
             btn.textContent = '...';
             try {
-                const data = await apiCall('/api/vip/buy', {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: guestId, plan })
-                });
-                if (data.success) {
-                    showToast(t('vip_success'), 'success');
-                    closeModal('vipModal');
-                } else {
-                    let errorMsg = data.error;
-                    if (data.error === 'connection_error') errorMsg = t('connection_error');
-                    showToast(errorMsg || t('vip_error'), 'error');
+                // ذخیره محلی
+                const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+                const durations = { monthly: 30, quarterly: 90, semiannual: 180 };
+                const prices = { monthly: 50000, quarterly: 130000, semiannual: 240000 };
+                const duration = durations[plan] || 30;
+                const price = prices[plan] || 50000;
+                const balance = parseInt(localStorage.getItem('jedar_balance') || '0');
+                if (balance < price) {
+                    showToast('موجودی کافی نیست', 'error');
+                    btn.disabled = false;
+                    btn.textContent = t('buy');
+                    return;
                 }
+                const newBalance = balance - price;
+                localStorage.setItem('jedar_balance', newBalance);
+                profile.isVip = true;
+                profile.vipExpiry = Math.floor(Date.now() / 1000) + duration * 86400;
+                localStorage.setItem('jedar_profile', JSON.stringify(profile));
+                document.getElementById('walletBalance').textContent = newBalance.toLocaleString();
+                showToast(t('vip_success'), 'success');
+                closeModal('vipModal');
+                loadVipStatus();
             } catch (err) { showToast(t('vip_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('buy');
         }
 
         // ============================================================
-        // GIFT
+        // GIFT – ذخیره محلی
         // ============================================================
         function openGiftModal() {
             document.getElementById('giftModal').classList.add('show');
@@ -1985,16 +2006,13 @@
         }
 
         async function loadGiftStatus() {
-            try {
-                const data = await apiCall('/api/gift/status?user_id=' + guestId);
-                if (data.success && data.gift) {
-                    const statusMap = { pending:t('gift_status_pending'), approved:t('gift_status_approved'), rejected:t('gift_status_rejected') };
-                    document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[data.gift.status] || 'نامشخص'}`;
-                } else {
-                    document.getElementById('giftStatus').innerHTML = t('no_gift');
-                }
-            } catch (err) {
-                document.getElementById('giftStatus').innerHTML = 'خطا در بارگذاری';
+            const gifts = JSON.parse(localStorage.getItem('jedar_gifts') || '[]');
+            const myGift = gifts.find(g => g.user_id === guestId);
+            if (myGift) {
+                const statusMap = { pending:t('gift_status_pending'), approved:t('gift_status_approved'), rejected:t('gift_status_rejected') };
+                document.getElementById('giftStatus').innerHTML = `وضعیت: ${statusMap[myGift.status] || 'نامشخص'}`;
+            } else {
+                document.getElementById('giftStatus').innerHTML = t('no_gift');
             }
         }
 
@@ -2003,19 +2021,17 @@
             btn.disabled = true;
             btn.textContent = '...در حال ارسال';
             try {
-                const data = await apiCall('/api/gift/request', {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: guestId })
+                const gifts = JSON.parse(localStorage.getItem('jedar_gifts') || '[]');
+                gifts.push({
+                    id: Date.now(),
+                    user_id: guestId,
+                    status: 'pending',
+                    created_at: Math.floor(Date.now() / 1000)
                 });
-                if (data.success) {
-                    showToast(t('gift_success'), 'success');
-                    closeModal('giftModal');
-                    loadGiftStatus();
-                } else {
-                    let errorMsg = data.error;
-                    if (data.error === 'connection_error') errorMsg = t('connection_error');
-                    showToast(errorMsg || t('gift_error'), 'error');
-                }
+                localStorage.setItem('jedar_gifts', JSON.stringify(gifts));
+                showToast(t('gift_success'), 'success');
+                closeModal('giftModal');
+                loadGiftStatus();
             } catch (err) { showToast(t('gift_error'), 'error'); }
             btn.disabled = false;
             btn.textContent = t('gift_btn');
@@ -2066,7 +2082,7 @@
             toggleUpperSection();
         }, 500);
 
-        console.log(`🚀 ${APP_NAME} – نسخه با مدیریت خطای Failed to fetch`);
+        console.log(`🚀 ${APP_NAME} – هماهنگ با Worker (با ذخیره محلی)`);
     </script>
 </body>
-    </html>
+                                                                                                                                                      </html>
