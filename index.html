@@ -1692,6 +1692,32 @@
             font-size: 13px;
         }
 
+        /* ===== VERIFICATION MODAL ===== */
+        .verification-modal .modal-box-old {
+            max-width: 400px;
+        }
+        .verification-modal .code-input {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .verification-modal .code-input input {
+            width: 50px;
+            height: 56px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+        .verification-modal .code-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
         @media (max-width:480px) {
             .ads-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1724,6 +1750,11 @@
             }
             .admin-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            .verification-modal .code-input input {
+                width: 40px;
+                height: 48px;
+                font-size: 20px;
             }
         }
         @media (max-width:380px) {
@@ -1887,7 +1918,7 @@
                         </div>
                         <div class="image-preview-grid" id="adImagePreview"></div>
                     </div>
-                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label><input type="tel" id="adContact" placeholder="شماره شما" value="" readonly /></div>
+                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label><input type="tel" id="adContact" placeholder="شماره شما" value="" /></div>
                     <div class="form-group"><label id="adTypeLabel">نوع آگهی</label>
                         <select id="adType" onchange="document.getElementById('planGroup').style.display = this.value === 'special' ? 'block' : 'none'">
                             <option value="normal" id="adNormalOption">عادی</option><option value="special" id="adSpecialOption">ویژه</option>
@@ -1964,6 +1995,25 @@
         </div>
     </div>
 
+    <!-- Verification Modal (تایید شماره) -->
+    <div class="modal-overlay-old verification-modal" id="verificationModal">
+        <div class="modal-box-old">
+            <button class="modal-close" onclick="closeVerificationModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="verifyTitle">✅ تایید شماره موبایل</div>
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:8px;" id="verifyDesc">کد ۵ رقمی ارسال شده به شماره زیر را وارد کنید:</p>
+            <p style="font-weight:700;font-size:18px;text-align:center;direction:ltr;" id="verifyPhone">0912XXXXXXX</p>
+            <div class="code-input">
+                <input type="text" maxlength="1" id="v1" oninput="moveVerify(1)" />
+                <input type="text" maxlength="1" id="v2" oninput="moveVerify(2)" />
+                <input type="text" maxlength="1" id="v3" oninput="moveVerify(3)" />
+                <input type="text" maxlength="1" id="v4" oninput="moveVerify(4)" />
+                <input type="text" maxlength="1" id="v5" oninput="moveVerify(5)" />
+            </div>
+            <button class="btn-primary" id="verifyBtn" onclick="submitVerification()">تایید</button>
+            <button class="btn-secondary" onclick="resendVerificationCode()" style="margin-top:8px;">📤 ارسال مجدد کد</button>
+        </div>
+    </div>
+
     <!-- Profile Tab -->
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
@@ -2011,13 +2061,15 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT – ارتباط کامل با Worker و ربات -->
+    <!-- JAVASCRIPT – کاملاً هماهنگ با Worker                          -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURATION
         // ============================================================
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev'; // <-- آدرس Worker شما
+        // آدرس Worker خود را اینجا قرار دهید
+        const API_BASE = 'https://your-worker-name.workers.dev/api'; // ← این را به آدرس واقعی Worker خود تغییر دهید
+        const IMAGE_BASE = 'https://your-worker-name.workers.dev/image/'; // ← این را نیز تغییر دهید
         const APP_NAME = 'جـدار';
 
         let guestId = localStorage.getItem('jedar_guest_id');
@@ -2044,6 +2096,7 @@
         let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
         let isAdmin = false;
         let isSuperAdmin = false;
+        let verificationData = null; // { phone, code }
 
         // ============================================================
         // TRANSLATIONS (کامل)
@@ -2116,6 +2169,12 @@
                 admin_added: 'ادمین اضافه شد', admin_removed: 'ادمین حذف شد',
                 announcement_sent: 'اطلاعیه ارسال شد', reply_sent: 'پاسخ ارسال شد',
                 price_updated: 'قیمت به‌روزرسانی شد', payment_updated: 'پرداخت به‌روزرسانی شد',
+                verify_title: '✅ تایید شماره موبایل',
+                verify_desc: 'کد ۵ رقمی ارسال شده به شماره زیر را وارد کنید:',
+                verify_success: '✅ شماره شما با موفقیت تایید شد.',
+                verify_failed: '❌ کد وارد شده صحیح نیست. لطفاً دوباره تلاش کنید.',
+                resend_code: '📤 کد جدید ارسال شد.',
+                verify_phone: 'شماره تلفن',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -2184,6 +2243,86 @@
                 admin_added: 'تمت إضافة المشرف', admin_removed: 'تم حذف المشرف',
                 announcement_sent: 'تم إرسال الإشعار', reply_sent: 'تم إرسال الرد',
                 price_updated: 'تم تحديث السعر', payment_updated: 'تم تحديث الدفع',
+                verify_title: '✅ تأكيد رقم الهاتف',
+                verify_desc: 'أدخل الرمز المكون من ٥ أرقام الذي تم إرساله إلى الرقم التالي:',
+                verify_success: '✅ تم تأكيد رقمك بنجاح.',
+                verify_failed: '❌ الرمز غير صحيح. يرجى المحاولة مرة أخرى.',
+                resend_code: '📤 تم إرسال رمز جديد.',
+                verify_phone: 'رقم الهاتف',
+            },
+            en: {
+                home: 'Home', add: 'Add', favorites: 'Favorites', profile: 'Profile',
+                admin: 'Admin', wallet: 'Wallet', currency: 'Toman', trust: 'Trust',
+                charge: 'Charge', vip: 'VIP', gift: 'Gift', earnings: 'Earnings',
+                search: 'Search', search_placeholder: 'Search ads...',
+                recent_ads: 'Latest Ads', add_ad: 'New Ad',
+                title: 'Title', category: 'Category', price: 'Price (Toman)',
+                next: 'Next', prev: 'Previous', description: 'Description',
+                location: 'Location / City', country: 'Country',
+                images: 'Images (max 4)', upload_click: 'Click to upload',
+                phone: 'Phone Number', ad_type: 'Ad Type', normal: 'Normal',
+                special: 'Special', special_duration: 'Special Duration', submit: 'Submit',
+                charge_wallet: 'Charge Wallet', amount: 'Amount (Toman)',
+                receipt: 'Receipt Image', upload_receipt: 'Click to upload receipt',
+                send_request: 'Send Request', vip_subscription: 'VIP Subscription',
+                vip_desc: 'With VIP, post unlimited ads and enjoy special features.',
+                month: 'Month', months_3: 'Months', months_6: 'Months',
+                buy: 'Buy', loading: 'Loading...',
+                gift_request: 'Free Gift', gift_desc: 'Request a free ad. It will be reviewed by admin.',
+                gift_btn: 'Request Gift', rate_review: 'Rate & Review',
+                comment: 'Write your comment...', submit_review: 'Submit Review',
+                profile_title: 'Profile', username: 'Username',
+                fullname: 'Full Name', phone_label: 'Phone Number',
+                email_label: 'Email', trust_score: 'Trust Score',
+                save: 'Save', no_ads: 'No ads found.',
+                pending: 'Pending', approved: 'Approved', rejected: 'Rejected',
+                pending_payment: 'Pending Payment', call: 'Call',
+                whatsapp: 'WhatsApp', add_fav: 'Add to Favorites',
+                remove_fav: 'Remove from Favorites', no_favorites: 'No favorites yet.',
+                my_ads: 'My Ads', edit: 'Edit', delete: 'Delete',
+                expired: 'Expired', special_badge: 'Special', refresh: 'Refresh',
+                pilgrimage: 'Pilgrimage', tourism: 'Tourism', medical: 'Medical',
+                beauty: 'Beauty', services: 'Services', jobs: 'Jobs',
+                real_estate: 'Real Estate', vehicles: 'Vehicles', share: 'Share',
+                show_tools: 'Show Tools', hide_tools: 'Hide Tools',
+                gift_status_pending: '⏳ Pending', gift_status_approved: '✅ Approved',
+                gift_status_rejected: '❌ Rejected', no_gift: 'No gift request.',
+                gift_success: 'Gift request submitted', gift_error: 'Error submitting gift',
+                ad_success: '✅ Your ad has been submitted for review.',
+                ad_error: 'Failed to submit ad', charge_success: 'Charge request submitted',
+                charge_error: 'Failed to submit charge',
+                vip_success: 'VIP subscription purchased', vip_error: 'Failed to purchase VIP',
+                review_success: 'Review submitted', review_error: 'Failed to submit review',
+                favorite_added: 'Added to favorites', favorite_removed: 'Removed from favorites',
+                profile_saved: 'Profile saved', profile_error: 'Failed to save profile',
+                complete_profile_first: '⚠️ Please complete your profile first (phone number required)',
+                ad_limit_reached: '⚠️ You have reached the maximum number of ads for this month.',
+                no_reviews: 'No reviews yet', loading_reviews: 'Loading reviews...',
+                ad_not_found: 'Ad not found', error_loading: 'Error loading',
+                vip_monthly: '1 Month', vip_quarterly: '3 Months', vip_semiannual: '6 Months',
+                balance: 'Balance', all: 'All',
+                not_found: 'Not found', loading_ads: 'Loading ads...',
+                pending_ads: 'Pending Ads', all_ads: 'All Ads',
+                users: 'Users', admins: 'Admins', support: 'Support',
+                announcement: 'Announcement', stats: 'Statistics', settings: 'Settings',
+                payment: 'Payment', export: 'Export', approve: 'Approve',
+                reject: 'Reject', block: 'Block', unblock: 'Unblock',
+                delete_user: 'Delete User', add_admin: 'Add Admin',
+                remove_admin: 'Remove Admin', reply: 'Reply', send: 'Send',
+                earnings_total: 'Total Earnings', today: 'Today', week: 'This Week',
+                month: 'This Month', transfer: 'Transfer to Wallet',
+                no_data: 'No data', confirm_delete: 'Are you sure you want to delete?',
+                ad_approved: 'Ad approved', ad_rejected: 'Ad rejected',
+                user_blocked: 'User blocked', user_unblocked: 'User unblocked',
+                admin_added: 'Admin added', admin_removed: 'Admin removed',
+                announcement_sent: 'Announcement sent', reply_sent: 'Reply sent',
+                price_updated: 'Price updated', payment_updated: 'Payment updated',
+                verify_title: '✅ Verify Phone Number',
+                verify_desc: 'Enter the 5-digit code sent to your number:',
+                verify_success: '✅ Your number has been verified.',
+                verify_failed: '❌ The code is incorrect. Please try again.',
+                resend_code: '📤 A new code has been sent.',
+                verify_phone: 'Phone Number',
             }
         };
 
@@ -2196,7 +2335,7 @@
         // ============================================================
         function updateLanguage() {
             const lang = currentLang;
-            document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : '🇮🇷 فارسی';
+            document.getElementById('langBtn').textContent = lang === 'fa' ? '🇦🇪 عربي' : lang === 'ar' ? '🇬🇧 English' : '🇮🇷 فارسی';
             const elements = {
                 'walletLabel': 'wallet', 'currencyLabel': 'currency', 'vipLabel': 'vip',
                 'trustLabel': 'trust', 'chargeBtnLabel': 'charge', 'vipBtnLabel': 'vip',
@@ -2238,7 +2377,8 @@
                 'adminAnnounceLabel': 'announcement', 'adminStatsLabel': 'stats',
                 'adminSettingsLabel': 'settings', 'adminPaymentsLabel': 'payment',
                 'adminExportLabel': 'export', 'earningsTitle': 'earnings',
-                'earningsTotalLabel': 'earnings_total',
+                'earningsTotalLabel': 'earnings_total', 'verifyTitle': 'verify_title',
+                'verifyDesc': 'verify_desc', 'verifyBtn': 'submit',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -2250,6 +2390,7 @@
                     }
                 }
             }
+            // Categories
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
@@ -2276,7 +2417,10 @@
         }
 
         function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
+            const langs = ['fa', 'ar', 'en'];
+            let idx = langs.indexOf(currentLang);
+            idx = (idx + 1) % langs.length;
+            currentLang = langs[idx];
             localStorage.setItem('jedar_lang', currentLang);
             document.documentElement.lang = currentLang;
             document.documentElement.dir = 'rtl';
@@ -2329,25 +2473,24 @@
             if (img.startsWith('/')) {
                 return new URL(img, API_BASE).href;
             }
-            return `${API_BASE}/image/${img}`;
+            return `${IMAGE_BASE}${img}`;
         }
 
-        function apiCall(endpoint, options = {}) {
+        async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            return fetch(url, { ...options, headers })
-                .then(async res => {
-                    const text = await res.text();
-                    try {
-                        return JSON.parse(text);
-                    } catch (e) {
-                        throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
-                    }
-                })
-                .catch(err => {
-                    console.error('❌ API Error:', err);
-                    return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
-                });
+            try {
+                const res = await fetch(url, { ...options, headers });
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0, 100)}`);
+                }
+            } catch (err) {
+                console.error('❌ API Error:', err);
+                return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
+            }
         }
 
         // ============================================================
@@ -2374,7 +2517,7 @@
         // ============================================================
         function loadProfile() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('profileUsername').value = profile.username || '';
+            document.getElementById('profileUsername').value = profile.username || guestId;
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
@@ -2385,56 +2528,157 @@
             fetchUserData();
         }
 
-        function fetchUserData() {
+        async function fetchUserData() {
             const username = userProfile.username || guestId;
-            apiCall(`/api/profile/${username}`)
-                .then(data => {
-                    if (data.success && data.data) {
-                        const user = data.data;
-                        document.getElementById('walletBalance').textContent = (user.balance || 0).toLocaleString();
-                        document.getElementById('trustScore').textContent = user.trustScore || 50;
-                        document.getElementById('profileTrust').value = user.trustScore || 50;
-                        if (user.isVip) {
-                            document.getElementById('vipBadge').classList.add('show');
-                        } else {
-                            document.getElementById('vipBadge').classList.remove('show');
-                        }
-                        if (user.is_admin || user.is_super_admin) {
-                            isAdmin = true;
-                            document.getElementById('adminTabBtn').style.display = 'flex';
-                            if (user.is_super_admin) {
-                                isSuperAdmin = true;
-                            }
-                        } else {
-                            isAdmin = false;
-                            document.getElementById('adminTabBtn').style.display = 'none';
-                        }
+            const data = await apiCall(`/profile/${username}`);
+            if (data.success && data.data) {
+                const user = data.data;
+                document.getElementById('walletBalance').textContent = (user.balance || 0).toLocaleString();
+                document.getElementById('trustScore').textContent = user.trustScore || 50;
+                document.getElementById('profileTrust').value = user.trustScore || 50;
+                if (user.isVip) {
+                    document.getElementById('vipBadge').classList.add('show');
+                } else {
+                    document.getElementById('vipBadge').classList.remove('show');
+                }
+                if (user.is_admin || user.is_super_admin) {
+                    isAdmin = true;
+                    document.getElementById('adminTabBtn').style.display = 'flex';
+                    if (user.is_super_admin) {
+                        isSuperAdmin = true;
                     }
-                })
-                .catch(() => {});
+                } else {
+                    isAdmin = false;
+                    document.getElementById('adminTabBtn').style.display = 'none';
+                }
+            }
         }
 
-        function saveProfile() {
+        async function saveProfile() {
             const profile = {
-                username: document.getElementById('profileUsername').value.trim(),
+                username: document.getElementById('profileUsername').value.trim() || guestId,
                 fullname: document.getElementById('profileFullname').value.trim(),
                 phone: document.getElementById('profilePhone').value.trim(),
                 email: document.getElementById('profileEmail').value.trim(),
             };
+            if (!profile.phone) {
+                showToast(t('complete_profile_first'), 'warning');
+                return;
+            }
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
             userProfile = profile;
             const phoneInput = document.getElementById('adContact');
             if (phoneInput && profile.phone) phoneInput.value = profile.phone;
-            showToast(t('profile_saved'), 'success');
-            apiCall('/api/profile/update', {
+
+            // ارسال درخواست به سرور
+            const res = await apiCall('/profile/update', {
                 method: 'POST',
                 body: JSON.stringify({ username: profile.username, fullname: profile.fullname, email: profile.email })
-            }).catch(() => {});
+            });
+            if (res.success) {
+                showToast(t('profile_saved'), 'success');
+                // ارسال کد تایید به شماره جدید
+                if (profile.phone) {
+                    const code = Math.floor(10000 + Math.random() * 90000);
+                    verificationData = { phone: profile.phone, code: code };
+                    // ارسال کد به سرور برای ارسال پیامک
+                    const smsRes = await apiCall('/send-sms', {
+                        method: 'POST',
+                        body: JSON.stringify({ phone: profile.phone, code: code })
+                    });
+                    if (smsRes.success) {
+                        showToast('📤 کد تایید به شماره شما ارسال شد.', 'success');
+                        openVerificationModal(profile.phone);
+                    } else {
+                        showToast('❌ ارسال کد تایید ناموفق بود.', 'error');
+                    }
+                }
+            } else {
+                showToast(t('profile_error'), 'error');
+            }
         }
 
         function isProfileComplete() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            return profile.phone && profile.phone.trim().length > 0;
+            return profile.phone && profile.phone.trim().length >= 10;
+        }
+
+        // ============================================================
+        // VERIFICATION (تایید شماره)
+        // ============================================================
+        function openVerificationModal(phone) {
+            document.getElementById('verifyPhone').textContent = phone || verificationData?.phone || '';
+            document.getElementById('verificationModal').classList.add('show');
+            // خالی کردن فیلدها
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('v' + i).value = '';
+                document.getElementById('v' + i).focus();
+            }
+            document.getElementById('v1').focus();
+        }
+
+        function closeVerificationModal() {
+            document.getElementById('verificationModal').classList.remove('show');
+        }
+
+        function moveVerify(index) {
+            if (index < 5) {
+                const next = document.getElementById('v' + (index + 1));
+                if (next) next.focus();
+            }
+            // اگر همه پر شد، خودکار تأیید
+            let full = true;
+            for (let i = 1; i <= 5; i++) {
+                if (!document.getElementById('v' + i).value) full = false;
+            }
+            if (full) {
+                submitVerification();
+            }
+        }
+
+        async function submitVerification() {
+            let code = '';
+            for (let i = 1; i <= 5; i++) {
+                code += document.getElementById('v' + i).value;
+            }
+            if (code.length !== 5) {
+                showToast('لطفاً کد ۵ رقمی را کامل وارد کنید.', 'warning');
+                return;
+            }
+            if (!verificationData) {
+                showToast('اطلاعات تایید یافت نشد.', 'error');
+                return;
+            }
+            if (code === verificationData.code.toString()) {
+                showToast(t('verify_success'), 'success');
+                // به‌روزرسانی وضعیت تایید در سرور (اختیاری)
+                await apiCall('/verify', {
+                    method: 'POST',
+                    body: JSON.stringify({ username: guestId, phone: verificationData.phone })
+                });
+                closeVerificationModal();
+                verificationData = null;
+            } else {
+                showToast(t('verify_failed'), 'error');
+            }
+        }
+
+        async function resendVerificationCode() {
+            if (!verificationData) {
+                showToast('اطلاعات تایید یافت نشد.', 'error');
+                return;
+            }
+            const code = Math.floor(10000 + Math.random() * 90000);
+            verificationData.code = code;
+            const smsRes = await apiCall('/send-sms', {
+                method: 'POST',
+                body: JSON.stringify({ phone: verificationData.phone, code: code })
+            });
+            if (smsRes.success) {
+                showToast(t('resend_code'), 'success');
+            } else {
+                showToast('❌ خطا در ارسال مجدد کد.', 'error');
+            }
         }
 
         // ============================================================
@@ -2448,13 +2692,18 @@
                 grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             }
             try {
-                const data = await apiCall('/api/ads');
+                const data = await apiCall('/ads');
                 if (data.success && data.data && data.data.length > 0) {
                     allAds = data.data.map(ad => {
-                        if (ad.images && Array.isArray(ad.images)) {
-                            ad.images = ad.images.map(img => normalizeImageUrl(img)).filter(url => url !== null);
+                        if (ad.image_ids && typeof ad.image_ids === 'string') {
+                            try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
+                        } else if (!ad.image_ids) {
+                            ad.image_ids = [];
+                        }
+                        if (ad.image_ids && Array.isArray(ad.image_ids)) {
+                            ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null);
                         } else {
-                            ad.images = [];
+                            ad.image_ids = [];
                         }
                         return ad;
                     });
@@ -2488,8 +2737,8 @@
                 card.onclick = () => openAdDetail(ad.id);
 
                 let imgSrc = '';
-                if (ad.images && ad.images.length > 0) {
-                    imgSrc = ad.images[0];
+                if (ad.image_ids && ad.image_ids.length > 0) {
+                    imgSrc = ad.image_ids[0];
                 }
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
@@ -2516,7 +2765,7 @@
                     </div>
                     <div class="ad-footer">
                         <div class="avatar">${ad.userFullname ? ad.userFullname.charAt(0).toUpperCase() : '👤'}</div>
-                        <span class="username">${ad.userFullname || ad.username || 'کاربر'}</span>
+                        <span class="username">${ad.userFullname || ad.user_id || 'کاربر'}</span>
                         <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
                     </div>
                 `;
@@ -2604,7 +2853,7 @@
                 return;
             }
 
-            const galleryImages = (ad.images || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
+            const galleryImages = (ad.image_ids || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
             let galleryIndex = 0;
             let galleryHtml = '';
             if (galleryImages.length > 0) {
@@ -2750,7 +2999,7 @@
             const comment = document.getElementById('detailReviewComment').value.trim();
             if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/review', {
+                const data = await apiCall('/review', {
                     method: 'POST',
                     body: JSON.stringify({ adId: parseInt(adId), userId: guestId, rating, comment })
                 });
@@ -2772,7 +3021,7 @@
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
-                const data = await apiCall(`/api/ad/comments/${adId}`);
+                const data = await apiCall(`/reviews?adId=${adId}`);
                 if (data.success && data.data && data.data.length > 0) {
                     container.innerHTML = '';
                     data.data.forEach(r => {
@@ -2780,10 +3029,10 @@
                         div.className = 'review-item';
                         div.innerHTML = `
                             <div class="header">
-                                <span class="name">${r.username || 'کاربر'}</span>
-                                <span class="stars">☆☆☆☆☆</span>
+                                <span class="name">${r.username || r.user_id || 'کاربر'}</span>
+                                <span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span>
                             </div>
-                            <div class="comment">${r.text || ''}</div>
+                            <div class="comment">${r.comment || ''}</div>
                             <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
                         `;
                         container.appendChild(div);
@@ -2804,7 +3053,7 @@
         async function toggleFavorite(adId) {
             const isFav = favorites.includes(adId);
             try {
-                const endpoint = isFav ? '/api/favorite/remove' : '/api/favorite/add';
+                const endpoint = isFav ? '/favorite/remove' : '/favorite/add';
                 const data = await apiCall(endpoint, {
                     method: 'POST',
                     body: JSON.stringify({ username: guestId, adId })
@@ -2834,13 +3083,13 @@
             }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall(`/api/favorites/${guestId}`);
+                const data = await apiCall(`/favorites/${guestId}`);
                 if (data.success && data.data && data.data.length > 0) {
                     container.innerHTML = '';
                     data.data.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'favorite-item';
-                        let imgSrc = (ad.images && ad.images.length > 0) ? ad.images[0] : '';
+                        let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
                         if (imgSrc) imgSrc = normalizeImageUrl(imgSrc);
                         div.innerHTML = `
                             <img src="${imgSrc}" onerror="this.style.display='none'" />
@@ -2870,32 +3119,38 @@
             const container = document.getElementById('myAdsList');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall(`/api/ads?username=${guestId}`);
-                if (data.success && data.data && data.data.length > 0) {
-                    container.innerHTML = '';
-                    data.data.forEach(ad => {
-                        const div = document.createElement('div');
-                        div.className = 'my-ad-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected',
-                            pending_payment: 'pending_payment' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                                'rejected'), pending_payment: t('pending_payment') };
-                        div.innerHTML = `
-                            <div class="info">
-                                <div class="title">${ad.title}</div>
-                                <div class="sub">
-                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
-                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
+                const data = await apiCall(`/admin/ads?status=all`);
+                if (data.success && data.data) {
+                    const myAds = data.data.filter(ad => ad.user_id === guestId);
+                    if (myAds.length > 0) {
+                        container.innerHTML = '';
+                        myAds.forEach(ad => {
+                            const div = document.createElement('div');
+                            div.className = 'my-ad-item';
+                            const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected',
+                                pending_payment: 'pending_payment' };
+                            const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
+                                    'rejected'), pending_payment: t('pending_payment') };
+                            div.innerHTML = `
+                                <div class="info">
+                                    <div class="title">${ad.title}</div>
+                                    <div class="sub">
+                                        <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency')}</span>
+                                        <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
+                                    </div>
+                                    <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
                                 </div>
-                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
-                            </div>
-                            <div class="actions">
-                                <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                    });
+                                <div class="actions">
+                                    <button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            `;
+                            container.appendChild(div);
+                        });
+                    } else {
+                        container.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
+                    }
                 } else {
                     container.innerHTML =
                         `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
@@ -2909,7 +3164,7 @@
         async function deleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
             try {
-                const data = await apiCall('/api/ad/delete', {
+                const data = await apiCall('/ad/delete', {
                     method: 'POST',
                     body: JSON.stringify({ adId, username: guestId })
                 });
@@ -3004,7 +3259,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD (ارسال مستقیم به Worker بدون تلگرام)
+        // SUBMIT AD
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -3046,17 +3301,15 @@
                     images: wizardImagesBase64
                 };
 
-                const data = await apiCall('/api/ad/submit', {
+                console.log('📤 ارسال آگهی:', payload);
+
+                const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
 
                 if (data.success) {
-                    if (data.isPaid) {
-                        showToast('💳 آگهی شما نیاز به پرداخت دارد. لطفاً مراحل پرداخت را در ربات تکمیل کنید.', 'warning');
-                    } else {
-                        showToast(t('ad_success'), 'success');
-                    }
+                    showToast(t('ad_success'), 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -3141,7 +3394,7 @@
                     reader.onload = (e) => resolve(e.target.result);
                     reader.readAsDataURL(receiptInput.files[0]);
                 });
-                const data = await apiCall('/api/charge', {
+                const data = await apiCall('/charge', {
                     method: 'POST',
                     body: JSON.stringify({
                         username: guestId,
@@ -3167,11 +3420,24 @@
         function openVipModal() {
             document.getElementById('vipModal').classList.add('show');
             loadVipStatus();
+            loadPrices();
+        }
+
+        async function loadPrices() {
+            try {
+                const data = await apiCall('/prices');
+                if (data.success) {
+                    const p = data.prices;
+                    document.getElementById('vipPrice1').textContent = (p.price_vip1 || 50000).toLocaleString();
+                    document.getElementById('vipPrice3').textContent = (p.price_vip3 || 130000).toLocaleString();
+                    document.getElementById('vipPrice6').textContent = (p.price_vip6 || 240000).toLocaleString();
+                }
+            } catch (err) {}
         }
 
         async function loadVipStatus() {
             try {
-                const data = await apiCall(`/api/vip/status/${guestId}`);
+                const data = await apiCall(`/vip/status/${guestId}`);
                 if (data.success && data.data && data.data.isVip) {
                     document.getElementById('vipStatus').innerHTML =
                         `✅ اشتراک فعال است (${data.data.daysLeft || 0} روز باقی‌مانده)`;
@@ -3183,17 +3449,6 @@
             } catch (err) {
                 document.getElementById('vipStatus').innerHTML = '❌ خطا در بارگذاری';
             }
-            try {
-                const priceData = await apiCall('/api/prices');
-                if (priceData.success) {
-                    document.getElementById('vipPrice1').textContent = (priceData.prices?.price_vip1 || 50000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice3').textContent = (priceData.prices?.price_vip3 || 130000)
-                    .toLocaleString();
-                    document.getElementById('vipPrice6').textContent = (priceData.prices?.price_vip6 || 240000)
-                    .toLocaleString();
-                }
-            } catch (err) {}
         }
 
         async function buyVip(plan) {
@@ -3201,7 +3456,7 @@
             btn.disabled = true;
             btn.textContent = '...';
             try {
-                const data = await apiCall('/api/vip/buy', {
+                const data = await apiCall('/vip/buy', {
                     method: 'POST',
                     body: JSON.stringify({ username: guestId, plan })
                 });
@@ -3228,7 +3483,7 @@
 
         async function loadGiftStatus() {
             try {
-                const data = await apiCall(`/api/gift/status/${guestId}`);
+                const data = await apiCall(`/gift/status/${guestId}`);
                 if (data.success && data.data) {
                     const statusMap = { pending: t('gift_status_pending'), approved: t('gift_status_approved'),
                         rejected: t('gift_status_rejected') };
@@ -3246,7 +3501,7 @@
             btn.disabled = true;
             btn.textContent = '...در حال ارسال';
             try {
-                const data = await apiCall('/api/gift/request', {
+                const data = await apiCall('/gift/request', {
                     method: 'POST',
                     body: JSON.stringify({ username: guestId })
                 });
@@ -3272,7 +3527,7 @@
 
         async function loadEarnings() {
             try {
-                const data = await apiCall(`/api/earnings/${guestId}`);
+                const data = await apiCall(`/earnings/${guestId}`);
                 if (data.success) {
                     const e = data.data || {};
                     document.getElementById('earningsTotal').textContent = (e.total || 0).toLocaleString();
@@ -3309,7 +3564,7 @@
         async function transferEarnings() {
             if (!confirm('آیا از انتقال درآمد به کیف پول اصلی اطمینان دارید؟')) return;
             try {
-                const data = await apiCall('/api/earnings/transfer', {
+                const data = await apiCall('/earnings/transfer', {
                     method: 'POST',
                     body: JSON.stringify({ username: guestId })
                 });
@@ -3324,7 +3579,7 @@
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS
+        // ADMIN FUNCTIONS (هماهنگ با Worker)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) {
@@ -3334,344 +3589,315 @@
             return true;
         }
 
-        function adminPendingAds() {
+        async function adminPendingAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/ads?status=pending')
-                .then(data => {
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = `<h4>${t('pending_ads')}</h4>`;
-                        data.data.forEach(ad => {
-                            const images = ad.images || [];
-                            const imgPreview = images.length > 0 ?
-                                `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` :
-                                '';
-                            html += `
-                                <div class="my-ad-item" style="flex-wrap:wrap;">
-                                    <div class="info">
-                                        <div class="title">${ad.title}</div>
-                                        <div class="sub">👤 ${ad.username || ad.user_id} • 💰 ${ad.price} تومان</div>
-                                        <div class="sub">${imgPreview} ${formatTime(ad.created_at)}</div>
-                                    </div>
-                                    <div class="actions" style="margin-top:4px;">
-                                        <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>
-                                        <button class="delete" onclick="adminRejectAd('${ad.id}')"><i class="fa-solid fa-times" style="color:var(--danger);"></i></button>
-                                        <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+            const data = await apiCall('/admin/ads?status=pending');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = `<h4>${t('pending_ads')}</h4>`;
+                data.data.forEach(ad => {
+                    const images = ad.image_ids || [];
+                    const imgPreview = images.length > 0 ?
+                        `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` :
+                        '';
+                    html += `
+                        <div class="my-ad-item" style="flex-wrap:wrap;">
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">👤 ${ad.user_id || ad.userId} • 💰 ${ad.price} تومان</div>
+                                <div class="sub">${imgPreview} ${formatTime(ad.created_at)}</div>
+                            </div>
+                            <div class="actions" style="margin-top:4px;">
+                                <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>
+                                <button class="delete" onclick="adminRejectAd('${ad.id}')"><i class="fa-solid fa-times" style="color:var(--danger);"></i></button>
+                                <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminAllAds() {
+        async function adminAllAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/ads')
-                .then(data => {
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = `<h4>${t('all_ads')}</h4>`;
-                        data.data.forEach(ad => {
-                            const statusMap = { pending: t('pending'), approved: t('approved'), rejected: t(
-                                    'rejected'), pending_payment: t('pending_payment') };
-                            html += `
-                                <div class="my-ad-item">
-                                    <div class="info">
-                                        <div class="title">${ad.title}</div>
-                                        <div class="sub">👤 ${ad.username || ad.user_id} • 💰 ${ad.price} تومان</div>
-                                        <div class="sub"><span class="status ${ad.status}">${statusMap[ad.status] || ad.status}</span></div>
-                                    </div>
-                                    <div class="actions">
-                                        <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
-                                        <button class="delete" onclick="adminDeleteAd('${ad.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+            const data = await apiCall('/admin/ads');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = `<h4>${t('all_ads')}</h4>`;
+                data.data.forEach(ad => {
+                    const statusMap = { pending: t('pending'), approved: t('approved'), rejected: t('rejected'),
+                        pending_payment: t('pending_payment') };
+                    html += `
+                        <div class="my-ad-item">
+                            <div class="info">
+                                <div class="title">${ad.title}</div>
+                                <div class="sub">👤 ${ad.user_id || ad.userId} • 💰 ${ad.price} تومان</div>
+                                <div class="sub"><span class="status ${ad.status}">${statusMap[ad.status] || ad.status}</span></div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
+                                <button class="delete" onclick="adminDeleteAd('${ad.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminApproveAd(adId) {
+        async function adminApproveAd(adId) {
             if (!confirm(t('approve'))) return;
-            apiCall('/api/admin/ad/approve', {
+            const data = await apiCall('/admin/ad/approve', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('ad_approved'), 'success');
-                    adminPendingAds();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('ad_approved'), 'success');
+                adminPendingAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminRejectAd(adId) {
+        async function adminRejectAd(adId) {
             const reason = prompt('دلیل رد آگهی:');
             if (reason === null) return;
-            apiCall('/api/admin/ad/reject', {
+            const data = await apiCall('/admin/ad/reject', {
                 method: 'POST',
                 body: JSON.stringify({ adId, reason, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('ad_rejected'), 'success');
-                    adminPendingAds();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('ad_rejected'), 'success');
+                adminPendingAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminDeleteAd(adId) {
+        async function adminDeleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
-            apiCall('/api/admin/ad/delete', {
+            const data = await apiCall('/admin/ad/delete', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast('آگهی حذف شد', 'success');
-                    adminAllAds();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast('آگهی حذف شد', 'success');
+                adminAllAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
         function adminViewAd(adId) {
             openAdDetail(adId);
         }
 
-        function adminUsers() {
+        async function adminUsers() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/users')
-                .then(data => {
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = `<h4>${t('users')}</h4>`;
-                        data.data.forEach(user => {
-                            html += `
-                                <div class="my-ad-item">
-                                    <div class="info">
-                                        <div class="title">${user.fullname || user.username || user.telegram_id}</div>
-                                        <div class="sub">📱 ${user.phone || 'ندارد'} • 💰 ${user.balance || 0} تومان</div>
-                                        <div class="sub">${user.is_blocked ? '🚫 ' + t('blocked_status') : '✅ ' + t('active')}</div>
-                                    </div>
-                                    <div class="actions">
-                                        ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
-                                        `<button class="delete" onclick="adminBlockUser('${user.telegram_id}')"><i class="fa-solid fa-lock" style="color:var(--danger);"></i></button>`}
-                                        <button onclick="adminViewUser('${user.telegram_id}')"><i class="fa-solid fa-eye"></i></button>
-                                        ${isSuperAdmin ? `<button class="delete" onclick="adminDeleteUser('${user.telegram_id}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+            const data = await apiCall('/admin/users');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = `<h4>${t('users')}</h4>`;
+                data.data.forEach(user => {
+                    html += `
+                        <div class="my-ad-item">
+                            <div class="info">
+                                <div class="title">${user.first_name || user.username || user.telegram_id}</div>
+                                <div class="sub">📱 ${user.phone || 'ندارد'} • 💰 ${user.balance || 0} تومان</div>
+                                <div class="sub">${user.is_blocked ? '🚫 ' + t('blocked') : '✅ ' + t('active')}</div>
+                            </div>
+                            <div class="actions">
+                                ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
+                                `<button class="delete" onclick="adminBlockUser('${user.telegram_id}')"><i class="fa-solid fa-lock" style="color:var(--danger);"></i></button>`}
+                                <button onclick="adminViewUser('${user.telegram_id}')"><i class="fa-solid fa-eye"></i></button>
+                                ${isSuperAdmin ? `<button class="delete" onclick="adminDeleteUser('${user.telegram_id}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminBlockUser(userId) {
-            if (!confirm(t('block_user'))) return;
+        async function adminBlockUser(userId) {
+            if (!confirm(t('block'))) return;
             const reason = prompt('دلیل مسدودیت:');
             if (reason === null) return;
-            apiCall('/api/admin/block', {
+            const data = await apiCall('/admin/block', {
                 method: 'POST',
                 body: JSON.stringify({ userId, reason, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('user_blocked'), 'success');
-                    adminUsers();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('user_blocked'), 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminUnblockUser(userId) {
+        async function adminUnblockUser(userId) {
             if (!confirm(t('unblock'))) return;
-            apiCall('/api/admin/unblock', {
+            const data = await apiCall('/admin/unblock', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('user_unblocked'), 'success');
-                    adminUsers();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('user_unblocked'), 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminDeleteUser(userId) {
-            if (!confirm(t('user_delete_confirm'))) return;
-            apiCall('/api/admin/user/delete', {
+        async function adminDeleteUser(userId) {
+            if (!confirm(t('confirm_delete'))) return;
+            const data = await apiCall('/admin/user/delete', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast('کاربر حذف شد', 'success');
-                    adminUsers();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast('کاربر حذف شد', 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminViewUser(userId) {
-            apiCall(`/api/profile/${userId}`)
-                .then(data => {
-                    if (data.success && data.data) {
-                        const user = data.data;
-                        const ads = user.ads || [];
-                        let adsText = ads.length > 0 ? ads.map(a =>
-                            `${a.title} (${a.price} تومان)`).join('\n') : 'هیچ آگهی‌ای';
-                        alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nموجودی: ${user.balance || 0} تومان\nVIP: ${user.isVip ? '✅' : '❌'}\nتعداد آگهی: ${ads.length}\nآگهی‌ها:\n${adsText}`);
-                    } else {
-                        showToast('خطا در دریافت اطلاعات', 'error');
-                    }
-                })
-                .catch(() => showToast('خطا', 'error'));
+        async function adminViewUser(userId) {
+            const data = await apiCall(`/profile/${userId}`);
+            if (data.success && data.data) {
+                const user = data.data;
+                alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nموجودی: ${user.balance || 0} تومان\nVIP: ${user.isVip ? '✅' : '❌'}\nاعتماد: ${user.trustScore || 50}`);
+            } else {
+                showToast('خطا در دریافت اطلاعات', 'error');
+            }
         }
 
-        function adminAdmins() {
+        async function adminAdmins() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
                 return;
             }
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/admins')
-                .then(data => {
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = `<h4>${t('admins')}</h4>`;
-                        data.data.forEach(admin => {
-                            html += `
-                                <div class="my-ad-item">
-                                    <div class="info">
-                                        <div class="title">${admin.fullname || admin.username || admin.telegram_id}</div>
-                                        <div class="sub">${admin.role || 'admin'}</div>
-                                    </div>
-                                    <div class="actions">
-                                        ${admin.telegram_id !== '6522877528' ? `<button class="delete" onclick="adminRemoveAdmin('${admin.telegram_id}')"><i class="fa-solid fa-user-minus"></i></button>` : ''}
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html + `
-                            <div class="admin-row" style="margin-top:12px;">
-                                <input type="text" id="newAdminId" placeholder="شناسه تلگرام کاربر" />
-                                <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
+            const data = await apiCall('/admin/admins');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = `<h4>${t('admins')}</h4>`;
+                data.data.forEach(admin => {
+                    html += `
+                        <div class="my-ad-item">
+                            <div class="info">
+                                <div class="title">${admin.first_name || admin.username || admin.telegram_id}</div>
+                                <div class="sub">${admin.role || 'admin'}</div>
                             </div>
-                        `;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+                            <div class="actions">
+                                ${admin.telegram_id !== '6522877528' ? `<button class="delete" onclick="adminRemoveAdmin('${admin.telegram_id}')"><i class="fa-solid fa-user-minus"></i></button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html + `
+                    <div class="admin-row" style="margin-top:12px;">
+                        <input type="text" id="newAdminId" placeholder="شناسه تلگرام کاربر" />
+                        <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminAddAdmin() {
+        async function adminAddAdmin() {
             const userId = document.getElementById('newAdminId').value.trim();
             if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
             const role = prompt('نقش: (admin / sub_admin / price_admin / payment_admin / user_manager)');
             if (!role) return;
-            apiCall('/api/admin/add', {
+            const data = await apiCall('/admin/add', {
                 method: 'POST',
                 body: JSON.stringify({ userId, role, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('admin_added'), 'success');
-                    adminAdmins();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('admin_added'), 'success');
+                adminAdmins();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminRemoveAdmin(userId) {
-            if (!confirm(t('admin_remove'))) return;
-            apiCall('/api/admin/remove', {
+        async function adminRemoveAdmin(userId) {
+            if (!confirm(t('remove_admin'))) return;
+            const data = await apiCall('/admin/remove', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('admin_removed'), 'success');
-                    adminAdmins();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('admin_removed'), 'success');
+                adminAdmins();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminSupport() {
+        async function adminSupport() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/tickets')
-                .then(data => {
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = `<h4>${t('support_ticket_list')}</h4>`;
-                        data.data.forEach(ticket => {
-                            const statusMap = { open: '🟢 ' + t('support_ticket_open'), closed: '🔴 ' + t(
-                                    'support_ticket_closed'), replied: '💬 ' + t('support_ticket_replied') };
-                            html += `
-                                <div class="my-ad-item">
-                                    <div class="info">
-                                        <div class="title">🎫 تیکت ${ticket.id.slice(-6)}</div>
-                                        <div class="sub">👤 ${ticket.user_id} • ${statusMap[ticket.status] || ticket.status}</div>
-                                        <div class="sub" style="font-size:11px;">${ticket.message}</div>
-                                    </div>
-                                    <div class="actions">
-                                        <button onclick="adminReplyTicket('${ticket.id}')"><i class="fa-solid fa-reply"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_tickets')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+            const data = await apiCall('/admin/tickets');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = `<h4>${t('support')}</h4>`;
+                data.data.forEach(ticket => {
+                    html += `
+                        <div class="my-ad-item">
+                            <div class="info">
+                                <div class="title">🎫 تیکت ${ticket.id}</div>
+                                <div class="sub">👤 ${ticket.user_id} • ${ticket.type || 'عمومی'}</div>
+                                <div class="sub" style="font-size:11px;">${ticket.message}</div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="adminReplyTicket('${ticket.id}')"><i class="fa-solid fa-reply"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminReplyTicket(ticketId) {
+        async function adminReplyTicket(ticketId) {
             const reply = prompt('پاسخ خود را وارد کنید:');
             if (!reply) return;
-            apiCall('/api/admin/ticket/reply', {
+            const data = await apiCall('/admin/ticket/reply', {
                 method: 'POST',
                 body: JSON.stringify({ ticketId, reply, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('reply_sent'), 'success');
-                    adminSupport();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('reply_sent'), 'success');
+                adminSupport();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
         function adminAnnounce() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `
-                <h4>${t('send_announcement')}</h4>
+                <h4>${t('announcement')}</h4>
                 <div class="admin-row">
                     <input type="text" id="announceTitle" placeholder="عنوان" />
                 </div>
@@ -3680,10 +3906,10 @@
                 </div>
                 <div class="admin-row">
                     <select id="announceTarget">
-                        <option value="all">${t('announcement_all')}</option>
-                        <option value="admins">${t('announcement_admins')}</option>
-                        <option value="users">${t('announcement_users')}</option>
-                        <option value="individual">${t('announcement_individual')}</option>
+                        <option value="all">${t('all')}</option>
+                        <option value="admins">${t('admins')}</option>
+                        <option value="users">${t('users')}</option>
+                        <option value="individual">${t('individual')}</option>
                     </select>
                     <input type="text" id="announceTargetId" placeholder="شناسه کاربر (اختیاری)" style="display:none;" />
                     <button onclick="adminSendAnnounce()">📤 ${t('send')}</button>
@@ -3695,61 +3921,57 @@
             });
         }
 
-        function adminSendAnnounce() {
+        async function adminSendAnnounce() {
             const title = document.getElementById('announceTitle').value.trim();
             const message = document.getElementById('announceMessage').value.trim();
             const target = document.getElementById('announceTarget').value;
             const targetId = document.getElementById('announceTargetId').value.trim();
             if (!title || !message) { showToast('عنوان و متن را وارد کنید', 'error'); return; }
             if (target === 'individual' && !targetId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            apiCall('/api/admin/announce', {
+            const data = await apiCall('/admin/announce', {
                 method: 'POST',
                 body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('announcement_sent'), 'success');
-                    document.getElementById('announceTitle').value = '';
-                    document.getElementById('announceMessage').value = '';
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('announcement_sent'), 'success');
+                document.getElementById('announceTitle').value = '';
+                document.getElementById('announceMessage').value = '';
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminStats() {
+        async function adminStats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            apiCall('/api/admin/stats')
-                .then(data => {
-                    if (data.success) {
-                        const s = data.data;
-                        container.innerHTML = `
-                            <h4>${t('stats')}</h4>
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalUsers || 0}</div></div>
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalAds || 0}</div></div>
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">⭐ ${t('special_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.specialAds || 0}</div></div>
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👑 VIP</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.vipUsers || 0}</div></div>
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.todayViews || 0}</div></div>
-                                <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
-                            </div>
-                        `;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
-                    }
-                })
-                .catch(() => container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`);
+            const data = await apiCall('/admin/stats');
+            if (data.success) {
+                const s = data.data;
+                container.innerHTML = `
+                    <h4>${t('stats')}</h4>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalUsers || 0}</div></div>
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalAds || 0}</div></div>
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">⭐ ${t('special')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.specialAds || 0}</div></div>
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👑 VIP</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.vipUsers || 0}</div></div>
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.todayViews || 0}</div></div>
+                        <div class="vip-plan" style="padding:12px;"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
+            }
         }
 
-        function adminSettings() {
+        async function adminSettings() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
                 return;
             }
             const container = document.getElementById('adminResult');
             container.innerHTML = `
-                <h4>${t('price_settings')}</h4>
+                <h4>${t('settings')}</h4>
                 <div class="admin-row">
                     <label style="min-width:100px;">قیمت عادی:</label>
                     <input type="number" id="priceNormal" placeholder="۰" />
@@ -3790,24 +4012,23 @@
                     <input type="number" id="commissionRate" placeholder="۲۰" />
                     <button onclick="adminUpdateSetting('commission_rate')">${t('save')}</button>
                 </div>
-                <div style="margin-top:12px;color:var(--text-secondary);font-size:13px;">${t('data_encrypted')}</div>
             `;
-            apiCall('/api/settings').then(data => {
-                if (data.success) {
-                    const s = data.data || {};
-                    document.getElementById('priceNormal').value = s.price_normal || 0;
-                    document.getElementById('priceSpecial1').value = s.price_special1 || 10000;
-                    document.getElementById('priceSpecial3').value = s.price_special3 || 25000;
-                    document.getElementById('priceVip1').value = s.price_vip1 || 50000;
-                    document.getElementById('priceVip3').value = s.price_vip3 || 130000;
-                    document.getElementById('priceVip6').value = s.price_vip6 || 240000;
-                    document.getElementById('freeAdsPerUser').value = s.free_ads_per_user || 3;
-                    document.getElementById('commissionRate').value = s.commission_rate || 20;
-                }
-            }).catch(() => {});
+            // بارگذاری تنظیمات فعلی
+            const settingsData = await apiCall('/settings');
+            if (settingsData.success) {
+                const s = settingsData.data || {};
+                document.getElementById('priceNormal').value = s.price_normal || 0;
+                document.getElementById('priceSpecial1').value = s.price_special1 || 10000;
+                document.getElementById('priceSpecial3').value = s.price_special3 || 25000;
+                document.getElementById('priceVip1').value = s.price_vip1 || 50000;
+                document.getElementById('priceVip3').value = s.price_vip3 || 130000;
+                document.getElementById('priceVip6').value = s.price_vip6 || 240000;
+                document.getElementById('freeAdsPerUser').value = s.free_ads_per_user || 3;
+                document.getElementById('commissionRate').value = s.commission_rate || 20;
+            }
         }
 
-        function adminUpdatePrice(key) {
+        async function adminUpdatePrice(key) {
             const idMap = {
                 'price_normal': 'priceNormal',
                 'price_special1': 'priceSpecial1',
@@ -3818,123 +4039,113 @@
             };
             const value = document.getElementById(idMap[key]).value;
             if (!value) { showToast('مقدار را وارد کنید', 'error'); return; }
-            apiCall('/api/admin/settings', {
+            const data = await apiCall('/admin/settings', {
                 method: 'POST',
                 body: JSON.stringify({ key, value, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('price_updated'), 'success');
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('price_updated'), 'success');
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminUpdateSetting(key) {
+        async function adminUpdateSetting(key) {
             const idMap = {
                 'free_ads_per_user': 'freeAdsPerUser',
                 'commission_rate': 'commissionRate'
             };
             const value = document.getElementById(idMap[key]).value;
             if (!value) { showToast('مقدار را وارد کنید', 'error'); return; }
-            apiCall('/api/admin/settings', {
+            const data = await apiCall('/admin/settings', {
                 method: 'POST',
                 body: JSON.stringify({ key, value, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('settings_updated'), 'success');
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('settings_updated'), 'success');
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminPayments() {
+        async function adminPayments() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
                 return;
             }
             const container = document.getElementById('adminResult');
             container.innerHTML = `
-                <h4>${t('payment_settings')}</h4>
+                <h4>${t('payment')}</h4>
                 <div id="paymentMethodsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
                 <div class="admin-row" style="margin-top:12px;">
                     <select id="paymentMethodType">
-                        <option value="card">💳 ${t('payment_card')}</option>
-                        <option value="tether">💎 ${t('payment_tether')}</option>
-                        <option value="wallet">💰 ${t('payment_wallet')}</option>
+                        <option value="card">💳 ${t('card')}</option>
+                        <option value="tether">💎 ${t('tether')}</option>
+                        <option value="wallet">💰 ${t('wallet')}</option>
                     </select>
-                    <input type="text" id="paymentMethodNumber" placeholder="${t('payment_number')}" />
-                    <input type="text" id="paymentMethodName" placeholder="${t('payment_name')}" style="flex:0.7;" />
-                    <input type="text" id="paymentMethodBank" placeholder="${t('payment_bank')}" style="flex:0.7;" />
-                    <button onclick="adminAddPaymentMethod()">➕ ${t('add_payment_method')}</button>
+                    <input type="text" id="paymentMethodNumber" placeholder="${t('number')}" />
+                    <input type="text" id="paymentMethodName" placeholder="${t('name')}" style="flex:0.7;" />
+                    <input type="text" id="paymentMethodBank" placeholder="${t('bank')}" style="flex:0.7;" />
+                    <button onclick="adminAddPaymentMethod()">➕ ${t('add')}</button>
                 </div>
             `;
             loadPaymentMethods();
         }
 
-        function loadPaymentMethods() {
-            apiCall('/api/payment/methods')
-                .then(data => {
-                    const container = document.getElementById('paymentMethodsList');
-                    if (data.success && data.data && data.data.length > 0) {
-                        let html = '';
-                        data.data.forEach(m => {
-                            html += `
-                                <div class="my-ad-item">
-                                    <div class="info">
-                                        <div class="title">${m.type === 'card' ? '💳' : m.type === 'tether' ? '💎' : '💰'} ${m.name || m.number}</div>
-                                        <div class="sub">${m.number} ${m.bank ? '• ' + m.bank : ''}</div>
-                                    </div>
-                                    <div class="actions">
-                                        <button class="delete" onclick="adminRemovePaymentMethod('${m.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        container.innerHTML = html;
-                    } else {
-                        container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('paymentMethodsList').innerHTML =
-                    `<div class="text-secondary">${t('error_loading')}</div>`;
+        async function loadPaymentMethods() {
+            const data = await apiCall('/payment/methods');
+            const container = document.getElementById('paymentMethodsList');
+            if (data.success && data.data && data.data.length > 0) {
+                let html = '';
+                data.data.forEach(m => {
+                    html += `
+                        <div class="my-ad-item">
+                            <div class="info">
+                                <div class="title">${m.type === 'card' ? '💳' : m.type === 'tether' ? '💎' : '💰'} ${m.name || m.number}</div>
+                                <div class="sub">${m.number} ${m.bank ? '• ' + m.bank : ''}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="delete" onclick="adminRemovePaymentMethod('${m.id}')"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    `;
                 });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
 
-        function adminAddPaymentMethod() {
+        async function adminAddPaymentMethod() {
             const type = document.getElementById('paymentMethodType').value;
             const number = document.getElementById('paymentMethodNumber').value.trim();
             const name = document.getElementById('paymentMethodName').value.trim();
             const bank = document.getElementById('paymentMethodBank').value.trim();
             if (!number) { showToast('شماره را وارد کنید', 'error'); return; }
-            apiCall('/api/payment/method/add', {
+            const data = await apiCall('/payment/method/add', {
                 method: 'POST',
                 body: JSON.stringify({ type, number, name, bank, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast(t('payment_updated'), 'success');
-                    adminPayments();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast(t('payment_updated'), 'success');
+                adminPayments();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
-        function adminRemovePaymentMethod(id) {
+        async function adminRemovePaymentMethod(id) {
             if (!confirm('حذف شود؟')) return;
-            apiCall('/api/payment/method/remove', {
+            const data = await apiCall('/payment/method/remove', {
                 method: 'POST',
                 body: JSON.stringify({ id, adminId: guestId })
-            }).then(data => {
-                if (data.success) {
-                    showToast('روش پرداخت حذف شد', 'success');
-                    adminPayments();
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            }).catch(() => showToast('خطا', 'error'));
+            });
+            if (data.success) {
+                showToast('روش پرداخت حذف شد', 'success');
+                adminPayments();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
 
         function adminExport() {
@@ -3955,29 +4166,20 @@
             `;
         }
 
-        function adminExportData(type) {
+        async function adminExportData(type) {
             document.getElementById('exportResult').innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
-            apiCall(`/api/admin/export?type=${type}&adminId=${guestId}`)
-                .then(data => {
-                    if (data.success) {
-                        const url = data.data?.url || '';
-                        if (url) {
-                            document.getElementById('exportResult').innerHTML =
-                                `<a href="${url}" target="_blank" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
-                        } else {
-                            document.getElementById('exportResult').innerHTML =
-                                `<div class="text-secondary">فایل آماده دانلود است. در ربات نیز ارسال شد.</div>`;
-                        }
-                        showToast('خروجی با موفقیت ایجاد شد', 'success');
-                    } else {
-                        document.getElementById('exportResult').innerHTML =
-                            `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('exportResult').innerHTML =
-                        `<div class="text-secondary">${t('error_loading')}</div>`;
-                });
+            const data = await apiCall(`/admin/export?type=${type}&adminId=${guestId}`);
+            if (data.success) {
+                const jsonData = data.data || [];
+                const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                document.getElementById('exportResult').innerHTML =
+                    `<a href="${url}" download="${type}_export.json" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
+                showToast('خروجی با موفقیت ایجاد شد', 'success');
+            } else {
+                document.getElementById('exportResult').innerHTML =
+                    `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
+            }
         }
 
         // ============================================================
@@ -3985,7 +4187,7 @@
         // ============================================================
         async function fetchNotice() {
             try {
-                const data = await apiCall('/api/notice');
+                const data = await apiCall('/notice');
                 if (data.success && data.notice) {
                     document.getElementById('noticeText').textContent = data.notice.text;
                     document.getElementById('noticeCard').classList.add('show');
@@ -4028,11 +4230,10 @@
             toggleUpperSection();
         }, 500);
 
-        console.log(`🚀 ${APP_NAME} – مینی‌اپ کامل با تمام قابلیت‌های مدیریتی`);
+        console.log(`🚀 ${APP_NAME} – مینی‌اپ کامل با تمام قابلیت‌ها`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
-        console.log(`✅ ارتباط کامل با Worker و ربات برقرار شد.`);
-        console.log(`🛡️ ثبت آگهی مستقیم از مینی‌اپ فعال شد.`);
+        console.log(`✅ تمام قابلیت‌ها با Worker هماهنگ شده‌اند.`);
     </script>
 </body>
     </html>
