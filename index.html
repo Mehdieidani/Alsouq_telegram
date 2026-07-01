@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== RESET & BASE (کامل با پشتیبانی از RTL) ===== */
+        /* ===== RESET & BASE ===== */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         :root {
             --bg-primary: #f8fafc;
@@ -45,9 +45,6 @@
             --text-secondary: #cbd5e1;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
-            --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
         }
         html { font-size:16px; scroll-behavior:smooth; }
         body {
@@ -59,7 +56,6 @@
             transition:background var(--transition), color var(--transition);
             padding-bottom:80px;
             overflow-x:hidden;
-            overscroll-behavior:none;
         }
         button,input,textarea,select { font-family:var(--font); outline:none; transition:var(--transition); }
         button { border:none; cursor:pointer; background:none; }
@@ -94,7 +90,6 @@
             display:flex; justify-content:space-between; align-items:center;
             padding:8px 0 12px; position:sticky; top:0; z-index:50;
             background:var(--bg-primary); backdrop-filter:blur(12px);
-            transition:background var(--transition);
         }
         .logo-text {
             font-size:26px; font-weight:900;
@@ -102,7 +97,6 @@
             background-size:300% 300%;
             -webkit-background-clip:text; -webkit-text-fill-color:transparent;
             animation:metallicShine 4s ease-in-out infinite;
-            display:inline-block;
         }
         @keyframes metallicShine {
             0% { background-position:0% 50%; }
@@ -118,34 +112,24 @@
             display:flex; align-items:center; justify-content:center;
         }
         .header-actions button:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary); }
-        .lang-switch-btn {
-            padding:0 12px !important; width:auto !important; font-size:13px !important; font-weight:600 !important;
-            gap:4px;
-        }
+        .lang-switch-btn { padding:0 12px !important; width:auto !important; font-size:13px !important; font-weight:600 !important; gap:4px; }
 
-        /* ===== BANNER OVERLAY (تبلیغ ۵ ثانیه‌ای) ===== */
+        /* ===== BANNER OVERLAY (۵ ثانیه‌ای) ===== */
         .banner-overlay {
             position:fixed; top:0; left:0; right:0; bottom:0;
             background:rgba(0,0,0,0.85);
             backdrop-filter:blur(16px);
             z-index:999999;
-            display:flex;
-            align-items:center;
-            justify-content:center;
+            display:flex; align-items:center; justify-content:center;
             padding:20px;
             transition:opacity 0.5s ease;
-            opacity:0;
-            pointer-events:none;
+            opacity:0; pointer-events:none;
         }
-        .banner-overlay.show {
-            opacity:1;
-            pointer-events:auto;
-        }
+        .banner-overlay.show { opacity:1; pointer-events:auto; }
         .banner-overlay .banner-box {
             background:var(--bg-card);
             border-radius:var(--radius-lg);
-            max-width:480px;
-            width:100%;
+            max-width:480px; width:100%;
             padding:24px 20px 28px;
             position:relative;
             box-shadow:0 30px 80px rgba(0,0,0,0.4);
@@ -160,94 +144,39 @@
         }
         .banner-overlay .banner-close {
             position:absolute; top:12px; left:12px;
-            background:rgba(0,0,0,0.1);
-            border-radius:50%;
-            width:38px; height:38px;
-            font-size:22px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:var(--text-muted);
-            cursor:pointer;
-            transition:all 0.3s ease;
-            border:1px solid var(--border-color);
+            background:rgba(0,0,0,0.1); border-radius:50%;
+            width:38px; height:38px; font-size:22px;
+            display:flex; align-items:center; justify-content:center;
+            color:var(--text-muted); cursor:pointer;
+            transition:all 0.3s ease; border:1px solid var(--border-color);
         }
-        .banner-overlay .banner-close:hover {
-            background:var(--danger);
-            color:#fff;
-            transform:rotate(90deg);
-        }
+        .banner-overlay .banner-close:hover { background:var(--danger); color:#fff; transform:rotate(90deg); }
         .banner-overlay .banner-image {
-            width:100%;
-            aspect-ratio:16/9;
-            border-radius:var(--radius-sm);
-            object-fit:cover;
-            background:var(--bg-input);
-            margin-bottom:12px;
+            width:100%; aspect-ratio:16/9;
+            border-radius:var(--radius-sm); object-fit:cover;
+            background:var(--bg-input); margin-bottom:12px;
         }
-        .banner-overlay .banner-title {
-            font-size:22px;
-            font-weight:800;
-            margin:6px 0 8px;
-            color:var(--text-primary);
-        }
-        .banner-overlay .banner-desc {
-            font-size:14px;
-            color:var(--text-secondary);
-            margin-bottom:16px;
-            line-height:1.6;
-        }
-        .banner-overlay .banner-timer {
-            font-size:13px;
-            color:var(--text-muted);
-            margin-bottom:12px;
-        }
-        .banner-overlay .banner-timer span {
-            color:var(--primary);
-            font-weight:700;
-            font-size:18px;
-        }
-        .banner-overlay .banner-actions {
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-            justify-content:center;
-        }
+        .banner-overlay .banner-title { font-size:22px; font-weight:800; margin:6px 0 8px; }
+        .banner-overlay .banner-desc { font-size:14px; color:var(--text-secondary); margin-bottom:16px; line-height:1.6; }
+        .banner-overlay .banner-timer { font-size:13px; color:var(--text-muted); margin-bottom:12px; }
+        .banner-overlay .banner-timer span { color:var(--primary); font-weight:700; font-size:18px; }
+        .banner-overlay .banner-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
         .banner-overlay .banner-actions .btn-link {
-            flex:1;
-            padding:14px 20px;
-            border-radius:var(--radius-full);
-            font-weight:700;
-            font-size:16px;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:8px;
-            background:var(--primary-gradient);
-            color:#fff;
+            flex:1; padding:14px 20px; border-radius:var(--radius-full);
+            font-weight:700; font-size:16px; text-decoration:none;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            background:var(--primary-gradient); color:#fff;
             box-shadow:0 4px 20px rgba(22,163,74,0.3);
-            transition:all 0.3s ease;
-            min-width:120px;
+            transition:all 0.3s ease; min-width:120px;
         }
-        .banner-overlay .banner-actions .btn-link:hover {
-            transform:translateY(-3px);
-            box-shadow:0 8px 30px rgba(22,163,74,0.4);
-        }
+        .banner-overlay .banner-actions .btn-link:hover { transform:translateY(-3px); box-shadow:0 8px 30px rgba(22,163,74,0.4); }
         .banner-overlay .banner-actions .btn-skip {
-            padding:14px 24px;
-            border-radius:var(--radius-full);
-            font-weight:600;
-            font-size:15px;
-            background:var(--bg-input);
-            border:2px solid var(--border-color);
-            color:var(--text-primary);
-            transition:all 0.3s ease;
+            padding:14px 24px; border-radius:var(--radius-full);
+            font-weight:600; font-size:15px;
+            background:var(--bg-input); border:2px solid var(--border-color);
+            color:var(--text-primary); transition:all 0.3s ease;
         }
-        .banner-overlay .banner-actions .btn-skip:hover {
-            background:var(--border-color);
-            transform:translateY(-2px);
-        }
+        .banner-overlay .banner-actions .btn-skip:hover { background:var(--border-color); transform:translateY(-2px); }
 
         /* ===== TOGGLE SECTION ===== */
         .toggle-section-btn {
@@ -269,7 +198,7 @@
         .toggle-section-btn.active i { transform:rotate(180deg); }
         .toggle-section {
             overflow:hidden; max-height:0; opacity:0;
-            transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease, margin 0.4s ease;
+            transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
             margin-bottom:0; background:var(--bg-card);
             border-radius:var(--radius-md); padding:0 16px;
             border:1px solid var(--border-color);
@@ -304,7 +233,7 @@
         .categories {
             display:flex; overflow-x:auto; gap:8px;
             padding-bottom:12px; margin-bottom:12px;
-            scrollbar-width:none; -webkit-overflow-scrolling:touch;
+            scrollbar-width:none;
         }
         .categories::-webkit-scrollbar { display:none; }
         .category-chip {
@@ -343,8 +272,7 @@
             background:var(--bg-card); border:1px solid var(--border-color);
             border-radius:var(--radius-md); overflow:hidden;
             cursor:pointer; transition:all 0.35s cubic-bezier(0.4,0,0.2,1);
-            position:relative; transform:translateY(0);
-            will-change:transform, box-shadow;
+            position:relative;
         }
         .ad-card:hover { transform:translateY(-6px) scale(1.01); border-color:var(--primary); box-shadow:var(--shadow-md); }
         .ad-card .ad-image {
@@ -398,7 +326,7 @@
         .ad-card .ad-footer .rating { margin-right:auto; color:var(--text-muted); font-size:10px; }
         .ad-card .ad-footer .rating i { color:var(--gold); margin-left:2px; }
 
-        /* ===== BANNER ADS (تبلیغات ویژه در صفحه) ===== */
+        /* ===== BANNER ADS (بنرهای داخل صفحه) ===== */
         .banner-ad-container {
             margin:12px 0;
             border-radius:var(--radius-md);
@@ -407,57 +335,27 @@
             border:1px solid var(--border-color);
             transition:all 0.3s ease;
         }
-        .banner-ad-container:hover {
-            box-shadow:var(--shadow-md);
-            border-color:var(--primary);
-        }
+        .banner-ad-container:hover { box-shadow:var(--shadow-md); border-color:var(--primary); }
         .banner-ad-container .banner-ad-inner {
-            display:flex;
-            align-items:center;
-            gap:14px;
-            padding:10px 14px;
-            flex-wrap:wrap;
+            display:flex; align-items:center; gap:14px;
+            padding:10px 14px; flex-wrap:wrap;
         }
         .banner-ad-container .banner-ad-image {
-            width:80px;
-            height:80px;
-            border-radius:var(--radius-sm);
-            object-fit:cover;
-            background:var(--bg-input);
-            flex-shrink:0;
+            width:80px; height:80px;
+            border-radius:var(--radius-sm); object-fit:cover;
+            background:var(--bg-input); flex-shrink:0;
         }
-        .banner-ad-container .banner-ad-info {
-            flex:1;
-            min-width:140px;
-        }
-        .banner-ad-container .banner-ad-title {
-            font-weight:700;
-            font-size:15px;
-            color:var(--text-primary);
-        }
-        .banner-ad-container .banner-ad-desc {
-            font-size:12px;
-            color:var(--text-secondary);
-            margin-top:2px;
-        }
+        .banner-ad-container .banner-ad-info { flex:1; min-width:140px; }
+        .banner-ad-container .banner-ad-title { font-weight:700; font-size:15px; }
+        .banner-ad-container .banner-ad-desc { font-size:12px; color:var(--text-secondary); margin-top:2px; }
         .banner-ad-container .banner-ad-link {
-            padding:8px 18px;
-            border-radius:var(--radius-full);
-            background:var(--primary-gradient);
-            color:#fff;
-            font-weight:600;
-            font-size:13px;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            transition:all 0.3s ease;
-            white-space:nowrap;
+            padding:8px 18px; border-radius:var(--radius-full);
+            background:var(--primary-gradient); color:#fff;
+            font-weight:600; font-size:13px; text-decoration:none;
+            display:inline-flex; align-items:center; gap:6px;
+            transition:all 0.3s ease; white-space:nowrap;
         }
-        .banner-ad-container .banner-ad-link:hover {
-            transform:translateY(-2px);
-            box-shadow:0 4px 16px rgba(22,163,74,0.3);
-        }
+        .banner-ad-container .banner-ad-link:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(22,163,74,0.3); }
 
         /* ===== BOTTOM NAV ===== */
         .bottom-nav {
@@ -467,7 +365,6 @@
             display:flex; justify-content:space-around; align-items:center;
             padding:8px 0 14px; border-top-left-radius:24px; border-top-right-radius:24px;
             z-index:100; box-shadow:0 -4px 30px rgba(0,0,0,0.06);
-            transition:background var(--transition);
         }
         .bottom-nav .nav-item {
             display:flex; flex-direction:column; align-items:center;
@@ -479,11 +376,6 @@
         .bottom-nav .nav-item.active { color:var(--primary); }
         .bottom-nav .nav-item i { font-size:22px; margin-bottom:2px; transition:transform 0.2s ease; }
         .bottom-nav .nav-item:hover i { transform:translateY(-2px); }
-        .bottom-nav .nav-item .badge {
-            position:absolute; top:-4px; right:-4px;
-            background:var(--danger); color:#fff; font-size:8px;
-            border-radius:50%; padding:1px 6px; font-weight:700;
-        }
         .bottom-nav .nav-item .nav-label { font-size:9px; font-weight:500; }
 
         /* ===== MODAL AD DETAIL ===== */
@@ -501,11 +393,8 @@
             padding:24px 20px 28px; position:relative;
             box-shadow:0 25px 60px rgba(0,0,0,0.3);
             animation:modalZoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
-            transform-origin:center;
         }
         @keyframes modalZoomIn { from { opacity:0; transform:scale(0.85) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
-        .modal-box::-webkit-scrollbar { width:4px; }
-        .modal-box::-webkit-scrollbar-thumb { background:var(--primary); border-radius:10px; }
         .modal-box .modal-close {
             position:sticky; top:0; float:left;
             background:var(--bg-input); border:1px solid var(--border-color);
@@ -568,160 +457,6 @@
         }
         .modal-box .btn-fav:hover { background:var(--primary-light); border-color:var(--primary); }
         .modal-box .btn-fav .fa-heart { color:var(--danger); }
-
-        /* ===== PROFILE & ADMIN ===== */
-        #profileTab, #favoritesTab, #adminTab, #rulesTab, #supportTab {
-            display:none; max-width:500px; margin:0 auto; padding:14px 14px 80px; animation:fadeIn 0.3s ease;
-        }
-        #profileTab.show, #favoritesTab.show, #adminTab.show, #rulesTab.show, #supportTab.show { display:block; }
-        .profile-section {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); padding:20px; margin-bottom:18px;
-            box-shadow:var(--shadow-sm); transition:all 0.3s ease;
-        }
-        .profile-section:hover { box-shadow:var(--shadow-md); }
-        .profile-section .form-group { margin-bottom:16px; }
-        .profile-section .form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:5px; }
-        .profile-section .form-group input {
-            width:100%; padding:10px 14px; background:var(--bg-input);
-            border:2px solid var(--border-color); border-radius:var(--radius-sm);
-            color:var(--text-primary); font-size:14px;
-            transition:border-color var(--transition), box-shadow var(--transition);
-        }
-        .profile-section .form-group input:focus { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
-        .profile-section .form-group input:disabled { opacity:0.7; cursor:not-allowed; }
-        .profile-section .profile-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
-        .profile-section .profile-actions button { flex:1; padding:10px; border-radius:var(--radius-sm); font-weight:600; font-size:13px; min-width:60px; transition:all 0.3s ease; }
-        .profile-section .profile-actions .btn-save { background:var(--primary-gradient); color:#fff; }
-        .profile-section .profile-actions .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--primary-light); }
-
-        /* ===== RULES & SUPPORT ===== */
-        .rules-content, .support-content {
-            background:var(--bg-card);
-            border:1px solid var(--border-color);
-            border-radius:var(--radius-md);
-            padding:20px;
-            margin-bottom:16px;
-            line-height:2;
-            font-size:15px;
-            white-space:pre-wrap;
-        }
-        .rules-content h1, .rules-content h2, .rules-content h3 {
-            margin:12px 0 6px;
-        }
-        .rules-content ul, .rules-content ol {
-            padding-right:24px;
-        }
-        .support-item {
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:10px 0;
-            border-bottom:1px solid var(--border-color);
-        }
-        .support-item:last-child { border-bottom:none; }
-        .support-item .icon {
-            width:36px; height:36px;
-            border-radius:50%;
-            background:var(--primary-light);
-            color:var(--primary);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:16px;
-            flex-shrink:0;
-        }
-        .support-item .info {
-            flex:1;
-        }
-        .support-item .info .label {
-            font-size:12px;
-            color:var(--text-muted);
-        }
-        .support-item .info .value {
-            font-size:15px;
-            font-weight:600;
-            color:var(--text-primary);
-        }
-        .support-item .info .value a {
-            color:var(--primary);
-            text-decoration:none;
-        }
-        .support-item .info .value a:hover {
-            text-decoration:underline;
-        }
-
-        /* ===== ADMIN ===== */
-        .admin-grid {
-            display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0;
-        }
-        .admin-grid button {
-            padding:12px 8px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px;
-            background:var(--bg-input); border:1px solid var(--border-color);
-            color:var(--text-primary); transition:all 0.2s ease;
-            display:flex; align-items:center; justify-content:center; gap:6px;
-        }
-        .admin-grid button:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary); }
-        .admin-grid button.danger:hover { background:rgba(239,68,68,0.1); border-color:var(--danger); color:var(--danger); }
-        .admin-grid button.success:hover { background:var(--primary-light); border-color:var(--success); color:var(--success); }
-        .admin-section {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); padding:16px; margin-bottom:16px;
-        }
-        .admin-section h4 { font-size:16px; font-weight:700; margin-bottom:10px; }
-        .admin-section .admin-row {
-            display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px;
-        }
-        .admin-section .admin-row input, .admin-section .admin-row select {
-            flex:1; min-width:100px; padding:8px 12px;
-            border-radius:var(--radius-sm); border:1px solid var(--border-color);
-            background:var(--bg-input); color:var(--text-primary); font-size:13px;
-        }
-        .admin-section .admin-row button {
-            padding:8px 16px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px;
-            background:var(--primary-gradient); color:#fff;
-            transition:all 0.2s ease;
-        }
-        .admin-section .admin-row button:hover { opacity:0.9; transform:translateY(-1px); }
-        .admin-section .admin-row button.danger { background:var(--danger); }
-        .my-ad-item {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:10px;
-            display:flex; justify-content:space-between; align-items:center;
-            transition:all 0.3s ease;
-        }
-        .my-ad-item:hover { border-color:var(--primary); transform:translateX(-4px); }
-        .my-ad-item .info .title { font-weight:600; font-size:14px; }
-        .my-ad-item .info .sub { font-size:12px; color:var(--text-secondary); display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
-        .my-ad-item .info .sub .status { font-size:10px; padding:1px 12px; border-radius:var(--radius-full); font-weight:600; }
-        .my-ad-item .info .sub .status.pending { background:rgba(245,158,11,0.2); color:var(--gold); }
-        .my-ad-item .info .sub .status.approved { background:rgba(22,163,74,0.2); color:var(--success); }
-        .my-ad-item .info .sub .status.rejected { background:rgba(239,68,68,0.2); color:var(--danger); }
-        .my-ad-item .actions { display:flex; gap:6px; }
-        .my-ad-item .actions button { background:none; border:none; font-size:17px; padding:4px 6px; cursor:pointer; border-radius:var(--radius-sm); transition:all 0.2s ease; }
-        .my-ad-item .actions .edit { color:var(--primary); }
-        .my-ad-item .actions .edit:hover { background:var(--primary-light); transform:scale(1.1); }
-        .my-ad-item .actions .delete { color:var(--danger); }
-        .my-ad-item .actions .delete:hover { background:rgba(239,68,68,0.1); transform:scale(1.1); }
-        .favorite-item {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:12px; margin-bottom:10px;
-            display:flex; gap:14px; align-items:center;
-            cursor:pointer; transition:all 0.3s ease;
-        }
-        .favorite-item:hover { border-color:var(--primary); transform:translateX(-4px); }
-        .favorite-item img { width:60px; height:60px; border-radius:var(--radius-sm); object-fit:cover; background:var(--bg-input); flex-shrink:0; }
-        .favorite-item .info { flex:1; min-width:0; }
-        .favorite-item .info .title { font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .favorite-item .info .price { color:var(--primary); font-weight:700; font-size:15px; }
-        .favorite-item .info .meta { font-size:11px; color:var(--text-muted); }
-        .favorite-item .remove-fav { background:none; border:none; color:var(--danger); font-size:18px; cursor:pointer; padding:4px; transition:all 0.2s ease; }
-        .favorite-item .remove-fav:hover { transform:scale(1.2); }
-        .loading-spinner { text-align:center; padding:40px 0; color:var(--primary); }
-        .loading-spinner i { font-size:34px; animation:spin 1s linear infinite; }
-        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
         .review-section { margin-top:16px; border-top:1px solid var(--border-color); padding-top:16px; }
         .review-section h4 { font-size:16px; margin-bottom:8px; }
         .review-stars span { font-size:28px; cursor:pointer; color:var(--text-muted); transition:0.2s; display:inline-block; margin-left:4px; }
@@ -742,7 +477,7 @@
         .review-item .comment { margin:4px 0; font-size:14px; }
         .review-item .date { font-size:10px; color:var(--text-muted); }
 
-        /* ===== ADD AD MODAL (ویزارد) ===== */
+        /* ===== ADD AD MODAL ===== */
         .modal-overlay-old {
             position:fixed; top:0; left:0; right:0; bottom:0;
             background:rgba(0,0,0,0.6); backdrop-filter:blur(20px);
@@ -819,7 +554,6 @@
             transition:all 0.2s ease;
         }
         .modal-box-old .image-preview-item .remove-img:hover { background:var(--danger); color:#fff; }
-
         .wizard-progress {
             display:flex; justify-content:space-between; align-items:center;
             margin-bottom:24px; position:relative; padding:0 6px;
@@ -847,6 +581,125 @@
         .wizard-step { display:none; animation:fadeIn 0.3s ease; }
         .wizard-step.active { display:block; }
 
+        /* ===== TABS ===== */
+        #profileTab, #favoritesTab, #adminTab, #rulesTab, #supportTab {
+            display:none; max-width:500px; margin:0 auto; padding:14px 14px 80px; animation:fadeIn 0.3s ease;
+        }
+        #profileTab.show, #favoritesTab.show, #adminTab.show, #rulesTab.show, #supportTab.show { display:block; }
+        .profile-section {
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius-md); padding:20px; margin-bottom:18px;
+            box-shadow:var(--shadow-sm);
+        }
+        .profile-section .form-group { margin-bottom:16px; }
+        .profile-section .form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:5px; }
+        .profile-section .form-group input {
+            width:100%; padding:10px 14px; background:var(--bg-input);
+            border:2px solid var(--border-color); border-radius:var(--radius-sm);
+            color:var(--text-primary); font-size:14px;
+            transition:border-color var(--transition), box-shadow var(--transition);
+        }
+        .profile-section .form-group input:focus { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
+        .profile-section .profile-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+        .profile-section .profile-actions button { flex:1; padding:10px; border-radius:var(--radius-sm); font-weight:600; font-size:13px; min-width:60px; transition:all 0.3s ease; }
+        .profile-section .profile-actions .btn-save { background:var(--primary-gradient); color:#fff; }
+        .profile-section .profile-actions .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--primary-light); }
+        .rules-content, .support-content {
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius-md); padding:20px; margin-bottom:16px;
+            line-height:2; font-size:15px; white-space:pre-wrap;
+        }
+        .rules-content h1, .rules-content h2, .rules-content h3 { margin:12px 0 6px; }
+        .rules-content ul, .rules-content ol { padding-right:24px; }
+        .support-item {
+            display:flex; align-items:center; gap:12px;
+            padding:10px 0; border-bottom:1px solid var(--border-color);
+        }
+        .support-item:last-child { border-bottom:none; }
+        .support-item .icon {
+            width:36px; height:36px; border-radius:50%;
+            background:var(--primary-light); color:var(--primary);
+            display:flex; align-items:center; justify-content:center;
+            font-size:16px; flex-shrink:0;
+        }
+        .support-item .info { flex:1; }
+        .support-item .info .label { font-size:12px; color:var(--text-muted); }
+        .support-item .info .value { font-size:15px; font-weight:600; color:var(--text-primary); }
+        .support-item .info .value a { color:var(--primary); text-decoration:none; }
+        .support-item .info .value a:hover { text-decoration:underline; }
+
+        /* ===== ADMIN ===== */
+        .admin-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0;
+        }
+        .admin-grid button {
+            padding:12px 8px; border-radius:var(--radius-sm);
+            font-weight:600; font-size:13px;
+            background:var(--bg-input); border:1px solid var(--border-color);
+            color:var(--text-primary); transition:all 0.2s ease;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+        }
+        .admin-grid button:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary); }
+        .admin-grid button.danger:hover { background:rgba(239,68,68,0.1); border-color:var(--danger); color:var(--danger); }
+        .admin-grid button.success:hover { background:var(--primary-light); border-color:var(--success); color:var(--success); }
+        .admin-section {
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius-md); padding:16px; margin-bottom:16px;
+        }
+        .admin-section h4 { font-size:16px; font-weight:700; margin-bottom:10px; }
+        .admin-section .admin-row {
+            display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px;
+        }
+        .admin-section .admin-row input, .admin-section .admin-row select {
+            flex:1; min-width:100px; padding:8px 12px;
+            border-radius:var(--radius-sm); border:1px solid var(--border-color);
+            background:var(--bg-input); color:var(--text-primary); font-size:13px;
+        }
+        .admin-section .admin-row button {
+            padding:8px 16px; border-radius:var(--radius-sm);
+            font-weight:600; font-size:13px;
+            background:var(--primary-gradient); color:#fff;
+            transition:all 0.2s ease;
+        }
+        .admin-section .admin-row button:hover { opacity:0.9; transform:translateY(-1px); }
+        .admin-section .admin-row button.danger { background:var(--danger); }
+        .my-ad-item {
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:10px;
+            display:flex; justify-content:space-between; align-items:center;
+            transition:all 0.3s ease;
+        }
+        .my-ad-item:hover { border-color:var(--primary); transform:translateX(-4px); }
+        .my-ad-item .info .title { font-weight:600; font-size:14px; }
+        .my-ad-item .info .sub { font-size:12px; color:var(--text-secondary); display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
+        .my-ad-item .info .sub .status { font-size:10px; padding:1px 12px; border-radius:var(--radius-full); font-weight:600; }
+        .my-ad-item .info .sub .status.pending { background:rgba(245,158,11,0.2); color:var(--gold); }
+        .my-ad-item .info .sub .status.approved { background:rgba(22,163,74,0.2); color:var(--success); }
+        .my-ad-item .info .sub .status.rejected { background:rgba(239,68,68,0.2); color:var(--danger); }
+        .my-ad-item .actions { display:flex; gap:6px; }
+        .my-ad-item .actions button { background:none; border:none; font-size:17px; padding:4px 6px; cursor:pointer; border-radius:var(--radius-sm); transition:all 0.2s ease; }
+        .my-ad-item .actions .edit { color:var(--primary); }
+        .my-ad-item .actions .edit:hover { background:var(--primary-light); transform:scale(1.1); }
+        .my-ad-item .actions .delete { color:var(--danger); }
+        .my-ad-item .actions .delete:hover { background:rgba(239,68,68,0.1); transform:scale(1.1); }
+        .favorite-item {
+            background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:var(--radius-sm); padding:12px; margin-bottom:10px;
+            display:flex; gap:14px; align-items:center;
+            cursor:pointer; transition:all 0.3s ease;
+        }
+        .favorite-item:hover { border-color:var(--primary); transform:translateX(-4px); }
+        .favorite-item img { width:60px; height:60px; border-radius:var(--radius-sm); object-fit:cover; background:var(--bg-input); flex-shrink:0; }
+        .favorite-item .info { flex:1; min-width:0; }
+        .favorite-item .info .title { font-weight:600; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .favorite-item .info .price { color:var(--primary); font-weight:700; font-size:15px; }
+        .favorite-item .info .meta { font-size:11px; color:var(--text-muted); }
+        .favorite-item .remove-fav { background:none; border:none; color:var(--danger); font-size:18px; cursor:pointer; padding:4px; transition:all 0.2s ease; }
+        .favorite-item .remove-fav:hover { transform:scale(1.2); }
+        .loading-spinner { text-align:center; padding:40px 0; color:var(--primary); }
+        .loading-spinner i { font-size:34px; animation:spin 1s linear infinite; }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
         @media (max-width:480px) {
             .ads-grid { grid-template-columns:1fr 1fr; gap:8px; }
             .action-grid { grid-template-columns:repeat(4, 1fr); gap:4px; }
@@ -854,8 +707,6 @@
             .action-item i { font-size:18px; }
             .modal-box { padding:20px 16px 24px; }
             .modal-box .action-buttons { grid-template-columns:1fr; }
-            .header .logo-text { font-size:20px; }
-            .header .logo-text span { font-size:9px; }
             .admin-grid { grid-template-columns:1fr 1fr; }
             .banner-overlay .banner-box { padding:20px 16px 24px; }
             .banner-overlay .banner-title { font-size:18px; }
@@ -870,10 +721,9 @@
 </head>
 <body>
 
-    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== BANNER OVERLAY (تبلیغ ۵ ثانیه‌ای) ===== -->
+    <!-- ===== BANNER OVERLAY ===== -->
     <div class="banner-overlay" id="bannerOverlay">
         <div class="banner-box" id="bannerBox">
             <button class="banner-close" id="bannerCloseBtn" onclick="closeBanner()"><i class="fa-solid fa-xmark"></i></button>
@@ -882,7 +732,7 @@
             <div class="banner-desc" id="bannerDesc">توضیحات تبلیغ</div>
             <div class="banner-timer" id="bannerTimerText">⏳ <span id="bannerTimer">5</span> ثانیه تا ادامه</div>
             <div class="banner-actions">
-                <a href="#" id="bannerLink" target="_blank" class="btn-link" id="bannerOpenBtn"><i class="fa-solid fa-arrow-left"></i> <span id="bannerOpenLabel">باز کردن لینک</span></a>
+                <a href="#" id="bannerLink" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-left"></i> <span id="bannerOpenLabel">باز کردن لینک</span></a>
                 <button class="btn-skip" id="bannerSkipBtn" onclick="closeBanner()"><span id="bannerSkipLabel">رد کردن</span></button>
             </div>
         </div>
@@ -922,7 +772,6 @@
             </div>
         </div>
 
-        <!-- نمایش بنرهای ویژه در صفحه -->
         <div id="bannerAdsContainer"></div>
 
         <div class="section-title">
@@ -965,8 +814,7 @@
         </button>
     </div>
 
-    <!-- ===== MODALS ===== -->
-    <!-- Add Ad Modal (ویزارد) -->
+    <!-- ===== ADD AD MODAL ===== -->
     <div class="modal-overlay-old" id="addAdModal">
         <div class="modal-box-old">
             <button class="modal-close" onclick="closeModal('addAdModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -1021,7 +869,7 @@
         </div>
     </div>
 
-    <!-- Ad Detail Modal -->
+    <!-- ===== AD DETAIL MODAL ===== -->
     <div class="modal-overlay" id="adDetailsModal">
         <div class="modal-box" id="adDetailBox">
             <button class="modal-close" onclick="closeAdDetail()"><i class="fa-solid fa-xmark"></i></button>
@@ -1029,7 +877,7 @@
         </div>
     </div>
 
-    <!-- Profile Tab -->
+    <!-- ===== TABS ===== -->
     <div id="profileTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
         <div class="profile-section">
@@ -1043,29 +891,21 @@
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- Favorites Tab -->
     <div id="favoritesTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="favTitle">❤️ علاقه‌مندی‌ها</h2>
         <div id="favoritesList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- Rules Tab -->
     <div id="rulesTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="rulesTitle">📜 قوانین و مقررات</h2>
-        <div class="rules-content" id="rulesContent">
-            <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
-        </div>
+        <div class="rules-content" id="rulesContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- Support Tab -->
     <div id="supportTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="supportTitle">🆘 پشتیبانی</h2>
-        <div class="support-content" id="supportContent">
-            <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
-        </div>
+        <div class="support-content" id="supportContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- Admin Tab -->
     <div id="adminTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="adminTitle">🔧 پنل مدیریت</h2>
         <div class="admin-grid">
@@ -1085,14 +925,15 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT (کامل با پشتیبانی دو زبانه)                     -->
+    <!-- JAVASCRIPT (هماهنگ کامل با ربات @AlsouqAlmaftuhiran_bot)    -->
     <!-- ============================================================ -->
     <script>
         // ============================================================
-        // CONFIGURATION
+        // CONFIGURATION - هماهنگ با Worker ربات
         // ============================================================
-        const API_BASE = 'https://your-worker-name.workers.dev/api';
-        const IMAGE_BASE = 'https://your-worker-name.workers.dev/image/';
+        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
+        const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
+        const BOT_USERNAME = '@AlsouqAlmaftuhiran_bot';
         const APP_NAME = 'جـدار';
 
         let guestId = localStorage.getItem('jedar_guest_id');
@@ -1118,410 +959,110 @@
         let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
         let isAdmin = false;
         let isSuperAdmin = false;
-
-        // وضعیت تبلیغ ۵ ثانیه‌ای
+        let bannerShown = false;
         let bannerTimer = 5;
         let bannerTimerInterval = null;
-        let bannerShown = false;
 
         // ============================================================
-        // TRANSLATIONS (دو زبانه کامل - فارسی و عربی)
+        // TRANSLATIONS (فارسی/عربی)
         // ============================================================
         const translations = {
             fa: {
-                // منو و عمومی
-                home: 'خانه',
-                add: 'ثبت',
-                favorites: 'علاقه‌مندی',
-                profile: 'پروفایل',
-                rules: 'قوانین',
-                support: 'پشتیبانی',
-                admin: 'مدیریت',
-                currency: 'تومان',
-                search: 'جستجو',
-                search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها',
-                show_tools: 'نمایش ابزارها',
-                hide_tools: 'مخفی کردن ابزارها',
-                refresh: 'بروزرسانی',
-                all: 'همه',
-                no_ads: 'هیچ آگهی‌ای موجود نیست',
-                loading_ads: 'در حال بارگذاری آگهی‌ها...',
-                currency_toman: 'تومان',
-                special_ads: 'تبلیغات ویژه',
-
-                // دسته‌بندی‌ها
-                pilgrimage: 'زیارت',
-                tourism: 'گردشگری',
-                medical: 'پزشکی',
-                beauty: 'زیبایی',
-                services: 'خدمات',
-                jobs: 'کاریابی',
-                real_estate: 'املاک',
-                vehicles: 'خودرو',
-
-                // ثبت آگهی
-                add_ad: 'ثبت آگهی جدید',
-                title: 'عنوان آگهی',
-                category: 'دسته‌بندی',
-                price: 'قیمت (تومان)',
-                next: 'بعدی',
-                prev: 'قبلی',
-                description: 'توضیحات',
-                location: 'موقعیت / شهر',
-                country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)',
-                upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس',
-                submit: 'ثبت آگهی',
+                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل',
+                rules: 'قوانین', support: 'پشتیبانی', admin: 'مدیریت',
+                currency: 'تومان', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
+                recent_ads: 'آخرین آگهی‌ها', show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها',
+                all: 'همه', no_ads: 'هیچ آگهی‌ای موجود نیست', loading_ads: 'در حال بارگذاری...',
+                pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی', beauty: 'زیبایی',
+                services: 'خدمات', jobs: 'کاریابی', real_estate: 'املاک', vehicles: 'خودرو',
+                add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی', category: 'دسته‌بندی', price: 'قیمت (تومان)',
+                next: 'بعدی', prev: 'قبلی', description: 'توضیحات', location: 'موقعیت / شهر',
+                country: 'کشور', images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید',
+                phone: 'شماره تماس', submit: 'ثبت آگهی',
                 ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.',
                 ad_error: 'خطا در ثبت آگهی',
-
-                // جزئیات آگهی
-                call: 'تماس',
-                whatsapp: 'واتساپ',
-                share: 'اشتراک',
-                add_fav: 'افزودن به علاقه‌مندی',
-                remove_fav: 'حذف از علاقه‌مندی',
+                call: 'تماس', whatsapp: 'واتساپ', share: 'اشتراک',
+                add_fav: 'افزودن به علاقه‌مندی', remove_fav: 'حذف از علاقه‌مندی',
                 no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
-                favorite_added: 'به علاقه‌مندی اضافه شد',
-                favorite_removed: 'از علاقه‌مندی حذف شد',
-                ad_not_found: 'آگهی یافت نشد',
-                error_loading: 'خطا در بارگذاری',
-                no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...',
-                review_success: 'نظر شما ثبت شد',
-                review_error: 'خطا در ثبت نظر',
-                submit_review: 'ارسال نظر',
-                comment: 'نظر خود را بنویسید...',
-
-                // پروفایل
-                profile_title: 'پروفایل',
-                username: 'نام کاربری',
-                fullname: 'نام کامل',
-                phone_label: 'شماره تلفن',
-                email_label: 'ایمیل',
-                save: 'ذخیره',
-                profile_saved: 'پروفایل ذخیره شد',
-                profile_error: 'خطا در ذخیره پروفایل',
+                favorite_added: 'به علاقه‌مندی اضافه شد', favorite_removed: 'از علاقه‌مندی حذف شد',
+                ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
+                no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...',
+                review_success: 'نظر شما ثبت شد', review_error: 'خطا در ثبت نظر',
+                submit_review: 'ارسال نظر', comment: 'نظر خود را بنویسید...',
+                profile_title: 'پروفایل', username: 'نام کاربری', fullname: 'نام کامل',
+                phone_label: 'شماره تلفن', email_label: 'ایمیل', save: 'ذخیره',
+                profile_saved: 'پروفایل ذخیره شد', profile_error: 'خطا در ذخیره پروفایل',
                 complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
-                my_ads: 'آگهی‌های من',
-                edit: 'ویرایش',
-                delete: 'حذف',
-                pending: 'در انتظار',
-                approved: 'تایید شده',
-                rejected: 'رد شده',
-                expired: 'منقضی',
+                my_ads: 'آگهی‌های من', edit: 'ویرایش', delete: 'حذف',
+                pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
                 confirm_delete: 'آیا از حذف اطمینان دارید؟',
-
-                // قوانین
-                rules_title: '📜 قوانین و مقررات',
-                no_rules: 'قوانینی ثبت نشده است.',
-
-                // پشتیبانی
-                support_title: '🆘 پشتیبانی',
-                support_phone: 'شماره تماس',
-                support_whatsapp: 'واتساپ',
-                support_telegram: 'تلگرام',
-                support_link: 'لینک پشتیبانی',
-                support_email: 'ایمیل',
+                rules_title: '📜 قوانین و مقررات', no_rules: 'قوانینی ثبت نشده است.',
+                support_title: '🆘 پشتیبانی', support_phone: 'شماره تماس', support_whatsapp: 'واتساپ',
+                support_telegram: 'تلگرام', support_link: 'لینک پشتیبانی', support_email: 'ایمیل',
                 no_support: 'اطلاعات پشتیبانی ثبت نشده است.',
-
-                // مدیریت
-                pending_ads: 'آگهی‌های در انتظار',
-                all_ads: 'همه آگهی‌ها',
-                users: 'کاربران',
-                admins: 'ادمین‌ها',
-                support_tickets: 'تیکت‌های پشتیبانی',
-                announcement: 'اطلاعیه',
-                stats: 'آمار',
-                export: 'خروجی',
-                approve: 'تایید',
-                reject: 'رد',
-                block: 'مسدود',
-                unblock: 'رفع انسداد',
-                delete_user: 'حذف کاربر',
-                add_admin: 'افزودن ادمین',
-                remove_admin: 'حذف ادمین',
-                reply: 'پاسخ',
-                send: 'ارسال',
-                no_data: 'هیچ داده‌ای موجود نیست',
-                no_permission: '⛔ دسترسی ندارید',
-                ad_approved: 'آگهی تایید شد',
-                ad_rejected: 'آگهی رد شد',
-                user_blocked: 'کاربر مسدود شد',
-                user_unblocked: 'انسداد کاربر رفع شد',
-                admin_added: 'ادمین اضافه شد',
-                admin_removed: 'ادمین حذف شد',
-                announcement_sent: 'اطلاعیه ارسال شد',
-                reply_sent: 'پاسخ ارسال شد',
-                today: 'امروز',
-                online: 'آنلاین',
-
-                // تبلیغ ۵ ثانیه‌ای
-                banner_open: 'باز کردن لینک',
-                banner_skip: 'رد کردن',
-                banner_seconds: 'ثانیه تا ادامه',
-
-                // هدر
-                header_subtitle: 'جهانی',
+                pending_ads: 'آگهی‌های در انتظار', all_ads: 'همه آگهی‌ها',
+                users: 'کاربران', admins: 'ادمین‌ها', support_tickets: 'تیکت‌های پشتیبانی',
+                announcement: 'اطلاعیه', stats: 'آمار', export: 'خروجی',
+                approve: 'تایید', reject: 'رد', block: 'مسدود', unblock: 'رفع انسداد',
+                delete_user: 'حذف کاربر', add_admin: 'افزودن ادمین', remove_admin: 'حذف ادمین',
+                reply: 'پاسخ', send: 'ارسال', no_data: 'هیچ داده‌ای موجود نیست',
+                no_permission: '⛔ دسترسی ندارید', ad_approved: 'آگهی تایید شد',
+                ad_rejected: 'آگهی رد شد', user_blocked: 'کاربر مسدود شد',
+                user_unblocked: 'انسداد کاربر رفع شد', admin_added: 'ادمین اضافه شد',
+                admin_removed: 'ادمین حذف شد', announcement_sent: 'اطلاعیه ارسال شد',
+                reply_sent: 'پاسخ ارسال شد', today: 'امروز', online: 'آنلاین',
+                banner_open: 'باز کردن لینک', banner_skip: 'رد کردن', banner_seconds: 'ثانیه تا ادامه',
+                header_subtitle: 'جهانی', currency_toman: 'تومان', special_ads: 'تبلیغات ویژه',
             },
             ar: {
-                // منو و عمومی
-                home: 'الرئيسية',
-                add: 'إضافة',
-                favorites: 'المفضلة',
-                profile: 'الملف الشخصي',
-                rules: 'القوانين',
-                support: 'الدعم',
-                admin: 'الإدارة',
-                currency: 'تومان',
-                search: 'بحث',
-                search_placeholder: 'ابحث في الإعلانات...',
-                recent_ads: 'آخر الإعلانات',
-                show_tools: 'إظهار الأدوات',
-                hide_tools: 'إخفاء الأدوات',
-                refresh: 'تحديث',
-                all: 'الجميع',
-                no_ads: 'لا توجد إعلانات',
-                loading_ads: 'جاري تحميل الإعلانات...',
-                currency_toman: 'تومان',
-                special_ads: 'إعلانات مميزة',
-
-                // دسته‌بندی‌ها
-                pilgrimage: 'زيارة',
-                tourism: 'سياحة',
-                medical: 'طبي',
-                beauty: 'تجميل',
-                services: 'خدمات',
-                jobs: 'توظيف',
-                real_estate: 'عقارات',
-                vehicles: 'سيارات',
-
-                // ثبت آگهی
-                add_ad: 'إعلان جديد',
-                title: 'عنوان الإعلان',
-                category: 'الفئة',
-                price: 'السعر (تومان)',
-                next: 'التالي',
-                prev: 'السابق',
-                description: 'الوصف',
-                location: 'الموقع / المدينة',
-                country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)',
-                upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف',
-                submit: 'نشر الإعلان',
-                ad_success: '✅ تم إرسال إعلانك للمراجعة.',
-                ad_error: 'فشل نشر الإعلان',
-
-                // جزئیات آگهی
-                call: 'اتصال',
-                whatsapp: 'واتساب',
-                share: 'مشاركة',
-                add_fav: 'أضف للمفضلة',
-                remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات',
-                favorite_added: 'تمت الإضافة إلى المفضلة',
-                favorite_removed: 'تمت الإزالة من المفضلة',
-                ad_not_found: 'الإعلان غير موجود',
-                error_loading: 'خطأ في التحميل',
-                no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...',
-                review_success: 'تم إرسال التقييم',
-                review_error: 'فشل إرسال التقييم',
-                submit_review: 'إرسال',
-                comment: 'اكتب تعليقك...',
-
-                // پروفایل
-                profile_title: 'الملف الشخصي',
-                username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني',
-                save: 'حفظ',
-                profile_saved: 'تم حفظ الملف الشخصي',
-                profile_error: 'فشل حفظ الملف الشخصي',
+                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
+                rules: 'القوانين', support: 'الدعم', admin: 'الإدارة',
+                currency: 'تومان', search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
+                recent_ads: 'آخر الإعلانات', show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات',
+                all: 'الجميع', no_ads: 'لا توجد إعلانات', loading_ads: 'جاري التحميل...',
+                pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي', beauty: 'تجميل',
+                services: 'خدمات', jobs: 'توظيف', real_estate: 'عقارات', vehicles: 'سيارات',
+                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة', price: 'السعر (تومان)',
+                next: 'التالي', prev: 'السابق', description: 'الوصف', location: 'الموقع / المدينة',
+                country: 'الدولة', images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل',
+                phone: 'رقم الهاتف', submit: 'نشر الإعلان',
+                ad_success: '✅ تم إرسال إعلانك للمراجعة.', ad_error: 'فشل نشر الإعلان',
+                call: 'اتصال', whatsapp: 'واتساب', share: 'مشاركة',
+                add_fav: 'أضف للمفضلة', remove_fav: 'إزالة من المفضلة',
+                no_favorites: 'لا توجد مفضلات', favorite_added: 'تمت الإضافة إلى المفضلة',
+                favorite_removed: 'تمت الإزالة من المفضلة', ad_not_found: 'الإعلان غير موجود',
+                error_loading: 'خطأ في التحميل', no_reviews: 'لا توجد تقييمات بعد',
+                loading_reviews: 'جاري تحميل التقييمات...', review_success: 'تم إرسال التقييم',
+                review_error: 'فشل إرسال التقييم', submit_review: 'إرسال', comment: 'اكتب تعليقك...',
+                profile_title: 'الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل',
+                phone_label: 'رقم الهاتف', email_label: 'البريد الإلكتروني', save: 'حفظ',
+                profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
                 complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
-                my_ads: 'إعلاناتي',
-                edit: 'تعديل',
-                delete: 'حذف',
-                pending: 'قيد المراجعة',
-                approved: 'تمت الموافقة',
-                rejected: 'مرفوض',
-                expired: 'منتهي',
+                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف',
+                pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
                 confirm_delete: 'هل أنت متأكد من الحذف؟',
-
-                // قوانین
-                rules_title: '📜 القوانين واللوائح',
-                no_rules: 'لم يتم تسجيل أي قوانين.',
-
-                // پشتیبانی
-                support_title: '🆘 الدعم',
-                support_phone: 'رقم الهاتف',
-                support_whatsapp: 'واتساب',
-                support_telegram: 'تيليجرام',
-                support_link: 'رابط الدعم',
-                support_email: 'البريد الإلكتروني',
+                rules_title: '📜 القوانين واللوائح', no_rules: 'لم يتم تسجيل أي قوانين.',
+                support_title: '🆘 الدعم', support_phone: 'رقم الهاتف', support_whatsapp: 'واتساب',
+                support_telegram: 'تيليجرام', support_link: 'رابط الدعم', support_email: 'البريد الإلكتروني',
                 no_support: 'لم يتم تسجيل معلومات الدعم.',
-
-                // مدیریت
-                pending_ads: 'الإعلانات قيد المراجعة',
-                all_ads: 'جميع الإعلانات',
-                users: 'المستخدمين',
-                admins: 'المشرفين',
-                support_tickets: 'تذاكر الدعم',
-                announcement: 'إشعار',
-                stats: 'الإحصائيات',
-                export: 'تصدير',
-                approve: 'موافقة',
-                reject: 'رفض',
-                block: 'حظر',
-                unblock: 'إلغاء الحظر',
-                delete_user: 'حذف المستخدم',
-                add_admin: 'إضافة مشرف',
-                remove_admin: 'حذف مشرف',
-                reply: 'رد',
-                send: 'إرسال',
-                no_data: 'لا توجد بيانات',
-                no_permission: '⛔ غير مصرح لك.',
-                ad_approved: 'تمت الموافقة على الإعلان',
-                ad_rejected: 'تم رفض الإعلان',
-                user_blocked: 'تم حظر المستخدم',
-                user_unblocked: 'تم إلغاء حظر المستخدم',
-                admin_added: 'تمت إضافة المشرف',
-                admin_removed: 'تم حذف المشرف',
-                announcement_sent: 'تم إرسال الإشعار',
-                reply_sent: 'تم إرسال الرد',
-                today: 'اليوم',
-                online: 'نشط',
-
-                // تبلیغ ۵ ثانیه‌ای
-                banner_open: 'فتح الرابط',
-                banner_skip: 'تخطي',
-                banner_seconds: 'ثانية حتى المتابعة',
-
-                // هدر
-                header_subtitle: 'العالمية',
+                pending_ads: 'الإعلانات قيد المراجعة', all_ads: 'جميع الإعلانات',
+                users: 'المستخدمين', admins: 'المشرفين', support_tickets: 'تذاكر الدعم',
+                announcement: 'إشعار', stats: 'الإحصائيات', export: 'تصدير',
+                approve: 'موافقة', reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر',
+                delete_user: 'حذف المستخدم', add_admin: 'إضافة مشرف', remove_admin: 'حذف مشرف',
+                reply: 'رد', send: 'إرسال', no_data: 'لا توجد بيانات',
+                no_permission: '⛔ غير مصرح لك.', ad_approved: 'تمت الموافقة على الإعلان',
+                ad_rejected: 'تم رفض الإعلان', user_blocked: 'تم حظر المستخدم',
+                user_unblocked: 'تم إلغاء حظر المستخدم', admin_added: 'تمت إضافة المشرف',
+                admin_removed: 'تم حذف المشرف', announcement_sent: 'تم إرسال الإشعار',
+                reply_sent: 'تم إرسال الرد', today: 'اليوم', online: 'نشط',
+                banner_open: 'فتح الرابط', banner_skip: 'تخطي', banner_seconds: 'ثانية حتى المتابعة',
+                header_subtitle: 'العالمية', currency_toman: 'تومان', special_ads: 'إعلانات مميزة',
             }
         };
 
         function t(key) {
             return translations[currentLang]?.[key] || key;
-        }
-
-        // ============================================================
-        // LANGUAGE & THEME
-        // ============================================================
-        function updateLanguage() {
-            const lang = currentLang;
-            const isFa = lang === 'fa';
-            const btn = document.getElementById('langBtn');
-            btn.textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
-
-            // به‌روزرسانی تمام المان‌ها
-            const elements = {
-                'headerSubtitle': 'header_subtitle',
-                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
-                'actPilgrimage': 'pilgrimage',
-                'actTourism': 'tourism',
-                'actMedical': 'medical',
-                'actBeauty': 'beauty',
-                'actServices': 'services',
-                'actJobs': 'jobs',
-                'actRealEstate': 'real_estate',
-                'actVehicles': 'vehicles',
-                'searchBtn': 'search',
-                'searchInput': 'search_placeholder',
-                'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home',
-                'navAddLabel': 'add',
-                'navFavLabel': 'favorites',
-                'navProfileLabel': 'profile',
-                'navRulesLabel': 'rules',
-                'navSupportLabel': 'support',
-                'navAdminLabel': 'admin',
-                'addAdTitle': 'add_ad',
-                'adTitleLabel': 'title',
-                'adCategoryLabel': 'category',
-                'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next',
-                'adDescLabel': 'description',
-                'adLocationLabel': 'location',
-                'adCountryLabel': 'country',
-                'wizardPrevBtn2': 'prev',
-                'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images',
-                'uploadClickLabel': 'upload_click',
-                'adPhoneLabel': 'phone',
-                'wizardPrevBtn3': 'prev',
-                'submitAdBtn': 'submit',
-                'profileTitle': 'profile_title',
-                'profileUsernameLabel': 'username',
-                'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label',
-                'profileEmailLabel': 'email_label',
-                'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads',
-                'favTitle': 'favorites',
-                'rulesTitle': 'rules_title',
-                'supportTitle': 'support_title',
-                'adminTitle': 'admin',
-                'adminPendingLabel': 'pending_ads',
-                'adminAllAdsLabel': 'all_ads',
-                'adminUsersLabel': 'users',
-                'adminAdminsLabel': 'admins',
-                'adminSupportLabel': 'support_tickets',
-                'adminAnnounceLabel': 'announcement',
-                'adminStatsLabel': 'stats',
-                'adminExportLabel': 'export',
-                'bannerOpenLabel': 'banner_open',
-                'bannerSkipLabel': 'banner_skip',
-                'bannerTimerText': 'banner_seconds',
-            };
-
-            for (const [id, key] of Object.entries(elements)) {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        if (el.placeholder !== undefined) el.placeholder = t(key);
-                    } else {
-                        el.textContent = t(key);
-                    }
-                }
-            }
-
-            // دسته‌بندی‌ها
-            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
-                if (idx === 0) chip.textContent = t('all');
-                else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
-                }
-            });
-
-            // گزینه‌های دسته‌بندی در فرم
-            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
-                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles', 'electronics', 'education'];
-                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
-            });
-
-            document.documentElement.lang = lang;
-            document.documentElement.dir = 'rtl';
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
-            localStorage.setItem('jedar_lang', currentLang);
-            updateLanguage();
-            showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
-            localStorage.setItem('jedar_theme', currentTheme);
         }
 
         // ============================================================
@@ -1531,7 +1072,7 @@
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
             toast.innerHTML = `
                 <i class="fa-solid ${icons[type] || icons.success}"></i>
                 <span>${msg}</span>
@@ -1572,7 +1113,7 @@
             try {
                 const res = await fetch(url, { ...options, headers });
                 const text = await res.text();
-                try { return JSON.parse(text); } catch (e) { throw new Error(`پاسخ سرور معتبر نیست: ${text.substring(0,100)}`); }
+                try { return JSON.parse(text); } catch (e) { throw new Error(`پاسخ سرور معتبر نیست`); }
             } catch (err) {
                 console.error('❌ API Error:', err);
                 return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
@@ -1580,7 +1121,78 @@
         }
 
         // ============================================================
-        // TOGGLE UPPER SECTION
+        // LANGUAGE & THEME
+        // ============================================================
+        function updateLanguage() {
+            const isFa = currentLang === 'fa';
+            document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
+            const elements = {
+                'headerSubtitle': 'header_subtitle',
+                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism', 'actMedical': 'medical',
+                'actBeauty': 'beauty', 'actServices': 'services', 'actJobs': 'jobs',
+                'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'searchBtn': 'search', 'searchInput': 'search_placeholder',
+                'adsTitle': 'recent_ads',
+                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites',
+                'navProfileLabel': 'profile', 'navRulesLabel': 'rules', 'navSupportLabel': 'support',
+                'navAdminLabel': 'admin',
+                'addAdTitle': 'add_ad', 'adTitleLabel': 'title', 'adCategoryLabel': 'category',
+                'adPriceLabel': 'price', 'wizardNextBtn1': 'next',
+                'adDescLabel': 'description', 'adLocationLabel': 'location', 'adCountryLabel': 'country',
+                'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next',
+                'adImagesLabel': 'images', 'uploadClickLabel': 'upload_click', 'adPhoneLabel': 'phone',
+                'wizardPrevBtn3': 'prev', 'submitAdBtn': 'submit',
+                'profileTitle': 'profile_title', 'profileUsernameLabel': 'username',
+                'profileFullnameLabel': 'fullname', 'profilePhoneLabel': 'phone_label',
+                'profileEmailLabel': 'email_label', 'profileSaveBtn': 'save', 'myAdsTitle': 'my_ads',
+                'favTitle': 'favorites', 'rulesTitle': 'rules_title', 'supportTitle': 'support_title',
+                'adminTitle': 'admin', 'adminPendingLabel': 'pending_ads', 'adminAllAdsLabel': 'all_ads',
+                'adminUsersLabel': 'users', 'adminAdminsLabel': 'admins', 'adminSupportLabel': 'support_tickets',
+                'adminAnnounceLabel': 'announcement', 'adminStatsLabel': 'stats', 'adminExportLabel': 'export',
+                'bannerOpenLabel': 'banner_open', 'bannerSkipLabel': 'banner_skip',
+            };
+            for (const [id, key] of Object.entries(elements)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                        if (el.placeholder !== undefined) el.placeholder = t(key);
+                    } else {
+                        el.textContent = t(key);
+                    }
+                }
+            }
+            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
+                if (idx === 0) chip.textContent = t('all');
+                else {
+                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
+                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+                }
+            });
+            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
+                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles', 'electronics', 'education'];
+                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
+            });
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = 'rtl';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
+            localStorage.setItem('jedar_lang', currentLang);
+            updateLanguage();
+            showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+            localStorage.setItem('jedar_theme', currentTheme);
+        }
+
+        // ============================================================
+        // TOGGLE SECTION
         // ============================================================
         function toggleUpperSection() {
             upperSectionOpen = !upperSectionOpen;
@@ -1605,8 +1217,8 @@
             if (bannerShown) return;
             try {
                 const data = await apiCall('/banner/splash');
-                if (data.success && data.banner && data.banner.is_active) {
-                    const banner = data.banner;
+                if (data.success && data.splash && data.splash.is_active) {
+                    const banner = data.splash;
                     document.getElementById('bannerImage').src = normalizeImageUrl(banner.image_id) || '';
                     document.getElementById('bannerTitle').textContent = banner.title || 'تبلیغ';
                     document.getElementById('bannerDesc').textContent = banner.description || '';
@@ -1614,13 +1226,8 @@
                     const duration = banner.duration || 5;
                     bannerTimer = duration;
                     document.getElementById('bannerTimer').textContent = duration;
-
-                    // نمایش بنر
-                    const overlay = document.getElementById('bannerOverlay');
-                    overlay.classList.add('show');
+                    document.getElementById('bannerOverlay').classList.add('show');
                     bannerShown = true;
-
-                    // شروع تایمر
                     if (bannerTimerInterval) clearInterval(bannerTimerInterval);
                     bannerTimerInterval = setInterval(() => {
                         bannerTimer--;
@@ -1628,17 +1235,11 @@
                         if (bannerTimer <= 0) {
                             clearInterval(bannerTimerInterval);
                             bannerTimerInterval = null;
-                            // فعال کردن دکمه رد کردن
                             document.getElementById('bannerSkipBtn').style.opacity = '1';
                             document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
-                            // بعد از ۵ ثانیه اضافی بسته می‌شود
-                            setTimeout(() => {
-                                closeBanner();
-                            }, 1000);
+                            setTimeout(() => closeBanner(), 1000);
                         }
                     }, 1000);
-
-                    // غیرفعال کردن دکمه رد کردن تا پایان تایمر
                     document.getElementById('bannerSkipBtn').style.opacity = '0.5';
                     document.getElementById('bannerSkipBtn').style.pointerEvents = 'none';
                     setTimeout(() => {
@@ -1646,18 +1247,12 @@
                         document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
                     }, duration * 1000);
                 }
-            } catch (err) {
-                console.error('Error loading splash banner:', err);
-            }
+            } catch (err) { console.error('Error loading splash banner:', err); }
         }
 
         function closeBanner() {
-            const overlay = document.getElementById('bannerOverlay');
-            overlay.classList.remove('show');
-            if (bannerTimerInterval) {
-                clearInterval(bannerTimerInterval);
-                bannerTimerInterval = null;
-            }
+            document.getElementById('bannerOverlay').classList.remove('show');
+            if (bannerTimerInterval) { clearInterval(bannerTimerInterval); bannerTimerInterval = null; }
         }
 
         // ============================================================
@@ -1685,9 +1280,7 @@
                         container.appendChild(div);
                     });
                 }
-            } catch (err) {
-                console.error('Error loading inline banners:', err);
-            }
+            } catch (err) { console.error('Error loading inline banners:', err); }
         }
 
         // ============================================================
@@ -1699,24 +1292,19 @@
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
-            const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
+            document.getElementById('adContact').value = profile.phone || '';
             checkAdminStatus();
         }
 
         async function checkAdminStatus() {
             try {
                 const data = await apiCall(`/profile/${guestId}`);
-                if (data.success && data.data) {
-                    const user = data.data;
-                    if (user.is_admin || user.is_super_admin) {
-                        isAdmin = true;
-                        document.getElementById('adminTabBtn').style.display = 'flex';
-                        if (user.is_super_admin) isSuperAdmin = true;
-                    } else {
-                        isAdmin = false;
-                        document.getElementById('adminTabBtn').style.display = 'none';
-                    }
+                if (data.success && data.user) {
+                    const user = data.user;
+                    isAdmin = user.is_admin || user.is_super_admin || false;
+                    isSuperAdmin = user.is_super_admin || false;
+                    if (isAdmin) document.getElementById('adminTabBtn').style.display = 'flex';
+                    else document.getElementById('adminTabBtn').style.display = 'none';
                 }
             } catch (e) { console.error('checkAdminStatus error:', e); }
         }
@@ -1728,23 +1316,11 @@
                 phone: document.getElementById('profilePhone').value.trim(),
                 email: document.getElementById('profileEmail').value.trim(),
             };
-            if (!profile.phone) {
-                showToast(t('complete_profile_first'), 'warning');
-                return;
-            }
+            if (!profile.phone) { showToast(t('complete_profile_first'), 'warning'); return; }
             localStorage.setItem('jedar_profile', JSON.stringify(profile));
             userProfile = profile;
-            const phoneInput = document.getElementById('adContact');
-            if (phoneInput && profile.phone) phoneInput.value = profile.phone;
-            const res = await apiCall('/profile/update', {
-                method: 'POST',
-                body: JSON.stringify({ username: profile.username, fullname: profile.fullname, email: profile.email })
-            });
-            if (res.success) {
-                showToast(t('profile_saved'), 'success');
-            } else {
-                showToast(t('profile_error'), 'error');
-            }
+            document.getElementById('adContact').value = profile.phone;
+            showToast(t('profile_saved'), 'success');
         }
 
         function isProfileComplete() {
@@ -1762,8 +1338,8 @@
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/ads');
-                if (data.success && data.data && data.data.length > 0) {
-                    allAds = data.data.map(ad => {
+                if (data.success && data.ads && data.ads.length > 0) {
+                    allAds = data.ads.map(ad => {
                         if (ad.image_ids && typeof ad.image_ids === 'string') {
                             try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
                         } else if (!ad.image_ids) ad.image_ids = [];
@@ -1779,7 +1355,6 @@
                     grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 }
             } catch (err) {
-                console.error('❌ fetchAds error:', err);
                 grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
             }
             isUpdating = false;
@@ -1795,18 +1370,13 @@
             ads.forEach(ad => {
                 const card = document.createElement('div');
                 card.className = 'ad-card';
-                card.dataset.adId = ad.id;
                 card.onclick = () => openAdDetail(ad.id);
-
-                let imgSrc = '';
-                if (ad.image_ids && ad.image_ids.length > 0) imgSrc = ad.image_ids[0];
+                let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
-
                 const isFav = favorites.includes(ad.id);
                 const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-
                 card.innerHTML = `
                     <div class="ad-image">
                         ${imgHtml}
@@ -1831,19 +1401,15 @@
             });
         }
 
-        // ============================================================
-        // CATEGORIES
-        // ============================================================
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
-            const catLabels = cats.map(c => t(c));
             container.innerHTML = '';
-            catLabels.forEach((cat, i) => {
+            cats.forEach((cat, i) => {
                 const chip = document.createElement('span');
                 chip.className = 'category-chip' + (i === 0 ? ' active' : '');
-                chip.textContent = cat;
-                chip.onclick = () => filterAds(cats[i]);
+                chip.textContent = t(cat);
+                chip.onclick = () => filterAds(cat);
                 container.appendChild(chip);
             });
         }
@@ -1878,7 +1444,7 @@
             if (currentTab === 'support') loadSupport();
             checkAdminStatus();
             loadInlineBanners();
-            showToast(t('refresh'), 'success');
+            showToast('✅ بروزرسانی شد', 'success');
         }
 
         // ============================================================
@@ -1888,16 +1454,12 @@
             currentTab = tab;
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
             document.querySelector(`.bottom-nav .nav-item[data-tab="${tab}"]`)?.classList.add('active');
-
-            // مخفی کردن همه تب‌ها
             document.getElementById('app').style.display = 'none';
             document.getElementById('profileTab').style.display = 'none';
             document.getElementById('favoritesTab').style.display = 'none';
             document.getElementById('rulesTab').style.display = 'none';
             document.getElementById('supportTab').style.display = 'none';
             document.getElementById('adminTab').style.display = 'none';
-
-            // نمایش تب انتخاب شده
             if (tab === 'home') {
                 document.getElementById('app').style.display = 'block';
             } else if (tab === 'profile') {
@@ -1929,14 +1491,9 @@
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/rules');
-                if (data.success && data.rules) {
-                    container.innerHTML = data.rules;
-                } else {
-                    container.innerHTML = `<div class="text-secondary">${t('no_rules')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
-            }
+                if (data.success && data.rules) container.innerHTML = data.rules;
+                else container.innerHTML = `<div class="text-secondary">${t('no_rules')}</div>`;
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
 
         async function loadSupport() {
@@ -1973,9 +1530,7 @@
                 } else {
                     container.innerHTML = `<div class="text-secondary">${t('no_support')}</div>`;
                 }
-            } catch (err) {
-                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
-            }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
 
         // ============================================================
@@ -1984,15 +1539,13 @@
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
             if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
-
             const galleryImages = (ad.image_ids || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
             let galleryIndex = 0;
             let galleryHtml = '';
             if (galleryImages.length > 0) {
-                let imgSrc = galleryImages[0];
                 galleryHtml = `
                     <div class="ad-gallery">
-                        <img id="detailGalleryImg" src="${imgSrc}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
+                        <img id="detailGalleryImg" src="${galleryImages[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
                     </div>
                     ${galleryImages.length > 1 ? `
                         <div class="gallery-controls">
@@ -2007,10 +1560,8 @@
             } else {
                 galleryHtml = `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
             }
-
             const phone = ad.phone || '';
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-
             let html = `
                 <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
                 ${galleryHtml}
@@ -2056,25 +1607,19 @@
             window.detailGalleryPrev = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
-                const img = document.getElementById('detailGalleryImg');
-                if (img) img.src = galleryImages[galleryIndex];
-                const idx = document.getElementById('detailGalleryIndex');
-                if (idx) idx.textContent = galleryIndex + 1;
+                document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
+                document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
             };
             window.detailGalleryNext = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex + 1) % galleryImages.length;
-                const img = document.getElementById('detailGalleryImg');
-                if (img) img.src = galleryImages[galleryIndex];
-                const idx = document.getElementById('detailGalleryIndex');
-                if (idx) idx.textContent = galleryIndex + 1;
+                document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
+                document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
             };
         }
 
         function closeAdDetail() {
-            const modal = document.getElementById('adDetailsModal');
-            modal.style.animation = 'modalOverlayFade 0.3s reverse';
-            setTimeout(() => { modal.classList.remove('show'); modal.style.animation = ''; }, 300);
+            document.getElementById('adDetailsModal').classList.remove('show');
         }
 
         function shareAd(adId, title) {
@@ -2083,15 +1628,7 @@
                 navigator.share({ title, text: `🔥 ${title} - J-DAR`, url }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success'))
-                .catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = url;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showToast('🔗 لینک کپی شد', 'success');
-                });
+                .catch(() => showToast('🔗 ' + url, 'info'));
             }
         }
 
@@ -2141,9 +1678,9 @@
             const container = document.getElementById('detailReviews');
             try {
                 const data = await apiCall(`/reviews?adId=${adId}`);
-                if (data.success && data.data && data.data.length > 0) {
+                if (data.success && data.reviews && data.reviews.length > 0) {
                     container.innerHTML = '';
-                    data.data.forEach(r => {
+                    data.reviews.forEach(r => {
                         const div = document.createElement('div');
                         div.className = 'review-item';
                         div.innerHTML = `
@@ -2303,12 +1840,8 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() {
-            if (wizardStep < 3) { wizardStep++; updateWizard(); }
-        }
-        function wizardPrev() {
-            if (wizardStep > 1) { wizardStep--; updateWizard(); }
-        }
+        function wizardNext() { if (wizardStep < 3) { wizardStep++; updateWizard(); } }
+        function wizardPrev() { if (wizardStep > 1) { wizardStep--; updateWizard(); } }
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
@@ -2356,14 +1889,13 @@
         }
 
         // ============================================================
-        // SUBMIT AD
+        // SUBMIT AD (هماهنگ با Worker)
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
             }
-
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
@@ -2371,16 +1903,13 @@
             const location = document.getElementById('adLocation').value.trim();
             const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
-
             if (!title || !price || !desc || !location) {
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
-
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.textContent = '...در حال ثبت';
-
             try {
                 const payload = {
                     username: guestId,
@@ -2393,14 +1922,10 @@
                     phone: contact,
                     images: wizardImagesBase64
                 };
-
-                console.log('📤 ارسال آگهی:', payload);
-
                 const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-
                 if (data.success) {
                     showToast(t('ad_success'), 'success');
                     closeModal('addAdModal');
@@ -2416,7 +1941,6 @@
                     showToast(data.error || t('ad_error'), 'error');
                 }
             } catch (err) {
-                console.error('❌ خطا در ثبت آگهی:', err);
                 showToast(err.message || t('ad_error'), 'error');
             } finally {
                 btn.disabled = false;
@@ -2437,21 +1961,15 @@
             wizardStep = 1;
             updateWizard();
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            const phoneInput = document.getElementById('adContact');
-            phoneInput.value = profile.phone || '';
+            document.getElementById('adContact').value = profile.phone || '';
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
-        document.querySelectorAll('.modal-overlay-old').forEach(overlay => {
-            overlay.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('show');
-            });
-        });
 
         // ============================================================
-        // ADMIN FUNCTIONS (هماهنگ با Worker)
+        // ADMIN FUNCTIONS (هماهنگ کامل با Worker ربات)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
@@ -2581,7 +2099,7 @@
                             <div class="info">
                                 <div class="title">${user.first_name || user.username || user.telegram_id}</div>
                                 <div class="sub">📱 ${user.phone || 'ندارد'}</div>
-                                <div class="sub">${user.is_blocked ? '🚫 ' + t('blocked') : '✅ ' + t('active')}</div>
+                                <div class="sub">${user.is_blocked ? '🚫 مسدود' : '✅ فعال'}</div>
                             </div>
                             <div class="actions">
                                 ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
@@ -2644,8 +2162,8 @@
 
         async function adminViewUser(userId) {
             const data = await apiCall(`/profile/${userId}`);
-            if (data.success && data.data) {
-                const user = data.data;
+            if (data.success && data.user) {
+                const user = data.user;
                 alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nنقش: ${user.role || 'عادی'}`);
             } else {
                 showToast('خطا در دریافت اطلاعات', 'error');
@@ -2689,7 +2207,7 @@
         async function adminAddAdmin() {
             const userId = document.getElementById('newAdminId').value.trim();
             if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const role = prompt('نقش: (admin / sub_admin / price_admin / payment_admin / user_manager)');
+            const role = prompt('نقش: (ad_admin / user_admin / banner_admin / support_admin / super_admin)');
             if (!role) return;
             const data = await apiCall('/admin/add', {
                 method: 'POST',
@@ -2860,37 +2378,22 @@
         // ============================================================
         // INIT
         // ============================================================
-        // Theme
         document.documentElement.setAttribute('data-theme', currentTheme);
         document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
-
-        // Language
         updateLanguage();
-
-        // بارگذاری اولیه
         fetchAds(true);
         loadProfile();
         loadInlineBanners();
-
-        // بارگذاری تبلیغ اسپلش با تأخیر
-        setTimeout(() => {
-            loadSplashBanner();
-        }, 800);
-
-        // جستجو با Enter
+        setTimeout(() => { loadSplashBanner(); }, 800);
         document.getElementById('searchInput').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') searchAds();
         });
+        setTimeout(() => { toggleUpperSection(); }, 500);
 
-        // باز کردن منو
-        setTimeout(() => {
-            toggleUpperSection();
-        }, 500);
-
-        console.log(`🚀 ${APP_NAME} – نسخه نهایی دو زبانه (فارسی/عربی)`);
+        console.log(`🚀 ${APP_NAME} – هماهنگ با ربات ${BOT_USERNAME}`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
-        console.log(`🌐 زبان فعلی: ${currentLang}`);
+        console.log(`🌐 زبان: ${currentLang}`);
     </script>
 </body>
-            </html>
+                                                             </html>
