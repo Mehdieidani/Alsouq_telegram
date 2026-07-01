@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جـدار | پلتفرم جهانی</title>
+    <title>جـدار بازار</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1796,7 +1796,7 @@
     <!-- MAIN APP -->
     <div id="app">
         <div class="header">
-            <div class="logo-text">جـدار <span id="headerSubtitle">جهانی</span></div>
+            <div class="logo-text">جـدار <span id="headerSubtitle">بازار</span></div>
             <div class="header-actions">
                 <button class="lang-switch-btn" id="langBtn" onclick="toggleLanguage()">🇦🇪 عربي</button>
                 <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
@@ -2623,7 +2623,7 @@
                 card.innerHTML = `
                     <div class="ad-image">
                         ${imgHtml}
-                        <div class="watermark">J-DAR</div>
+                        <div class="watermark">جـدار</div>
                         <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
                             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </div>
@@ -2876,7 +2876,7 @@
         function shareAd(adId, title) {
             const url = `https://j-dar.ir/ad/${adId}`;
             if (navigator.share) {
-                navigator.share({ title, text: `🔥 ${title} - J-DAR`, url }).catch(() => {});
+                navigator.share({ title, text: `🔥 ${title} - جـدار`, url }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success'))
                     .catch(() => showToast('🔗 ' + url, 'info'));
@@ -2957,7 +2957,7 @@
         }
 
         // ============================================================
-        // FAVORITES
+        // FAVORITES (ثابت و فعال)
         // ============================================================
         async function toggleFavorite(adId) {
             const isFav = favorites.includes(adId);
@@ -3154,7 +3154,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD
+        // SUBMIT AD (ارسال به ربات)
         // ============================================================
         async function submitAd() {
             if (!isProfileComplete()) {
@@ -3192,7 +3192,7 @@
                     body: JSON.stringify(payload)
                 });
                 if (data.success) {
-                    showToast(t('ad_success'), 'success');
+                    showToast('✅ آگهی شما ثبت شد و برای تایید به ربات ارسال گردید', 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -3203,10 +3203,10 @@
                     fetchAds(true);
                     fetchMyAds();
                 } else {
-                    showToast(data.error || t('ad_error'), 'error');
+                    showToast(data.error || '❌ خطا در ثبت آگهی', 'error');
                 }
             } catch (err) {
-                showToast(err.message || t('ad_error'), 'error');
+                showToast(err.message || '❌ خطا در ثبت آگهی', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = t('submit');
@@ -3310,7 +3310,7 @@
                 body: JSON.stringify({ adId, adminId: guestId })
             });
             if (data.success) {
-                showToast(t('ad_approved'), 'success');
+                showToast('✅ آگهی تایید شد و در صفحه نمایش داده می‌شود', 'success');
                 adminPendingAds();
                 fetchAds(false);
             } else {
@@ -3326,7 +3326,7 @@
                 body: JSON.stringify({ adId, reason, adminId: guestId })
             });
             if (data.success) {
-                showToast(t('ad_rejected'), 'success');
+                showToast('❌ آگهی رد شد', 'warning');
                 adminPendingAds();
                 fetchAds(false);
             } else {
@@ -3341,7 +3341,7 @@
                 body: JSON.stringify({ adId, adminId: guestId })
             });
             if (data.success) {
-                showToast('آگهی حذف شد', 'success');
+                showToast('🗑 آگهی حذف شد', 'success');
                 adminAllAds();
                 fetchAds(false);
             } else {
@@ -3663,10 +3663,12 @@
         });
         setTimeout(() => { toggleUpperSection(); }, 500);
 
-        console.log(`🚀 جـدار – هماهنگ با ربات ${BOT_USERNAME}`);
+        console.log(`🚀 جـدار بازار – هماهنگ با ربات ${BOT_USERNAME}`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🌐 زبان: ${currentLang}`);
+        console.log('✅ ثبت آگهی → ارسال به ربات → تایید/رد → نمایش در صفحه');
+        console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
     </script>
 </body>
     </html>
