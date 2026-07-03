@@ -566,7 +566,7 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* تصویر با کیفیت بالا - تنظیمات جدید */
+        /* تصویر با کیفیت بالا */
         .ad-card .ad-image {
             width: 100%;
             aspect-ratio: 4/3;
@@ -578,12 +578,11 @@
         .ad-card .ad-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* نمایش کامل تصویر بدون برش */
             background: var(--bg-input);
             transition: transform 0.5s ease;
             image-rendering: auto;
             -ms-interpolation-mode: bicubic;
-            /* کیفیت بالا در نمایشگرهای رتینا */
         }
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
             .ad-card .ad-image img {
@@ -591,7 +590,7 @@
             }
         }
         .ad-card:hover .ad-image img {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .ad-card .ad-image .no-image {
@@ -1565,7 +1564,7 @@
         @media (max-width: 480px) {
             .ads-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 10px;
             }
             .action-grid {
                 grid-template-columns: repeat(4, 1fr);
@@ -2851,7 +2850,6 @@
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetail(ad.id);
                 let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
-                // استفاده از تصویر با کیفیت بالا با srcset
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openImageZoom('${imgSrc}')" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
