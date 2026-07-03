@@ -2023,7 +2023,7 @@
         let reviewRating = 0;
 
         // ============================================================
-        // TRANSLATIONS
+        // TRANSLATIONS (بخش ترجمه‌ها همانند قبل)
         // ============================================================
         const translations = {
             fa: {
@@ -2569,7 +2569,7 @@
         }
 
         // ============================================================
-        // ADS
+        // ADS (اصلاح شده)
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2577,9 +2577,20 @@
             const grid = document.getElementById('adsGrid');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/ads');
+                // تلاش برای دریافت از endpoint اصلی
+                let data = await apiCall('/ads');
+                console.log('📡 پاسخ از /ads:', data);
+
+                // اگر پاسخ موفق نبود یا لیست خالی بود، با پارامتر status=approved امتحان کن
+                if (!data.success || !data.ads || data.ads.length === 0) {
+                    console.warn('⚠️ /ads خالی یا ناموفق بود، تلاش با /ads?status=approved');
+                    data = await apiCall('/ads?status=approved');
+                    console.log('📡 پاسخ از /ads?status=approved:', data);
+                }
+
                 if (data.success && data.ads && data.ads.length > 0) {
                     allAds = data.ads.map(ad => {
+                        // پردازش تصاویر
                         if (ad.image_ids && typeof ad.image_ids === 'string') {
                             try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
                         } else if (!ad.image_ids) ad.image_ids = [];
@@ -2594,11 +2605,14 @@
                     loadFavorites();
                 } else {
                     grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                        `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    // لاگ خطا برای عیب‌یابی
+                    console.error('❌ داده‌های آگهی دریافت نشد:', data);
                 }
             } catch (err) {
+                console.error('❌ خطا در fetchAds:', err);
                 grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
             }
             isUpdating = false;
         }
@@ -3125,21 +3139,15 @@
 
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
-            console.log('📸 تعداد فایل‌های انتخاب شده:', files.length);
-            
             if (wizardImagesBase64.length + files.length > 4) {
                 showToast('حداکثر ۴ تصویر مجاز است', 'error');
                 this.value = '';
                 return;
             }
-            
             files.forEach(file => {
-                console.log('📸 فایل:', file.name, file.size);
                 const reader = new FileReader();
                 reader.onload = function(ev) {
-                    const base64 = ev.target.result;
-                    wizardImagesBase64.push(base64);
-                    console.log(`✅ تصویر اضافه شد. تعداد کل: ${wizardImagesBase64.length}`);
+                    wizardImagesBase64.push(ev.target.result);
                     renderWizardImages();
                 };
                 reader.readAsDataURL(file);
@@ -3150,7 +3158,6 @@
         function renderWizardImages() {
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
-            console.log('🖼 رندر تصاویر:', wizardImagesBase64.length);
             wizardImagesBase64.forEach((base64, index) => {
                 const item = document.createElement('div');
                 item.className = 'image-preview-item';
@@ -3164,7 +3171,6 @@
 
         function removeWizardImage(index) {
             wizardImagesBase64.splice(index, 1);
-            console.log(`🗑 تصویر حذف شد. تعداد باقی‌مانده: ${wizardImagesBase64.length}`);
             renderWizardImages();
         }
 
@@ -3176,7 +3182,6 @@
                 showToast(t('complete_profile_first'), 'warning');
                 return;
             }
-            
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
@@ -3184,23 +3189,21 @@
             const location = document.getElementById('adLocation').value.trim();
             const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
-            
+
             if (!title || !price || !desc || !location) {
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
-            
-            console.log('📸 تعداد تصاویر برای ارسال:', wizardImagesBase64.length);
-            
+
             if (wizardImagesBase64.length === 0) {
                 showToast('⚠️ لطفاً حداقل یک تصویر انتخاب کنید', 'warning');
                 return;
             }
-            
+
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.textContent = '...در حال ثبت';
-            
+
             try {
                 const payload = {
                     username: guestId,
@@ -3213,21 +3216,16 @@
                     phone: contact,
                     images: wizardImagesBase64
                 };
-                
-                console.log('📤 ارسال به API:');
-                console.log('  👤 کاربر:', payload.username);
-                console.log('  📌 عنوان:', payload.title);
-                console.log('  📸 تعداد تصاویر:', payload.images.length);
-                
+
+                console.log('📤 ارسال آگهی:', payload);
+
                 const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-                
-                console.log('📥 پاسخ سرور:', data);
-                
+
                 if (data.success) {
-                    showToast('✅ آگهی شما ثبت شد و برای تایید به ربات ارسال گردید', 'success');
+                    showToast(t('ad_success'), 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -3238,11 +3236,11 @@
                     fetchAds(true);
                     fetchMyAds();
                 } else {
-                    showToast(data.error || '❌ خطا در ثبت آگهی', 'error');
+                    showToast(data.error || t('ad_error'), 'error');
                 }
             } catch (err) {
-                console.error('❌ خطا:', err);
-                showToast(err.message || '❌ خطا در ثبت آگهی', 'error');
+                console.error('خطا در submitAd:', err);
+                showToast(t('ad_error'), 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = t('submit');
@@ -3270,7 +3268,7 @@
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS
+        // ADMIN FUNCTIONS (بدون تغییر)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
