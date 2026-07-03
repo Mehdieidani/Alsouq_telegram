@@ -2,1758 +2,307 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جـدار بازار</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جـدار بازار - تست</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* همان استایل‌های قبلی - به دلیل طولانی بودن حذف شد، اما شما همان استایل‌ها را قرار دهید */
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        :root { --bg-primary:#f8fafc; --bg-card:#ffffff; --bg-input:#f1f5f9; --text-primary:#0f172a; --text-secondary:#475569; --text-muted:#94a3b8; --border-color:#e2e8f0; --shadow-sm:0 1px 3px rgba(0,0,0,0.06); --shadow-md:0 4px 20px rgba(0,0,0,0.08); --shadow-lg:0 12px 40px rgba(0,0,0,0.12); --radius-sm:8px; --radius-md:16px; --radius-lg:24px; --radius-full:9999px; --primary:#16a34a; --primary-hover:#15803d; --primary-light:rgba(22,163,74,0.12); --primary-gradient:linear-gradient(135deg,#16a34a,#22c55e); --gold:#f59e0b; --danger:#ef4444; --success:#16a34a; --transition:0.3s cubic-bezier(0.4,0,0.2,1); --font:'Vazirmatn','Segoe UI',Tahoma,sans-serif; }
-        [data-theme="dark"] { --bg-primary:#0f172a; --bg-card:#1e293b; --bg-input:#334155; --text-primary:#f1f5f9; --text-secondary:#cbd5e1; --text-muted:#94a3b8; --border-color:#334155; }
-        html { font-size:16px; scroll-behavior:smooth; }
-        body { font-family:var(--font); background:var(--bg-primary); color:var(--text-primary); min-height:100vh; direction:rtl; transition:background var(--transition),color var(--transition); padding-bottom:80px; overflow-x:hidden; }
-        /* ... بقیه استایل‌ها را از فایل قبلی کپی کنید ... */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            padding: 16px 16px 80px;
+            direction: rtl;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f7d875, #f5b81b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .refresh-btn {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .refresh-btn:hover { background: #15803d; }
+        .ads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .ad-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ad-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .ad-card .image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 32px;
+        }
+        .ad-card .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ad-card .info {
+            padding: 10px 12px;
+        }
+        .ad-card .info .title {
+            font-weight: 700;
+            font-size: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 38px;
+        }
+        .ad-card .info .price {
+            font-weight: 700;
+            font-size: 16px;
+            color: #16a34a;
+            margin-top: 2px;
+        }
+        .ad-card .info .meta {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+            color: #16a34a;
+        }
+        .loading i { font-size: 32px; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            padding: 16px;
+            color: #991b1b;
+            margin: 12px 0;
+        }
+        .no-ads {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 12px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 9px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .bottom-nav .nav-item.active { color: #16a34a; }
+        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; }
     </style>
 </head>
 <body>
-    <!-- همان HTML قبلی - به دلیل طولانی شدن حذف شد، ولی شما همان ساختار را نگه دارید -->
-    <div id="app">
-        <!-- header, toggle section, search, categories, ads grid و ... -->
+<div class="container">
+    <div class="header">
+        <div class="logo">جـدار</div>
+        <button class="refresh-btn" onclick="loadAds()"><i class="fa-solid fa-rotate"></i> بروزرسانی</button>
     </div>
-    <!-- bottom nav و مودال‌ها -->
-    <script>
-        // ============================================================
-        // CONFIGURATION
-        // ============================================================
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
-        const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
-        const BOT_USERNAME = '@AlsouqAlmaftuhiran_bot';
 
-        let guestId = localStorage.getItem('jedar_guest_id');
-        if (!guestId) {
-            guestId = 'guest_' + Math.random().toString(36).substring(2, 12);
-            localStorage.setItem('jedar_guest_id', guestId);
-        }
+    <div id="adsContainer">
+        <div class="loading"><i class="fa-solid fa-spinner"></i><br>در حال بارگذاری...</div>
+    </div>
+</div>
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let allAds = [];
-        let filteredAds = [];
-        let favorites = [];
-        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
-        let currentTheme = localStorage.getItem('jedar_theme') || 'light';
-        let currentTab = 'home';
-        let wizardImagesBase64 = [];
-        let wizardStep = 1;
-        let isUpdating = false;
-        let upperSectionOpen = false;
-        let userProfile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-        let isAdmin = false;
-        let isSuperAdmin = false;
-        let bannerShown = false;
-        let bannerTimer = 5;
-        let bannerTimerInterval = null;
-        let reviewRating = 0;
+<div class="bottom-nav">
+    <button class="nav-item active"><i class="fa-solid fa-house"></i><span>خانه</span></button>
+    <button class="nav-item"><i class="fa-solid fa-circle-plus"></i><span>ثبت</span></button>
+    <button class="nav-item"><i class="fa-solid fa-heart"></i><span>علاقه‌مندی</span></button>
+    <button class="nav-item"><i class="fa-solid fa-user"></i><span>پروفایل</span></button>
+</div>
 
-        // ============================================================
-        // TRANSLATIONS (به اختصار)
-        // ============================================================
-        const translations = {
-            fa: {
-                home: 'خانه',
-                add: 'ثبت',
-                favorites: 'علاقه‌مندی',
-                profile: 'پروفایل',
-                rules: 'قوانین',
-                support: 'پشتیبانی',
-                admin: 'مدیریت',
-                currency: 'تومان',
-                search: 'جستجو',
-                search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها',
-                show_tools: 'نمایش ابزارها',
-                hide_tools: 'مخفی کردن ابزارها',
-                all: 'همه',
-                no_ads: 'هیچ آگهی‌ای موجود نیست',
-                loading_ads: 'در حال بارگذاری...',
-                pilgrimage: 'زیارت',
-                tourism: 'گردشگری',
-                medical: 'پزشکی',
-                beauty: 'زیبایی',
-                services: 'خدمات',
-                jobs: 'کاریابی',
-                real_estate: 'املاک',
-                vehicles: 'خودرو',
-                add_ad: 'ثبت آگهی جدید',
-                title: 'عنوان آگهی',
-                category: 'دسته‌بندی',
-                price: 'قیمت (تومان)',
-                next: 'بعدی',
-                prev: 'قبلی',
-                description: 'توضیحات',
-                location: 'موقعیت / شهر',
-                country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)',
-                upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس',
-                submit: 'ثبت آگهی',
-                ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.',
-                ad_error: 'خطا در ثبت آگهی',
-                call: 'تماس',
-                whatsapp: 'واتساپ',
-                share: 'اشتراک',
-                add_fav: 'افزودن به علاقه‌مندی',
-                remove_fav: 'حذف از علاقه‌مندی',
-                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
-                favorite_added: 'به علاقه‌مندی اضافه شد',
-                favorite_removed: 'از علاقه‌مندی حذف شد',
-                ad_not_found: 'آگهی یافت نشد',
-                error_loading: 'خطا در بارگذاری',
-                no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...',
-                review_success: 'نظر شما ثبت شد',
-                review_error: 'خطا در ثبت نظر',
-                submit_review: 'ارسال نظر',
-                comment: 'نظر خود را بنویسید...',
-                profile_title: 'پروفایل',
-                username: 'نام کاربری',
-                fullname: 'نام کامل',
-                phone_label: 'شماره تلفن',
-                email_label: 'ایمیل',
-                save: 'ذخیره',
-                profile_saved: 'پروفایل ذخیره شد',
-                profile_error: 'خطا در ذخیره پروفایل',
-                complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
-                my_ads: 'آگهی‌های من',
-                edit: 'ویرایش',
-                delete: 'حذف',
-                pending: 'در انتظار',
-                approved: 'تایید شده',
-                rejected: 'رد شده',
-                confirm_delete: 'آیا از حذف اطمینان دارید؟',
-                rules_title: '📜 قوانین و مقررات',
-                no_rules: 'قوانینی ثبت نشده است.',
-                support_title: '🆘 پشتیبانی',
-                support_phone: 'شماره تماس',
-                support_whatsapp: 'واتساپ',
-                support_telegram: 'تلگرام',
-                support_link: 'لینک پشتیبانی',
-                support_email: 'ایمیل',
-                no_support: 'اطلاعات پشتیبانی ثبت نشده است.',
-                pending_ads: 'آگهی‌های در انتظار',
-                all_ads: 'همه آگهی‌ها',
-                users: 'کاربران',
-                admins: 'ادمین‌ها',
-                support_tickets: 'تیکت‌های پشتیبانی',
-                announcement: 'اطلاعیه',
-                stats: 'آمار',
-                export: 'خروجی',
-                approve: 'تایید',
-                reject: 'رد',
-                block: 'مسدود',
-                unblock: 'رفع انسداد',
-                delete_user: 'حذف کاربر',
-                add_admin: 'افزودن ادمین',
-                remove_admin: 'حذف ادمین',
-                reply: 'پاسخ',
-                send: 'ارسال',
-                no_data: 'هیچ داده‌ای موجود نیست',
-                no_permission: '⛔ دسترسی ندارید',
-                ad_approved: 'آگهی تایید شد',
-                ad_rejected: 'آگهی رد شد',
-                user_blocked: 'کاربر مسدود شد',
-                user_unblocked: 'انسداد کاربر رفع شد',
-                admin_added: 'ادمین اضافه شد',
-                admin_removed: 'ادمین حذف شد',
-                announcement_sent: 'اطلاعیه ارسال شد',
-                reply_sent: 'پاسخ ارسال شد',
-                today: 'امروز',
-                online: 'آنلاین',
-                banner_open: 'باز کردن لینک',
-                banner_skip: 'رد کردن',
-                banner_seconds: 'ثانیه تا ادامه',
-                header_subtitle: 'جهانی',
-                currency_toman: 'تومان',
-                special_ads: 'تبلیغات ویژه',
-            },
-            ar: {
-                home: 'الرئيسية',
-                add: 'إضافة',
-                favorites: 'المفضلة',
-                profile: 'الملف الشخصي',
-                rules: 'القوانين',
-                support: 'الدعم',
-                admin: 'الإدارة',
-                currency: 'تومان',
-                search: 'بحث',
-                search_placeholder: 'ابحث في الإعلانات...',
-                recent_ads: 'آخر الإعلانات',
-                show_tools: 'إظهار الأدوات',
-                hide_tools: 'إخفاء الأدوات',
-                all: 'الجميع',
-                no_ads: 'لا توجد إعلانات',
-                loading_ads: 'جاري التحميل...',
-                pilgrimage: 'زيارة',
-                tourism: 'سياحة',
-                medical: 'طبي',
-                beauty: 'تجميل',
-                services: 'خدمات',
-                jobs: 'توظيف',
-                real_estate: 'عقارات',
-                vehicles: 'سيارات',
-                add_ad: 'إعلان جديد',
-                title: 'عنوان الإعلان',
-                category: 'الفئة',
-                price: 'السعر (تومان)',
-                next: 'التالي',
-                prev: 'السابق',
-                description: 'الوصف',
-                location: 'الموقع / المدينة',
-                country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)',
-                upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف',
-                submit: 'نشر الإعلان',
-                ad_success: '✅ تم إرسال إعلانك للمراجعة.',
-                ad_error: 'فشل نشر الإعلان',
-                call: 'اتصال',
-                whatsapp: 'واتساب',
-                share: 'مشاركة',
-                add_fav: 'أضف للمفضلة',
-                remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات',
-                favorite_added: 'تمت الإضافة إلى المفضلة',
-                favorite_removed: 'تمت الإزالة من المفضلة',
-                ad_not_found: 'الإعلان غير موجود',
-                error_loading: 'خطأ في التحميل',
-                no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...',
-                review_success: 'تم إرسال التقييم',
-                review_error: 'فشل إرسال التقييم',
-                submit_review: 'إرسال',
-                comment: 'اكتب تعليقك...',
-                profile_title: 'الملف الشخصي',
-                username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني',
-                save: 'حفظ',
-                profile_saved: 'تم حفظ الملف الشخصي',
-                profile_error: 'فشل حفظ الملف الشخصي',
-                complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
-                my_ads: 'إعلاناتي',
-                edit: 'تعديل',
-                delete: 'حذف',
-                pending: 'قيد المراجعة',
-                approved: 'تمت الموافقة',
-                rejected: 'مرفوض',
-                confirm_delete: 'هل أنت متأكد من الحذف؟',
-                rules_title: '📜 القوانين واللوائح',
-                no_rules: 'لم يتم تسجيل أي قوانين.',
-                support_title: '🆘 الدعم',
-                support_phone: 'رقم الهاتف',
-                support_whatsapp: 'واتساب',
-                support_telegram: 'تيليجرام',
-                support_link: 'رابط الدعم',
-                support_email: 'البريد الإلكتروني',
-                no_support: 'لم يتم تسجيل معلومات الدعم.',
-                pending_ads: 'الإعلانات قيد المراجعة',
-                all_ads: 'جميع الإعلانات',
-                users: 'المستخدمين',
-                admins: 'المشرفين',
-                support_tickets: 'تذاكر الدعم',
-                announcement: 'إشعار',
-                stats: 'الإحصائيات',
-                export: 'تصدير',
-                approve: 'موافقة',
-                reject: 'رفض',
-                block: 'حظر',
-                unblock: 'إلغاء الحظر',
-                delete_user: 'حذف المستخدم',
-                add_admin: 'إضافة مشرف',
-                remove_admin: 'حذف مشرف',
-                reply: 'رد',
-                send: 'إرسال',
-                no_data: 'لا توجد بيانات',
-                no_permission: '⛔ غير مصرح لك.',
-                ad_approved: 'تمت الموافقة على الإعلان',
-                ad_rejected: 'تم رفض الإعلان',
-                user_blocked: 'تم حظر المستخدم',
-                user_unblocked: 'تم إلغاء حظر المستخدم',
-                admin_added: 'تمت إضافة المشرف',
-                admin_removed: 'تم حذف المشرف',
-                announcement_sent: 'تم إرسال الإشعار',
-                reply_sent: 'تم إرسال الرد',
-                today: 'اليوم',
-                online: 'نشط',
-                banner_open: 'فتح الرابط',
-                banner_skip: 'تخطي',
-                banner_seconds: 'ثانية حتى المتابعة',
-                header_subtitle: 'العالمية',
-                currency_toman: 'تومان',
-                special_ads: 'إعلانات مميزة',
+<script>
+    // ============================================================
+    // تنظیمات
+    // ============================================================
+    const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
+    const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
+    const guestId = localStorage.getItem('jedar_guest_id') || 'guest_' + Math.random().toString(36).substring(2, 12);
+    localStorage.setItem('jedar_guest_id', guestId);
+
+    let allAds = [];
+
+    // ============================================================
+    // توابع کمکی
+    // ============================================================
+    function normalizeImageUrl(img) {
+        if (!img) return null;
+        if (img.startsWith('http://') || img.startsWith('https://')) return img;
+        if (img.startsWith('/')) return API_BASE + img;
+        return IMAGE_BASE + img;
+    }
+
+    function formatTime(ts) {
+        if (!ts) return 'لحظاتی پیش';
+        const now = Math.floor(Date.now() / 1000);
+        const diff = now - ts;
+        if (diff < 60) return 'لحظاتی پیش';
+        if (diff < 3600) return Math.floor(diff / 60) + ' دقیقه پیش';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' ساعت پیش';
+        if (diff < 604800) return Math.floor(diff / 86400) + ' روز پیش';
+        return Math.floor(diff / 604800) + ' هفته پیش';
+    }
+
+    // ============================================================
+    // دریافت و نمایش آگهی‌ها
+    // ============================================================
+    async function loadAds() {
+        const container = document.getElementById('adsContainer');
+        container.innerHTML = `<div class="loading"><i class="fa-solid fa-spinner"></i><br>در حال بارگذاری...</div>`;
+
+        try {
+            // 1. تلاش با /ads?status=approved
+            let url = API_BASE + '/ads?status=approved';
+            console.log('📡 درخواست به:', url);
+            let response = await fetch(url);
+            let data = await response.json();
+            console.log('📡 پاسخ از /ads?status=approved:', data);
+
+            // 2. اگر خالی بود، /ads را امتحان کن
+            if (!data.success || !data.ads || data.ads.length === 0) {
+                console.warn('⚠️ /ads?status=approved خالی بود، تلاش با /ads');
+                url = API_BASE + '/ads';
+                response = await fetch(url);
+                data = await response.json();
+                console.log('📡 پاسخ از /ads:', data);
             }
-        };
 
-        function t(key) {
-            return translations[currentLang]?.[key] || key;
-        }
-
-        // ============================================================
-        // HELPERS
-        // ============================================================
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
-            toast.innerHTML = `
-                <i class="fa-solid ${icons[type] || icons.success}"></i>
-                <span>${msg}</span>
-                <button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
-            `;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 30);
-            setTimeout(() => { toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400); }, 4500);
-        }
-
-        function formatTime(ts) {
-            if (!ts) return 'لحظاتی پیش';
-            const now = Math.floor(Date.now() / 1000);
-            const diff = now - ts;
-            if (diff < 60) return 'لحظاتی پیش';
-            if (diff < 120) return '۱ دقیقه پیش';
-            if (diff < 3600) return Math.floor(diff / 60) + ' دقیقه پیش';
-            if (diff < 7200) return '۱ ساعت پیش';
-            if (diff < 86400) return Math.floor(diff / 3600) + ' ساعت پیش';
-            if (diff < 172800) return '۱ روز پیش';
-            if (diff < 604800) return Math.floor(diff / 86400) + ' روز پیش';
-            if (diff < 1209600) return '۱ هفته پیش';
-            if (diff < 2592000) return Math.floor(diff / 604800) + ' هفته پیش';
-            if (diff < 5184000) return '۱ ماه پیش';
-            return Math.floor(diff / 2592000) + ' ماه پیش';
-        }
-
-        function normalizeImageUrl(img) {
-            if (!img) return null;
-            if (img.startsWith('http://') || img.startsWith('https://')) return img;
-            if (img.startsWith('/')) return new URL(img, API_BASE).href;
-            return `${IMAGE_BASE}${img}`;
-        }
-
-        async function apiCall(endpoint, options = {}) {
-            const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-            const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            try {
-                const res = await fetch(url, { ...options, headers });
-                const text = await res.text();
-                try { return JSON.parse(text); } catch (e) { throw new Error(`پاسخ سرور معتبر نیست`); }
-            } catch (err) {
-                console.error('❌ API Error:', err);
-                return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
-            }
-        }
-
-        // ============================================================
-        // LANGUAGE & THEME
-        // ============================================================
-        function updateLanguage() {
-            const isFa = currentLang === 'fa';
-            document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
-            const elements = {
-                'headerSubtitle': 'header_subtitle',
-                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
-                'actPilgrimage': 'pilgrimage',
-                'actTourism': 'tourism',
-                'actMedical': 'medical',
-                'actBeauty': 'beauty',
-                'actServices': 'services',
-                'actJobs': 'jobs',
-                'actRealEstate': 'real_estate',
-                'actVehicles': 'vehicles',
-                'searchBtn': 'search',
-                'searchInput': 'search_placeholder',
-                'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home',
-                'navAddLabel': 'add',
-                'navFavLabel': 'favorites',
-                'navProfileLabel': 'profile',
-                'navRulesLabel': 'rules',
-                'navSupportLabel': 'support',
-                'navAdminLabel': 'admin',
-                'addAdTitle': 'add_ad',
-                'adTitleLabel': 'title',
-                'adCategoryLabel': 'category',
-                'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next',
-                'adDescLabel': 'description',
-                'adLocationLabel': 'location',
-                'adCountryLabel': 'country',
-                'wizardPrevBtn2': 'prev',
-                'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images',
-                'uploadClickLabel': 'upload_click',
-                'adPhoneLabel': 'phone',
-                'wizardPrevBtn3': 'prev',
-                'submitAdBtn': 'submit',
-                'profileTitle': 'profile_title',
-                'profileUsernameLabel': 'username',
-                'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label',
-                'profileEmailLabel': 'email_label',
-                'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads',
-                'favTitle': 'favorites',
-                'rulesTitle': 'rules_title',
-                'supportTitle': 'support_title',
-                'adminTitle': 'admin',
-                'adminPendingLabel': 'pending_ads',
-                'adminAllAdsLabel': 'all_ads',
-                'adminUsersLabel': 'users',
-                'adminAdminsLabel': 'admins',
-                'adminSupportLabel': 'support_tickets',
-                'adminAnnounceLabel': 'announcement',
-                'adminStatsLabel': 'stats',
-                'adminExportLabel': 'export',
-                'bannerOpenLabel': 'banner_open',
-                'bannerSkipLabel': 'banner_skip',
-            };
-            for (const [id, key] of Object.entries(elements)) {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        if (el.placeholder !== undefined) el.placeholder = t(key);
-                    } else {
-                        el.textContent = t(key);
-                    }
-                }
-            }
-            document.querySelectorAll('.category-chip').forEach((chip, idx) => {
-                if (idx === 0) chip.textContent = t('all');
-                else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                        'vehicles'
-                    ];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
-                }
-            });
-            document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
-                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                    'vehicles'
-                ];
-                if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
-            });
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = 'rtl';
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
-            localStorage.setItem('jedar_lang', currentLang);
-            updateLanguage();
-            showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-                '<i class="fa-solid fa-sun"></i>';
-            localStorage.setItem('jedar_theme', currentTheme);
-        }
-
-        // ============================================================
-        // TOGGLE SECTION
-        // ============================================================
-        function toggleUpperSection() {
-            upperSectionOpen = !upperSectionOpen;
-            const section = document.getElementById('upperSection');
-            const btn = document.getElementById('toggleSectionBtn');
-            const label = document.getElementById('toggleSectionLabel');
-            if (upperSectionOpen) {
-                section.classList.add('open');
-                btn.classList.add('active');
-                label.textContent = t('hide_tools');
-            } else {
-                section.classList.remove('open');
-                btn.classList.remove('active');
-                label.textContent = t('show_tools');
-            }
-        }
-
-        // ============================================================
-        // BANNER
-        // ============================================================
-        async function loadSplashBanner() {
-            if (bannerShown) return;
-            try {
-                const data = await apiCall('/banner/splash');
-                if (data.success && data.splash && data.splash.is_active) {
-                    const banner = data.splash;
-                    document.getElementById('bannerImage').src = normalizeImageUrl(banner.image_id) || '';
-                    document.getElementById('bannerTitle').textContent = banner.title || 'تبلیغ';
-                    document.getElementById('bannerDesc').textContent = banner.description || '';
-                    document.getElementById('bannerLink').href = banner.link || '#';
-                    const duration = banner.duration || 5;
-                    bannerTimer = duration;
-                    document.getElementById('bannerTimer').textContent = duration;
-                    document.getElementById('bannerOverlay').classList.add('show');
-                    bannerShown = true;
-                    if (bannerTimerInterval) clearInterval(bannerTimerInterval);
-                    bannerTimerInterval = setInterval(() => {
-                        bannerTimer--;
-                        document.getElementById('bannerTimer').textContent = bannerTimer;
-                        if (bannerTimer <= 0) {
-                            clearInterval(bannerTimerInterval);
-                            bannerTimerInterval = null;
-                            document.getElementById('bannerSkipBtn').style.opacity = '1';
-                            document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
-                            setTimeout(() => closeBanner(), 1000);
-                        }
-                    }, 1000);
-                    document.getElementById('bannerSkipBtn').style.opacity = '0.5';
-                    document.getElementById('bannerSkipBtn').style.pointerEvents = 'none';
-                    setTimeout(() => {
-                        document.getElementById('bannerSkipBtn').style.opacity = '1';
-                        document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
-                    }, duration * 1000);
-                }
-            } catch (err) { console.error('Error loading splash banner:', err); }
-        }
-
-        function closeBanner() {
-            document.getElementById('bannerOverlay').classList.remove('show');
-            if (bannerTimerInterval) { clearInterval(bannerTimerInterval);
-                bannerTimerInterval = null; }
-        }
-
-        // ============================================================
-        // BANNER ADS
-        // ============================================================
-        async function loadInlineBanners() {
-            try {
-                const data = await apiCall('/banners');
-                if (data.success && data.banners && data.banners.length > 0) {
-                    const container = document.getElementById('bannerAdsContainer');
-                    container.innerHTML = '';
-                    data.banners.forEach(banner => {
-                        const div = document.createElement('div');
-                        div.className = 'banner-ad-container';
-                        div.innerHTML = `
-                            <div class="banner-ad-inner">
-                                <img class="banner-ad-image" src="${normalizeImageUrl(banner.image_id)}" onerror="this.style.display='none'" />
-                                <div class="banner-ad-info">
-                                    <div class="banner-ad-title">${banner.title || 'تبلیغ'}</div>
-                                    <div class="banner-ad-desc">${banner.description || ''}</div>
-                                </div>
-                                <a href="${banner.link || '#'}" target="_blank" class="banner-ad-link"><i class="fa-solid fa-arrow-left"></i> ${t('banner_open')}</a>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                    });
-                }
-            } catch (err) { console.error('Error loading inline banners:', err); }
-        }
-
-        // ============================================================
-        // PROFILE
-        // ============================================================
-        function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('profileUsername').value = profile.username || guestId;
-            document.getElementById('profileFullname').value = profile.fullname || '';
-            document.getElementById('profilePhone').value = profile.phone || '';
-            document.getElementById('profileEmail').value = profile.email || '';
-            document.getElementById('adContact').value = profile.phone || '';
-            checkAdminStatus();
-        }
-
-        async function checkAdminStatus() {
-            try {
-                const data = await apiCall(`/profile/${guestId}`);
-                if (data.success && data.user) {
-                    const user = data.user;
-                    isAdmin = user.is_admin || user.is_super_admin || false;
-                    isSuperAdmin = user.is_super_admin || false;
-                    if (isAdmin) document.getElementById('adminTabBtn').style.display = 'flex';
-                    else document.getElementById('adminTabBtn').style.display = 'none';
-                }
-            } catch (e) { console.error('checkAdminStatus error:', e); }
-        }
-
-        async function saveProfile() {
-            const profile = {
-                username: document.getElementById('profileUsername').value.trim() || guestId,
-                fullname: document.getElementById('profileFullname').value.trim(),
-                phone: document.getElementById('profilePhone').value.trim(),
-                email: document.getElementById('profileEmail').value.trim(),
-            };
-            if (!profile.phone) { showToast(t('complete_profile_first'), 'warning'); return; }
-            localStorage.setItem('jedar_profile', JSON.stringify(profile));
-            userProfile = profile;
-            document.getElementById('adContact').value = profile.phone;
-            showToast(t('profile_saved'), 'success');
-        }
-
-        function isProfileComplete() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            return profile.phone && profile.phone.trim().length >= 10;
-        }
-
-        // ============================================================
-        // ADS (اصلاح نهایی با استفاده از /admin/ads و /myads)
-        // ============================================================
-        async function fetchAds(showLoading = true) {
-            if (isUpdating) return;
-            isUpdating = true;
-            const grid = document.getElementById('adsGrid');
-            if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                // 1. اگر کاربر ادمین است، همه آگهی‌ها را از /admin/ads دریافت کن
-                if (isAdmin) {
-                    const data = await apiCall('/admin/ads');
-                    console.log('📡 دریافت از /admin/ads:', data);
-                    if (data.success && data.data && data.data.length > 0) {
-                        allAds = data.data.map(ad => {
-                            if (ad.image_ids && typeof ad.image_ids === 'string') {
-                                try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
-                            } else if (!ad.image_ids) ad.image_ids = [];
-                            if (ad.image_ids && Array.isArray(ad.image_ids)) {
-                                ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null);
-                            } else ad.image_ids = [];
-                            return ad;
-                        });
-                        filteredAds = [...allAds];
-                        renderAds(filteredAds);
-                        renderCategories();
-                        loadFavorites();
-                        isUpdating = false;
-                        return;
-                    }
-                }
-
-                // 2. اگر ادمین نبود یا /admin/ads جواب نداد، از /myads استفاده کن
-                const data = await apiCall(`/myads/${guestId}`);
-                console.log('📡 دریافت از /myads:', data);
+            // 3. اگر باز هم خالی بود، /myads را امتحان کن
+            if (!data.success || !data.ads || data.ads.length === 0) {
+                console.warn('⚠️ /ads خالی بود، تلاش با /myads');
+                url = API_BASE + '/myads/' + guestId;
+                response = await fetch(url);
+                data = await response.json();
+                console.log('📡 پاسخ از /myads:', data);
+                // تبدیل داده‌های myads به ساختار ads
                 if (data.success && data.data && data.data.length > 0) {
-                    allAds = data.data.map(ad => {
-                        if (ad.image_ids && typeof ad.image_ids === 'string') {
-                            try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
-                        } else if (!ad.image_ids) ad.image_ids = [];
-                        if (ad.image_ids && Array.isArray(ad.image_ids)) {
-                            ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null);
-                        } else ad.image_ids = [];
-                        return ad;
-                    });
-                    filteredAds = [...allAds];
-                    renderAds(filteredAds);
-                    renderCategories();
-                    loadFavorites();
-                } else {
-                    grid.innerHTML =
-                        `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                    console.error('❌ هیچ آگهی‌ای دریافت نشد:', data);
-                }
-            } catch (err) {
-                console.error('❌ خطا در fetchAds:', err);
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
-            }
-            isUpdating = false;
-        }
-
-        function renderAds(ads) {
-            const grid = document.getElementById('adsGrid');
-            grid.innerHTML = '';
-            if (!ads || ads.length === 0) {
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                return;
-            }
-            ads.forEach(ad => {
-                const card = document.createElement('div');
-                card.className = 'ad-card';
-                card.onclick = () => openAdDetail(ad.id);
-                let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
-                const imgHtml = imgSrc ?
-                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
-                    `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
-                const isFav = favorites.includes(ad.id);
-                const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-                card.innerHTML = `
-                    <div class="ad-image">
-                        ${imgHtml}
-                        <div class="watermark">جـدار</div>
-                        <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
-                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                        </div>
-                    </div>
-                    <div class="ad-content">
-                        <div class="title">${ad.title || 'بدون عنوان'}</div>
-                        <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency_toman')}</div>
-                        <div class="meta"><i class="fa-solid fa-location-dot"></i> ${ad.city || ''}</div>
-                        <div class="meta" style="font-size:9px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
-                    </div>
-                    <div class="ad-footer">
-                        <div class="avatar">${ad.userFullname ? ad.userFullname.charAt(0).toUpperCase() : '👤'}</div>
-                        <span class="username">${ad.userFullname || ad.user_id || 'کاربر'}</span>
-                        <span class="rating"><i class="fa-regular fa-star"></i> ${ratingAvg}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
-            container.innerHTML = '';
-            cats.forEach((cat, i) => {
-                const chip = document.createElement('span');
-                chip.className = 'category-chip' + (i === 0 ? ' active' : '');
-                chip.textContent = t(cat);
-                chip.onclick = () => filterAds(cat);
-                container.appendChild(chip);
-            });
-        }
-
-        function filterAds(cat) {
-            document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
-            const chips = document.querySelectorAll('.category-chip');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
-            const idx = cats.indexOf(cat);
-            if (chips[idx]) chips[idx].classList.add('active');
-            if (cat === 'all') filteredAds = [...allAds];
-            else filteredAds = allAds.filter(ad => ad.category === cat || ad.category?.includes(cat));
-            renderAds(filteredAds);
-        }
-
-        function searchAds() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { filteredAds = [...allAds];
-                renderAds(filteredAds); return; }
-            filteredAds = allAds.filter(ad =>
-                (ad.title && ad.title.toLowerCase().includes(query)) ||
-                (ad.description && ad.description.toLowerCase().includes(query)) ||
-                (ad.city && ad.city.toLowerCase().includes(query))
-            );
-            renderAds(filteredAds);
-        }
-
-        function refreshAll() {
-            fetchAds(true);
-            if (currentTab === 'profile') fetchMyAds();
-            if (currentTab === 'favorites') fetchFavorites();
-            if (currentTab === 'rules') loadRules();
-            if (currentTab === 'support') loadSupport();
-            checkAdminStatus();
-            loadInlineBanners();
-            showToast('✅ بروزرسانی شد', 'success');
-        }
-
-        // ============================================================
-        // SWITCH TAB
-        // ============================================================
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
-            document.querySelector(`.bottom-nav .nav-item[data-tab="${tab}"]`)?.classList.add('active');
-            document.getElementById('app').style.display = 'none';
-            document.getElementById('profileTab').style.display = 'none';
-            document.getElementById('favoritesTab').style.display = 'none';
-            document.getElementById('rulesTab').style.display = 'none';
-            document.getElementById('supportTab').style.display = 'none';
-            document.getElementById('adminTab').style.display = 'none';
-            if (tab === 'home') {
-                document.getElementById('app').style.display = 'block';
-            } else if (tab === 'profile') {
-                document.getElementById('profileTab').style.display = 'block';
-                loadProfile();
-                fetchMyAds();
-            } else if (tab === 'favorites') {
-                document.getElementById('favoritesTab').style.display = 'block';
-                fetchFavorites();
-            } else if (tab === 'rules') {
-                document.getElementById('rulesTab').style.display = 'block';
-                loadRules();
-            } else if (tab === 'support') {
-                document.getElementById('supportTab').style.display = 'block';
-                loadSupport();
-            } else if (tab === 'admin') {
-                document.getElementById('adminTab').style.display = 'block';
-                if (isAdmin) {
-                    document.getElementById('adminResult').innerHTML =
-                        '<div class="text-secondary">از دکمه‌های بالا برای مدیریت استفاده کنید.</div>';
+                    data.ads = data.data;
                 }
             }
-        }
 
-        // ============================================================
-        // RULES & SUPPORT
-        // ============================================================
-        async function loadRules() {
-            const container = document.getElementById('rulesContent');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/rules');
-                if (data.success && data.rules) container.innerHTML = data.rules;
-                else container.innerHTML = `<div class="text-secondary">${t('no_rules')}</div>`;
-            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
-        }
-
-        async function loadSupport() {
-            const container = document.getElementById('supportContent');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/support');
-                if (data.success && data.support) {
-                    const s = data.support;
-                    let html = '';
-                    const items = [
-                        { key: 'phone', icon: 'fa-phone', label: t('support_phone') },
-                        { key: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: t('support_whatsapp') },
-                        { key: 'telegram', icon: 'fa-paper-plane', label: t('support_telegram') },
-                        { key: 'link', icon: 'fa-link', label: t('support_link') },
-                        { key: 'email', icon: 'fa-envelope', label: t('support_email') },
-                    ];
-                    items.forEach(item => {
-                        if (s[item.key]) {
-                            const isLink = item.key === 'link' || item.key === 'telegram';
-                            const value = isLink ? `<a href="${s[item.key]}" target="_blank">${s[item.key]}</a>` : s[
-                            item.key];
-                            html += `
-                                <div class="support-item">
-                                    <div class="icon"><i class="fa-solid ${item.icon}"></i></div>
-                                    <div class="info">
-                                        <div class="label">${item.label}</div>
-                                        <div class="value">${value}</div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                    container.innerHTML = html || `<div class="text-secondary">${t('no_support')}</div>`;
-                } else {
-                    container.innerHTML = `<div class="text-secondary">${t('no_support')}</div>`;
-                }
-            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
-        }
-
-        // ============================================================
-        // AD DETAIL
-        // ============================================================
-        function openAdDetail(adId) {
-            const ad = allAds.find(item => item.id == adId);
-            if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
-            const galleryImages = (ad.image_ids || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
-            let galleryIndex = 0;
-            let galleryHtml = '';
-            if (galleryImages.length > 0) {
-                galleryHtml = `
-                    <div class="ad-gallery">
-                        <img id="detailGalleryImg" src="${galleryImages[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
-                    </div>
-                    ${galleryImages.length > 1 ? `
-                        <div class="gallery-controls">
-                            <button onclick="detailGalleryPrev()">‹</button>
-                            <span style="color:var(--text-muted);font-size:14px;display:flex;align-items:center;">
-                                <span id="detailGalleryIndex">1</span> / ${galleryImages.length}
-                            </span>
-                            <button onclick="detailGalleryNext()">›</button>
-                        </div>
-                    ` : ''}
-                `;
-            } else {
-                galleryHtml =
-                    `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
-            }
-            const phone = ad.phone || '';
-            const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-            const isFav = favorites.includes(ad.id);
-            let html = `
-                <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
-                ${galleryHtml}
-                <div class="ad-price">${(ad.price || 0).toLocaleString()} ${t('currency_toman')}</div>
-                <div class="ad-meta">
-                    <span><i class="fa-solid fa-tag"></i> ${ad.category || 'دسته‌بندی نشده'}</span>
-                    <span><i class="fa-solid fa-location-dot"></i> ${ad.city || 'نامشخص'}</span>
-                    <span><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</span>
-                    <span><i class="fa-regular fa-eye"></i> ${ad.views || 0}</span>
-                    <span>⭐ ${ratingAvg}</span>
-                </div>
-                <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
-                <div class="action-buttons">
-                    ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                    ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
-                    <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
-                </div>
-                <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
-                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                    ${isFav ? t('remove_fav') : t('add_fav')}
-                </button>
-                <div class="review-section">
-                    <h4>⭐ امتیاز و نظر</h4>
-                    <div class="review-stars" id="detailReviewStars">
-                        <span onclick="setDetailRating(1)">☆</span>
-                        <span onclick="setDetailRating(2)">☆</span>
-                        <span onclick="setDetailRating(3)">☆</span>
-                        <span onclick="setDetailRating(4)">☆</span>
-                        <span onclick="setDetailRating(5)">☆</span>
-                    </div>
-                    <input type="hidden" id="detailReviewAdId" value="${ad.id}" />
-                    <input type="hidden" id="detailReviewRating" value="0" />
-                    <textarea class="review-comment" id="detailReviewComment" placeholder="${t('comment')}"></textarea>
-                    <button class="btn-submit-review" onclick="submitDetailReview()">${t('submit_review')}</button>
-                    <div id="detailReviews" style="margin-top:12px;">
-                        <div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('loading_reviews')}</div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('adDetailContent').innerHTML = html;
-            document.getElementById('adDetailsModal').classList.add('show');
-            loadDetailReviews(ad.id);
-
-            window.detailGalleryPrev = function() {
-                if (galleryImages.length === 0) return;
-                galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
-                document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
-                document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
-            };
-            window.detailGalleryNext = function() {
-                if (galleryImages.length === 0) return;
-                galleryIndex = (galleryIndex + 1) % galleryImages.length;
-                document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
-                document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
-            };
-        }
-
-        function closeAdDetail() {
-            document.getElementById('adDetailsModal').classList.remove('show');
-        }
-
-        function shareAd(adId, title) {
-            const url = `https://j-dar.ir/ad/${adId}`;
-            if (navigator.share) {
-                navigator.share({ title, text: `🔥 ${title} - جـدار`, url }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success'))
-                    .catch(() => showToast('🔗 ' + url, 'info'));
-            }
-        }
-
-        async function toggleFavoriteAndUpdateDetail(adId) {
-            await toggleFavorite(adId);
-            const btn = document.querySelector('.btn-fav');
-            if (btn) {
-                const isFav = favorites.includes(adId);
-                btn.innerHTML =
-                    `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? t('remove_fav') : t('add_fav')}`;
-            }
-        }
-
-        function setDetailRating(val) {
-            reviewRating = val;
-            document.getElementById('detailReviewRating').value = val;
-            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => {
-                el.className = idx < val ? 'active' : '';
-                el.textContent = idx < val ? '★' : '☆';
-            });
-        }
-
-        async function submitDetailReview() {
-            const adId = document.getElementById('detailReviewAdId').value;
-            const rating = parseInt(document.getElementById('detailReviewRating').value);
-            const comment = document.getElementById('detailReviewComment').value.trim();
-            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
-            try {
-                const data = await apiCall('/review', {
-                    method: 'POST',
-                    body: JSON.stringify({ adId: parseInt(adId), userId: guestId, rating, comment })
+            // پردازش نهایی
+            if (data.success && data.ads && data.ads.length > 0) {
+                allAds = data.ads.map(ad => {
+                    // پردازش تصاویر
+                    if (ad.image_ids && typeof ad.image_ids === 'string') {
+                        try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
+                    } else if (!ad.image_ids) ad.image_ids = [];
+                    if (ad.image_ids && Array.isArray(ad.image_ids)) {
+                        ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null);
+                    } else ad.image_ids = [];
+                    return ad;
                 });
-                if (data.success) {
-                    showToast(t('review_success'), 'success');
-                    loadDetailReviews(adId);
-                    document.getElementById('detailReviewRating').value = 0;
-                    document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
-                    reviewRating = 0;
-                    fetchAds(false);
-                } else {
-                    showToast(data.error || t('review_error'), 'error');
-                }
-            } catch (err) { showToast(t('review_error'), 'error'); }
-        }
-
-        async function loadDetailReviews(adId) {
-            const container = document.getElementById('detailReviews');
-            try {
-                const data = await apiCall(`/reviews?adId=${adId}`);
-                if (data.success && data.reviews && data.reviews.length > 0) {
-                    container.innerHTML = '';
-                    data.reviews.forEach(r => {
-                        const div = document.createElement('div');
-                        div.className = 'review-item';
-                        div.innerHTML = `
-                            <div class="header">
-                                <span class="name">${r.username || r.user_id || 'کاربر'}</span>
-                                <span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span>
-                            </div>
-                            <div class="comment">${r.comment || ''}</div>
-                            <div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>
-                        `;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
-            }
-        }
-
-        // ============================================================
-        // FAVORITES
-        // ============================================================
-        async function loadFavorites() {
-            try {
-                const data = await apiCall(`/favorites/${guestId}`);
-                if (data.success) {
-                    favorites = data.data.map(ad => ad.id);
-                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
-                }
-            } catch (e) { console.error('loadFavorites error:', e); }
-        }
-
-        async function toggleFavorite(adId) {
-            try {
-                const data = await apiCall('/favorite/toggle', {
-                    method: 'POST',
-                    body: JSON.stringify({ username: guestId, adId })
-                });
-                if (data.success) {
-                    if (data.isFavorite) {
-                        favorites.push(adId);
-                        showToast(t('favorite_added'), 'success');
-                    } else {
-                        favorites = favorites.filter(id => id !== adId);
-                        showToast(t('favorite_removed'), 'info');
-                    }
-                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
-                    fetchAds(false);
-                } else {
-                    showToast(data.error || 'خطا', 'error');
-                }
-            } catch (err) { showToast('خطا', 'error'); }
-        }
-
-        async function fetchFavorites() {
-            const container = document.getElementById('favoritesList');
-            try {
-                const data = await apiCall(`/favorites/${guestId}`);
-                if (data.success && data.data && data.data.length > 0) {
-                    container.innerHTML = '';
-                    data.data.forEach(ad => {
-                        const div = document.createElement('div');
-                        div.className = 'favorite-item';
-                        let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
-                        if (imgSrc) imgSrc = normalizeImageUrl(imgSrc);
-                        div.innerHTML = `
-                            <img src="${imgSrc}" onerror="this.style.display='none'" />
-                            <div class="info" onclick="openAdDetail(${ad.id})">
-                                <div class="title">${ad.title}</div>
-                                <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency_toman')}</div>
-                                <div class="meta">${ad.city || ''} • ${formatTime(ad.created_at)}</div>
-                            </div>
-                            <button class="remove-fav" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-solid fa-heart"></i></button>
-                        `;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
-            }
-        }
-
-        // ============================================================
-        // MY ADS
-        // ============================================================
-        async function fetchMyAds() {
-            const container = document.getElementById('myAdsList');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall(`/myads/${guestId}`);
-                if (data.success && data.data && data.data.length > 0) {
-                    container.innerHTML = '';
-                    data.data.forEach(ad => {
-                        const div = document.createElement('div');
-                        div.className = 'my-ad-item';
-                        const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
-                        div.innerHTML = `
-                            <div class="info">
-                                <div class="title">${ad.title}</div>
-                                <div class="sub">
-                                    <span>💰 ${(ad.price || 0).toLocaleString()} ${t('currency_toman')}</span>
-                                    <span class="status ${statusMap[ad.status] || 'pending'}">${statusLabels[ad.status] || ad.status}</span>
-                                </div>
-                                <div style="font-size:10px;color:var(--text-muted);">${formatTime(ad.created_at)}</div>
-                            </div>
-                            <div class="actions">
-                                ${ad.status === 'pending' ? `<button class="edit" onclick="editAd(${ad.id})"><i class="fa-solid fa-pen"></i></button>` : ''}
-                                <button class="delete" onclick="deleteAd(${ad.id})"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
-                }
-            } catch (err) {
-                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
-            }
-        }
-
-        async function deleteAd(adId) {
-            if (!confirm(t('confirm_delete'))) return;
-            try {
-                const data = await apiCall('/ad/delete', {
-                    method: 'POST',
-                    body: JSON.stringify({ adId, username: guestId })
-                });
-                if (data.success) {
-                    showToast('آگهی حذف شد', 'success');
-                    fetchMyAds();
-                    fetchAds(false);
-                } else {
-                    showToast(data.error || 'خطا در حذف', 'error');
-                }
-            } catch (err) { showToast('خطا در حذف', 'error'); }
-        }
-
-        function editAd(adId) {
-            const ad = allAds.find(a => a.id === adId);
-            if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
-            document.getElementById('adTitle').value = ad.title;
-            document.getElementById('adCategory').value = ad.category || 'tourism';
-            document.getElementById('adPrice').value = ad.price;
-            document.getElementById('adDescription').value = ad.description;
-            document.getElementById('adLocation').value = ad.city || '';
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('adContact').value = profile.phone || ad.phone || '';
-            document.getElementById('addAdModal').classList.add('show');
-            wizardStep = 1;
-            wizardImagesBase64 = [];
-            document.getElementById('adImagePreview').innerHTML = '';
-            updateWizard();
-            document.getElementById('addAdForm').dataset.editId = adId;
-        }
-
-        // ============================================================
-        // WIZARD
-        // ============================================================
-        function wizardNext() { if (wizardStep < 3) { wizardStep++;
-                updateWizard(); } }
-
-        function wizardPrev() { if (wizardStep > 1) { wizardStep--;
-                updateWizard(); } }
-
-        function updateWizard() {
-            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
-            document.getElementById('wizardBar').style.width = `${(wizardStep - 1) * 50}%`;
-            for (let i = 1; i <= 3; i++) {
-                const step = document.getElementById(`wStep${i}`);
-                step.classList.remove('active', 'completed');
-                if (i < wizardStep) step.classList.add('completed');
-                if (i === wizardStep) step.classList.add('active');
-            }
-        }
-
-        document.getElementById('adImagesInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            if (wizardImagesBase64.length + files.length > 4) {
-                showToast('حداکثر ۴ تصویر مجاز است', 'error');
-                this.value = '';
-                return;
-            }
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    wizardImagesBase64.push(ev.target.result);
-                    renderWizardImages();
-                };
-                reader.readAsDataURL(file);
-            });
-            this.value = '';
-        });
-
-        function renderWizardImages() {
-            const grid = document.getElementById('adImagePreview');
-            grid.innerHTML = '';
-            wizardImagesBase64.forEach((base64, index) => {
-                const item = document.createElement('div');
-                item.className = 'image-preview-item';
-                item.innerHTML = `
-                    <img src="${base64}" />
-                    <button class="remove-img" onclick="removeWizardImage(${index})"><i class="fa-solid fa-xmark"></i></button>
-                `;
-                grid.appendChild(item);
-            });
-        }
-
-        function removeWizardImage(index) {
-            wizardImagesBase64.splice(index, 1);
-            renderWizardImages();
-        }
-
-        // ============================================================
-        // SUBMIT AD
-        // ============================================================
-        async function submitAd() {
-            if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'), 'warning');
-                return;
-            }
-            const title = document.getElementById('adTitle').value.trim();
-            const category = document.getElementById('adCategory').value;
-            const price = document.getElementById('adPrice').value;
-            const desc = document.getElementById('adDescription').value.trim();
-            const location = document.getElementById('adLocation').value.trim();
-            const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
-            const country = document.getElementById('adCountry').value;
-
-            if (!title || !price || !desc || !location) {
-                showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
-                return;
-            }
-
-            if (wizardImagesBase64.length === 0) {
-                showToast('⚠️ لطفاً حداقل یک تصویر انتخاب کنید', 'warning');
-                return;
-            }
-
-            const btn = document.getElementById('submitAdBtn');
-            btn.disabled = true;
-            btn.textContent = '...در حال ثبت';
-
-            try {
-                const payload = {
-                    username: guestId,
-                    title: title,
-                    category: category,
-                    price: parseInt(price),
-                    description: desc,
-                    city: location,
-                    country: country,
-                    phone: contact,
-                    images: wizardImagesBase64
-                };
-
-                const data = await apiCall('/ad/submit', {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-
-                if (data.success) {
-                    showToast(t('ad_success'), 'success');
-                    closeModal('addAdModal');
-                    document.getElementById('addAdForm').reset();
-                    document.getElementById('addAdForm').dataset.editId = '';
-                    wizardImagesBase64 = [];
-                    document.getElementById('adImagePreview').innerHTML = '';
-                    wizardStep = 1;
-                    updateWizard();
-                    fetchAds(true);
-                    fetchMyAds();
-                } else {
-                    showToast(data.error || t('ad_error'), 'error');
-                }
-            } catch (err) {
-                console.error('خطا در submitAd:', err);
-                showToast(t('ad_error'), 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = t('submit');
-            }
-        }
-
-        function openAddModal() {
-            if (!isProfileComplete()) {
-                showToast(t('complete_profile_first'), 'warning');
-                return;
-            }
-            document.getElementById('addAdModal').classList.add('show');
-            document.getElementById('addAdForm').dataset.editId = '';
-            document.getElementById('addAdForm').reset();
-            wizardImagesBase64 = [];
-            document.getElementById('adImagePreview').innerHTML = '';
-            wizardStep = 1;
-            updateWizard();
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('adContact').value = profile.phone || '';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
-
-        // ============================================================
-        // ADMIN FUNCTIONS (بدون تغییر)
-        // ============================================================
-        function checkAdminAccess() {
-            if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
-            return true;
-        }
-
-        async function adminPendingAds() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/ads?status=pending');
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('pending_ads')}</h4>`;
-                data.data.forEach(ad => {
-                    const images = ad.image_ids || [];
-                    const imgPreview = images.length > 0 ?
-                        `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` :
-                        '';
-                    html += `
-                        <div class="my-ad-item" style="flex-wrap:wrap;">
-                            <div class="info">
-                                <div class="title">${ad.title}</div>
-                                <div class="sub">👤 ${ad.user_id || ad.userId} • 💰 ${ad.price} ${t('currency_toman')}</div>
-                                <div class="sub">${imgPreview} ${formatTime(ad.created_at)}</div>
-                            </div>
-                            <div class="actions" style="margin-top:4px;">
-                                <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>
-                                <button class="delete" onclick="adminRejectAd('${ad.id}')"><i class="fa-solid fa-times" style="color:var(--danger);"></i></button>
-                                <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
+                renderAds(allAds);
             } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminAllAds() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/ads');
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('all_ads')}</h4>`;
-                data.data.forEach(ad => {
-                    const statusMap = { pending: t('pending'), approved: t('approved'), rejected: t('rejected') };
-                    html += `
-                        <div class="my-ad-item">
-                            <div class="info">
-                                <div class="title">${ad.title}</div>
-                                <div class="sub">👤 ${ad.user_id || ad.userId} • 💰 ${ad.price} ${t('currency_toman')}</div>
-                                <div class="sub"><span class="status ${ad.status}">${statusMap[ad.status] || ad.status}</span></div>
-                            </div>
-                            <div class="actions">
-                                <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
-                                <button class="delete" onclick="adminDeleteAd('${ad.id}')"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminApproveAd(adId) {
-            if (!confirm(t('approve'))) return;
-            const data = await apiCall('/admin/ad/approve', {
-                method: 'POST',
-                body: JSON.stringify({ adId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast('✅ آگهی تایید شد', 'success');
-                adminPendingAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminRejectAd(adId) {
-            const reason = prompt('دلیل رد آگهی:');
-            if (reason === null) return;
-            const data = await apiCall('/admin/ad/reject', {
-                method: 'POST',
-                body: JSON.stringify({ adId, reason, adminId: guestId })
-            });
-            if (data.success) {
-                showToast('❌ آگهی رد شد', 'warning');
-                adminPendingAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminDeleteAd(adId) {
-            if (!confirm(t('confirm_delete'))) return;
-            const data = await apiCall('/admin/ad/delete', {
-                method: 'POST',
-                body: JSON.stringify({ adId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast('🗑 آگهی حذف شد', 'success');
-                adminAllAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        function adminViewAd(adId) {
-            openAdDetail(adId);
-        }
-
-        async function adminUsers() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/users');
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('users')}</h4>`;
-                data.data.forEach(user => {
-                    html += `
-                        <div class="my-ad-item">
-                            <div class="info">
-                                <div class="title">${user.first_name || user.username || user.telegram_id}</div>
-                                <div class="sub">📱 ${user.phone || 'ندارد'}</div>
-                                <div class="sub">${user.is_blocked ? '🚫 مسدود' : '✅ فعال'}</div>
-                            </div>
-                            <div class="actions">
-                                ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
-                                `<button class="delete" onclick="adminBlockUser('${user.telegram_id}')"><i class="fa-solid fa-lock" style="color:var(--danger);"></i></button>`}
-                                <button onclick="adminViewUser('${user.telegram_id}')"><i class="fa-solid fa-eye"></i></button>
-                                ${isSuperAdmin ? `<button class="delete" onclick="adminDeleteUser('${user.telegram_id}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminBlockUser(userId) {
-            if (!confirm(t('block'))) return;
-            const reason = prompt('دلیل مسدودیت:');
-            if (reason === null) return;
-            const data = await apiCall('/admin/block', {
-                method: 'POST',
-                body: JSON.stringify({ userId, reason, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('user_blocked'), 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminUnblockUser(userId) {
-            if (!confirm(t('unblock'))) return;
-            const data = await apiCall('/admin/unblock', {
-                method: 'POST',
-                body: JSON.stringify({ userId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('user_unblocked'), 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminDeleteUser(userId) {
-            if (!confirm(t('confirm_delete'))) return;
-            const data = await apiCall('/admin/user/delete', {
-                method: 'POST',
-                body: JSON.stringify({ userId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast('کاربر حذف شد', 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminViewUser(userId) {
-            const data = await apiCall(`/profile/${userId}`);
-            if (data.success && data.user) {
-                const user = data.user;
-                alert(
-                    `👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nنقش: ${user.role || 'عادی'}`
-                    );
-            } else {
-                showToast('خطا در دریافت اطلاعات', 'error');
-            }
-        }
-
-        async function adminAdmins() {
-            if (!checkAdminAccess() || !isSuperAdmin) {
-                showToast(t('no_permission'), 'error');
-                return;
-            }
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/admins');
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('admins')}</h4>`;
-                data.data.forEach(admin => {
-                    html += `
-                        <div class="my-ad-item">
-                            <div class="info">
-                                <div class="title">${admin.first_name || admin.username || admin.telegram_id}</div>
-                                <div class="sub">${admin.role || 'admin'}</div>
-                            </div>
-                            <div class="actions">
-                                ${admin.telegram_id !== '6522877528' ? `<button class="delete" onclick="adminRemoveAdmin('${admin.telegram_id}')"><i class="fa-solid fa-user-minus"></i></button>` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html + `
-                    <div class="admin-row" style="margin-top:12px;">
-                        <input type="text" id="newAdminId" placeholder="شناسه تلگرام کاربر" />
-                        <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminAddAdmin() {
-            const userId = document.getElementById('newAdminId').value.trim();
-            if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const role = prompt('نقش: (ad_admin / user_admin / banner_admin / support_admin / super_admin)');
-            if (!role) return;
-            const data = await apiCall('/admin/add', {
-                method: 'POST',
-                body: JSON.stringify({ userId, role, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('admin_added'), 'success');
-                adminAdmins();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminRemoveAdmin(userId) {
-            if (!confirm(t('remove_admin'))) return;
-            const data = await apiCall('/admin/remove', {
-                method: 'POST',
-                body: JSON.stringify({ userId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('admin_removed'), 'success');
-                adminAdmins();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminSupportTickets() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/tickets');
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('support_tickets')}</h4>`;
-                data.data.forEach(ticket => {
-                    html += `
-                        <div class="my-ad-item">
-                            <div class="info">
-                                <div class="title">🎫 تیکت ${ticket.id}</div>
-                                <div class="sub">👤 ${ticket.user_id} • ${ticket.type || 'عمومی'}</div>
-                                <div class="sub" style="font-size:11px;">${ticket.message}</div>
-                            </div>
-                            <div class="actions">
-                                <button onclick="adminReplyTicket('${ticket.id}')"><i class="fa-solid fa-reply"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminReplyTicket(ticketId) {
-            const reply = prompt('پاسخ خود را وارد کنید:');
-            if (!reply) return;
-            const data = await apiCall('/admin/ticket/reply', {
-                method: 'POST',
-                body: JSON.stringify({ ticketId, reply, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('reply_sent'), 'success');
-                adminSupportTickets();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        function adminAnnounce() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `
-                <h4>${t('announcement')}</h4>
-                <div class="admin-row">
-                    <input type="text" id="announceTitle" placeholder="عنوان" />
-                </div>
-                <div class="admin-row">
-                    <textarea id="announceMessage" placeholder="متن پیام..." rows="3" style="width:100%;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);"></textarea>
-                </div>
-                <div class="admin-row">
-                    <select id="announceTarget">
-                        <option value="all">${t('all')}</option>
-                        <option value="admins">${t('admins')}</option>
-                        <option value="users">${t('users')}</option>
-                        <option value="individual">فردی</option>
-                    </select>
-                    <input type="text" id="announceTargetId" placeholder="شناسه کاربر (اختیاری)" style="display:none;" />
-                    <button onclick="adminSendAnnounce()">📤 ${t('send')}</button>
-                </div>
-            `;
-            document.getElementById('announceTarget').addEventListener('change', function() {
-                document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' :
-                    'none';
-            });
-        }
-
-        async function adminSendAnnounce() {
-            const title = document.getElementById('announceTitle').value.trim();
-            const message = document.getElementById('announceMessage').value.trim();
-            const target = document.getElementById('announceTarget').value;
-            const targetId = document.getElementById('announceTargetId').value.trim();
-            if (!title || !message) { showToast('عنوان و متن را وارد کنید', 'error'); return; }
-            if (target === 'individual' && !targetId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const data = await apiCall('/admin/announce', {
-                method: 'POST',
-                body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
-            });
-            if (data.success) {
-                showToast(t('announcement_sent'), 'success');
-                document.getElementById('announceTitle').value = '';
-                document.getElementById('announceMessage').value = '';
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
-        }
-
-        async function adminStats() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/stats');
-            if (data.success) {
-                const s = data.data;
                 container.innerHTML = `
-                    <h4>${t('stats')}</h4>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalUsers || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalAds || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.todayViews || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
+                    <div class="no-ads">
+                        <i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;display:block;margin-bottom:12px;"></i>
+                        <p>هیچ آگهی‌ای موجود نیست</p>
+                        <p style="font-size:12px;margin-top:8px;">برای ثبت آگهی روی دکمه «ثبت» در پایین صفحه کلیک کنید.</p>
                     </div>
                 `;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
+                console.error('❌ هیچ آگهی‌ای دریافت نشد:', data);
             }
-        }
-
-        function adminExport() {
-            if (!checkAdminAccess() || !isSuperAdmin) {
-                showToast(t('no_permission'), 'error');
-                return;
-            }
-            const container = document.getElementById('adminResult');
+        } catch (err) {
+            console.error('❌ خطا در loadAds:', err);
             container.innerHTML = `
-                <h4>${t('export')}</h4>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-                    <button onclick="adminExportData('users')"><i class="fa-solid fa-file-users"></i> ${t('users')}</button>
-                    <button onclick="adminExportData('ads')"><i class="fa-solid fa-file-alt"></i> ${t('all_ads')}</button>
+                <div class="error-box">
+                    <i class="fa-solid fa-circle-exclamation"></i> خطا در بارگذاری آگهی‌ها
+                    <div style="font-size:12px;margin-top:6px;color:#7f1d1d;">${err.message || 'خطای ناشناخته'}</div>
+                    <button onclick="loadAds()" style="margin-top:8px;background:#16a34a;color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;">تلاش مجدد</button>
                 </div>
-                <div id="exportResult" style="margin-top:12px;"></div>
             `;
         }
+    }
 
-        async function adminExportData(type) {
-            document.getElementById('exportResult').innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
-            const data = await apiCall(`/admin/export?type=${type}&adminId=${guestId}`);
-            if (data.success) {
-                const jsonData = data.data || [];
-                const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                document.getElementById('exportResult').innerHTML =
-                    `<a href="${url}" download="${type}_export.json" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
-                showToast('خروجی با موفقیت ایجاد شد', 'success');
-            } else {
-                document.getElementById('exportResult').innerHTML =
-                    `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
-            }
+    function renderAds(ads) {
+        const container = document.getElementById('adsContainer');
+        if (!ads || ads.length === 0) {
+            container.innerHTML = `<div class="no-ads">هیچ آگهی‌ای موجود نیست</div>`;
+            return;
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-            '<i class="fa-solid fa-sun"></i>';
-        updateLanguage();
-        // ابتدا وضعیت ادمین را بررسی کن، سپس آگهی‌ها را بگیر
-        checkAdminStatus().then(() => {
-            fetchAds(true);
+        let html = `<div class="ads-grid">`;
+        ads.forEach(ad => {
+            let imgHtml = '';
+            if (ad.image_ids && ad.image_ids.length > 0) {
+                imgHtml = `<img src="${ad.image_ids[0]}" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-image\\'></i>'" />`;
+            } else {
+                imgHtml = `<i class="fa-solid fa-image"></i>`;
+            }
+            html += `
+                <div class="ad-card" onclick="alert('آگهی: ${ad.title || 'بدون عنوان'}')">
+                    <div class="image">${imgHtml}</div>
+                    <div class="info">
+                        <div class="title">${ad.title || 'بدون عنوان'}</div>
+                        <div class="price">${(ad.price || 0).toLocaleString()} تومان</div>
+                        <div class="meta"><i class="fa-regular fa-clock"></i> ${formatTime(ad.created_at)}</div>
+                    </div>
+                </div>
+            `;
         });
-        loadProfile();
-        loadInlineBanners();
-        setTimeout(() => { loadSplashBanner(); }, 800);
-        document.getElementById('searchInput').addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') searchAds();
-        });
-        setTimeout(() => { toggleUpperSection(); }, 500);
+        html += `</div>`;
+        container.innerHTML = html;
+        console.log(`✅ ${ads.length} آگهی نمایش داده شد`);
+    }
 
-        console.log(`🚀 جـدار بازار – هماهنگ با ربات ${BOT_USERNAME}`);
-        console.log(`👤 Guest ID: ${guestId}`);
-        console.log(`📡 API Base: ${API_BASE}`);
-        console.log(`🌐 زبان: ${currentLang}`);
-        console.log('✅ ثبت آگهی → ارسال به ربات → تایید/رد → نمایش در صفحه');
-        console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
-    </script>
+    // ============================================================
+    // اجرا
+    // ============================================================
+    loadAds();
+</script>
 </body>
-    </html>
+</html>
