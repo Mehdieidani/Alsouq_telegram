@@ -9,764 +9,1111 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
         :root {
-            --bg-primary: #f8fafc; --bg-card: #ffffff; --bg-input: #f1f5f9;
-            --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
-            --border-color: #e2e8f0; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
-            --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --radius-full: 9999px;
-            --primary: #16a34a; --primary-hover: #15803d; --primary-light: rgba(22,163,74,0.12);
-            --primary-gradient: linear-gradient(135deg, #16a34a, #22c55e);
-            --gold: #f59e0b; --danger: #ef4444; --success: #16a34a;
-            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-            --font: 'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+            --bg-primary: #faf5f5;
+            --bg-card: #ffffff;
+            --bg-input: #f1ecec;
+            --text-primary: #2d1b1b;
+            --text-secondary: #5a3d3d;
+            --text-muted: #8a6e6e;
+            --border-color: #ebd6d6;
+            --shadow-sm: 0 1px 3px rgba(100, 30, 30, 0.08);
+            --shadow-md: 0 4px 20px rgba(100, 30, 30, 0.12);
+            --shadow-lg: 0 12px 40px rgba(100, 30, 30, 0.18);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            --ruby: #9b111e;
+            --ruby-dark: #7a0d18;
+            --ruby-light: #f5e0e0;
+            --ruby-glow: rgba(155, 17, 30, 0.2);
+            --green: #16a34a;
+            --green-dark: #15803d;
+            --green-light: #d5f5e3;
+            --green-glow: rgba(22, 163, 74, 0.2);
+            --gold: #f59e0b;
+            --danger: #dc2626;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
         }
         [data-theme="dark"] {
-            --bg-primary: #0f172a; --bg-card: #1e293b; --bg-input: #334155;
-            --text-primary: #f1f5f9; --text-secondary: #cbd5e1; --text-muted: #94a3b8;
-            --border-color: #334155;
+            --bg-primary: #1a0e0e;
+            --bg-card: #2d1a1a;
+            --bg-input: #3d2626;
+            --text-primary: #f5ecec;
+            --text-secondary: #cbb5b5;
+            --text-muted: #8a6e6e;
+            --border-color: #4d3333;
         }
-        html { font-size:16px; scroll-behavior:smooth; }
+        html { font-size: 16px; scroll-behavior: smooth; }
         body {
-            font-family:var(--font); background:var(--bg-primary); color:var(--text-primary);
-            min-height:100vh; direction:rtl; transition:background var(--transition), color var(--transition);
-            padding-bottom:80px; overflow-x:hidden;
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            direction: rtl;
+            transition: background var(--transition), color var(--transition);
+            padding-bottom: 80px;
+            overflow-x: hidden;
         }
-        button,input,textarea,select { font-family:var(--font); outline:none; transition:var(--transition); }
-        button { border:none; cursor:pointer; background:none; }
-        ::-webkit-scrollbar { width:4px; height:4px; }
-        ::-webkit-scrollbar-track { background:transparent; }
-        ::-webkit-scrollbar-thumb { background:var(--primary); border-radius:10px; }
+        button, input, textarea, select { font-family: var(--font); outline: none; transition: var(--transition); }
+        button { border: none; cursor: pointer; background: none; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--ruby); border-radius: 10px; }
 
         .toast-container {
-            position:fixed; top:20px; left:50%; transform:translateX(-50%);
-            z-index:99999; max-width:92%; width:440px; pointer-events:none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            max-width: 92%;
+            width: 440px;
+            pointer-events: none;
         }
         .toast {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:14px 20px; margin-bottom:8px;
-            color:var(--text-primary); font-size:14px;
-            display:flex; align-items:center; gap:12px;
-            box-shadow:var(--shadow-lg);
-            transform:translateY(-40px); opacity:0;
-            transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            pointer-events:auto; border-right:4px solid var(--primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-40px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
+            border-right: 4px solid var(--ruby);
         }
-        .toast.show { transform:translateY(0); opacity:1; }
-        .toast.success { border-right-color:var(--success); }
-        .toast.error { border-right-color:var(--danger); }
-        .toast.warning { border-right-color:var(--gold); }
-        .toast i { font-size:20px; flex-shrink:0; }
-        .toast .close { margin-right:auto; background:none; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; padding:0 4px; }
-        .toast .close:hover { color:var(--danger); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-right-color: var(--green); }
+        .toast.error { border-right-color: var(--danger); }
+        .toast.warning { border-right-color: var(--gold); }
+        .toast i { font-size: 20px; flex-shrink: 0; }
+        .toast .close {
+            margin-right: auto;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .toast .close:hover { color: var(--danger); }
 
         .header {
-            display:flex; justify-content:space-between; align-items:center;
-            padding:8px 0 12px; position:sticky; top:0; z-index:50;
-            background:var(--bg-primary); backdrop-filter:blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-primary);
+            backdrop-filter: blur(12px);
         }
         .logo-text {
-            font-size:26px; font-weight:900;
-            background:linear-gradient(135deg,#f7d875,#f5b81b,#f7d875);
-            background-size:300% 300%;
-            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-            animation:metallicShine 4s ease-in-out infinite;
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #9b111e, #d42a3a, #9b111e);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rubyShine 4s ease-in-out infinite;
         }
-        @keyframes metallicShine {
-            0% { background-position:0% 50%; }
-            50% { background-position:100% 50%; }
-            100% { background-position:0% 50%; }
+        @keyframes rubyShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
-        .logo-text span {
-            font-size:11px; font-weight:400; color:var(--text-muted);
-            -webkit-text-fill-color:var(--text-muted); margin-right:4px;
-        }
-        .header-actions { display:flex; gap:6px; align-items:center; }
+        .logo-text span { font-size: 11px; font-weight: 400; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); margin-right: 4px; }
+        .header-actions { display: flex; gap: 6px; align-items: center; }
         .header-actions button {
-            width:42px; height:42px; border-radius:var(--radius-sm);
-            background:var(--bg-card); border:1px solid var(--border-color);
-            color:var(--text-primary); font-size:16px;
-            display:flex; align-items:center; justify-content:center;
+            width: 42px; height: 42px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .header-actions button:hover {
-            background:var(--primary-light); border-color:var(--primary); color:var(--primary);
+            background: var(--ruby-light);
+            border-color: var(--ruby);
+            color: var(--ruby);
         }
         .lang-switch-btn {
-            padding:0 12px !important; width:auto !important;
-            font-size:13px !important; font-weight:600 !important; gap:4px;
+            padding: 0 12px !important;
+            width: auto !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            gap: 4px;
         }
 
         .banner-overlay {
-            position:fixed; top:0; left:0; right:0; bottom:0;
-            background:rgba(0,0,0,0.85); backdrop-filter:blur(16px);
-            z-index:999999; display:flex; align-items:center; justify-content:center;
-            padding:20px; transition:opacity 0.5s ease; opacity:0; pointer-events:none;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(16px);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
         }
-        .banner-overlay.show { opacity:1; pointer-events:auto; }
+        .banner-overlay.show { opacity: 1; pointer-events: auto; }
         .banner-overlay .banner-box {
-            background:var(--bg-card); border-radius:var(--radius-lg);
-            max-width:480px; width:100%; padding:24px 20px 28px;
-            position:relative; box-shadow:0 30px 80px rgba(0,0,0,0.4);
-            animation:bannerIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
-            text-align:center; max-height:90vh; overflow-y:auto;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 480px;
+            width: 100%;
+            padding: 24px 20px 28px;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            animation: bannerIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid var(--ruby);
         }
         @keyframes bannerIn {
-            0% { opacity:0; transform:scale(0.8) translateY(40px); }
-            100% { opacity:1; transform:scale(1) translateY(0); }
+            0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
         .banner-overlay .banner-close {
-            position:absolute; top:12px; left:12px;
-            background:rgba(0,0,0,0.1); border-radius:50%;
-            width:38px; height:38px; font-size:22px;
-            display:flex; align-items:center; justify-content:center;
-            color:var(--text-muted); cursor:pointer; transition:all 0.3s ease;
-            border:1px solid var(--border-color);
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            width: 38px; height: 38px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
         }
-        .banner-overlay .banner-close:hover { background:var(--danger); color:#fff; transform:rotate(90deg); }
+        .banner-overlay .banner-close:hover { background: var(--danger); color: #fff; transform: rotate(90deg); }
         .banner-overlay .banner-image {
-            width:100%; aspect-ratio:16/9; border-radius:var(--radius-sm);
-            object-fit:cover; background:var(--bg-input); margin-bottom:12px;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            background: var(--bg-input);
+            margin-bottom: 12px;
         }
-        .banner-overlay .banner-title { font-size:22px; font-weight:800; margin:6px 0 8px; }
-        .banner-overlay .banner-desc { font-size:14px; color:var(--text-secondary); margin-bottom:16px; line-height:1.6; }
-        .banner-overlay .banner-timer { font-size:13px; color:var(--text-muted); margin-bottom:12px; }
-        .banner-overlay .banner-timer span { color:var(--primary); font-weight:700; font-size:18px; }
-        .banner-overlay .banner-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+        .banner-overlay .banner-title { font-size: 22px; font-weight: 800; margin: 6px 0 8px; color: var(--ruby); }
+        .banner-overlay .banner-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; }
+        .banner-overlay .banner-timer { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+        .banner-overlay .banner-timer span { color: var(--ruby); font-weight: 700; font-size: 18px; }
+        .banner-overlay .banner-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .banner-overlay .banner-actions .btn-link {
-            flex:1; padding:14px 20px; border-radius:var(--radius-full);
-            font-weight:700; font-size:16px; text-decoration:none;
-            display:inline-flex; align-items:center; justify-content:center; gap:8px;
-            background:var(--primary-gradient); color:#fff;
-            box-shadow:0 4px 20px rgba(22,163,74,0.3);
-            transition:all 0.3s ease; min-width:120px;
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            box-shadow: 0 4px 20px var(--ruby-glow);
+            transition: all 0.3s ease;
+            min-width: 120px;
         }
-        .banner-overlay .banner-actions .btn-link:hover {
-            transform:translateY(-3px); box-shadow:0 8px 30px rgba(22,163,74,0.4);
-        }
+        .banner-overlay .banner-actions .btn-link:hover { transform: translateY(-3px); box-shadow: 0 8px 30px var(--ruby-glow); }
         .banner-overlay .banner-actions .btn-skip {
-            padding:14px 24px; border-radius:var(--radius-full);
-            font-weight:600; font-size:15px;
-            background:var(--bg-input); border:2px solid var(--border-color);
-            color:var(--text-primary); transition:all 0.3s ease;
+            padding: 14px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 15px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
         }
-        .banner-overlay .banner-actions .btn-skip:hover { background:var(--border-color); transform:translateY(-2px); }
+        .banner-overlay .banner-actions .btn-skip:hover { background: var(--border-color); transform: translateY(-2px); }
 
         .toggle-section-btn {
-            display:flex; align-items:center; justify-content:center; gap:10px;
-            width:100%; padding:14px 20px;
-            background:var(--primary-gradient); color:#fff; border:none;
-            border-radius:var(--radius-full); font-weight:700; font-size:15px;
-            margin-bottom:12px; transition:all 0.3s ease;
-            box-shadow:0 4px 14px rgba(22,163,74,0.25);
-            position:relative; overflow:hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px var(--ruby-glow);
+            position: relative;
+            overflow: hidden;
         }
         .toggle-section-btn::before {
-            content:''; position:absolute; top:0; left:0; right:0; bottom:0;
-            background:linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-            pointer-events:none;
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+            pointer-events: none;
         }
-        .toggle-section-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(22,163,74,0.35); }
-        .toggle-section-btn i { transition:transform 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); font-size:20px; }
-        .toggle-section-btn.active i { transform:rotate(180deg); }
+        .toggle-section-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--ruby-glow); }
+        .toggle-section-btn i { transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); font-size: 20px; }
+        .toggle-section-btn.active i { transform: rotate(180deg); }
         .toggle-section {
-            overflow:hidden; max-height:0; opacity:0;
-            transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
-            margin-bottom:0; background:var(--bg-card);
-            border-radius:var(--radius-md); padding:0 16px;
-            border:1px solid var(--border-color);
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+            margin-bottom: 0;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 0 16px;
+            border: 1px solid var(--border-color);
         }
-        .toggle-section.open { max-height:800px; opacity:1; margin-bottom:16px; padding:16px; }
+        .toggle-section.open { max-height: 800px; opacity: 1; margin-bottom: 16px; padding: 16px; }
+
         .search-box {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-full); padding:4px 16px;
-            display:flex; align-items:center; gap:10px;
-            transition:border-color var(--transition), box-shadow var(--transition);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            padding: 4px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .search-box:focus-within { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
-        .search-box i { color:var(--text-muted); font-size:16px; }
+        .search-box:focus-within { border-color: var(--ruby); box-shadow: 0 0 0 4px var(--ruby-glow); }
+        .search-box i { color: var(--text-muted); font-size: 16px; }
         .search-box input {
-            flex:1; background:transparent; border:none;
-            color:var(--text-primary); font-size:14px; padding:12px 0;
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 12px 0;
         }
-        .search-box input::placeholder { color:var(--text-muted); }
+        .search-box input::placeholder { color: var(--text-muted); }
         .search-box button {
-            background:var(--primary-gradient); color:#fff;
-            border-radius:var(--radius-full); padding:6px 20px;
-            font-size:12px; font-weight:600; white-space:nowrap;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border-radius: var(--radius-full);
+            padding: 6px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
         }
-        .search-box button:hover { opacity:0.9; }
+        .search-box button:hover { opacity: 0.9; }
+
         .section-title {
-            display:flex; justify-content:space-between; align-items:center;
-            margin:14px 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 0 10px;
         }
-        .section-title h3 { font-weight:800; font-size:18px; }
-        .section-title a { color:var(--text-muted); font-size:13px; cursor:pointer; transition:var(--transition); }
-        .section-title a:hover { color:var(--primary); }
+        .section-title h3 { font-weight: 800; font-size: 18px; color: var(--ruby); }
+        .section-title a { color: var(--text-muted); font-size: 13px; cursor: pointer; transition: var(--transition); }
+        .section-title a:hover { color: var(--ruby); }
+
         .categories {
-            display:flex; overflow-x:auto; gap:8px; padding-bottom:12px;
-            margin-bottom:12px; scrollbar-width:none;
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            scrollbar-width: none;
         }
-        .categories::-webkit-scrollbar { display:none; }
+        .categories::-webkit-scrollbar { display: none; }
         .category-chip {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-full); padding:6px 20px;
-            white-space:nowrap; font-size:12px; font-weight:600;
-            cursor:pointer; transition:all 0.25s ease;
-            color:var(--text-primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            padding: 6px 20px;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: var(--text-primary);
         }
-        .category-chip:hover { border-color:var(--primary); background:var(--primary-light); transform:translateY(-2px); }
-        .category-chip.active { background:var(--primary-gradient); color:#fff; border-color:var(--primary); }
+        .category-chip:hover { border-color: var(--ruby); background: var(--ruby-light); transform: translateY(-2px); }
+        .category-chip.active {
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border-color: var(--ruby);
+        }
+
         .action-grid {
-            display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:12px 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 12px 0;
         }
         .action-item {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:12px 0;
-            display:flex; flex-direction:column; align-items:center; gap:2px;
-            cursor:pointer; transition:all 0.3s ease;
-            color:var(--text-primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
         }
         .action-item:hover {
-            transform:translateY(-4px) scale(1.02);
-            border-color:var(--primary); background:var(--primary-light);
-            box-shadow:var(--shadow-md);
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--ruby);
+            background: var(--ruby-light);
+            box-shadow: var(--shadow-md);
         }
-        .action-item i { font-size:22px; color:var(--primary); }
-        .action-item span { font-size:10px; font-weight:500; opacity:0.8; }
+        .action-item i { font-size: 22px; color: var(--ruby); }
+        .action-item span { font-size: 10px; font-weight: 500; opacity: 0.8; }
 
         .ads-grid {
-            display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
         }
         .ad-card {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); overflow:hidden;
-            cursor:pointer; transition:all 0.35s cubic-bezier(0.4,0,0.2,1);
-            position:relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
-        .ad-card:hover { transform:translateY(-6px) scale(1.01); border-color:var(--primary); box-shadow:var(--shadow-md); }
+        .ad-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: var(--ruby);
+            box-shadow: var(--shadow-md);
+        }
         .ad-card .ad-image {
-            width:100%; aspect-ratio:1/1; background:var(--bg-input);
-            position:relative; overflow:hidden;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--bg-input);
+            position: relative;
+            overflow: hidden;
         }
         .ad-card .ad-image img {
-            width:100%; height:100%; object-fit:cover;
-            transition:transform 0.5s ease;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
         }
-        .ad-card:hover .ad-image img { transform:scale(1.05); }
+        .ad-card:hover .ad-image img { transform: scale(1.05); }
         .ad-card .ad-image .no-image {
-            display:flex; align-items:center; justify-content:center;
-            width:100%; height:100%; color:var(--text-muted);
-            font-size:14px; background:var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--text-muted);
+            font-size: 14px;
+            background: var(--bg-input);
         }
-        .ad-card .ad-image .no-image i { font-size:32px; opacity:0.3; }
+        .ad-card .ad-image .no-image i { font-size: 32px; opacity: 0.3; }
         .ad-card .ad-image .watermark {
-            position:absolute; bottom:8px; right:8px;
-            background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
-            color:#fff; font-size:7px; padding:2px 12px;
-            border-radius:var(--radius-full); border:1px solid rgba(255,255,255,0.08);
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(155, 17, 30, 0.8);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 7px;
+            padding: 2px 12px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .ad-card .ad-image .favorite {
-            position:absolute; top:10px; left:10px;
-            background:rgba(0,0,0,0.45); backdrop-filter:blur(8px);
-            border-radius:50%; width:32px; height:32px;
-            display:flex; align-items:center; justify-content:center;
-            color:#fff; font-size:14px; cursor:pointer;
-            transition:all 0.25s ease;
-            border:1px solid rgba(255,255,255,0.08);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.08);
         }
-        .ad-card .ad-image .favorite:hover { background:var(--danger); transform:scale(1.1); }
-        .ad-card .ad-image .favorite.active { color:var(--danger); background:rgba(239,68,68,0.3); }
-        .ad-card .ad-content { padding:10px 12px 8px; }
-        .ad-card .ad-content .title {
-            font-weight:600; font-size:13px;
-            display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-            overflow:hidden; min-height:36px; line-height:1.3;
-        }
-        .ad-card .ad-content .price { font-weight:700; font-size:16px; color:var(--primary); margin-top:2px; }
-        .ad-card .ad-content .meta {
-            font-size:10px; color:var(--text-muted);
-            display:flex; align-items:center; gap:4px; margin-top:2px;
-        }
+        .ad-card .ad-image .favorite:hover { background: var(--danger); transform: scale(1.1); }
+        .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(220, 38, 38, 0.3); }
+
+        .ad-card .ad-content { padding: 10px 12px 8px; }
+        .ad-card .ad-content .title { font-weight: 600; font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px; line-height: 1.3; }
+        .ad-card .ad-content .price { font-weight: 700; font-size: 16px; color: var(--ruby); margin-top: 2px; }
+        .ad-card .ad-content .meta { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+
         .ad-card .ad-footer {
-            display:flex; align-items:center; gap:8px;
-            padding:8px 12px 12px; border-top:1px solid var(--border-color);
-            font-size:10px; color:var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px 12px;
+            border-top: 1px solid var(--border-color);
+            font-size: 10px;
+            color: var(--text-secondary);
         }
         .ad-card .ad-footer .avatar {
-            width:22px; height:22px; border-radius:50%;
-            background:var(--primary-gradient); color:#fff;
-            display:flex; align-items:center; justify-content:center;
-            font-size:9px; flex-shrink:0; font-weight:700;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+            font-weight: 700;
         }
-        .ad-card .ad-footer .username { font-weight:500; }
-        .ad-card .ad-footer .rating { margin-right:auto; color:var(--text-muted); font-size:10px; }
-        .ad-card .ad-footer .rating i { color:var(--gold); margin-left:2px; }
+        .ad-card .ad-footer .username { font-weight: 500; }
+        .ad-card .ad-footer .rating { margin-right: auto; color: var(--text-muted); font-size: 10px; }
+        .ad-card .ad-footer .rating i { color: var(--gold); margin-left: 2px; }
 
         .banner-ad-container {
-            margin:12px 0; border-radius:var(--radius-md);
-            overflow:hidden; background:var(--bg-card);
-            border:1px solid var(--border-color);
-            transition:all 0.3s ease;
+            margin: 12px 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
-        .banner-ad-container:hover { box-shadow:var(--shadow-md); border-color:var(--primary); }
-        .banner-ad-container .banner-ad-inner {
-            display:flex; align-items:center; gap:14px;
-            padding:10px 14px; flex-wrap:wrap;
-        }
-        .banner-ad-container .banner-ad-image {
-            width:80px; height:80px; border-radius:var(--radius-sm);
-            object-fit:cover; background:var(--bg-input); flex-shrink:0;
-        }
-        .banner-ad-container .banner-ad-info { flex:1; min-width:140px; }
-        .banner-ad-container .banner-ad-title { font-weight:700; font-size:15px; }
-        .banner-ad-container .banner-ad-desc { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+        .banner-ad-container:hover { box-shadow: var(--shadow-md); border-color: var(--ruby); }
+        .banner-ad-container .banner-ad-inner { display: flex; align-items: center; gap: 14px; padding: 10px 14px; flex-wrap: wrap; }
+        .banner-ad-container .banner-ad-image { width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; background: var(--bg-input); flex-shrink: 0; }
+        .banner-ad-container .banner-ad-info { flex: 1; min-width: 140px; }
+        .banner-ad-container .banner-ad-title { font-weight: 700; font-size: 15px; color: var(--ruby); }
+        .banner-ad-container .banner-ad-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
         .banner-ad-container .banner-ad-link {
-            padding:8px 18px; border-radius:var(--radius-full);
-            background:var(--primary-gradient); color:#fff;
-            font-weight:600; font-size:13px; text-decoration:none;
-            display:inline-flex; align-items:center; gap:6px;
-            transition:all 0.3s ease; white-space:nowrap;
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
-        .banner-ad-container .banner-ad-link:hover {
-            transform:translateY(-2px); box-shadow:0 4px 16px rgba(22,163,74,0.3);
-        }
+        .banner-ad-container .banner-ad-link:hover { transform: translateY(-2px); box-shadow: 0 4px 16px var(--ruby-glow); }
 
         .bottom-nav {
-            position:fixed; bottom:0; left:0; right:0;
-            max-width:500px; margin:0 auto;
-            background:var(--bg-card); backdrop-filter:blur(24px);
-            border-top:1px solid var(--border-color);
-            display:flex; justify-content:space-around; align-items:center;
-            padding:8px 0 14px;
-            border-top-left-radius:24px; border-top-right-radius:24px;
-            z-index:100; box-shadow:0 -4px 30px rgba(0,0,0,0.06);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0 14px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            z-index: 100;
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.06);
         }
         .bottom-nav .nav-item {
-            display:flex; flex-direction:column; align-items:center;
-            color:var(--text-muted); cursor:pointer;
-            transition:color 0.2s ease;
-            font-size:9px; padding:0 8px;
-            position:relative; background:none; border:none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-size: 9px;
+            padding: 0 8px;
+            position: relative;
+            background: none;
+            border: none;
         }
-        .bottom-nav .nav-item:hover { color:var(--primary); }
-        .bottom-nav .nav-item.active { color:var(--primary); }
-        .bottom-nav .nav-item i { font-size:22px; margin-bottom:2px; transition:transform 0.2s ease; }
-        .bottom-nav .nav-item:hover i { transform:translateY(-2px); }
-        .bottom-nav .nav-item .nav-label { font-size:9px; font-weight:500; }
+        .bottom-nav .nav-item:hover { color: var(--ruby); }
+        .bottom-nav .nav-item.active { color: var(--ruby); }
+        .bottom-nav .nav-item i { font-size: 22px; margin-bottom: 2px; transition: transform 0.2s ease; }
+        .bottom-nav .nav-item:hover i { transform: translateY(-2px); }
+        .bottom-nav .nav-item .nav-label { font-size: 9px; font-weight: 500; }
 
         .modal-overlay {
-            position:fixed; top:0; left:0; right:0; bottom:0;
-            background:rgba(0,0,0,0.6); backdrop-filter:blur(20px);
-            z-index:9999; display:none;
-            align-items:center; justify-content:center; padding:20px;
-            animation:modalOverlayFade 0.3s ease;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: modalOverlayFade 0.3s ease;
         }
-        .modal-overlay.show { display:flex; }
+        .modal-overlay.show { display: flex; }
         @keyframes modalOverlayFade {
-            from { opacity:0; backdrop-filter:blur(0); }
-            to { opacity:1; backdrop-filter:blur(20px); }
+            from { opacity: 0; backdrop-filter: blur(0); }
+            to { opacity: 1; backdrop-filter: blur(20px); }
         }
         .modal-box {
-            background:var(--bg-card); border-radius:var(--radius-lg);
-            max-width:560px; width:100%; max-height:92vh;
-            overflow-y:auto; padding:24px 20px 28px;
-            position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.3);
-            animation:modalZoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 560px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 24px 20px 28px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: modalZoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--ruby);
         }
         @keyframes modalZoomIn {
-            from { opacity:0; transform:scale(0.85) translateY(20px); }
-            to { opacity:1; transform:scale(1) translateY(0); }
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .modal-box .modal-close {
-            position:sticky; top:0; float:left;
-            background:var(--bg-input); border:1px solid var(--border-color);
-            border-radius:50%; width:40px; height:40px;
-            font-size:22px; display:flex; align-items:center; justify-content:center;
-            color:var(--text-muted); cursor:pointer;
-            transition:all 0.3s ease; z-index:10; margin-bottom:10px;
+            position: sticky;
+            top: 0;
+            float: left;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            margin-bottom: 10px;
         }
-        .modal-box .modal-close:hover { background:var(--danger); color:#fff; transform:rotate(90deg); }
-        .modal-box .modal-title { font-size:24px; font-weight:800; margin:8px 0 12px; line-height:1.3; }
-        .modal-box .ad-meta {
-            display:flex; flex-wrap:wrap; align-items:center;
-            gap:10px; margin-bottom:14px; font-size:13px;
-            color:var(--text-secondary);
-        }
-        .modal-box .ad-meta span {
-            background:var(--bg-input); padding:3px 12px;
-            border-radius:var(--radius-full); font-size:12px;
-        }
-        .modal-box .ad-price { font-size:28px; font-weight:800; color:var(--primary); margin:6px 0 10px; }
+        .modal-box .modal-close:hover { background: var(--danger); color: #fff; transform: rotate(90deg); }
+        .modal-box .modal-title { font-size: 24px; font-weight: 800; margin: 8px 0 12px; line-height: 1.3; color: var(--ruby); }
+        .modal-box .ad-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13px; color: var(--text-secondary); }
+        .modal-box .ad-meta span { background: var(--bg-input); padding: 3px 12px; border-radius: var(--radius-full); font-size: 12px; }
+        .modal-box .ad-price { font-size: 28px; font-weight: 800; color: var(--ruby); margin: 6px 0 10px; }
         .modal-box .ad-description {
-            background:var(--bg-input); border-radius:var(--radius-sm);
-            padding:16px; margin:14px 0; font-size:14px;
-            line-height:1.8; white-space:pre-wrap; color:var(--text-primary);
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 14px 0;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text-primary);
         }
         .modal-box .ad-gallery {
-            position:relative; width:100%; aspect-ratio:1/1;
-            background:var(--bg-input); border-radius:var(--radius-sm);
-            overflow:hidden; margin-bottom:12px;
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 12px;
         }
-        .modal-box .ad-gallery img { width:100%; height:100%; object-fit:cover; }
-        .modal-box .ad-gallery .no-image {
-            display:flex; align-items:center; justify-content:center;
-            width:100%; height:100%; color:var(--text-muted); font-size:18px;
-        }
-        .modal-box .gallery-controls {
-            display:flex; justify-content:center; gap:16px; margin:8px 0 14px;
-        }
+        .modal-box .ad-gallery img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-box .ad-gallery .no-image { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-size: 18px; }
+        .modal-box .gallery-controls { display: flex; justify-content: center; gap: 16px; margin: 8px 0 14px; }
         .modal-box .gallery-controls button {
-            background:var(--bg-input); border:1px solid var(--border-color);
-            border-radius:50%; width:36px; height:36px;
-            font-size:18px; display:flex; align-items:center; justify-content:center;
-            color:var(--text-primary); cursor:pointer; transition:0.2s ease;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px; height: 36px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.2s ease;
         }
-        .modal-box .gallery-controls button:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
+        .modal-box .gallery-controls button:hover { background: var(--ruby); color: #fff; border-color: var(--ruby); }
+
         .modal-box .action-buttons {
-            display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:14px 0 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0 10px;
         }
         .modal-box .action-buttons a, .modal-box .action-buttons button {
-            padding:12px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px; text-align:center;
-            text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;
-            border:none; cursor:pointer; transition:all 0.2s ease;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .modal-box .action-buttons .btn-call { background:var(--primary-gradient); color:#fff; }
-        .modal-box .action-buttons .btn-whatsapp { background:#25D366; color:#fff; }
-        .modal-box .action-buttons .btn-share {
-            background:var(--bg-input); border:1px solid var(--border-color);
-            color:var(--text-primary);
-        }
-        .modal-box .action-buttons .btn-share:hover { background:var(--border-color); }
+        .modal-box .action-buttons .btn-call { background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; }
+        .modal-box .action-buttons .btn-whatsapp { background: #25D366; color: #fff; }
+        .modal-box .action-buttons .btn-share { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .modal-box .action-buttons .btn-share:hover { background: var(--border-color); }
+
         .modal-box .btn-fav {
-            width:100%; padding:12px; border-radius:var(--radius-sm);
-            background:var(--bg-input); border:2px solid var(--border-color);
-            color:var(--text-primary); font-weight:600; font-size:14px;
-            cursor:pointer; transition:all 0.2s ease; margin:6px 0 16px;
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 6px 0 16px;
         }
-        .modal-box .btn-fav:hover { background:var(--primary-light); border-color:var(--primary); }
-        .modal-box .btn-fav .fa-heart { color:var(--danger); }
-        .review-section { margin-top:16px; border-top:1px solid var(--border-color); padding-top:16px; }
-        .review-section h4 { font-size:16px; margin-bottom:8px; }
-        .review-stars span {
-            font-size:28px; cursor:pointer; color:var(--text-muted);
-            transition:0.2s; display:inline-block; margin-left:4px;
-        }
-        .review-stars span.active { color:var(--gold); }
-        .review-stars span:hover { transform:scale(1.2); }
+        .modal-box .btn-fav:hover { background: var(--ruby-light); border-color: var(--ruby); }
+        .modal-box .btn-fav .fa-heart { color: var(--danger); }
+
+        .review-section { margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px; }
+        .review-section h4 { font-size: 16px; margin-bottom: 8px; color: var(--ruby); }
+        .review-stars span { font-size: 28px; cursor: pointer; color: var(--text-muted); transition: 0.2s; display: inline-block; margin-left: 4px; }
+        .review-stars span.active { color: var(--gold); }
+        .review-stars span:hover { transform: scale(1.2); }
         .review-comment {
-            width:100%; padding:10px 14px;
-            background:var(--bg-input); border:2px solid var(--border-color);
-            border-radius:var(--radius-sm); margin:8px 0;
-            resize:vertical; min-height:60px;
-            font-family:var(--font); color:var(--text-primary); font-size:14px;
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            margin: 8px 0;
+            resize: vertical;
+            min-height: 60px;
+            font-family: var(--font);
+            color: var(--text-primary);
+            font-size: 14px;
         }
-        .review-comment:focus { border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
+        .review-comment:focus { border-color: var(--ruby); box-shadow: 0 0 0 4px var(--ruby-glow); }
         .btn-submit-review {
-            padding:10px 20px; background:var(--primary-gradient);
-            color:#fff; border-radius:var(--radius-sm);
-            font-weight:700; font-size:14px; transition:all 0.2s;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
         }
-        .btn-submit-review:hover { transform:translateY(-2px); box-shadow:0 4px 14px var(--primary-light); }
-        .review-item { padding:10px 0; border-bottom:1px solid var(--border-color); }
-        .review-item .header { display:flex; justify-content:space-between; font-weight:600; }
-        .review-item .header .stars { color:var(--gold); }
-        .review-item .comment { margin:4px 0; font-size:14px; }
-        .review-item .date { font-size:10px; color:var(--text-muted); }
+        .btn-submit-review:hover { transform: translateY(-2px); box-shadow: 0 4px 14px var(--ruby-glow); }
+
+        .review-item { padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .review-item .header { display: flex; justify-content: space-between; font-weight: 600; }
+        .review-item .header .stars { color: var(--gold); }
+        .review-item .comment { margin: 4px 0; font-size: 14px; }
+        .review-item .date { font-size: 10px; color: var(--text-muted); }
 
         .modal-overlay-old {
-            position:fixed; top:0; left:0; right:0; bottom:0;
-            background:rgba(0,0,0,0.6); backdrop-filter:blur(20px);
-            z-index:9999; display:none;
-            align-items:flex-start; justify-content:center;
-            overflow-y:auto; padding:20px;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
         }
-        .modal-overlay-old.show { display:flex; }
+        .modal-overlay-old.show { display: flex; }
         .modal-box-old {
-            background:var(--bg-card); border-radius:var(--radius-lg);
-            max-width:500px; width:100%; padding:32px 24px 36px;
-            margin:auto 0;
-            animation:modalSlide 0.4s cubic-bezier(0.4,0,0.2,1);
-            position:relative; max-height:95vh; overflow-y:auto;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 500px;
+            width: 100%;
+            padding: 32px 24px 36px;
+            margin: auto 0;
+            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            max-height: 95vh;
+            overflow-y: auto;
+            border: 2px solid var(--ruby);
         }
         @keyframes modalSlide {
-            from { opacity:0; transform:translateY(40px) scale(0.96); }
-            to { opacity:1; transform:translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal-box-old .modal-close {
-            position:absolute; top:16px; left:16px;
-            background:none; border:none; font-size:28px;
-            color:var(--text-muted); cursor:pointer; transition:all 0.3s ease;
+            position: absolute;
+            top: 16px; left: 16px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .modal-box-old .modal-close:hover { color:var(--danger); transform:rotate(90deg); }
-        .modal-box-old .modal-title { font-size:22px; font-weight:800; margin-bottom:20px; padding-left:30px; }
-        .modal-box-old .form-group { margin-bottom:16px; }
-        .modal-box-old .form-group label {
-            display:block; font-size:12px; font-weight:600;
-            color:var(--text-secondary); margin-bottom:5px;
-        }
+        .modal-box-old .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
+        .modal-box-old .modal-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; padding-left: 30px; color: var(--ruby); }
+        .modal-box-old .form-group { margin-bottom: 16px; }
+        .modal-box-old .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
         .modal-box-old .form-group input, .modal-box-old .form-group textarea, .modal-box-old .form-group select {
-            width:100%; padding:10px 14px;
-            background:var(--bg-input); border:2px solid var(--border-color);
-            border-radius:var(--radius-sm);
-            color:var(--text-primary); font-size:14px;
-            transition:border-color var(--transition), box-shadow var(--transition);
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
         .modal-box-old .form-group input:focus, .modal-box-old .form-group textarea:focus, .modal-box-old .form-group select:focus {
-            border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light);
+            border-color: var(--ruby);
+            box-shadow: 0 0 0 4px var(--ruby-glow);
         }
-        .modal-box-old .form-group textarea { resize:vertical; min-height:70px; }
-        .modal-box-old .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .modal-box-old .form-group textarea { resize: vertical; min-height: 70px; }
+        .modal-box-old .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .modal-box-old .btn-primary {
-            width:100%; padding:12px;
-            background:var(--primary-gradient); color:#fff;
-            border-radius:var(--radius-sm); font-weight:700; font-size:15px;
-            transition:all 0.3s ease;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s ease;
         }
-        .modal-box-old .btn-primary:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--primary-light); }
-        .modal-box-old .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+        .modal-box-old .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--ruby-glow); }
+        .modal-box-old .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .modal-box-old .btn-secondary {
-            width:100%; padding:12px;
-            background:var(--bg-input); border:2px solid var(--border-color);
-            border-radius:var(--radius-sm); font-weight:600; font-size:15px;
-            color:var(--text-primary); transition:var(--transition);
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: var(--transition);
         }
-        .modal-box-old .btn-secondary:hover { background:var(--border-color); }
+        .modal-box-old .btn-secondary:hover { background: var(--border-color); }
         .modal-box-old .image-upload-area {
-            border:2px dashed var(--border-color); border-radius:var(--radius-sm);
-            padding:24px; text-align:center; cursor:pointer;
-            transition:all 0.3s ease; background:var(--bg-input);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
         }
-        .modal-box-old .image-upload-area:hover { border-color:var(--primary); background:var(--primary-light); }
-        .modal-box-old .image-upload-area i { font-size:36px; color:var(--primary); display:block; margin-bottom:4px; }
-        .modal-box-old .image-upload-area p { font-size:13px; color:var(--text-secondary); }
-        .modal-box-old .image-upload-area input { display:none; }
-        .modal-box-old .image-preview-grid {
-            display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px;
-        }
-        .modal-box-old .image-preview-item {
-            position:relative; aspect-ratio:1/1;
-            border-radius:var(--radius-sm); overflow:hidden;
-            background:var(--bg-input); border:1px solid var(--border-color);
-        }
-        .modal-box-old .image-preview-item img { width:100%; height:100%; object-fit:cover; }
+        .modal-box-old .image-upload-area:hover { border-color: var(--ruby); background: var(--ruby-light); }
+        .modal-box-old .image-upload-area i { font-size: 36px; color: var(--ruby); display: block; margin-bottom: 4px; }
+        .modal-box-old .image-upload-area p { font-size: 13px; color: var(--text-secondary); }
+        .modal-box-old .image-upload-area input { display: none; }
+        .modal-box-old .image-preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .modal-box-old .image-preview-item { position: relative; aspect-ratio: 1/1; border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-input); border: 1px solid var(--border-color); }
+        .modal-box-old .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .modal-box-old .image-preview-item .remove-img {
-            position:absolute; top:4px; right:4px;
-            background:rgba(0,0,0,0.6); border-radius:50%;
-            width:22px; height:22px; color:var(--danger);
-            border:none; cursor:pointer; font-size:11px;
-            display:flex; align-items:center; justify-content:center;
-            transition:all 0.2s ease;
+            position: absolute;
+            top: 4px; right: 4px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            width: 22px; height: 22px;
+            color: var(--danger);
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
-        .modal-box-old .image-preview-item .remove-img:hover { background:var(--danger); color:#fff; }
+        .modal-box-old .image-preview-item .remove-img:hover { background: var(--danger); color: #fff; }
+
         .wizard-progress {
-            display:flex; justify-content:space-between; align-items:center;
-            margin-bottom:24px; position:relative; padding:0 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            position: relative;
+            padding: 0 6px;
         }
         .wizard-progress::before {
-            content:''; position:absolute; top:50%; left:0; right:0;
-            height:3px; background:var(--border-color);
-            z-index:1; transform:translateY(-50%); border-radius:10px;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--border-color);
+            z-index: 1;
+            transform: translateY(-50%);
+            border-radius: 10px;
         }
         .wizard-progress .bar {
-            position:absolute; top:50%; right:0; height:3px;
-            background:var(--primary-gradient); z-index:2;
-            transform:translateY(-50%); transition:width 0.4s ease;
-            width:0%; border-radius:10px;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, var(--ruby), var(--green));
+            z-index: 2;
+            transform: translateY(-50%);
+            transition: width 0.4s ease;
+            width: 0%;
+            border-radius: 10px;
         }
         .wizard-progress .step {
-            width:34px; height:34px; border-radius:50%;
-            background:var(--bg-input); border:3px solid var(--border-color);
-            color:var(--text-muted); font-size:14px; font-weight:700;
-            display:flex; align-items:center; justify-content:center;
-            position:relative; z-index:3; transition:all 0.3s ease;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 3px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s ease;
         }
-        .wizard-progress .step.active {
-            border-color:var(--primary); background:var(--primary-gradient);
-            color:#fff; box-shadow:0 0 0 4px var(--primary-light);
-        }
-        .wizard-progress .step.completed { border-color:var(--success); background:var(--success); color:#fff; }
-        .wizard-step { display:none; animation:fadeIn 0.3s ease; }
-        .wizard-step.active { display:block; }
+        .wizard-progress .step.active { border-color: var(--ruby); background: var(--ruby); color: #fff; box-shadow: 0 0 0 4px var(--ruby-glow); }
+        .wizard-progress .step.completed { border-color: var(--green); background: var(--green); color: #fff; }
+
+        .wizard-step { display: none; animation: fadeIn 0.3s ease; }
+        .wizard-step.active { display: block; }
 
         #profileTab, #favoritesTab, #adminTab, #rulesTab, #supportTab {
-            display:none; max-width:500px; margin:0 auto;
-            padding:14px 14px 80px; animation:fadeIn 0.3s ease;
+            display: none;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 14px 14px 80px;
+            animation: fadeIn 0.3s ease;
         }
-        #profileTab.show, #favoritesTab.show, #adminTab.show, #rulesTab.show, #supportTab.show { display:block; }
+        #profileTab.show, #favoritesTab.show, #adminTab.show, #rulesTab.show, #supportTab.show { display: block; }
+
         .profile-section {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); padding:20px;
-            margin-bottom:18px; box-shadow:var(--shadow-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-sm);
         }
-        .profile-section .form-group { margin-bottom:16px; }
-        .profile-section .form-group label {
-            display:block; font-size:12px; font-weight:600;
-            color:var(--text-secondary); margin-bottom:5px;
-        }
+        .profile-section .form-group { margin-bottom: 16px; }
+        .profile-section .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
         .profile-section .form-group input {
-            width:100%; padding:10px 14px;
-            background:var(--bg-input); border:2px solid var(--border-color);
-            border-radius:var(--radius-sm);
-            color:var(--text-primary); font-size:14px;
-            transition:border-color var(--transition), box-shadow var(--transition);
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .profile-section .form-group input:focus {
-            border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light);
-        }
-        .profile-section .profile-actions {
-            display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;
-        }
+        .profile-section .form-group input:focus { border-color: var(--ruby); box-shadow: 0 0 0 4px var(--ruby-glow); }
+
+        .profile-section .profile-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
         .profile-section .profile-actions button {
-            flex:1; padding:10px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px; min-width:60px;
-            transition:all 0.3s ease;
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            min-width: 60px;
+            transition: all 0.3s ease;
         }
-        .profile-section .profile-actions .btn-save { background:var(--primary-gradient); color:#fff; }
-        .profile-section .profile-actions .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px var(--primary-light); }
+        .profile-section .profile-actions .btn-save {
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+        }
+        .profile-section .profile-actions .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--ruby-glow); }
+
         .rules-content, .support-content {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); padding:20px;
-            margin-bottom:16px; line-height:2; font-size:15px;
-            white-space:pre-wrap;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+            line-height: 2;
+            font-size: 15px;
+            white-space: pre-wrap;
         }
-        .rules-content h1, .rules-content h2, .rules-content h3 { margin:12px 0 6px; }
-        .rules-content ul, .rules-content ol { padding-right:24px; }
-        .support-item {
-            display:flex; align-items:center; gap:12px;
-            padding:10px 0; border-bottom:1px solid var(--border-color);
-        }
-        .support-item:last-child { border-bottom:none; }
+        .support-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .support-item:last-child { border-bottom: none; }
         .support-item .icon {
-            width:36px; height:36px; border-radius:50%;
-            background:var(--primary-light); color:var(--primary);
-            display:flex; align-items:center; justify-content:center;
-            font-size:16px; flex-shrink:0;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--ruby-light);
+            color: var(--ruby);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
         }
-        .support-item .info { flex:1; }
-        .support-item .info .label { font-size:12px; color:var(--text-muted); }
-        .support-item .info .value { font-size:15px; font-weight:600; color:var(--text-primary); }
-        .support-item .info .value a { color:var(--primary); text-decoration:none; }
-        .support-item .info .value a:hover { text-decoration:underline; }
+        .support-item .info { flex: 1; }
+        .support-item .info .label { font-size: 12px; color: var(--text-muted); }
+        .support-item .info .value { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        .support-item .info .value a { color: var(--ruby); text-decoration: none; }
+        .support-item .info .value a:hover { text-decoration: underline; }
 
         .admin-grid {
-            display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
         }
         .admin-grid button {
-            padding:12px 8px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px;
-            background:var(--bg-input); border:1px solid var(--border-color);
-            color:var(--text-primary); transition:all 0.2s ease;
-            display:flex; align-items:center; justify-content:center; gap:6px;
+            padding: 12px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-        .admin-grid button:hover { background:var(--primary-light); border-color:var(--primary); color:var(--primary); }
-        .admin-grid button.danger:hover { background:rgba(239,68,68,0.1); border-color:var(--danger); color:var(--danger); }
-        .admin-grid button.success:hover { background:var(--primary-light); border-color:var(--success); color:var(--success); }
+        .admin-grid button:hover { background: var(--ruby-light); border-color: var(--ruby); color: var(--ruby); }
+        .admin-grid button.danger:hover { background: rgba(220,38,38,0.1); border-color: var(--danger); color: var(--danger); }
+        .admin-grid button.success:hover { background: var(--green-light); border-color: var(--green); color: var(--green); }
+
         .admin-section {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-md); padding:16px;
-            margin-bottom:16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
         }
-        .admin-section h4 { font-size:16px; font-weight:700; margin-bottom:10px; }
-        .admin-section .admin-row {
-            display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px;
-        }
+        .admin-section h4 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--ruby); }
+        .admin-section .admin-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
         .admin-section .admin-row input, .admin-section .admin-row select {
-            flex:1; min-width:100px; padding:8px 12px;
-            border-radius:var(--radius-sm); border:1px solid var(--border-color);
-            background:var(--bg-input); color:var(--text-primary); font-size:13px;
+            flex: 1;
+            min-width: 100px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
         }
         .admin-section .admin-row button {
-            padding:8px 16px; border-radius:var(--radius-sm);
-            font-weight:600; font-size:13px;
-            background:var(--primary-gradient); color:#fff;
-            transition:all 0.2s ease;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            transition: all 0.2s ease;
         }
-        .admin-section .admin-row button:hover { opacity:0.9; transform:translateY(-1px); }
-        .admin-section .admin-row button.danger { background:var(--danger); }
-        .my-ad-item {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:12px 16px;
-            margin-bottom:10px; display:flex;
-            justify-content:space-between; align-items:center;
-            transition:all 0.3s ease;
-        }
-        .my-ad-item:hover { border-color:var(--primary); transform:translateX(-4px); }
-        .my-ad-item .info .title { font-weight:600; font-size:14px; }
-        .my-ad-item .info .sub {
-            font-size:12px; color:var(--text-secondary);
-            display:flex; gap:8px; flex-wrap:wrap; margin-top:2px;
-        }
-        .my-ad-item .info .sub .status {
-            font-size:10px; padding:1px 12px;
-            border-radius:var(--radius-full); font-weight:600;
-        }
-        .my-ad-item .info .sub .status.pending { background:rgba(245,158,11,0.2); color:var(--gold); }
-        .my-ad-item .info .sub .status.approved { background:rgba(22,163,74,0.2); color:var(--success); }
-        .my-ad-item .info .sub .status.rejected { background:rgba(239,68,68,0.2); color:var(--danger); }
-        .my-ad-item .actions { display:flex; gap:6px; }
-        .my-ad-item .actions button {
-            background:none; border:none; font-size:17px;
-            padding:4px 6px; cursor:pointer;
-            border-radius:var(--radius-sm); transition:all 0.2s ease;
-        }
-        .my-ad-item .actions .edit { color:var(--primary); }
-        .my-ad-item .actions .edit:hover { background:var(--primary-light); transform:scale(1.1); }
-        .my-ad-item .actions .delete { color:var(--danger); }
-        .my-ad-item .actions .delete:hover { background:rgba(239,68,68,0.1); transform:scale(1.1); }
-        .favorite-item {
-            background:var(--bg-card); border:1px solid var(--border-color);
-            border-radius:var(--radius-sm); padding:12px;
-            margin-bottom:10px; display:flex; gap:14px;
-            align-items:center; cursor:pointer;
-            transition:all 0.3s ease;
-        }
-        .favorite-item:hover { border-color:var(--primary); transform:translateX(-4px); }
-        .favorite-item img {
-            width:60px; height:60px; border-radius:var(--radius-sm);
-            object-fit:cover; background:var(--bg-input); flex-shrink:0;
-        }
-        .favorite-item .info { flex:1; min-width:0; }
-        .favorite-item .info .title {
-            font-weight:600; font-size:14px;
-            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-        }
-        .favorite-item .info .price { color:var(--primary); font-weight:700; font-size:15px; }
-        .favorite-item .info .meta { font-size:11px; color:var(--text-muted); }
-        .favorite-item .remove-fav {
-            background:none; border:none; color:var(--danger);
-            font-size:18px; cursor:pointer; padding:4px;
-            transition:all 0.2s ease;
-        }
-        .favorite-item .remove-fav:hover { transform:scale(1.2); }
-        .loading-spinner { text-align:center; padding:40px 0; color:var(--primary); }
-        .loading-spinner i { font-size:34px; animation:spin 1s linear infinite; }
-        @keyframes spin {
-            from { transform:rotate(0deg); }
-            to { transform:rotate(360deg); }
-        }
+        .admin-section .admin-row button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .admin-section .admin-row button.danger { background: var(--danger); }
 
-        @media (max-width:480px) {
-            .ads-grid { grid-template-columns:1fr 1fr; gap:8px; }
-            .action-grid { grid-template-columns:repeat(4,1fr); gap:4px; }
-            .action-item { padding:10px 0; }
-            .action-item i { font-size:18px; }
-            .modal-box { padding:20px 16px 24px; }
-            .modal-box .action-buttons { grid-template-columns:1fr; }
-            .admin-grid { grid-template-columns:1fr 1fr; }
-            .banner-overlay .banner-box { padding:20px 16px 24px; }
-            .banner-overlay .banner-title { font-size:18px; }
-            .banner-ad-container .banner-ad-inner { flex-direction:column; align-items:stretch; text-align:center; }
-            .banner-ad-container .banner-ad-image { width:100%; height:auto; aspect-ratio:16/9; }
-            .banner-ad-container .banner-ad-link { justify-content:center; }
+        .my-ad-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .my-ad-item:hover { border-color: var(--ruby); transform: translateX(-4px); }
+        .my-ad-item .info .title { font-weight: 600; font-size: 14px; }
+        .my-ad-item .info .sub { font-size: 12px; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+        .my-ad-item .info .sub .status { font-size: 10px; padding: 1px 12px; border-radius: var(--radius-full); font-weight: 600; }
+        .my-ad-item .info .sub .status.pending { background: rgba(245,158,11,0.2); color: var(--gold); }
+        .my-ad-item .info .sub .status.approved { background: var(--green-light); color: var(--green); }
+        .my-ad-item .info .sub .status.rejected { background: rgba(220,38,38,0.2); color: var(--danger); }
+
+        .my-ad-item .actions { display: flex; gap: 6px; }
+        .my-ad-item .actions button { background: none; border: none; font-size: 17px; padding: 4px 6px; cursor: pointer; border-radius: var(--radius-sm); transition: all 0.2s ease; }
+        .my-ad-item .actions .edit { color: var(--ruby); }
+        .my-ad-item .actions .edit:hover { background: var(--ruby-light); transform: scale(1.1); }
+        .my-ad-item .actions .delete { color: var(--danger); }
+        .my-ad-item .actions .delete:hover { background: rgba(220,38,38,0.1); transform: scale(1.1); }
+
+        .favorite-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .favorite-item:hover { border-color: var(--ruby); transform: translateX(-4px); }
+        .favorite-item img { width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover; background: var(--bg-input); flex-shrink: 0; }
+        .favorite-item .info { flex: 1; min-width: 0; }
+        .favorite-item .info .title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .favorite-item .info .price { color: var(--ruby); font-weight: 700; font-size: 15px; }
+        .favorite-item .info .meta { font-size: 11px; color: var(--text-muted); }
+        .favorite-item .remove-fav { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; padding: 4px; transition: all 0.2s ease; }
+        .favorite-item .remove-fav:hover { transform: scale(1.2); }
+
+        .loading-spinner { text-align: center; padding: 40px 0; color: var(--ruby); }
+        .loading-spinner i { font-size: 34px; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .text-secondary { color: var(--text-secondary); }
+        .required { color: var(--danger); }
+
+        @media (max-width: 480px) {
+            .ads-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .action-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .action-item { padding: 10px 0; }
+            .action-item i { font-size: 18px; }
+            .modal-box { padding: 20px 16px 24px; }
+            .modal-box .action-buttons { grid-template-columns: 1fr; }
+            .admin-grid { grid-template-columns: 1fr 1fr; }
+            .banner-overlay .banner-box { padding: 20px 16px 24px; }
+            .banner-overlay .banner-title { font-size: 18px; }
+            .banner-ad-container .banner-ad-inner { flex-direction: column; align-items: stretch; text-align: center; }
+            .banner-ad-container .banner-ad-image { width: 100%; height: auto; aspect-ratio: 16/9; }
+            .banner-ad-container .banner-ad-link { justify-content: center; }
         }
         @keyframes fadeIn {
-            from { opacity:0; transform:scale(0.96); }
-            to { opacity:1; transform:scale(1); }
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .required { color:var(--danger); }
-        .text-secondary { color:var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -783,7 +1130,7 @@
             <div class="banner-timer">⏳ <span id="bannerTimer">5</span> ثانیه تا ادامه</div>
             <div class="banner-actions">
                 <a href="#" id="bannerLink" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-left"></i> <span id="bannerOpenLabel">باز کردن لینک</span></a>
-                <button class="btn-skip" onclick="closeBanner()"><span id="bannerSkipLabel">رد کردن</span></button>
+                <button class="btn-skip" onclick="closeBanner()" id="bannerSkipBtn"><span id="bannerSkipLabel">رد کردن</span></button>
             </div>
         </div>
     </div>
@@ -937,7 +1284,7 @@
 
     <!-- TABS -->
     <div id="profileTab">
-        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="profileTitle">پروفایل</h2>
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;color:var(--ruby);" id="profileTitle">پروفایل</h2>
         <div class="profile-section">
             <div class="form-group"><label id="profileUsernameLabel">نام کاربری</label><input type="text" id="profileUsername" placeholder="نام کاربری" /></div>
             <div class="form-group"><label id="profileFullnameLabel">نام کامل</label><input type="text" id="profileFullname" placeholder="نام و نام خانوادگی" /></div>
@@ -945,27 +1292,27 @@
             <div class="form-group"><label id="profileEmailLabel">ایمیل</label><input type="email" id="profileEmail" placeholder="ایمیل" /></div>
             <div class="profile-actions"><button class="btn-save" id="profileSaveBtn" onclick="saveProfile()">ذخیره</button></div>
         </div>
-        <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3>
+        <h3 style="margin:16px 0 10px;font-size:18px;font-weight:700;color:var(--ruby);" id="myAdsTitle">📋 آگهی‌های من</h3>
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <div id="favoritesTab">
-        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="favTitle">❤️ علاقه‌مندی‌ها</h2>
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;color:var(--ruby);" id="favTitle">❤️ علاقه‌مندی‌ها</h2>
         <div id="favoritesList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <div id="rulesTab">
-        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="rulesTitle">📜 قوانین و مقررات</h2>
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;color:var(--ruby);" id="rulesTitle">📜 قوانین و مقررات</h2>
         <div class="rules-content" id="rulesContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <div id="supportTab">
-        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="supportTitle">🆘 پشتیبانی</h2>
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;color:var(--ruby);" id="supportTitle">🆘 پشتیبانی</h2>
         <div class="support-content" id="supportContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <div id="adminTab">
-        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="adminTitle">🔧 پنل مدیریت</h2>
+        <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;color:var(--ruby);" id="adminTitle">🔧 پنل مدیریت</h2>
         <div class="admin-grid">
             <button onclick="adminPendingAds()" id="adminPendingBtn"><i class="fa-solid fa-clock"></i> <span id="adminPendingLabel">در انتظار</span></button>
             <button onclick="adminAllAds()" id="adminAllAdsBtn"><i class="fa-solid fa-list"></i> <span id="adminAllAdsLabel">همه آگهی‌ها</span></button>
@@ -988,6 +1335,7 @@
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
+        const BOT_USERNAME = '@AlsouqAlmaftuhiran_bot';
 
         let guestId = localStorage.getItem('jedar_guest_id');
         if (!guestId) {
@@ -1017,78 +1365,82 @@
         let reviewRating = 0;
 
         // ============================================================
-        // TRANSLATIONS (خلاصه)
+        // TRANSLATIONS
         // ============================================================
         const translations = {
             fa: {
-                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل', rules: 'قوانین', support: 'پشتیبانی',
-                admin: 'مدیریت', currency: 'تومان', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها', show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها', all: 'همه',
-                no_ads: 'هیچ آگهی‌ای موجود نیست', loading_ads: 'در حال بارگذاری...',
-                pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی', beauty: 'زیبایی', services: 'خدمات',
-                jobs: 'کاریابی', real_estate: 'املاک', vehicles: 'خودرو',
-                add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی', category: 'دسته‌بندی', price: 'قیمت (تومان)',
-                next: 'بعدی', prev: 'قبلی', description: 'توضیحات', location: 'موقعیت / شهر', country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید', phone: 'شماره تماس', submit: 'ثبت آگهی',
-                ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.', ad_error: 'خطا در ثبت آگهی',
-                call: 'تماس', whatsapp: 'واتساپ', share: 'اشتراک', add_fav: 'افزودن به علاقه‌مندی', remove_fav: 'حذف از علاقه‌مندی',
-                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست', favorite_added: 'به علاقه‌مندی اضافه شد', favorite_removed: 'از علاقه‌مندی حذف شد',
-                ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری', no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...', review_success: 'نظر شما ثبت شد', review_error: 'خطا در ثبت نظر',
-                submit_review: 'ارسال نظر', comment: 'نظر خود را بنویسید...',
+                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل', rules: 'قوانین', support: 'پشتیبانی', admin: 'مدیریت',
+                currency: 'تومان', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...', recent_ads: 'آخرین آگهی‌ها',
+                show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها', all: 'همه', no_ads: 'هیچ آگهی‌ای موجود نیست',
+                loading_ads: 'در حال بارگذاری...', pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی', beauty: 'زیبایی',
+                services: 'خدمات', jobs: 'کاریابی', real_estate: 'املاک', vehicles: 'خودرو', add_ad: 'ثبت آگهی جدید',
+                title: 'عنوان آگهی', category: 'دسته‌بندی', price: 'قیمت (تومان)', next: 'بعدی', prev: 'قبلی',
+                description: 'توضیحات', location: 'موقعیت / شهر', country: 'کشور', images: 'تصاویر (حداکثر ۴)',
+                upload_click: 'برای آپلود کلیک کنید', phone: 'شماره تماس', submit: 'ثبت آگهی', ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.',
+                ad_error: 'خطا در ثبت آگهی', call: 'تماس', whatsapp: 'واتساپ', share: 'اشتراک', add_fav: 'افزودن به علاقه‌مندی',
+                remove_fav: 'حذف از علاقه‌مندی', no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست', favorite_added: 'به علاقه‌مندی اضافه شد',
+                favorite_removed: 'از علاقه‌مندی حذف شد', ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری',
+                no_reviews: 'هنوز نظری ثبت نشده است', loading_reviews: 'در حال بارگذاری نظرات...', review_success: 'نظر شما ثبت شد',
+                review_error: 'خطا در ثبت نظر', submit_review: 'ارسال نظر', comment: 'نظر خود را بنویسید...',
                 profile_title: 'پروفایل', username: 'نام کاربری', fullname: 'نام کامل', phone_label: 'شماره تلفن',
                 email_label: 'ایمیل', save: 'ذخیره', profile_saved: 'پروفایل ذخیره شد', profile_error: 'خطا در ذخیره پروفایل',
                 complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
-                my_ads: 'آگهی‌های من', edit: 'ویرایش', delete: 'حذف', pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
-                confirm_delete: 'آیا از حذف اطمینان دارید؟',
-                rules_title: '📜 قوانین و مقررات', no_rules: 'قوانینی ثبت نشده است.',
-                support_title: '🆘 پشتیبانی', support_phone: 'شماره تماس', support_whatsapp: 'واتساپ',
-                support_telegram: 'تلگرام', support_link: 'لینک پشتیبانی', support_email: 'ایمیل', no_support: 'اطلاعات پشتیبانی ثبت نشده است.',
-                pending_ads: 'آگهی‌های در انتظار', all_ads: 'همه آگهی‌ها', users: 'کاربران', admins: 'ادمین‌ها',
-                support_tickets: 'تیکت‌های پشتیبانی', announcement: 'اطلاعیه', stats: 'آمار', export: 'خروجی',
-                approve: 'تایید', reject: 'رد', block: 'مسدود', unblock: 'رفع انسداد', delete_user: 'حذف کاربر',
-                add_admin: 'افزودن ادمین', remove_admin: 'حذف ادمین', reply: 'پاسخ', send: 'ارسال', no_data: 'هیچ داده‌ای موجود نیست',
-                no_permission: '⛔ دسترسی ندارید', ad_approved: 'آگهی تایید شد', ad_rejected: 'آگهی رد شد',
-                user_blocked: 'کاربر مسدود شد', user_unblocked: 'انسداد کاربر رفع شد', admin_added: 'ادمین اضافه شد',
-                admin_removed: 'ادمین حذف شد', announcement_sent: 'اطلاعیه ارسال شد', reply_sent: 'پاسخ ارسال شد',
-                today: 'امروز', online: 'آنلاین', banner_open: 'باز کردن لینک', banner_skip: 'رد کردن',
-                banner_seconds: 'ثانیه تا ادامه', header_subtitle: 'جهانی', currency_toman: 'تومان', special_ads: 'تبلیغات ویژه',
+                my_ads: 'آگهی‌های من', edit: 'ویرایش', delete: 'حذف', pending: 'در انتظار', approved: 'تایید شده',
+                rejected: 'رد شده', confirm_delete: 'آیا از حذف اطمینان دارید؟', rules_title: '📜 قوانین و مقررات',
+                no_rules: 'قوانینی ثبت نشده است.', support_title: '🆘 پشتیبانی', support_phone: 'شماره تماس',
+                support_whatsapp: 'واتساپ', support_telegram: 'تلگرام', support_link: 'لینک پشتیبانی', support_email: 'ایمیل',
+                no_support: 'اطلاعات پشتیبانی ثبت نشده است.', pending_ads: 'آگهی‌های در انتظار', all_ads: 'همه آگهی‌ها',
+                users: 'کاربران', admins: 'ادمین‌ها', support_tickets: 'تیکت‌های پشتیبانی', announcement: 'اطلاعیه',
+                stats: 'آمار', export: 'خروجی', approve: 'تایید', reject: 'رد', block: 'مسدود', unblock: 'رفع انسداد',
+                delete_user: 'حذف کاربر', add_admin: 'افزودن ادمین', remove_admin: 'حذف ادمین', reply: 'پاسخ',
+                send: 'ارسال', no_data: 'هیچ داده‌ای موجود نیست', no_permission: '⛔ دسترسی ندارید',
+                ad_approved: 'آگهی تایید شد', ad_rejected: 'آگهی رد شد', user_blocked: 'کاربر مسدود شد',
+                user_unblocked: 'انسداد کاربر رفع شد', admin_added: 'ادمین اضافه شد', admin_removed: 'ادمین حذف شد',
+                announcement_sent: 'اطلاعیه ارسال شد', reply_sent: 'پاسخ ارسال شد', today: 'امروز', online: 'آنلاین',
+                banner_open: 'باز کردن لینک', banner_skip: 'رد کردن', banner_seconds: 'ثانیه تا ادامه',
+                header_subtitle: 'جهانی', currency_toman: 'تومان', special_ads: 'تبلیغات ویژه'
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي', rules: 'القوانين',
                 support: 'الدعم', admin: 'الإدارة', currency: 'تومان', search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
                 recent_ads: 'آخر الإعلانات', show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات', all: 'الجميع',
-                no_ads: 'لا توجد إعلانات', loading_ads: 'جاري التحميل...',
-                pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي', beauty: 'تجميل', services: 'خدمات',
-                jobs: 'توظيف', real_estate: 'عقارات', vehicles: 'سيارات',
-                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة', price: 'السعر (تومان)',
-                next: 'التالي', prev: 'السابق', description: 'الوصف', location: 'الموقع / المدينة', country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل', phone: 'رقم الهاتف', submit: 'نشر الإعلان',
-                ad_success: '✅ تم إرسال إعلانك للمراجعة.', ad_error: 'فشل نشر الإعلان',
-                call: 'اتصال', whatsapp: 'واتساب', share: 'مشاركة', add_fav: 'أضف للمفضلة', remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات', favorite_added: 'تمت الإضافة إلى المفضلة', favorite_removed: 'تمت الإزالة من المفضلة',
-                ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل', no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...', review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم',
-                submit_review: 'إرسال', comment: 'اكتب تعليقك...',
-                profile_title: 'الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني', save: 'حفظ', profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
+                no_ads: 'لا توجد إعلانات', loading_ads: 'جاري التحميل...', pilgrimage: 'زيارة', tourism: 'سياحة',
+                medical: 'طبي', beauty: 'تجميل', services: 'خدمات', jobs: 'توظيف', real_estate: 'عقارات',
+                vehicles: 'سيارات', add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة',
+                price: 'السعر (تومان)', next: 'التالي', prev: 'السابق', description: 'الوصف',
+                location: 'الموقع / المدينة', country: 'الدولة', images: 'الصور (حد أقصى ٤)',
+                upload_click: 'اضغط للتحميل', phone: 'رقم الهاتف', submit: 'نشر الإعلان',
+                ad_success: '✅ تم إرسال إعلانك للمراجعة.', ad_error: 'فشل نشر الإعلان', call: 'اتصال',
+                whatsapp: 'واتساب', share: 'مشاركة', add_fav: 'أضف للمفضلة', remove_fav: 'إزالة من المفضلة',
+                no_favorites: 'لا توجد مفضلات', favorite_added: 'تمت الإضافة إلى المفضلة',
+                favorite_removed: 'تمت الإزالة من المفضلة', ad_not_found: 'الإعلان غير موجود',
+                error_loading: 'خطأ في التحميل', no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
+                review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم', submit_review: 'إرسال',
+                comment: 'اكتب تعليقك...', profile_title: 'الملف الشخصي', username: 'اسم المستخدم',
+                fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف', email_label: 'البريد الإلكتروني',
+                save: 'حفظ', profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
                 complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
-                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف', pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
-                confirm_delete: 'هل أنت متأكد من الحذف؟',
+                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف', pending: 'قيد المراجعة',
+                approved: 'تمت الموافقة', rejected: 'مرفوض', confirm_delete: 'هل أنت متأكد من الحذف؟',
                 rules_title: '📜 القوانين واللوائح', no_rules: 'لم يتم تسجيل أي قوانين.',
                 support_title: '🆘 الدعم', support_phone: 'رقم الهاتف', support_whatsapp: 'واتساب',
-                support_telegram: 'تيليجرام', support_link: 'رابط الدعم', support_email: 'البريد الإلكتروني', no_support: 'لم يتم تسجيل معلومات الدعم.',
-                pending_ads: 'الإعلانات قيد المراجعة', all_ads: 'جميع الإعلانات', users: 'المستخدمين', admins: 'المشرفين',
-                support_tickets: 'تذاكر الدعم', announcement: 'إشعار', stats: 'الإحصائيات', export: 'تصدير',
-                approve: 'موافقة', reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر', delete_user: 'حذف المستخدم',
-                add_admin: 'إضافة مشرف', remove_admin: 'حذف مشرف', reply: 'رد', send: 'إرسال', no_data: 'لا توجد بيانات',
-                no_permission: '⛔ غير مصرح لك.', ad_approved: 'تمت الموافقة على الإعلان', ad_rejected: 'تم رفض الإعلان',
-                user_blocked: 'تم حظر المستخدم', user_unblocked: 'تم إلغاء حظر المستخدم', admin_added: 'تمت إضافة المشرف',
-                admin_removed: 'تم حذف المشرف', announcement_sent: 'تم إرسال الإشعار', reply_sent: 'تم إرسال الرد',
+                support_telegram: 'تيليجرام', support_link: 'رابط الدعم', support_email: 'البريد الإلكتروني',
+                no_support: 'لم يتم تسجيل معلومات الدعم.', pending_ads: 'الإعلانات قيد المراجعة',
+                all_ads: 'جميع الإعلانات', users: 'المستخدمين', admins: 'المشرفين',
+                support_tickets: 'تذاكر الدعم', announcement: 'إشعار', stats: 'الإحصائيات',
+                export: 'تصدير', approve: 'موافقة', reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر',
+                delete_user: 'حذف المستخدم', add_admin: 'إضافة مشرف', remove_admin: 'حذف مشرف',
+                reply: 'رد', send: 'إرسال', no_data: 'لا توجد بيانات', no_permission: '⛔ غير مصرح لك.',
+                ad_approved: 'تمت الموافقة على الإعلان', ad_rejected: 'تم رفض الإعلان',
+                user_blocked: 'تم حظر المستخدم', user_unblocked: 'تم إلغاء حظر المستخدم',
+                admin_added: 'تمت إضافة المشرف', admin_removed: 'تم حذف المشرف',
+                announcement_sent: 'تم إرسال الإشعار', reply_sent: 'تم إرسال الرد',
                 today: 'اليوم', online: 'نشط', banner_open: 'فتح الرابط', banner_skip: 'تخطي',
-                banner_seconds: 'ثانية حتى المتابعة', header_subtitle: 'العالمية', currency_toman: 'تومان', special_ads: 'إعلانات مميزة',
+                banner_seconds: 'ثانية حتى المتابعة', header_subtitle: 'العالمية', currency_toman: 'تومان',
+                special_ads: 'إعلانات مميزة'
             }
         };
+
         function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
@@ -1108,6 +1460,7 @@
             setTimeout(() => toast.classList.add('show'), 30);
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4500);
         }
+
         function formatTime(ts) {
             if (!ts) return 'لحظاتی پیش';
             const now = Math.floor(Date.now() / 1000);
@@ -1124,12 +1477,14 @@
             if (diff < 5184000) return '۱ ماه پیش';
             return Math.floor(diff / 2592000) + ' ماه پیش';
         }
+
         function normalizeImageUrl(img) {
             if (!img) return null;
             if (img.startsWith('http://') || img.startsWith('https://')) return img;
             if (img.startsWith('/')) return new URL(img, API_BASE).href;
             return `${IMAGE_BASE}${img}`;
         }
+
         async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
@@ -1150,24 +1505,27 @@
             const isFa = currentLang === 'fa';
             document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
             const elements = {
-                'headerSubtitle': 'header_subtitle', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
-                'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism', 'actMedical': 'medical', 'actBeauty': 'beauty',
-                'actServices': 'services', 'actJobs': 'jobs', 'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'headerSubtitle': 'header_subtitle',
+                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism', 'actMedical': 'medical',
+                'actBeauty': 'beauty', 'actServices': 'services', 'actJobs': 'jobs',
+                'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
                 'searchBtn': 'search', 'searchInput': 'search_placeholder', 'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites', 'navProfileLabel': 'profile',
-                'navRulesLabel': 'rules', 'navSupportLabel': 'support', 'navAdminLabel': 'admin',
-                'addAdTitle': 'add_ad', 'adTitleLabel': 'title', 'adCategoryLabel': 'category', 'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next', 'adDescLabel': 'description', 'adLocationLabel': 'location',
-                'adCountryLabel': 'country', 'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images', 'uploadClickLabel': 'upload_click', 'adPhoneLabel': 'phone',
-                'wizardPrevBtn3': 'prev', 'submitAdBtn': 'submit',
-                'profileTitle': 'profile_title', 'profileUsernameLabel': 'username', 'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label', 'profileEmailLabel': 'email_label', 'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads', 'favTitle': 'favorites', 'rulesTitle': 'rules_title', 'supportTitle': 'support_title',
+                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites',
+                'navProfileLabel': 'profile', 'navRulesLabel': 'rules', 'navSupportLabel': 'support',
+                'navAdminLabel': 'admin', 'addAdTitle': 'add_ad', 'adTitleLabel': 'title',
+                'adCategoryLabel': 'category', 'adPriceLabel': 'price', 'wizardNextBtn1': 'next',
+                'adDescLabel': 'description', 'adLocationLabel': 'location', 'adCountryLabel': 'country',
+                'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next', 'adImagesLabel': 'images',
+                'uploadClickLabel': 'upload_click', 'adPhoneLabel': 'phone', 'wizardPrevBtn3': 'prev',
+                'submitAdBtn': 'submit', 'profileTitle': 'profile_title', 'profileUsernameLabel': 'username',
+                'profileFullnameLabel': 'fullname', 'profilePhoneLabel': 'phone_label',
+                'profileEmailLabel': 'email_label', 'profileSaveBtn': 'save', 'myAdsTitle': 'my_ads',
+                'favTitle': 'favorites', 'rulesTitle': 'rules_title', 'supportTitle': 'support_title',
                 'adminTitle': 'admin', 'adminPendingLabel': 'pending_ads', 'adminAllAdsLabel': 'all_ads',
                 'adminUsersLabel': 'users', 'adminAdminsLabel': 'admins', 'adminSupportLabel': 'support_tickets',
                 'adminAnnounceLabel': 'announcement', 'adminStatsLabel': 'stats', 'adminExportLabel': 'export',
-                'bannerOpenLabel': 'banner_open', 'bannerSkipLabel': 'banner_skip',
+                'bannerOpenLabel': 'banner_open', 'bannerSkipLabel': 'banner_skip'
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -1182,23 +1540,25 @@
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
-                    const catMap = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
-                    if (idx-1 < catMap.length) chip.textContent = t(catMap[idx-1]);
+                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
+                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
                 }
             });
             document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
-                const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
+                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
                 if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
             });
             document.documentElement.lang = currentLang;
             document.documentElement.dir = 'rtl';
         }
+
         function toggleLanguage() {
             currentLang = currentLang === 'fa' ? 'ar' : 'fa';
             localStorage.setItem('jedar_lang', currentLang);
             updateLanguage();
             showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
         }
+
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1250,20 +1610,13 @@
                         if (bannerTimer <= 0) {
                             clearInterval(bannerTimerInterval);
                             bannerTimerInterval = null;
-                            document.getElementById('bannerSkipBtn').style.opacity = '1';
-                            document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
                             setTimeout(() => closeBanner(), 1000);
                         }
                     }, 1000);
-                    document.getElementById('bannerSkipBtn').style.opacity = '0.5';
-                    document.getElementById('bannerSkipBtn').style.pointerEvents = 'none';
-                    setTimeout(() => {
-                        document.getElementById('bannerSkipBtn').style.opacity = '1';
-                        document.getElementById('bannerSkipBtn').style.pointerEvents = 'auto';
-                    }, duration * 1000);
                 }
             } catch (err) { console.error('Error loading splash banner:', err); }
         }
+
         function closeBanner() {
             document.getElementById('bannerOverlay').classList.remove('show');
             if (bannerTimerInterval) { clearInterval(bannerTimerInterval); bannerTimerInterval = null; }
@@ -1309,6 +1662,7 @@
             document.getElementById('adContact').value = profile.phone || '';
             checkAdminStatus();
         }
+
         async function checkAdminStatus() {
             try {
                 const data = await apiCall(`/profile/${guestId}`);
@@ -1321,6 +1675,7 @@
                 }
             } catch (e) { console.error('checkAdminStatus error:', e); }
         }
+
         async function saveProfile() {
             const profile = {
                 username: document.getElementById('profileUsername').value.trim() || guestId,
@@ -1334,13 +1689,14 @@
             document.getElementById('adContact').value = profile.phone;
             showToast(t('profile_saved'), 'success');
         }
+
         function isProfileComplete() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             return profile.phone && profile.phone.trim().length >= 10;
         }
 
         // ============================================================
-        // ADS (اصلاح‌شده با فالبک به myads)
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -1348,42 +1704,15 @@
             const grid = document.getElementById('adsGrid');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                let data = null;
-                let usedEndpoint = '';
-
-                // 1. تلاش با /ads?status=approved
-                let url = `${API_BASE}/ads?status=approved`;
-                console.log('📡 درخواست به:', url);
-                let response = await fetch(url);
-                data = await response.json();
-                console.log('📡 پاسخ /ads?status=approved:', data);
-
-                // 2. اگر خالی بود، به /myads برو
-                if (!data.success || !data.ads || data.ads.length === 0) {
-                    console.warn('⚠️ /ads خالی بود، تلاش با /myads');
-                    url = `${API_BASE}/myads/${guestId}`;
-                    response = await fetch(url);
-                    data = await response.json();
-                    console.log('📡 پاسخ /myads:', data);
-                    usedEndpoint = '/myads';
-                    if (data.success && data.data && data.data.length > 0) {
-                        data.ads = data.data;
-                    }
-                } else {
-                    usedEndpoint = '/ads';
-                }
-
-                // 3. پردازش نهایی
+                const data = await apiCall('/ads');
                 if (data.success && data.ads && data.ads.length > 0) {
-                    console.log(`✅ ${data.ads.length} آگهی از ${usedEndpoint} دریافت شد`);
                     allAds = data.ads.map(ad => {
-                        let imageIds = ad.image_ids || [];
-                        if (typeof imageIds === 'string') {
-                            try { imageIds = JSON.parse(imageIds); } catch { imageIds = []; }
-                        }
-                        if (!Array.isArray(imageIds)) imageIds = [imageIds];
-                        ad.image_urls = imageIds.map(id => normalizeImageUrl(id)).filter(url => url !== null);
-                        ad.userFullname = ad.userFullname || ad.user_id || 'کاربر';
+                        if (ad.image_ids && typeof ad.image_ids === 'string') {
+                            try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; }
+                        } else if (!ad.image_ids) ad.image_ids = [];
+                        if (ad.image_ids && Array.isArray(ad.image_ids)) {
+                            ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null);
+                        } else ad.image_ids = [];
                         return ad;
                     });
                     filteredAds = [...allAds];
@@ -1392,11 +1721,9 @@
                     loadFavorites();
                 } else {
                     grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                    console.error('❌ هیچ آگهی‌ای دریافت نشد:', data);
                 }
             } catch (err) {
-                console.error('❌ خطا در fetchAds:', err);
-                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
             }
             isUpdating = false;
         }
@@ -1412,8 +1739,7 @@
                 const card = document.createElement('div');
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetail(ad.id);
-                const imageUrls = ad.image_urls || [];
-                let imgSrc = imageUrls.length > 0 ? imageUrls[0] : '';
+                let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
@@ -1445,7 +1771,7 @@
 
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            const cats = ['all','pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
             container.innerHTML = '';
             cats.forEach((cat, i) => {
                 const chip = document.createElement('span');
@@ -1455,16 +1781,18 @@
                 container.appendChild(chip);
             });
         }
+
         function filterAds(cat) {
             document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
-            const cats = ['all','pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
             const idx = cats.indexOf(cat);
             if (chips[idx]) chips[idx].classList.add('active');
             if (cat === 'all') filteredAds = [...allAds];
             else filteredAds = allAds.filter(ad => ad.category === cat || ad.category?.includes(cat));
             renderAds(filteredAds);
         }
+
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             if (!query) { filteredAds = [...allAds]; renderAds(filteredAds); return; }
@@ -1475,6 +1803,7 @@
             );
             renderAds(filteredAds);
         }
+
         function refreshAll() {
             fetchAds(true);
             if (currentTab === 'profile') fetchMyAds();
@@ -1534,6 +1863,7 @@
                 else container.innerHTML = `<div class="text-secondary">${t('no_rules')}</div>`;
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
+
         async function loadSupport() {
             const container = document.getElementById('supportContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -1577,7 +1907,7 @@
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
             if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
-            const galleryImages = (ad.image_urls || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
+            const galleryImages = (ad.image_ids || []).map(img => normalizeImageUrl(img)).filter(url => url !== null);
             let galleryIndex = 0;
             let galleryHtml = '';
             if (galleryImages.length > 0) {
@@ -1657,9 +1987,11 @@
                 document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
             };
         }
+
         function closeAdDetail() {
             document.getElementById('adDetailsModal').classList.remove('show');
         }
+
         function shareAd(adId, title) {
             const url = `https://j-dar.ir/ad/${adId}`;
             if (navigator.share) {
@@ -1669,6 +2001,7 @@
                     .catch(() => showToast('🔗 ' + url, 'info'));
             }
         }
+
         async function toggleFavoriteAndUpdateDetail(adId) {
             await toggleFavorite(adId);
             const btn = document.querySelector('.btn-fav');
@@ -1677,6 +2010,7 @@
                 btn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? t('remove_fav') : t('add_fav')}`;
             }
         }
+
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
@@ -1685,6 +2019,7 @@
                 el.textContent = idx < val ? '★' : '☆';
             });
         }
+
         async function submitDetailReview() {
             const adId = document.getElementById('detailReviewAdId').value;
             const rating = parseInt(document.getElementById('detailReviewRating').value);
@@ -1708,6 +2043,7 @@
                 }
             } catch (err) { showToast(t('review_error'), 'error'); }
         }
+
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
@@ -1747,6 +2083,7 @@
                 }
             } catch (e) { console.error('loadFavorites error:', e); }
         }
+
         async function toggleFavorite(adId) {
             try {
                 const data = await apiCall('/favorite/toggle', {
@@ -1768,6 +2105,7 @@
                 }
             } catch (err) { showToast('خطا', 'error'); }
         }
+
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
             try {
@@ -1836,6 +2174,7 @@
                 container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
             }
         }
+
         async function deleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
             try {
@@ -1852,6 +2191,7 @@
                 }
             } catch (err) { showToast('خطا در حذف', 'error'); }
         }
+
         function editAd(adId) {
             const ad = allAds.find(a => a.id === adId);
             if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
@@ -1875,6 +2215,7 @@
         // ============================================================
         function wizardNext() { if (wizardStep < 3) { wizardStep++; updateWizard(); } }
         function wizardPrev() { if (wizardStep > 1) { wizardStep--; updateWizard(); } }
+
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
@@ -1886,6 +2227,7 @@
                 if (i === wizardStep) step.classList.add('active');
             }
         }
+
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (wizardImagesBase64.length + files.length > 4) {
@@ -1903,6 +2245,7 @@
             });
             this.value = '';
         });
+
         function renderWizardImages() {
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
@@ -1916,6 +2259,7 @@
                 grid.appendChild(item);
             });
         }
+
         function removeWizardImage(index) {
             wizardImagesBase64.splice(index, 1);
             renderWizardImages();
@@ -1936,7 +2280,6 @@
             const location = document.getElementById('adLocation').value.trim();
             const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
-
             if (!title || !price || !desc || !location) {
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
@@ -1945,11 +2288,9 @@
                 showToast('⚠️ لطفاً حداقل یک تصویر انتخاب کنید', 'warning');
                 return;
             }
-
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.textContent = '...در حال ثبت';
-
             try {
                 const payload = {
                     username: guestId,
@@ -1967,7 +2308,7 @@
                     body: JSON.stringify(payload)
                 });
                 if (data.success) {
-                    showToast(t('ad_success'), 'success');
+                    showToast('✅ آگهی شما ثبت شد و برای تایید به ربات ارسال گردید', 'success');
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('addAdForm').dataset.editId = '';
@@ -1978,16 +2319,16 @@
                     fetchAds(true);
                     fetchMyAds();
                 } else {
-                    showToast(data.error || t('ad_error'), 'error');
+                    showToast(data.error || '❌ خطا در ثبت آگهی', 'error');
                 }
             } catch (err) {
-                console.error('خطا در submitAd:', err);
-                showToast(t('ad_error'), 'error');
+                showToast(err.message || '❌ خطا در ثبت آگهی', 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = t('submit');
             }
         }
+
         function openAddModal() {
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
@@ -2003,36 +2344,36 @@
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             document.getElementById('adContact').value = profile.phone || '';
         }
+
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS (همان‌های قبلی)
+        // ADMIN FUNCTIONS
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
             return true;
         }
+
         async function adminPendingAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/ads?status=pending');
+            const data = await apiCall(`/admin/ads?adminId=${guestId}&status=pending`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('pending_ads')}</h4>`;
                 data.data.forEach(ad => {
-                    const images = ad.image_ids || [];
-                    const imgPreview = images.length > 0 ? `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` : '';
                     html += `
                         <div class="my-ad-item" style="flex-wrap:wrap;">
                             <div class="info">
                                 <div class="title">${ad.title}</div>
                                 <div class="sub">👤 ${ad.user_id || ad.userId} • 💰 ${ad.price} ${t('currency_toman')}</div>
-                                <div class="sub">${imgPreview} ${formatTime(ad.created_at)}</div>
+                                <div class="sub">${formatTime(ad.created_at)}</div>
                             </div>
                             <div class="actions" style="margin-top:4px;">
-                                <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--success);"></i></button>
+                                <button class="edit" onclick="adminApproveAd('${ad.id}')"><i class="fa-solid fa-check" style="color:var(--green);"></i></button>
                                 <button class="delete" onclick="adminRejectAd('${ad.id}')"><i class="fa-solid fa-times" style="color:var(--danger);"></i></button>
                                 <button onclick="adminViewAd('${ad.id}')"><i class="fa-solid fa-eye"></i></button>
                             </div>
@@ -2044,11 +2385,12 @@
                 container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
             }
         }
+
         async function adminAllAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/ads');
+            const data = await apiCall(`/admin/ads?adminId=${guestId}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('all_ads')}</h4>`;
                 data.data.forEach(ad => {
@@ -2072,15 +2414,22 @@
                 container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
             }
         }
+
         async function adminApproveAd(adId) {
             if (!confirm(t('approve'))) return;
             const data = await apiCall('/admin/ad/approve', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
             });
-            if (data.success) { showToast('✅ آگهی تایید شد', 'success'); adminPendingAds(); fetchAds(false); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast('✅ آگهی تایید شد', 'success');
+                adminPendingAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminRejectAd(adId) {
             const reason = prompt('دلیل رد آگهی:');
             if (reason === null) return;
@@ -2088,24 +2437,39 @@
                 method: 'POST',
                 body: JSON.stringify({ adId, reason, adminId: guestId })
             });
-            if (data.success) { showToast('❌ آگهی رد شد', 'warning'); adminPendingAds(); fetchAds(false); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast('❌ آگهی رد شد', 'warning');
+                adminPendingAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminDeleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
             const data = await apiCall('/admin/ad/delete', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
             });
-            if (data.success) { showToast('🗑 آگهی حذف شد', 'success'); adminAllAds(); fetchAds(false); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast('🗑 آگهی حذف شد', 'success');
+                adminAllAds();
+                fetchAds(false);
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
-        function adminViewAd(adId) { openAdDetail(adId); }
+
+        function adminViewAd(adId) {
+            openAdDetail(adId);
+        }
+
         async function adminUsers() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/users');
+            const data = await apiCall(`/admin/users?adminId=${guestId}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('users')}</h4>`;
                 data.data.forEach(user => {
@@ -2117,7 +2481,7 @@
                                 <div class="sub">${user.is_blocked ? '🚫 مسدود' : '✅ فعال'}</div>
                             </div>
                             <div class="actions">
-                                ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--success);"></i></button>` :
+                                ${user.is_blocked ? `<button class="edit" onclick="adminUnblockUser('${user.telegram_id}')"><i class="fa-solid fa-unlock" style="color:var(--green);"></i></button>` :
                                 `<button class="delete" onclick="adminBlockUser('${user.telegram_id}')"><i class="fa-solid fa-lock" style="color:var(--danger);"></i></button>`}
                                 <button onclick="adminViewUser('${user.telegram_id}')"><i class="fa-solid fa-eye"></i></button>
                                 ${isSuperAdmin ? `<button class="delete" onclick="adminDeleteUser('${user.telegram_id}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
@@ -2126,8 +2490,11 @@
                     `;
                 });
                 container.innerHTML = html;
-            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
+
         async function adminBlockUser(userId) {
             if (!confirm(t('block'))) return;
             const reason = prompt('دلیل مسدودیت:');
@@ -2136,34 +2503,52 @@
                 method: 'POST',
                 body: JSON.stringify({ userId, reason, adminId: guestId })
             });
-            if (data.success) { showToast(t('user_blocked'), 'success'); adminUsers(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast(t('user_blocked'), 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminUnblockUser(userId) {
             if (!confirm(t('unblock'))) return;
             const data = await apiCall('/admin/unblock', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) { showToast(t('user_unblocked'), 'success'); adminUsers(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast(t('user_unblocked'), 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminDeleteUser(userId) {
             if (!confirm(t('confirm_delete'))) return;
             const data = await apiCall('/admin/user/delete', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) { showToast('کاربر حذف شد', 'success'); adminUsers(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast('کاربر حذف شد', 'success');
+                adminUsers();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminViewUser(userId) {
             const data = await apiCall(`/profile/${userId}`);
             if (data.success && data.user) {
                 const user = data.user;
                 alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nنقش: ${user.role || 'عادی'}`);
-            } else { showToast('خطا در دریافت اطلاعات', 'error'); }
+            } else {
+                showToast('خطا در دریافت اطلاعات', 'error');
+            }
         }
+
         async function adminAdmins() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
@@ -2171,7 +2556,7 @@
             }
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/admins');
+            const data = await apiCall(`/admin/admins?adminId=${guestId}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('admins')}</h4>`;
                 data.data.forEach(admin => {
@@ -2193,34 +2578,47 @@
                         <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
                     </div>
                 `;
-            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
+
         async function adminAddAdmin() {
             const userId = document.getElementById('newAdminId').value.trim();
             if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const role = prompt('نقش: (ad_admin / user_admin / banner_admin / support_admin / super_admin)');
+            const role = prompt('نقش: (admin / super_admin)');
             if (!role) return;
             const data = await apiCall('/admin/add', {
                 method: 'POST',
                 body: JSON.stringify({ userId, role, adminId: guestId })
             });
-            if (data.success) { showToast(t('admin_added'), 'success'); adminAdmins(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast(t('admin_added'), 'success');
+                adminAdmins();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminRemoveAdmin(userId) {
             if (!confirm(t('remove_admin'))) return;
             const data = await apiCall('/admin/remove', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) { showToast(t('admin_removed'), 'success'); adminAdmins(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast(t('admin_removed'), 'success');
+                adminAdmins();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminSupportTickets() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/tickets');
+            const data = await apiCall('/admin/tickets?adminId=' + guestId);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('support_tickets')}</h4>`;
                 data.data.forEach(ticket => {
@@ -2238,8 +2636,11 @@
                     `;
                 });
                 container.innerHTML = html;
-            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
+            }
         }
+
         async function adminReplyTicket(ticketId) {
             const reply = prompt('پاسخ خود را وارد کنید:');
             if (!reply) return;
@@ -2247,9 +2648,14 @@
                 method: 'POST',
                 body: JSON.stringify({ ticketId, reply, adminId: guestId })
             });
-            if (data.success) { showToast(t('reply_sent'), 'success'); adminSupportTickets(); }
-            else { showToast(data.error || 'خطا', 'error'); }
+            if (data.success) {
+                showToast(t('reply_sent'), 'success');
+                adminSupportTickets();
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         function adminAnnounce() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2276,6 +2682,7 @@
                 document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' : 'none';
             });
         }
+
         async function adminSendAnnounce() {
             const title = document.getElementById('announceTitle').value.trim();
             const message = document.getElementById('announceMessage').value.trim();
@@ -2287,29 +2694,36 @@
                 method: 'POST',
                 body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
             });
-            if (data.success) { showToast(t('announcement_sent'), 'success');
+            if (data.success) {
+                showToast(t('announcement_sent'), 'success');
                 document.getElementById('announceTitle').value = '';
                 document.getElementById('announceMessage').value = '';
-            } else { showToast(data.error || 'خطا', 'error'); }
+            } else {
+                showToast(data.error || 'خطا', 'error');
+            }
         }
+
         async function adminStats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall('/admin/stats');
+            const data = await apiCall(`/admin/stats?adminId=${guestId}`);
             if (data.success) {
                 const s = data.data;
                 container.innerHTML = `
                     <h4>${t('stats')}</h4>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalUsers || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.totalAds || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.todayViews || 0}</div></div>
-                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
+                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👥 ${t('users')}</div><div style="font-size:20px;font-weight:700;color:var(--ruby);">${s.totalUsers || 0}</div></div>
+                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">📌 ${t('all_ads')}</div><div style="font-size:20px;font-weight:700;color:var(--ruby);">${s.totalAds || 0}</div></div>
+                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">👁️ ${t('today')}</div><div style="font-size:20px;font-weight:700;color:var(--ruby);">${s.todayViews || 0}</div></div>
+                        <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--ruby);">${s.onlineUsers || 0}</div></div>
                     </div>
                 `;
-            } else { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
+            } else {
+                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
+            }
         }
+
         function adminExport() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
@@ -2325,6 +2739,7 @@
                 <div id="exportResult" style="margin-top:12px;"></div>
             `;
         }
+
         async function adminExportData(type) {
             document.getElementById('exportResult').innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
             const data = await apiCall(`/admin/export?type=${type}&adminId=${guestId}`);
@@ -2332,8 +2747,7 @@
                 const jsonData = data.data || [];
                 const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
-                document.getElementById('exportResult').innerHTML =
-                    `<a href="${url}" download="${type}_export.json" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
+                document.getElementById('exportResult').innerHTML = `<a href="${url}" download="${type}_export.json" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
                 showToast('خروجی با موفقیت ایجاد شد', 'success');
             } else {
                 document.getElementById('exportResult').innerHTML = `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
@@ -2355,12 +2769,13 @@
         });
         setTimeout(() => { toggleUpperSection(); }, 500);
 
-        console.log(`🚀 جـدار بازار – هماهنگ با ربات`);
+        console.log(`🚀 جـدار بازار – هماهنگ با ربات ${BOT_USERNAME}`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🌐 زبان: ${currentLang}`);
         console.log('✅ ثبت آگهی → ارسال به ربات → تایید/رد → نمایش در صفحه');
         console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
+        console.log('✅ پنل مدیریت کامل و خروجی اطلاعات');
     </script>
 </body>
-                                                 </html>
+    </html>
