@@ -2494,7 +2494,7 @@
         }
 
         // ============================================================
-        // ADS
+        // ADS (اصلاح شده برای نمایش جدیدترین ابتدا)
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2513,6 +2513,8 @@
                         } else ad.image_ids = [];
                         return ad;
                     });
+                    // مرتب‌سازی: جدیدترین (created_at بیشتر) در ابتدا
+                    allAds.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
