@@ -9,56 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --bg-input: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-full: 9999px;
-            --primary: #16a34a;
-            --primary-hover: #15803d;
-            --primary-light: rgba(22,163,74,0.12);
+            --bg-primary: #f8fafc; --bg-card: #ffffff; --bg-input: #f1f5f9;
+            --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
+            --border-color: #e2e8f0; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --radius-full: 9999px;
+            --primary: #16a34a; --primary-hover: #15803d; --primary-light: rgba(22,163,74,0.12);
             --primary-gradient: linear-gradient(135deg, #16a34a, #22c55e);
-            --gold: #f59e0b;
-            --danger: #ef4444;
-            --success: #16a34a;
+            --gold: #f59e0b; --danger: #ef4444; --success: #16a34a;
             --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
             --font: 'Vazirmatn','Segoe UI',Tahoma,sans-serif;
         }
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            --bg-primary: #0f172a; --bg-card: #1e293b; --bg-input: #334155;
+            --text-primary: #f1f5f9; --text-secondary: #cbd5e1; --text-muted: #94a3b8;
             --border-color: #334155;
         }
         html { font-size:16px; scroll-behavior:smooth; }
         body {
-            font-family: var(--font);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height:100vh;
-            direction:rtl;
-            transition: background var(--transition), color var(--transition);
-            padding-bottom:80px;
-            overflow-x:hidden;
+            font-family:var(--font); background:var(--bg-primary); color:var(--text-primary);
+            min-height:100vh; direction:rtl; transition:background var(--transition), color var(--transition);
+            padding-bottom:80px; overflow-x:hidden;
         }
         button,input,textarea,select { font-family:var(--font); outline:none; transition:var(--transition); }
         button { border:none; cursor:pointer; background:none; }
@@ -1015,7 +988,6 @@
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
-        const BOT_USERNAME = '@AlsouqAlmaftuhiran_bot';
 
         let guestId = localStorage.getItem('jedar_guest_id');
         if (!guestId) {
@@ -1045,248 +1017,79 @@
         let reviewRating = 0;
 
         // ============================================================
-        // TRANSLATIONS (به اختصار)
+        // TRANSLATIONS (خلاصه)
         // ============================================================
         const translations = {
             fa: {
-                home: 'خانه',
-                add: 'ثبت',
-                favorites: 'علاقه‌مندی',
-                profile: 'پروفایل',
-                rules: 'قوانین',
-                support: 'پشتیبانی',
-                admin: 'مدیریت',
-                currency: 'تومان',
-                search: 'جستجو',
-                search_placeholder: 'جستجو در آگهی‌ها...',
-                recent_ads: 'آخرین آگهی‌ها',
-                show_tools: 'نمایش ابزارها',
-                hide_tools: 'مخفی کردن ابزارها',
-                all: 'همه',
-                no_ads: 'هیچ آگهی‌ای موجود نیست',
-                loading_ads: 'در حال بارگذاری...',
-                pilgrimage: 'زیارت',
-                tourism: 'گردشگری',
-                medical: 'پزشکی',
-                beauty: 'زیبایی',
-                services: 'خدمات',
-                jobs: 'کاریابی',
-                real_estate: 'املاک',
-                vehicles: 'خودرو',
-                add_ad: 'ثبت آگهی جدید',
-                title: 'عنوان آگهی',
-                category: 'دسته‌بندی',
-                price: 'قیمت (تومان)',
-                next: 'بعدی',
-                prev: 'قبلی',
-                description: 'توضیحات',
-                location: 'موقعیت / شهر',
-                country: 'کشور',
-                images: 'تصاویر (حداکثر ۴)',
-                upload_click: 'برای آپلود کلیک کنید',
-                phone: 'شماره تماس',
-                submit: 'ثبت آگهی',
-                ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.',
-                ad_error: 'خطا در ثبت آگهی',
-                call: 'تماس',
-                whatsapp: 'واتساپ',
-                share: 'اشتراک',
-                add_fav: 'افزودن به علاقه‌مندی',
-                remove_fav: 'حذف از علاقه‌مندی',
-                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست',
-                favorite_added: 'به علاقه‌مندی اضافه شد',
-                favorite_removed: 'از علاقه‌مندی حذف شد',
-                ad_not_found: 'آگهی یافت نشد',
-                error_loading: 'خطا در بارگذاری',
-                no_reviews: 'هنوز نظری ثبت نشده است',
-                loading_reviews: 'در حال بارگذاری نظرات...',
-                review_success: 'نظر شما ثبت شد',
-                review_error: 'خطا در ثبت نظر',
-                submit_review: 'ارسال نظر',
-                comment: 'نظر خود را بنویسید...',
-                profile_title: 'پروفایل',
-                username: 'نام کاربری',
-                fullname: 'نام کامل',
-                phone_label: 'شماره تلفن',
-                email_label: 'ایمیل',
-                save: 'ذخیره',
-                profile_saved: 'پروفایل ذخیره شد',
-                profile_error: 'خطا در ذخیره پروفایل',
+                home: 'خانه', add: 'ثبت', favorites: 'علاقه‌مندی', profile: 'پروفایل', rules: 'قوانین', support: 'پشتیبانی',
+                admin: 'مدیریت', currency: 'تومان', search: 'جستجو', search_placeholder: 'جستجو در آگهی‌ها...',
+                recent_ads: 'آخرین آگهی‌ها', show_tools: 'نمایش ابزارها', hide_tools: 'مخفی کردن ابزارها', all: 'همه',
+                no_ads: 'هیچ آگهی‌ای موجود نیست', loading_ads: 'در حال بارگذاری...',
+                pilgrimage: 'زیارت', tourism: 'گردشگری', medical: 'پزشکی', beauty: 'زیبایی', services: 'خدمات',
+                jobs: 'کاریابی', real_estate: 'املاک', vehicles: 'خودرو',
+                add_ad: 'ثبت آگهی جدید', title: 'عنوان آگهی', category: 'دسته‌بندی', price: 'قیمت (تومان)',
+                next: 'بعدی', prev: 'قبلی', description: 'توضیحات', location: 'موقعیت / شهر', country: 'کشور',
+                images: 'تصاویر (حداکثر ۴)', upload_click: 'برای آپلود کلیک کنید', phone: 'شماره تماس', submit: 'ثبت آگهی',
+                ad_success: '✅ آگهی شما ثبت شد و برای تایید ارسال گردید.', ad_error: 'خطا در ثبت آگهی',
+                call: 'تماس', whatsapp: 'واتساپ', share: 'اشتراک', add_fav: 'افزودن به علاقه‌مندی', remove_fav: 'حذف از علاقه‌مندی',
+                no_favorites: 'هیچ موردی در علاقه‌مندی‌ها نیست', favorite_added: 'به علاقه‌مندی اضافه شد', favorite_removed: 'از علاقه‌مندی حذف شد',
+                ad_not_found: 'آگهی یافت نشد', error_loading: 'خطا در بارگذاری', no_reviews: 'هنوز نظری ثبت نشده است',
+                loading_reviews: 'در حال بارگذاری نظرات...', review_success: 'نظر شما ثبت شد', review_error: 'خطا در ثبت نظر',
+                submit_review: 'ارسال نظر', comment: 'نظر خود را بنویسید...',
+                profile_title: 'پروفایل', username: 'نام کاربری', fullname: 'نام کامل', phone_label: 'شماره تلفن',
+                email_label: 'ایمیل', save: 'ذخیره', profile_saved: 'پروفایل ذخیره شد', profile_error: 'خطا در ذخیره پروفایل',
                 complete_profile_first: '⚠️ لطفاً ابتدا پروفایل خود را کامل کنید (شماره تلفن الزامی است)',
-                my_ads: 'آگهی‌های من',
-                edit: 'ویرایش',
-                delete: 'حذف',
-                pending: 'در انتظار',
-                approved: 'تایید شده',
-                rejected: 'رد شده',
+                my_ads: 'آگهی‌های من', edit: 'ویرایش', delete: 'حذف', pending: 'در انتظار', approved: 'تایید شده', rejected: 'رد شده',
                 confirm_delete: 'آیا از حذف اطمینان دارید؟',
-                rules_title: '📜 قوانین و مقررات',
-                no_rules: 'قوانینی ثبت نشده است.',
-                support_title: '🆘 پشتیبانی',
-                support_phone: 'شماره تماس',
-                support_whatsapp: 'واتساپ',
-                support_telegram: 'تلگرام',
-                support_link: 'لینک پشتیبانی',
-                support_email: 'ایمیل',
-                no_support: 'اطلاعات پشتیبانی ثبت نشده است.',
-                pending_ads: 'آگهی‌های در انتظار',
-                all_ads: 'همه آگهی‌ها',
-                users: 'کاربران',
-                admins: 'ادمین‌ها',
-                support_tickets: 'تیکت‌های پشتیبانی',
-                announcement: 'اطلاعیه',
-                stats: 'آمار',
-                export: 'خروجی',
-                approve: 'تایید',
-                reject: 'رد',
-                block: 'مسدود',
-                unblock: 'رفع انسداد',
-                delete_user: 'حذف کاربر',
-                add_admin: 'افزودن ادمین',
-                remove_admin: 'حذف ادمین',
-                reply: 'پاسخ',
-                send: 'ارسال',
-                no_data: 'هیچ داده‌ای موجود نیست',
-                no_permission: '⛔ دسترسی ندارید',
-                ad_approved: 'آگهی تایید شد',
-                ad_rejected: 'آگهی رد شد',
-                user_blocked: 'کاربر مسدود شد',
-                user_unblocked: 'انسداد کاربر رفع شد',
-                admin_added: 'ادمین اضافه شد',
-                admin_removed: 'ادمین حذف شد',
-                announcement_sent: 'اطلاعیه ارسال شد',
-                reply_sent: 'پاسخ ارسال شد',
-                today: 'امروز',
-                online: 'آنلاین',
-                banner_open: 'باز کردن لینک',
-                banner_skip: 'رد کردن',
-                banner_seconds: 'ثانیه تا ادامه',
-                header_subtitle: 'جهانی',
-                currency_toman: 'تومان',
-                special_ads: 'تبلیغات ویژه',
+                rules_title: '📜 قوانین و مقررات', no_rules: 'قوانینی ثبت نشده است.',
+                support_title: '🆘 پشتیبانی', support_phone: 'شماره تماس', support_whatsapp: 'واتساپ',
+                support_telegram: 'تلگرام', support_link: 'لینک پشتیبانی', support_email: 'ایمیل', no_support: 'اطلاعات پشتیبانی ثبت نشده است.',
+                pending_ads: 'آگهی‌های در انتظار', all_ads: 'همه آگهی‌ها', users: 'کاربران', admins: 'ادمین‌ها',
+                support_tickets: 'تیکت‌های پشتیبانی', announcement: 'اطلاعیه', stats: 'آمار', export: 'خروجی',
+                approve: 'تایید', reject: 'رد', block: 'مسدود', unblock: 'رفع انسداد', delete_user: 'حذف کاربر',
+                add_admin: 'افزودن ادمین', remove_admin: 'حذف ادمین', reply: 'پاسخ', send: 'ارسال', no_data: 'هیچ داده‌ای موجود نیست',
+                no_permission: '⛔ دسترسی ندارید', ad_approved: 'آگهی تایید شد', ad_rejected: 'آگهی رد شد',
+                user_blocked: 'کاربر مسدود شد', user_unblocked: 'انسداد کاربر رفع شد', admin_added: 'ادمین اضافه شد',
+                admin_removed: 'ادمین حذف شد', announcement_sent: 'اطلاعیه ارسال شد', reply_sent: 'پاسخ ارسال شد',
+                today: 'امروز', online: 'آنلاین', banner_open: 'باز کردن لینک', banner_skip: 'رد کردن',
+                banner_seconds: 'ثانیه تا ادامه', header_subtitle: 'جهانی', currency_toman: 'تومان', special_ads: 'تبلیغات ویژه',
             },
             ar: {
-                home: 'الرئيسية',
-                add: 'إضافة',
-                favorites: 'المفضلة',
-                profile: 'الملف الشخصي',
-                rules: 'القوانين',
-                support: 'الدعم',
-                admin: 'الإدارة',
-                currency: 'تومان',
-                search: 'بحث',
-                search_placeholder: 'ابحث في الإعلانات...',
-                recent_ads: 'آخر الإعلانات',
-                show_tools: 'إظهار الأدوات',
-                hide_tools: 'إخفاء الأدوات',
-                all: 'الجميع',
-                no_ads: 'لا توجد إعلانات',
-                loading_ads: 'جاري التحميل...',
-                pilgrimage: 'زيارة',
-                tourism: 'سياحة',
-                medical: 'طبي',
-                beauty: 'تجميل',
-                services: 'خدمات',
-                jobs: 'توظيف',
-                real_estate: 'عقارات',
-                vehicles: 'سيارات',
-                add_ad: 'إعلان جديد',
-                title: 'عنوان الإعلان',
-                category: 'الفئة',
-                price: 'السعر (تومان)',
-                next: 'التالي',
-                prev: 'السابق',
-                description: 'الوصف',
-                location: 'الموقع / المدينة',
-                country: 'الدولة',
-                images: 'الصور (حد أقصى ٤)',
-                upload_click: 'اضغط للتحميل',
-                phone: 'رقم الهاتف',
-                submit: 'نشر الإعلان',
-                ad_success: '✅ تم إرسال إعلانك للمراجعة.',
-                ad_error: 'فشل نشر الإعلان',
-                call: 'اتصال',
-                whatsapp: 'واتساب',
-                share: 'مشاركة',
-                add_fav: 'أضف للمفضلة',
-                remove_fav: 'إزالة من المفضلة',
-                no_favorites: 'لا توجد مفضلات',
-                favorite_added: 'تمت الإضافة إلى المفضلة',
-                favorite_removed: 'تمت الإزالة من المفضلة',
-                ad_not_found: 'الإعلان غير موجود',
-                error_loading: 'خطأ في التحميل',
-                no_reviews: 'لا توجد تقييمات بعد',
-                loading_reviews: 'جاري تحميل التقييمات...',
-                review_success: 'تم إرسال التقييم',
-                review_error: 'فشل إرسال التقييم',
-                submit_review: 'إرسال',
-                comment: 'اكتب تعليقك...',
-                profile_title: 'الملف الشخصي',
-                username: 'اسم المستخدم',
-                fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف',
-                email_label: 'البريد الإلكتروني',
-                save: 'حفظ',
-                profile_saved: 'تم حفظ الملف الشخصي',
-                profile_error: 'فشل حفظ الملف الشخصي',
+                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي', rules: 'القوانين',
+                support: 'الدعم', admin: 'الإدارة', currency: 'تومان', search: 'بحث', search_placeholder: 'ابحث في الإعلانات...',
+                recent_ads: 'آخر الإعلانات', show_tools: 'إظهار الأدوات', hide_tools: 'إخفاء الأدوات', all: 'الجميع',
+                no_ads: 'لا توجد إعلانات', loading_ads: 'جاري التحميل...',
+                pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي', beauty: 'تجميل', services: 'خدمات',
+                jobs: 'توظيف', real_estate: 'عقارات', vehicles: 'سيارات',
+                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة', price: 'السعر (تومان)',
+                next: 'التالي', prev: 'السابق', description: 'الوصف', location: 'الموقع / المدينة', country: 'الدولة',
+                images: 'الصور (حد أقصى ٤)', upload_click: 'اضغط للتحميل', phone: 'رقم الهاتف', submit: 'نشر الإعلان',
+                ad_success: '✅ تم إرسال إعلانك للمراجعة.', ad_error: 'فشل نشر الإعلان',
+                call: 'اتصال', whatsapp: 'واتساب', share: 'مشاركة', add_fav: 'أضف للمفضلة', remove_fav: 'إزالة من المفضلة',
+                no_favorites: 'لا توجد مفضلات', favorite_added: 'تمت الإضافة إلى المفضلة', favorite_removed: 'تمت الإزالة من المفضلة',
+                ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل', no_reviews: 'لا توجد تقييمات بعد',
+                loading_reviews: 'جاري تحميل التقييمات...', review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم',
+                submit_review: 'إرسال', comment: 'اكتب تعليقك...',
+                profile_title: 'الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل', phone_label: 'رقم الهاتف',
+                email_label: 'البريد الإلكتروني', save: 'حفظ', profile_saved: 'تم حفظ الملف الشخصي', profile_error: 'فشل حفظ الملف الشخصي',
                 complete_profile_first: '⚠️ الرجاء إكمال ملفك الشخصي أولاً (رقم الهاتف مطلوب)',
-                my_ads: 'إعلاناتي',
-                edit: 'تعديل',
-                delete: 'حذف',
-                pending: 'قيد المراجعة',
-                approved: 'تمت الموافقة',
-                rejected: 'مرفوض',
+                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف', pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
                 confirm_delete: 'هل أنت متأكد من الحذف؟',
-                rules_title: '📜 القوانين واللوائح',
-                no_rules: 'لم يتم تسجيل أي قوانين.',
-                support_title: '🆘 الدعم',
-                support_phone: 'رقم الهاتف',
-                support_whatsapp: 'واتساب',
-                support_telegram: 'تيليجرام',
-                support_link: 'رابط الدعم',
-                support_email: 'البريد الإلكتروني',
-                no_support: 'لم يتم تسجيل معلومات الدعم.',
-                pending_ads: 'الإعلانات قيد المراجعة',
-                all_ads: 'جميع الإعلانات',
-                users: 'المستخدمين',
-                admins: 'المشرفين',
-                support_tickets: 'تذاكر الدعم',
-                announcement: 'إشعار',
-                stats: 'الإحصائيات',
-                export: 'تصدير',
-                approve: 'موافقة',
-                reject: 'رفض',
-                block: 'حظر',
-                unblock: 'إلغاء الحظر',
-                delete_user: 'حذف المستخدم',
-                add_admin: 'إضافة مشرف',
-                remove_admin: 'حذف مشرف',
-                reply: 'رد',
-                send: 'إرسال',
-                no_data: 'لا توجد بيانات',
-                no_permission: '⛔ غير مصرح لك.',
-                ad_approved: 'تمت الموافقة على الإعلان',
-                ad_rejected: 'تم رفض الإعلان',
-                user_blocked: 'تم حظر المستخدم',
-                user_unblocked: 'تم إلغاء حظر المستخدم',
-                admin_added: 'تمت إضافة المشرف',
-                admin_removed: 'تم حذف المشرف',
-                announcement_sent: 'تم إرسال الإشعار',
-                reply_sent: 'تم إرسال الرد',
-                today: 'اليوم',
-                online: 'نشط',
-                banner_open: 'فتح الرابط',
-                banner_skip: 'تخطي',
-                banner_seconds: 'ثانية حتى المتابعة',
-                header_subtitle: 'العالمية',
-                currency_toman: 'تومان',
-                special_ads: 'إعلانات مميزة',
+                rules_title: '📜 القوانين واللوائح', no_rules: 'لم يتم تسجيل أي قوانين.',
+                support_title: '🆘 الدعم', support_phone: 'رقم الهاتف', support_whatsapp: 'واتساب',
+                support_telegram: 'تيليجرام', support_link: 'رابط الدعم', support_email: 'البريد الإلكتروني', no_support: 'لم يتم تسجيل معلومات الدعم.',
+                pending_ads: 'الإعلانات قيد المراجعة', all_ads: 'جميع الإعلانات', users: 'المستخدمين', admins: 'المشرفين',
+                support_tickets: 'تذاكر الدعم', announcement: 'إشعار', stats: 'الإحصائيات', export: 'تصدير',
+                approve: 'موافقة', reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر', delete_user: 'حذف المستخدم',
+                add_admin: 'إضافة مشرف', remove_admin: 'حذف مشرف', reply: 'رد', send: 'إرسال', no_data: 'لا توجد بيانات',
+                no_permission: '⛔ غير مصرح لك.', ad_approved: 'تمت الموافقة على الإعلان', ad_rejected: 'تم رفض الإعلان',
+                user_blocked: 'تم حظر المستخدم', user_unblocked: 'تم إلغاء حظر المستخدم', admin_added: 'تمت إضافة المشرف',
+                admin_removed: 'تم حذف المشرف', announcement_sent: 'تم إرسال الإشعار', reply_sent: 'تم إرسال الرد',
+                today: 'اليوم', online: 'نشط', banner_open: 'فتح الرابط', banner_skip: 'تخطي',
+                banner_seconds: 'ثانية حتى المتابعة', header_subtitle: 'العالمية', currency_toman: 'تومان', special_ads: 'إعلانات مميزة',
             }
         };
-
-        function t(key) {
-            return translations[currentLang]?.[key] || key;
-        }
+        function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
         // HELPERS
@@ -1303,10 +1106,8 @@
             `;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 30);
-            setTimeout(() => { toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400); }, 4500);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4500);
         }
-
         function formatTime(ts) {
             if (!ts) return 'لحظاتی پیش';
             const now = Math.floor(Date.now() / 1000);
@@ -1323,17 +1124,12 @@
             if (diff < 5184000) return '۱ ماه پیش';
             return Math.floor(diff / 2592000) + ' ماه پیش';
         }
-
         function normalizeImageUrl(img) {
             if (!img) return null;
-            // اگر آدرس کامل باشد، همان را برگردان
             if (img.startsWith('http://') || img.startsWith('https://')) return img;
-            // اگر با / شروع شود، به API_BASE اضافه کن
             if (img.startsWith('/')) return new URL(img, API_BASE).href;
-            // در غیر این صورت به IMAGE_BASE اضافه کن
             return `${IMAGE_BASE}${img}`;
         }
-
         async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
@@ -1354,62 +1150,24 @@
             const isFa = currentLang === 'fa';
             document.getElementById('langBtn').textContent = isFa ? '🇦🇪 عربي' : '🇮🇷 فارسی';
             const elements = {
-                'headerSubtitle': 'header_subtitle',
-                'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
-                'actPilgrimage': 'pilgrimage',
-                'actTourism': 'tourism',
-                'actMedical': 'medical',
-                'actBeauty': 'beauty',
-                'actServices': 'services',
-                'actJobs': 'jobs',
-                'actRealEstate': 'real_estate',
-                'actVehicles': 'vehicles',
-                'searchBtn': 'search',
-                'searchInput': 'search_placeholder',
-                'adsTitle': 'recent_ads',
-                'navHomeLabel': 'home',
-                'navAddLabel': 'add',
-                'navFavLabel': 'favorites',
-                'navProfileLabel': 'profile',
-                'navRulesLabel': 'rules',
-                'navSupportLabel': 'support',
-                'navAdminLabel': 'admin',
-                'addAdTitle': 'add_ad',
-                'adTitleLabel': 'title',
-                'adCategoryLabel': 'category',
-                'adPriceLabel': 'price',
-                'wizardNextBtn1': 'next',
-                'adDescLabel': 'description',
-                'adLocationLabel': 'location',
-                'adCountryLabel': 'country',
-                'wizardPrevBtn2': 'prev',
-                'wizardNextBtn2': 'next',
-                'adImagesLabel': 'images',
-                'uploadClickLabel': 'upload_click',
-                'adPhoneLabel': 'phone',
-                'wizardPrevBtn3': 'prev',
-                'submitAdBtn': 'submit',
-                'profileTitle': 'profile_title',
-                'profileUsernameLabel': 'username',
-                'profileFullnameLabel': 'fullname',
-                'profilePhoneLabel': 'phone_label',
-                'profileEmailLabel': 'email_label',
-                'profileSaveBtn': 'save',
-                'myAdsTitle': 'my_ads',
-                'favTitle': 'favorites',
-                'rulesTitle': 'rules_title',
-                'supportTitle': 'support_title',
-                'adminTitle': 'admin',
-                'adminPendingLabel': 'pending_ads',
-                'adminAllAdsLabel': 'all_ads',
-                'adminUsersLabel': 'users',
-                'adminAdminsLabel': 'admins',
-                'adminSupportLabel': 'support_tickets',
-                'adminAnnounceLabel': 'announcement',
-                'adminStatsLabel': 'stats',
-                'adminExportLabel': 'export',
-                'bannerOpenLabel': 'banner_open',
-                'bannerSkipLabel': 'banner_skip',
+                'headerSubtitle': 'header_subtitle', 'toggleSectionLabel': upperSectionOpen ? 'hide_tools' : 'show_tools',
+                'actPilgrimage': 'pilgrimage', 'actTourism': 'tourism', 'actMedical': 'medical', 'actBeauty': 'beauty',
+                'actServices': 'services', 'actJobs': 'jobs', 'actRealEstate': 'real_estate', 'actVehicles': 'vehicles',
+                'searchBtn': 'search', 'searchInput': 'search_placeholder', 'adsTitle': 'recent_ads',
+                'navHomeLabel': 'home', 'navAddLabel': 'add', 'navFavLabel': 'favorites', 'navProfileLabel': 'profile',
+                'navRulesLabel': 'rules', 'navSupportLabel': 'support', 'navAdminLabel': 'admin',
+                'addAdTitle': 'add_ad', 'adTitleLabel': 'title', 'adCategoryLabel': 'category', 'adPriceLabel': 'price',
+                'wizardNextBtn1': 'next', 'adDescLabel': 'description', 'adLocationLabel': 'location',
+                'adCountryLabel': 'country', 'wizardPrevBtn2': 'prev', 'wizardNextBtn2': 'next',
+                'adImagesLabel': 'images', 'uploadClickLabel': 'upload_click', 'adPhoneLabel': 'phone',
+                'wizardPrevBtn3': 'prev', 'submitAdBtn': 'submit',
+                'profileTitle': 'profile_title', 'profileUsernameLabel': 'username', 'profileFullnameLabel': 'fullname',
+                'profilePhoneLabel': 'phone_label', 'profileEmailLabel': 'email_label', 'profileSaveBtn': 'save',
+                'myAdsTitle': 'my_ads', 'favTitle': 'favorites', 'rulesTitle': 'rules_title', 'supportTitle': 'support_title',
+                'adminTitle': 'admin', 'adminPendingLabel': 'pending_ads', 'adminAllAdsLabel': 'all_ads',
+                'adminUsersLabel': 'users', 'adminAdminsLabel': 'admins', 'adminSupportLabel': 'support_tickets',
+                'adminAnnounceLabel': 'announcement', 'adminStatsLabel': 'stats', 'adminExportLabel': 'export',
+                'bannerOpenLabel': 'banner_open', 'bannerSkipLabel': 'banner_skip',
             };
             for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
@@ -1424,34 +1182,27 @@
             document.querySelectorAll('.category-chip').forEach((chip, idx) => {
                 if (idx === 0) chip.textContent = t('all');
                 else {
-                    const catMap = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                        'vehicles'
-                    ];
-                    if (idx - 1 < catMap.length) chip.textContent = t(catMap[idx - 1]);
+                    const catMap = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
+                    if (idx-1 < catMap.length) chip.textContent = t(catMap[idx-1]);
                 }
             });
             document.querySelectorAll('#adCategory option').forEach((opt, idx) => {
-                const catKeys = ['pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                    'vehicles'
-                ];
+                const catKeys = ['pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
                 if (idx < catKeys.length) opt.textContent = t(catKeys[idx]);
             });
             document.documentElement.lang = currentLang;
             document.documentElement.dir = 'rtl';
         }
-
         function toggleLanguage() {
             currentLang = currentLang === 'fa' ? 'ar' : 'fa';
             localStorage.setItem('jedar_lang', currentLang);
             updateLanguage();
             showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
         }
-
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-                '<i class="fa-solid fa-sun"></i>';
+            document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
             localStorage.setItem('jedar_theme', currentTheme);
         }
 
@@ -1513,11 +1264,9 @@
                 }
             } catch (err) { console.error('Error loading splash banner:', err); }
         }
-
         function closeBanner() {
             document.getElementById('bannerOverlay').classList.remove('show');
-            if (bannerTimerInterval) { clearInterval(bannerTimerInterval);
-                bannerTimerInterval = null; }
+            if (bannerTimerInterval) { clearInterval(bannerTimerInterval); bannerTimerInterval = null; }
         }
 
         // ============================================================
@@ -1560,7 +1309,6 @@
             document.getElementById('adContact').value = profile.phone || '';
             checkAdminStatus();
         }
-
         async function checkAdminStatus() {
             try {
                 const data = await apiCall(`/profile/${guestId}`);
@@ -1573,7 +1321,6 @@
                 }
             } catch (e) { console.error('checkAdminStatus error:', e); }
         }
-
         async function saveProfile() {
             const profile = {
                 username: document.getElementById('profileUsername').value.trim() || guestId,
@@ -1587,14 +1334,13 @@
             document.getElementById('adContact').value = profile.phone;
             showToast(t('profile_saved'), 'success');
         }
-
         function isProfileComplete() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             return profile.phone && profile.phone.trim().length >= 10;
         }
 
         // ============================================================
-        // ADS (با پردازش تصاویر)
+        // ADS (اصلاح‌شده با فالبک به myads)
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -1602,47 +1348,42 @@
             const grid = document.getElementById('adsGrid');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
+                let data = null;
+                let usedEndpoint = '';
+
                 // 1. تلاش با /ads?status=approved
                 let url = `${API_BASE}/ads?status=approved`;
                 console.log('📡 درخواست به:', url);
                 let response = await fetch(url);
-                let data = await response.json();
-                console.log('📡 پاسخ از /ads?status=approved:', data);
+                data = await response.json();
+                console.log('📡 پاسخ /ads?status=approved:', data);
 
-                // اگر خالی یا ناموفق بود، /ads را امتحان کن
+                // 2. اگر خالی بود، به /myads برو
                 if (!data.success || !data.ads || data.ads.length === 0) {
-                    console.warn('⚠️ /ads?status=approved خالی یا ناموفق، تلاش با /ads');
-                    url = `${API_BASE}/ads`;
-                    response = await fetch(url);
-                    data = await response.json();
-                    console.log('📡 پاسخ از /ads:', data);
-                }
-
-                // اگر باز هم خالی بود، از /myads استفاده کن
-                if (!data.success || !data.ads || data.ads.length === 0) {
-                    console.warn('⚠️ /ads هم خالی بود، تلاش با /myads');
+                    console.warn('⚠️ /ads خالی بود، تلاش با /myads');
                     url = `${API_BASE}/myads/${guestId}`;
                     response = await fetch(url);
                     data = await response.json();
-                    console.log('📡 پاسخ از /myads:', data);
+                    console.log('📡 پاسخ /myads:', data);
+                    usedEndpoint = '/myads';
                     if (data.success && data.data && data.data.length > 0) {
                         data.ads = data.data;
                     }
+                } else {
+                    usedEndpoint = '/ads';
                 }
 
-                // پردازش نهایی
+                // 3. پردازش نهایی
                 if (data.success && data.ads && data.ads.length > 0) {
-                    console.log(`✅ تعداد آگهی دریافت شده: ${data.ads.length}`);
+                    console.log(`✅ ${data.ads.length} آگهی از ${usedEndpoint} دریافت شد`);
                     allAds = data.ads.map(ad => {
-                        // پردازش تصاویر
                         let imageIds = ad.image_ids || [];
                         if (typeof imageIds === 'string') {
                             try { imageIds = JSON.parse(imageIds); } catch { imageIds = []; }
                         }
                         if (!Array.isArray(imageIds)) imageIds = [imageIds];
-                        // تبدیل هر شناسه به آدرس کامل
                         ad.image_urls = imageIds.map(id => normalizeImageUrl(id)).filter(url => url !== null);
-                        console.log(`🖼 تصاویر آگهی "${ad.title}":`, ad.image_urls);
+                        ad.userFullname = ad.userFullname || ad.user_id || 'کاربر';
                         return ad;
                     });
                     filteredAds = [...allAds];
@@ -1650,14 +1391,12 @@
                     renderCategories();
                     loadFavorites();
                 } else {
-                    grid.innerHTML =
-                        `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                     console.error('❌ هیچ آگهی‌ای دریافت نشد:', data);
                 }
             } catch (err) {
                 console.error('❌ خطا در fetchAds:', err);
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
             }
             isUpdating = false;
         }
@@ -1666,8 +1405,7 @@
             const grid = document.getElementById('adsGrid');
             grid.innerHTML = '';
             if (!ads || ads.length === 0) {
-                grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
                 return;
             }
             ads.forEach(ad => {
@@ -1707,9 +1445,7 @@
 
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            const cats = ['all','pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
             container.innerHTML = '';
             cats.forEach((cat, i) => {
                 const chip = document.createElement('span');
@@ -1719,24 +1455,19 @@
                 container.appendChild(chip);
             });
         }
-
         function filterAds(cat) {
             document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            const cats = ['all','pilgrimage','tourism','medical','beauty','services','jobs','real_estate','vehicles'];
             const idx = cats.indexOf(cat);
             if (chips[idx]) chips[idx].classList.add('active');
             if (cat === 'all') filteredAds = [...allAds];
             else filteredAds = allAds.filter(ad => ad.category === cat || ad.category?.includes(cat));
             renderAds(filteredAds);
         }
-
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { filteredAds = [...allAds];
-                renderAds(filteredAds); return; }
+            if (!query) { filteredAds = [...allAds]; renderAds(filteredAds); return; }
             filteredAds = allAds.filter(ad =>
                 (ad.title && ad.title.toLowerCase().includes(query)) ||
                 (ad.description && ad.description.toLowerCase().includes(query)) ||
@@ -1744,7 +1475,6 @@
             );
             renderAds(filteredAds);
         }
-
         function refreshAll() {
             fetchAds(true);
             if (currentTab === 'profile') fetchMyAds();
@@ -1787,8 +1517,7 @@
             } else if (tab === 'admin') {
                 document.getElementById('adminTab').style.display = 'block';
                 if (isAdmin) {
-                    document.getElementById('adminResult').innerHTML =
-                        '<div class="text-secondary">از دکمه‌های بالا برای مدیریت استفاده کنید.</div>';
+                    document.getElementById('adminResult').innerHTML = '<div class="text-secondary">از دکمه‌های بالا برای مدیریت استفاده کنید.</div>';
                 }
             }
         }
@@ -1805,7 +1534,6 @@
                 else container.innerHTML = `<div class="text-secondary">${t('no_rules')}</div>`;
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
-
         async function loadSupport() {
             const container = document.getElementById('supportContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -1824,8 +1552,7 @@
                     items.forEach(item => {
                         if (s[item.key]) {
                             const isLink = item.key === 'link' || item.key === 'telegram';
-                            const value = isLink ? `<a href="${s[item.key]}" target="_blank">${s[item.key]}</a>` : s[
-                            item.key];
+                            const value = isLink ? `<a href="${s[item.key]}" target="_blank">${s[item.key]}</a>` : s[item.key];
                             html += `
                                 <div class="support-item">
                                     <div class="icon"><i class="fa-solid ${item.icon}"></i></div>
@@ -1869,8 +1596,7 @@
                     ` : ''}
                 `;
             } else {
-                galleryHtml =
-                    `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
+                galleryHtml = `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:48px;opacity:0.3;"></i></div></div>`;
             }
             const phone = ad.phone || '';
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
@@ -1931,11 +1657,9 @@
                 document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
             };
         }
-
         function closeAdDetail() {
             document.getElementById('adDetailsModal').classList.remove('show');
         }
-
         function shareAd(adId, title) {
             const url = `https://j-dar.ir/ad/${adId}`;
             if (navigator.share) {
@@ -1945,17 +1669,14 @@
                     .catch(() => showToast('🔗 ' + url, 'info'));
             }
         }
-
         async function toggleFavoriteAndUpdateDetail(adId) {
             await toggleFavorite(adId);
             const btn = document.querySelector('.btn-fav');
             if (btn) {
                 const isFav = favorites.includes(adId);
-                btn.innerHTML =
-                    `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? t('remove_fav') : t('add_fav')}`;
+                btn.innerHTML = `<i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? t('remove_fav') : t('add_fav')}`;
             }
         }
-
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
@@ -1964,7 +1685,6 @@
                 el.textContent = idx < val ? '★' : '☆';
             });
         }
-
         async function submitDetailReview() {
             const adId = document.getElementById('detailReviewAdId').value;
             const rating = parseInt(document.getElementById('detailReviewRating').value);
@@ -1980,8 +1700,7 @@
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                 } else {
@@ -1989,7 +1708,6 @@
                 }
             } catch (err) { showToast(t('review_error'), 'error'); }
         }
-
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
@@ -2010,12 +1728,10 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
             }
         }
 
@@ -2031,7 +1747,6 @@
                 }
             } catch (e) { console.error('loadFavorites error:', e); }
         }
-
         async function toggleFavorite(adId) {
             try {
                 const data = await apiCall('/favorite/toggle', {
@@ -2053,7 +1768,6 @@
                 }
             } catch (err) { showToast('خطا', 'error'); }
         }
-
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
             try {
@@ -2077,12 +1791,10 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                    container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
                 }
             } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_favorites')}</div>`;
             }
         }
 
@@ -2100,8 +1812,7 @@
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
                         const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
+                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t('rejected') };
                         div.innerHTML = `
                             <div class="info">
                                 <div class="title">${ad.title}</div>
@@ -2119,14 +1830,12 @@
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
+                    container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">هیچ آگهی‌ای ثبت نکرده‌اید</div>`;
                 }
             } catch (err) {
                 container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">خطا در بارگذاری</div>`;
             }
         }
-
         async function deleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
             try {
@@ -2143,7 +1852,6 @@
                 }
             } catch (err) { showToast('خطا در حذف', 'error'); }
         }
-
         function editAd(adId) {
             const ad = allAds.find(a => a.id === adId);
             if (!ad) { showToast('آگهی یافت نشد', 'error'); return; }
@@ -2165,12 +1873,8 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() { if (wizardStep < 3) { wizardStep++;
-                updateWizard(); } }
-
-        function wizardPrev() { if (wizardStep > 1) { wizardStep--;
-                updateWizard(); } }
-
+        function wizardNext() { if (wizardStep < 3) { wizardStep++; updateWizard(); } }
+        function wizardPrev() { if (wizardStep > 1) { wizardStep--; updateWizard(); } }
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`wizardStep${wizardStep}`).classList.add('active');
@@ -2182,7 +1886,6 @@
                 if (i === wizardStep) step.classList.add('active');
             }
         }
-
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             if (wizardImagesBase64.length + files.length > 4) {
@@ -2200,7 +1903,6 @@
             });
             this.value = '';
         });
-
         function renderWizardImages() {
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
@@ -2214,7 +1916,6 @@
                 grid.appendChild(item);
             });
         }
-
         function removeWizardImage(index) {
             wizardImagesBase64.splice(index, 1);
             renderWizardImages();
@@ -2240,7 +1941,6 @@
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
-
             if (wizardImagesBase64.length === 0) {
                 showToast('⚠️ لطفاً حداقل یک تصویر انتخاب کنید', 'warning');
                 return;
@@ -2262,12 +1962,10 @@
                     phone: contact,
                     images: wizardImagesBase64
                 };
-
                 const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-
                 if (data.success) {
                     showToast(t('ad_success'), 'success');
                     closeModal('addAdModal');
@@ -2290,7 +1988,6 @@
                 btn.textContent = t('submit');
             }
         }
-
         function openAddModal() {
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
@@ -2306,19 +2003,17 @@
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             document.getElementById('adContact').value = profile.phone || '';
         }
-
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS (بدون تغییر)
+        // ADMIN FUNCTIONS (همان‌های قبلی)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
             return true;
         }
-
         async function adminPendingAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2328,9 +2023,7 @@
                 let html = `<h4>${t('pending_ads')}</h4>`;
                 data.data.forEach(ad => {
                     const images = ad.image_ids || [];
-                    const imgPreview = images.length > 0 ?
-                        `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` :
-                        '';
+                    const imgPreview = images.length > 0 ? `<img src="${normalizeImageUrl(images[0])}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;margin-left:8px;" />` : '';
                     html += `
                         <div class="my-ad-item" style="flex-wrap:wrap;">
                             <div class="info">
@@ -2351,7 +2044,6 @@
                 container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
             }
         }
-
         async function adminAllAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2380,22 +2072,15 @@
                 container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
             }
         }
-
         async function adminApproveAd(adId) {
             if (!confirm(t('approve'))) return;
             const data = await apiCall('/admin/ad/approve', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
             });
-            if (data.success) {
-                showToast('✅ آگهی تایید شد', 'success');
-                adminPendingAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast('✅ آگهی تایید شد', 'success'); adminPendingAds(); fetchAds(false); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminRejectAd(adId) {
             const reason = prompt('دلیل رد آگهی:');
             if (reason === null) return;
@@ -2403,34 +2088,19 @@
                 method: 'POST',
                 body: JSON.stringify({ adId, reason, adminId: guestId })
             });
-            if (data.success) {
-                showToast('❌ آگهی رد شد', 'warning');
-                adminPendingAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast('❌ آگهی رد شد', 'warning'); adminPendingAds(); fetchAds(false); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminDeleteAd(adId) {
             if (!confirm(t('confirm_delete'))) return;
             const data = await apiCall('/admin/ad/delete', {
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: guestId })
             });
-            if (data.success) {
-                showToast('🗑 آگهی حذف شد', 'success');
-                adminAllAds();
-                fetchAds(false);
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast('🗑 آگهی حذف شد', 'success'); adminAllAds(); fetchAds(false); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
-        function adminViewAd(adId) {
-            openAdDetail(adId);
-        }
-
+        function adminViewAd(adId) { openAdDetail(adId); }
         async function adminUsers() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2456,11 +2126,8 @@
                     `;
                 });
                 container.innerHTML = html;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
+            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
         }
-
         async function adminBlockUser(userId) {
             if (!confirm(t('block'))) return;
             const reason = prompt('دلیل مسدودیت:');
@@ -2469,54 +2136,34 @@
                 method: 'POST',
                 body: JSON.stringify({ userId, reason, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('user_blocked'), 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast(t('user_blocked'), 'success'); adminUsers(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminUnblockUser(userId) {
             if (!confirm(t('unblock'))) return;
             const data = await apiCall('/admin/unblock', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('user_unblocked'), 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast(t('user_unblocked'), 'success'); adminUsers(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminDeleteUser(userId) {
             if (!confirm(t('confirm_delete'))) return;
             const data = await apiCall('/admin/user/delete', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) {
-                showToast('کاربر حذف شد', 'success');
-                adminUsers();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast('کاربر حذف شد', 'success'); adminUsers(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminViewUser(userId) {
             const data = await apiCall(`/profile/${userId}`);
             if (data.success && data.user) {
                 const user = data.user;
-                alert(
-                    `👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nنقش: ${user.role || 'عادی'}`
-                    );
-            } else {
-                showToast('خطا در دریافت اطلاعات', 'error');
-            }
+                alert(`👤 اطلاعات کاربر\nنام: ${user.fullname || 'ندارد'}\nنام کاربری: ${user.username || 'ندارد'}\nشماره: ${user.phone || 'ندارد'}\nنقش: ${user.role || 'عادی'}`);
+            } else { showToast('خطا در دریافت اطلاعات', 'error'); }
         }
-
         async function adminAdmins() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
@@ -2546,11 +2193,8 @@
                         <button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button>
                     </div>
                 `;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
+            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
         }
-
         async function adminAddAdmin() {
             const userId = document.getElementById('newAdminId').value.trim();
             if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
@@ -2560,28 +2204,18 @@
                 method: 'POST',
                 body: JSON.stringify({ userId, role, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('admin_added'), 'success');
-                adminAdmins();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast(t('admin_added'), 'success'); adminAdmins(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminRemoveAdmin(userId) {
             if (!confirm(t('remove_admin'))) return;
             const data = await apiCall('/admin/remove', {
                 method: 'POST',
                 body: JSON.stringify({ userId, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('admin_removed'), 'success');
-                adminAdmins();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast(t('admin_removed'), 'success'); adminAdmins(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminSupportTickets() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2604,11 +2238,8 @@
                     `;
                 });
                 container.innerHTML = html;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
+            } else { container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`; }
         }
-
         async function adminReplyTicket(ticketId) {
             const reply = prompt('پاسخ خود را وارد کنید:');
             if (!reply) return;
@@ -2616,14 +2247,9 @@
                 method: 'POST',
                 body: JSON.stringify({ ticketId, reply, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('reply_sent'), 'success');
-                adminSupportTickets();
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            if (data.success) { showToast(t('reply_sent'), 'success'); adminSupportTickets(); }
+            else { showToast(data.error || 'خطا', 'error'); }
         }
-
         function adminAnnounce() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2647,11 +2273,9 @@
                 </div>
             `;
             document.getElementById('announceTarget').addEventListener('change', function() {
-                document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' :
-                    'none';
+                document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' : 'none';
             });
         }
-
         async function adminSendAnnounce() {
             const title = document.getElementById('announceTitle').value.trim();
             const message = document.getElementById('announceMessage').value.trim();
@@ -2663,15 +2287,11 @@
                 method: 'POST',
                 body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
             });
-            if (data.success) {
-                showToast(t('announcement_sent'), 'success');
+            if (data.success) { showToast(t('announcement_sent'), 'success');
                 document.getElementById('announceTitle').value = '';
                 document.getElementById('announceMessage').value = '';
-            } else {
-                showToast(data.error || 'خطا', 'error');
-            }
+            } else { showToast(data.error || 'خطا', 'error'); }
         }
-
         async function adminStats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2688,11 +2308,8 @@
                         <div style="padding:12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);"><div style="font-size:12px;color:var(--text-secondary);">🟢 ${t('online')}</div><div style="font-size:20px;font-weight:700;color:var(--primary);">${s.onlineUsers || 0}</div></div>
                     </div>
                 `;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`;
-            }
+            } else { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
-
         function adminExport() {
             if (!checkAdminAccess() || !isSuperAdmin) {
                 showToast(t('no_permission'), 'error');
@@ -2708,7 +2325,6 @@
                 <div id="exportResult" style="margin-top:12px;"></div>
             `;
         }
-
         async function adminExportData(type) {
             document.getElementById('exportResult').innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>';
             const data = await apiCall(`/admin/export?type=${type}&adminId=${guestId}`);
@@ -2720,8 +2336,7 @@
                     `<a href="${url}" download="${type}_export.json" class="btn-primary" style="display:inline-block;padding:10px 20px;text-decoration:none;">📥 دانلود</a>`;
                 showToast('خروجی با موفقیت ایجاد شد', 'success');
             } else {
-                document.getElementById('exportResult').innerHTML =
-                    `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
+                document.getElementById('exportResult').innerHTML = `<div class="text-secondary">${data.error || t('error_loading')}</div>`;
             }
         }
 
@@ -2729,8 +2344,7 @@
         // INIT
         // ============================================================
         document.documentElement.setAttribute('data-theme', currentTheme);
-        document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
-            '<i class="fa-solid fa-sun"></i>';
+        document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
         updateLanguage();
         fetchAds(true);
         loadProfile();
@@ -2741,7 +2355,7 @@
         });
         setTimeout(() => { toggleUpperSection(); }, 500);
 
-        console.log(`🚀 جـدار بازار – هماهنگ با ربات ${BOT_USERNAME}`);
+        console.log(`🚀 جـدار بازار – هماهنگ با ربات`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🌐 زبان: ${currentLang}`);
@@ -2749,4 +2363,4 @@
         console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
     </script>
 </body>
-                    </html>
+                                                 </html>
