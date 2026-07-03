@@ -2023,7 +2023,7 @@
         let reviewRating = 0;
 
         // ============================================================
-        // TRANSLATIONS (بخش ترجمه‌ها همانند قبل)
+        // TRANSLATIONS (ترجمه‌ها به اختصار)
         // ============================================================
         const translations = {
             fa: {
@@ -2569,7 +2569,7 @@
         }
 
         // ============================================================
-        // ADS (اصلاح شده)
+        // ADS (اصلاح نهایی)
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -2577,15 +2577,15 @@
             const grid = document.getElementById('adsGrid');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                // تلاش برای دریافت از endpoint اصلی
-                let data = await apiCall('/ads');
-                console.log('📡 پاسخ از /ads:', data);
+                // مستقیماً از آگهی‌های تایید شده استفاده می‌کنیم
+                let data = await apiCall('/ads?status=approved');
+                console.log('📡 دریافت از /ads?status=approved:', data);
 
-                // اگر پاسخ موفق نبود یا لیست خالی بود، با پارامتر status=approved امتحان کن
+                // اگر پاسخ ناموفق بود یا خالی، از /ads ساده استفاده می‌کنیم
                 if (!data.success || !data.ads || data.ads.length === 0) {
-                    console.warn('⚠️ /ads خالی یا ناموفق بود، تلاش با /ads?status=approved');
-                    data = await apiCall('/ads?status=approved');
-                    console.log('📡 پاسخ از /ads?status=approved:', data);
+                    console.warn('⚠️ /ads?status=approved خالی یا ناموفق، تلاش با /ads');
+                    data = await apiCall('/ads');
+                    console.log('📡 دریافت از /ads:', data);
                 }
 
                 if (data.success && data.ads && data.ads.length > 0) {
@@ -2606,8 +2606,7 @@
                 } else {
                     grid.innerHTML =
                         `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                    // لاگ خطا برای عیب‌یابی
-                    console.error('❌ داده‌های آگهی دریافت نشد:', data);
+                    console.error('❌ هیچ آگهی‌ای دریافت نشد:', data);
                 }
             } catch (err) {
                 console.error('❌ خطا در fetchAds:', err);
@@ -3217,8 +3216,6 @@
                     images: wizardImagesBase64
                 };
 
-                console.log('📤 ارسال آگهی:', payload);
-
                 const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
@@ -3705,4 +3702,4 @@
         console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
     </script>
 </body>
-    </html>
+                </html>
