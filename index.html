@@ -568,6 +568,7 @@
             background: var(--bg-input);
             position: relative;
             overflow: hidden;
+            cursor: zoom-in;
         }
         .ad-card .ad-image img {
             width: 100%;
@@ -629,6 +630,64 @@
         .ad-card .ad-image .favorite.active {
             color: var(--danger);
             background: rgba(239, 68, 68, 0.3);
+        }
+        /* Zoom overlay for full image */
+        .image-zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        .image-zoom-overlay.show {
+            display: flex;
+        }
+        .image-zoom-overlay img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .image-zoom-overlay .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .image-zoom-overlay .close-btn:hover {
+            background: var(--danger);
+            transform: rotate(90deg);
         }
         .ad-card .ad-content {
             padding: 10px 12px 8px;
@@ -1168,6 +1227,110 @@
             font-size: 15px;
             white-space: pre-wrap;
         }
+
+        /* ============================================================ */
+        /* Support Section - Enhanced Styling                            */
+        /* ============================================================ */
+        .support-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .support-card-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .support-card-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--ruby);
+            box-shadow: var(--shadow-md);
+        }
+        .support-card-item .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 50%;
+            background: var(--ruby-light);
+            color: var(--ruby);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .support-card-item:hover .icon-wrapper {
+            background: var(--ruby);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .support-card-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .support-card-item .info .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .support-card-item .info .value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            word-break: break-word;
+        }
+        .support-card-item .info .value a {
+            color: var(--ruby);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .support-card-item .info .value a:hover {
+            color: var(--ruby-dark);
+            text-decoration: underline;
+        }
+        .support-card-item .info .value a i {
+            font-size: 14px;
+        }
+        .support-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px var(--ruby-glow);
+            margin-top: 8px;
+            width: 100%;
+        }
+        .support-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--ruby-glow);
+            color: #fff;
+        }
+        .support-link-btn i {
+            font-size: 18px;
+        }
+
         .support-item {
             display: flex;
             align-items: center;
@@ -1473,6 +1636,9 @@
             .banner-ad-container .banner-ad-link {
                 justify-content: center;
             }
+            .support-card-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Modal for Ad Detail */
@@ -1593,11 +1759,13 @@
             border-radius: var(--radius-sm);
             overflow: hidden;
             margin-bottom: 12px;
+            cursor: zoom-in;
         }
         .modal-box .ad-gallery img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: var(--bg-input);
         }
         .modal-box .ad-gallery .no-image {
             display: flex;
@@ -1789,6 +1957,12 @@
         </div>
     </div>
 
+    <!-- Image Zoom Overlay -->
+    <div class="image-zoom-overlay" id="imageZoomOverlay" onclick="closeImageZoom()">
+        <button class="close-btn" onclick="closeImageZoom()"><i class="fa-solid fa-xmark"></i></button>
+        <img id="zoomImage" src="" alt="نمایش کامل عکس" />
+    </div>
+
     <!-- MAIN APP -->
     <div id="app">
         <div class="header">
@@ -1961,9 +2135,15 @@
         <div class="rules-content" id="rulesContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- پشتیبانی - Support Section (Optimized)                        -->
+    <!-- ============================================================ -->
     <div id="supportTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="supportTitle">🆘 پشتیبانی</h2>
-        <div class="support-content" id="supportContent"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+        <div id="supportContent">
+            <!-- محتوای پشتیبانی به صورت داینامیک توسط JavaScript بارگذاری می‌شود -->
+            <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
+        </div>
     </div>
 
     <div id="adminTab">
@@ -2271,6 +2451,23 @@
         }
 
         // ============================================================
+        // IMAGE ZOOM
+        // ============================================================
+        function openImageZoom(src) {
+            const overlay = document.getElementById('imageZoomOverlay');
+            const img = document.getElementById('zoomImage');
+            img.src = src;
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageZoom() {
+            const overlay = document.getElementById('imageZoomOverlay');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ============================================================
         // LANGUAGE & THEME
         // ============================================================
         function updateLanguage() {
@@ -2544,12 +2741,12 @@
                 card.onclick = () => openAdDetail(ad.id);
                 let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
                 const imgHtml = imgSrc ?
-                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />` :
+                    `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openImageZoom('${imgSrc}')" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
                 const isFav = favorites.includes(ad.id);
                 const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
                 card.innerHTML = `
-                    <div class="ad-image">
+                    <div class="ad-image" onclick="event.stopPropagation();${imgSrc ? `openImageZoom('${imgSrc}')` : ''}">
                         ${imgHtml}
                         <div class="watermark">جـدار</div>
                         <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})">
@@ -2672,7 +2869,7 @@
         }
 
         // ============================================================
-        // RULES & SUPPORT
+        // RULES
         // ============================================================
         async function loadRules() {
             const container = document.getElementById('rulesContent');
@@ -2684,42 +2881,77 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
         }
 
+        // ============================================================
+        // SUPPORT (Optimized with direct link)
+        // ============================================================
         async function loadSupport() {
             const container = document.getElementById('supportContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+
             try {
                 const data = await apiCall('/support');
+
                 if (data.success && data.support) {
                     const s = data.support;
-                    let html = '';
+
+                    // تعریف آیتم‌های پشتیبانی با آیکون و لیبل
                     const items = [
-                        { key: 'phone', icon: 'fa-phone', label: t('support_phone') },
-                        { key: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: t('support_whatsapp') },
-                        { key: 'telegram', icon: 'fa-paper-plane', label: t('support_telegram') },
-                        { key: 'link', icon: 'fa-link', label: t('support_link') },
-                        { key: 'email', icon: 'fa-envelope', label: t('support_email') },
+                        { key: 'phone', icon: 'fa-phone', label: '📞 شماره تماس' },
+                        { key: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: '💬 واتساپ' },
+                        { key: 'telegram', icon: 'fa-paper-plane', label: '✈️ تلگرام' },
+                        { key: 'email', icon: 'fa-envelope', label: '📧 ایمیل' },
                     ];
+
+                    // ساخت کارت‌ها به صورت گرید
+                    let cardsHtml = '<div class="support-card-grid">';
                     items.forEach(item => {
                         if (s[item.key]) {
-                            const isLink = item.key === 'link' || item.key === 'telegram';
-                            const value = isLink ? `<a href="${s[item.key]}" target="_blank">${s[item.key]}</a>` : s[
-                            item.key];
-                            html += `
-                                <div class="support-item">
-                                    <div class="icon"><i class="fa-solid ${item.icon}"></i></div>
+                            const isLink = item.key === 'telegram';
+                            const value = isLink
+                                ? `<a href="${s[item.key]}" target="_blank" rel="noopener noreferrer"><i class="fa-regular fa-arrow-up-right-from-square"></i> ${s[item.key]}</a>`
+                                : s[item.key];
+                            cardsHtml += `
+                                <div class="support-card-item">
+                                    <div class="icon-wrapper"><i class="fa-solid ${item.icon}"></i></div>
                                     <div class="info">
-                                        <div class="label">${item.label}</div>
+                                        <span class="label">${item.label}</span>
                                         <div class="value">${value}</div>
                                     </div>
                                 </div>
                             `;
                         }
                     });
-                    container.innerHTML = html || `<div class="text-secondary">${t('no_support')}</div>`;
+                    cardsHtml += '</div>';
+
+                    // لینک مستقیم پشتیبانی (با اولویت لینک دریافتی از API)
+                    const supportLink = s.link || 'http://j-dar.ir/support.html';
+                    cardsHtml += `
+                        <a href="${supportLink}" target="_blank" rel="noopener noreferrer" class="support-link-btn">
+                            <i class="fa-regular fa-circle-question"></i>
+                            <span>🔗 لینک پشتیبانی</span>
+                            <i class="fa-regular fa-arrow-up-right-from-square"></i>
+                        </a>
+                    `;
+
+                    container.innerHTML = cardsHtml;
+
                 } else {
-                    container.innerHTML = `<div class="text-secondary">${t('no_support')}</div>`;
+                    container.innerHTML = `
+                        <div class="support-content" style="text-align:center;padding:30px 20px;color:var(--text-muted);">
+                            <i class="fa-regular fa-circle-exclamation" style="font-size:32px;display:block;margin-bottom:12px;"></i>
+                            ${t('no_support')}
+                        </div>
+                    `;
                 }
-            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('error_loading')}</div>`; }
+            } catch (err) {
+                console.error('❌ Error loading support:', err);
+                container.innerHTML = `
+                    <div class="support-content" style="text-align:center;padding:30px 20px;color:var(--danger);">
+                        <i class="fa-regular fa-circle-exclamation" style="font-size:32px;display:block;margin-bottom:12px;"></i>
+                        ${t('error_loading')}
+                    </div>
+                `;
+            }
         }
 
         // ============================================================
@@ -2733,7 +2965,7 @@
             let galleryHtml = '';
             if (galleryImages.length > 0) {
                 galleryHtml = `
-                    <div class="ad-gallery">
+                    <div class="ad-gallery" onclick="event.stopPropagation();openImageZoom('${galleryImages[0]}')">
                         <img id="detailGalleryImg" src="${galleryImages[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />
                     </div>
                     ${galleryImages.length > 1 ? `
@@ -2801,13 +3033,23 @@
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
                 document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
                 document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
+                // به‌روزرسانی onclick برای زوم
+                const gallery = document.querySelector('.ad-gallery');
+                if (gallery) gallery.onclick = () => openImageZoom(galleryImages[galleryIndex]);
             };
             window.detailGalleryNext = function() {
                 if (galleryImages.length === 0) return;
                 galleryIndex = (galleryIndex + 1) % galleryImages.length;
                 document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
                 document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
+                const gallery = document.querySelector('.ad-gallery');
+                if (gallery) gallery.onclick = () => openImageZoom(galleryImages[galleryIndex]);
             };
+            // تنظیم اولیه برای زوم
+            const gallery = document.querySelector('.ad-gallery');
+            if (gallery && galleryImages.length > 0) {
+                gallery.onclick = () => openImageZoom(galleryImages[0]);
+            }
         }
 
         function closeAdDetail() {
@@ -2944,7 +3186,7 @@
                         let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
                         if (imgSrc) imgSrc = normalizeImageUrl(imgSrc);
                         div.innerHTML = `
-                            <img src="${imgSrc}" onerror="this.style.display='none'" />
+                            <img src="${imgSrc}" onerror="this.style.display='none'" onclick="event.stopPropagation();openImageZoom('${imgSrc}')" />
                             <div class="info" onclick="openAdDetail(${ad.id})">
                                 <div class="title">${ad.title}</div>
                                 <div class="price">${(ad.price || 0).toLocaleString()} ${t('currency_toman')}</div>
@@ -3245,7 +3487,7 @@
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS (ساده برای دمو)
+        // ADMIN FUNCTIONS
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
@@ -3499,7 +3741,6 @@
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            // دموی ساده
             container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
         }
 
@@ -3626,6 +3867,7 @@
         console.log('✅ ثبت آگهی با آپلود تصویر → ارسال به ربات → تایید/رد → نمایش در صفحه');
         console.log('✅ نظرات، علاقه‌مندی‌ها و مدیریت کامل فعال است');
         console.log('🔴 رنگ‌های یاقوتی + سبز');
+        console.log('🖼️ قابلیت بزرگنمایی تصاویر با کلیک روی عکس');
     </script>
 </body>
     </html>
