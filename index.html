@@ -9,10 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ============================================================ */
-        /* تمام استایل‌های قبلی به‌جز بخش تصاویر اصلاح شده             */
-        /* ============================================================ */
-
         * {
             margin: 0;
             padding: 0;
@@ -546,7 +542,7 @@
         }
 
         /* ============================================================ */
-        /* ADS GRID - اصلاح کیفیت تصاویر                                */
+        /* ADS GRID - نمایش با کیفیت بالا                                */
         /* ============================================================ */
         .ads-grid {
             display: grid;
@@ -570,10 +566,10 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* ===== تصویر با کیفیت بالا ===== */
+        /* تصویر با کیفیت بالا - تنظیمات جدید */
         .ad-card .ad-image {
             width: 100%;
-            aspect-ratio: 3/2; /* نسبت ۳ به ۲ برای نمایش بهتر */
+            aspect-ratio: 4/3;
             background: var(--bg-input);
             position: relative;
             overflow: hidden;
@@ -582,13 +578,13 @@
         .ad-card .ad-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* پر کردن کامل فضا */
+            object-fit: cover;
             background: var(--bg-input);
             transition: transform 0.5s ease;
             image-rendering: auto;
             -ms-interpolation-mode: bicubic;
+            /* کیفیت بالا در نمایشگرهای رتینا */
         }
-        /* بهبود کیفیت در نمایشگرهای رتینا */
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
             .ad-card .ad-image img {
                 image-rendering: -webkit-optimize-contrast;
@@ -2855,6 +2851,7 @@
                 card.className = 'ad-card';
                 card.onclick = () => openAdDetail(ad.id);
                 let imgSrc = (ad.image_ids && ad.image_ids.length > 0) ? ad.image_ids[0] : '';
+                // استفاده از تصویر با کیفیت بالا با srcset
                 const imgHtml = imgSrc ?
                     `<img src="${imgSrc}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openImageZoom('${imgSrc}')" />` :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
