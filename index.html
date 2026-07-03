@@ -541,7 +541,7 @@
             border-color: var(--ruby);
         }
 
-        /* Ads Grid */
+        /* Ads Grid - با کیفیت بالا */
         .ads-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -564,7 +564,7 @@
         }
         .ad-card .ad-image {
             width: 100%;
-            aspect-ratio: 1/1;
+            aspect-ratio: 4/3; /* ← تغییر از 1/1 به 4/3 برای نمایش بهتر */
             background: var(--bg-input);
             position: relative;
             overflow: hidden;
@@ -573,8 +573,10 @@
         .ad-card .ad-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* ← تغییر از cover به contain برای نمایش کامل */
+            background: var(--bg-input);
             transition: transform 0.5s ease;
+            image-rendering: auto; /* کیفیت بالا */
         }
         .ad-card:hover .ad-image img {
             transform: scale(1.05);
@@ -630,64 +632,6 @@
         .ad-card .ad-image .favorite.active {
             color: var(--danger);
             background: rgba(239, 68, 68, 0.3);
-        }
-        /* Zoom overlay for full image */
-        .image-zoom-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 999999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            cursor: zoom-out;
-        }
-        .image-zoom-overlay.show {
-            display: flex;
-        }
-        .image-zoom-overlay img {
-            max-width: 95%;
-            max-height: 95%;
-            object-fit: contain;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: zoomIn 0.3s ease;
-        }
-        @keyframes zoomIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        .image-zoom-overlay .close-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .image-zoom-overlay .close-btn:hover {
-            background: var(--danger);
-            transform: rotate(90deg);
         }
         .ad-card .ad-content {
             padding: 10px 12px 8px;
@@ -1641,7 +1585,7 @@
             }
         }
 
-        /* Modal for Ad Detail */
+        /* Modal for Ad Detail - با کیفیت بالا */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1754,7 +1698,7 @@
         .modal-box .ad-gallery {
             position: relative;
             width: 100%;
-            aspect-ratio: 1/1;
+            aspect-ratio: 16/9; /* ← تغییر از 1/1 به 16/9 */
             background: var(--bg-input);
             border-radius: var(--radius-sm);
             overflow: hidden;
@@ -1764,7 +1708,7 @@
         .modal-box .ad-gallery img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: contain; /* ← تغییر از cover به contain برای نمایش کامل */
             background: var(--bg-input);
         }
         .modal-box .ad-gallery .no-image {
@@ -1860,6 +1804,66 @@
             color: var(--danger);
         }
 
+        /* Zoom Overlay - کیفیت بالا */
+        .image-zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        .image-zoom-overlay.show {
+            display: flex;
+        }
+        .image-zoom-overlay img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s ease;
+            image-rendering: high-quality; /* کیفیت بالا */
+        }
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .image-zoom-overlay .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .image-zoom-overlay .close-btn:hover {
+            background: var(--danger);
+            transform: rotate(90deg);
+        }
+
         .review-section {
             margin-top: 16px;
             border-top: 1px solid var(--border-color);
@@ -1935,6 +1939,24 @@
             font-size: 10px;
             color: var(--text-muted);
         }
+
+        /* پیام غیرفعال بودن سرویس */
+        .service-disabled {
+            background: var(--ruby-light);
+            border: 2px solid var(--ruby);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            color: var(--ruby-dark);
+            font-weight: 600;
+            font-size: 16px;
+            margin: 12px 0;
+        }
+        .service-disabled i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -2004,7 +2026,9 @@
             <a onclick="fetchAds()" id="refreshAdsBtn"><i class="fa-solid fa-rotate"></i></a>
         </div>
         <div class="categories" id="categoriesContainer"></div>
-        <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+        <div id="adsGridContainer">
+            <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+        </div>
     </div>
 
     <!-- BOTTOM NAV -->
@@ -2141,7 +2165,6 @@
     <div id="supportTab">
         <h2 style="margin-bottom:16px;font-size:22px;font-weight:800;" id="supportTitle">🆘 پشتیبانی</h2>
         <div id="supportContent">
-            <!-- محتوای پشتیبانی به صورت داینامیک توسط JavaScript بارگذاری می‌شود -->
             <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
         </div>
     </div>
@@ -2168,7 +2191,6 @@
         // ============================================================
         // CONFIGURATION
         // ============================================================
-        // ⚠️ آدرس Worker خود را در اینجا قرار دهید (بدون / در انتها)
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
 
@@ -2197,9 +2219,10 @@
         let bannerTimer = 5;
         let bannerTimerInterval = null;
         let reviewRating = 0;
+        let toggleStatuses = {}; // ذخیره وضعیت فعال/غیرفعال خدمات
 
         // ============================================================
-        // ترجمه‌ها (ساده برای دمو)
+        // ترجمه‌ها
         // ============================================================
         const translations = {
             fa: {
@@ -2294,6 +2317,12 @@
                 profile_error: 'خطا در ذخیره پروفایل',
                 today: 'امروز',
                 online: 'آنلاین',
+                // پیام غیرفعال بودن
+                service_disabled: '⛔ این سرویس در حال حاضر در دسترس نیست.',
+                ads_disabled: '⛔ ثبت آگهی در حال حاضر غیرفعال است.',
+                support_disabled: '⛔ پشتیبانی در حال حاضر غیرفعال است.',
+                banners_disabled: '⛔ بنرها در حال حاضر غیرفعال هستند.',
+                splash_disabled: '⛔ اسپلش در حال حاضر غیرفعال است.',
             },
             ar: {
                 home: 'الرئيسية',
@@ -2387,6 +2416,11 @@
                 profile_error: 'فشل حفظ الملف الشخصي',
                 today: 'اليوم',
                 online: 'نشط',
+                service_disabled: '⛔ هذه الخدمة غير متاحة حالياً.',
+                ads_disabled: '⛔ إضافة الإعلانات غير متاحة حالياً.',
+                support_disabled: '⛔ الدعم غير متاح حالياً.',
+                banners_disabled: '⛔ اللافتات غير متاحة حالياً.',
+                splash_disabled: '⛔ الشاشة الافتتاحية غير متاحة حالياً.',
             }
         };
 
@@ -2448,6 +2482,27 @@
                 console.error('❌ API Error:', err);
                 return { success: false, error: err.message || 'خطا در ارتباط با سرور' };
             }
+        }
+
+        // ============================================================
+        // LOAD TOGGLE STATUSES (وضعیت فعال/غیرفعال خدمات)
+        // ============================================================
+        async function loadToggleStatuses() {
+            try {
+                const data = await apiCall(`/admin/toggle-status?adminId=${guestId}`);
+                if (data.success) {
+                    toggleStatuses = data.statuses;
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                console.error('Error loading toggle statuses:', e);
+                return false;
+            }
+        }
+
+        function isServiceEnabled(key) {
+            return toggleStatuses[key] !== undefined ? toggleStatuses[key] : true;
         }
 
         // ============================================================
@@ -2584,6 +2639,12 @@
         // ============================================================
         async function loadSplashBanner() {
             if (bannerShown) return;
+            // بررسی فعال بودن اسپلش
+            const splashEnabled = isServiceEnabled('splash');
+            if (!splashEnabled) {
+                console.log('Splash is disabled');
+                return;
+            }
             try {
                 const data = await apiCall('/banner/splash');
                 if (data.success && data.splash && data.splash.is_active) {
@@ -2621,10 +2682,15 @@
         // BANNER ADS
         // ============================================================
         async function loadInlineBanners() {
+            const bannersEnabled = isServiceEnabled('banners');
+            const container = document.getElementById('bannerAdsContainer');
+            if (!bannersEnabled) {
+                container.innerHTML = `<div class="service-disabled"><i class="fa-solid fa-ban"></i> ${t('banners_disabled')}</div>`;
+                return;
+            }
             try {
                 const data = await apiCall('/banners');
                 if (data.success && data.banners && data.banners.length > 0) {
-                    const container = document.getElementById('bannerAdsContainer');
                     container.innerHTML = '';
                     data.banners.forEach(banner => {
                         const div = document.createElement('div');
@@ -2641,6 +2707,8 @@
                         `;
                         container.appendChild(div);
                     });
+                } else {
+                    container.innerHTML = '';
                 }
             } catch (err) { console.error('Error loading inline banners:', err); }
         }
@@ -2691,12 +2759,13 @@
         }
 
         // ============================================================
-        // ADS (اصلاح شده برای نمایش جدیدترین ابتدا)
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
             isUpdating = true;
             const grid = document.getElementById('adsGrid');
+            const container = document.getElementById('adsGridContainer');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/ads');
@@ -2710,15 +2779,26 @@
                         } else ad.image_ids = [];
                         return ad;
                     });
-                    // مرتب‌سازی: جدیدترین (created_at بیشتر) در ابتدا
                     allAds.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
                     filteredAds = [...allAds];
                     renderAds(filteredAds);
                     renderCategories();
                     loadFavorites();
+                    // حذف پیام غیرفعال بودن
+                    if (container.querySelector('.service-disabled')) {
+                        container.innerHTML = '';
+                        container.appendChild(grid);
+                    }
                 } else {
-                    grid.innerHTML =
-                    `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    // بررسی آیا ثبت آگهی غیرفعال است؟
+                    const adsEnabled = isServiceEnabled('ads');
+                    if (!adsEnabled) {
+                        grid.innerHTML =
+                            `<div class="service-disabled"><i class="fa-solid fa-ban"></i> ${t('ads_disabled')}</div>`;
+                    } else {
+                        grid.innerHTML =
+                            `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
+                    }
                 }
             } catch (err) {
                 grid.innerHTML =
@@ -2821,14 +2901,17 @@
         }
 
         function refreshAll() {
-            fetchAds(true);
-            if (currentTab === 'profile') fetchMyAds();
-            if (currentTab === 'favorites') fetchFavorites();
-            if (currentTab === 'rules') loadRules();
-            if (currentTab === 'support') loadSupport();
-            checkAdminStatus();
-            loadInlineBanners();
-            showToast('✅ بروزرسانی شد', 'success');
+            loadToggleStatuses().then(() => {
+                fetchAds(true);
+                if (currentTab === 'profile') fetchMyAds();
+                if (currentTab === 'favorites') fetchFavorites();
+                if (currentTab === 'rules') loadRules();
+                if (currentTab === 'support') loadSupport();
+                checkAdminStatus();
+                loadInlineBanners();
+                loadSplashBanner();
+                showToast('✅ بروزرسانی شد', 'success');
+            });
         }
 
         // ============================================================
@@ -2882,34 +2965,47 @@
         }
 
         // ============================================================
-        // SUPPORT (Optimized with direct link)
+        // SUPPORT (هماهنگ با وضعیت خاموش/روشن)
         // ============================================================
         async function loadSupport() {
             const container = document.getElementById('supportContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
 
+            const supportEnabled = isServiceEnabled('support');
+            if (!supportEnabled) {
+                container.innerHTML = `
+                    <div class="service-disabled" style="margin-top:20px;">
+                        <i class="fa-solid fa-ban"></i>
+                        ${t('support_disabled')}
+                    </div>
+                `;
+                return;
+            }
+
             try {
                 const data = await apiCall('/support');
-
                 if (data.success && data.support) {
                     const s = data.support;
-
-                    // تعریف آیتم‌های پشتیبانی با آیکون و لیبل
                     const items = [
-                        { key: 'phone', icon: 'fa-phone', label: '📞 شماره تماس' },
-                        { key: 'whatsapp', icon: 'fa-brands fa-whatsapp', label: '💬 واتساپ' },
-                        { key: 'telegram', icon: 'fa-paper-plane', label: '✈️ تلگرام' },
-                        { key: 'email', icon: 'fa-envelope', label: '📧 ایمیل' },
+                        { key: 'phones', icon: 'fa-phone', label: '📞 شماره‌های تماس', enabled: isServiceEnabled('phone') },
+                        { key: 'whatsapps', icon: 'fa-brands fa-whatsapp', label: '💬 شماره‌های واتساپ', enabled: isServiceEnabled('whatsapp') },
+                        { key: 'telegrams', icon: 'fa-paper-plane', label: '✈️ ایدی‌های تلگرام', enabled: isServiceEnabled('telegram') },
+                        { key: 'emails', icon: 'fa-envelope', label: '📧 ایمیل‌ها', enabled: isServiceEnabled('email') },
                     ];
 
-                    // ساخت کارت‌ها به صورت گرید
+                    let hasActiveItems = false;
                     let cardsHtml = '<div class="support-card-grid">';
                     items.forEach(item => {
-                        if (s[item.key]) {
-                            const isLink = item.key === 'telegram';
-                            const value = isLink
-                                ? `<a href="${s[item.key]}" target="_blank" rel="noopener noreferrer"><i class="fa-regular fa-arrow-up-right-from-square"></i> ${s[item.key]}</a>`
-                                : s[item.key];
+                        if (item.enabled && s[item.key] && s[item.key].length > 0) {
+                            hasActiveItems = true;
+                            const value = s[item.key].map(v => {
+                                if (item.key === 'telegrams') {
+                                    return `<a href="https://t.me/${v.replace('@','')}" target="_blank">${v}</a>`;
+                                } else if (item.key === 'whatsapps') {
+                                    return `<a href="https://wa.me/${v.replace(/\s/g,'')}" target="_blank">${v}</a>`;
+                                }
+                                return v;
+                            }).join('، ');
                             cardsHtml += `
                                 <div class="support-card-item">
                                     <div class="icon-wrapper"><i class="fa-solid ${item.icon}"></i></div>
@@ -2923,7 +3019,16 @@
                     });
                     cardsHtml += '</div>';
 
-                    // لینک مستقیم پشتیبانی (با اولویت لینک دریافتی از API)
+                    if (!hasActiveItems) {
+                        container.innerHTML = `
+                            <div class="service-disabled" style="margin-top:20px;">
+                                <i class="fa-solid fa-info-circle"></i>
+                                هیچ روش پشتیبانی فعال نیست.
+                            </div>
+                        `;
+                        return;
+                    }
+
                     const supportLink = s.link || 'http://j-dar.ir/support.html';
                     cardsHtml += `
                         <a href="${supportLink}" target="_blank" rel="noopener noreferrer" class="support-link-btn">
@@ -2934,7 +3039,6 @@
                     `;
 
                     container.innerHTML = cardsHtml;
-
                 } else {
                     container.innerHTML = `
                         <div class="support-content" style="text-align:center;padding:30px 20px;color:var(--text-muted);">
@@ -2944,7 +3048,6 @@
                     `;
                 }
             } catch (err) {
-                console.error('❌ Error loading support:', err);
                 container.innerHTML = `
                     <div class="support-content" style="text-align:center;padding:30px 20px;color:var(--danger);">
                         <i class="fa-regular fa-circle-exclamation" style="font-size:32px;display:block;margin-bottom:12px;"></i>
@@ -2998,8 +3101,8 @@
                 </div>
                 <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
                 <div class="action-buttons">
-                    ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                    ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                    ${phone && isServiceEnabled('phone') ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
+                    ${phone && isServiceEnabled('whatsapp') ? `<a href="https://wa.me/${phone.replace(/\s/g,'')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
                     <button class="btn-share" onclick="shareAd(${ad.id}, '${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('share')}</button>
                 </div>
                 <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})">
@@ -3033,7 +3136,6 @@
                 galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
                 document.getElementById('detailGalleryImg').src = galleryImages[galleryIndex];
                 document.getElementById('detailGalleryIndex').textContent = galleryIndex + 1;
-                // به‌روزرسانی onclick برای زوم
                 const gallery = document.querySelector('.ad-gallery');
                 if (gallery) gallery.onclick = () => openImageZoom(galleryImages[galleryIndex]);
             };
@@ -3045,7 +3147,6 @@
                 const gallery = document.querySelector('.ad-gallery');
                 if (gallery) gallery.onclick = () => openImageZoom(galleryImages[galleryIndex]);
             };
-            // تنظیم اولیه برای زوم
             const gallery = document.querySelector('.ad-gallery');
             if (gallery && galleryImages.length > 0) {
                 gallery.onclick = () => openImageZoom(galleryImages[0]);
@@ -3304,14 +3405,20 @@
         }
 
         // ============================================================
-        // SUBMIT AD (اصلاح‌شده برای آپلود صحیح تصاویر)
+        // SUBMIT AD (با بررسی فعال بودن ثبت آگهی)
         // ============================================================
         async function submitAd() {
+            // بررسی فعال بودن ثبت آگهی
+            if (!isServiceEnabled('ads')) {
+                showToast(t('ads_disabled'), 'error');
+                return;
+            }
+
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
             }
-            
+
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
@@ -3319,28 +3426,26 @@
             const location = document.getElementById('adLocation').value.trim();
             const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
-            
+
             if (!title || !price || !desc || !location) {
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
-            
-            // گرفتن فایل‌های انتخاب‌شده
+
             const fileInput = document.getElementById('adImagesInput');
             const files = fileInput.files;
-            
+
             if (!files || files.length === 0) {
                 showToast('⚠️ لطفاً حداقل یک تصویر انتخاب کنید', 'warning');
                 return;
             }
-            
+
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="loading"></span> در حال آپلود...';
             const statusEl = document.getElementById('uploadStatus');
-            
+
             try {
-                // 1. آپلود تصاویر به سرور و دریافت file_id
                 const imageIds = [];
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -3353,16 +3458,16 @@
                         continue;
                     }
                     statusEl.textContent = `در حال آپلود ${file.name}...`;
-                    
+
                     const formData = new FormData();
                     formData.append('photo', file);
-                    
+
                     const uploadRes = await fetch(`${API_BASE}/upload`, {
                         method: 'POST',
                         body: formData,
                     });
                     const uploadResult = await uploadRes.json();
-                    
+
                     if (uploadResult.success && uploadResult.file_id) {
                         imageIds.push(uploadResult.file_id);
                         showToast(`✅ ${file.name} آپلود شد`, 'success');
@@ -3374,7 +3479,7 @@
                         return;
                     }
                 }
-                
+
                 if (imageIds.length === 0) {
                     showToast('❌ هیچ تصویری آپلود نشد', 'error');
                     btn.disabled = false;
@@ -3382,11 +3487,11 @@
                     statusEl.textContent = '';
                     return;
                 }
-                
-                // 2. ارسال آگهی با image_ids
+
                 statusEl.textContent = '⏳ در حال ثبت آگهی...';
                 btn.innerHTML = '⏳ در حال ثبت...';
-                
+
+                const durationDays = parseInt(document.getElementById('adDuration')?.value) || 30;
                 const payload = {
                     username: guestId,
                     title,
@@ -3396,14 +3501,15 @@
                     city: location,
                     country,
                     phone: contact,
-                    image_ids: imageIds
+                    image_ids: imageIds,
+                    duration_days: durationDays
                 };
-                
+
                 const data = await apiCall('/ad/submit', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-                
+
                 if (data.success) {
                     showToast('✅ آگهی شما ثبت و برای تایید ارسال شد', 'success');
                     closeModal('addAdModal');
@@ -3426,18 +3532,17 @@
             }
         }
 
-        // نمایش پیش‌نمایش تصاویر انتخاب‌شده (قبل از آپلود)
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
-            
+
             if (files.length > 4) {
                 showToast('حداکثر ۴ تصویر مجاز است', 'warning');
                 this.value = '';
                 return;
             }
-            
+
             files.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function(ev) {
@@ -3460,12 +3565,16 @@
             files.splice(index, 1);
             files.forEach(file => dt.items.add(file));
             input.files = dt.files;
-            // بازسازی پیش‌نمایش
             const event = new Event('change');
             input.dispatchEvent(event);
         }
 
         function openAddModal() {
+            // بررسی فعال بودن ثبت آگهی
+            if (!isServiceEnabled('ads')) {
+                showToast(t('ads_disabled'), 'error');
+                return;
+            }
             if (!isProfileComplete()) {
                 showToast(t('complete_profile_first'), 'warning');
                 return;
@@ -3487,7 +3596,7 @@
         }
 
         // ============================================================
-        // ADMIN FUNCTIONS
+        // ADMIN FUNCTIONS (با بررسی وضعیت‌ها)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
@@ -3851,10 +3960,15 @@
         document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
             '<i class="fa-solid fa-sun"></i>';
         updateLanguage();
-        fetchAds(true);
-        loadProfile();
-        loadInlineBanners();
-        setTimeout(() => { loadSplashBanner(); }, 800);
+
+        // بارگذاری وضعیت‌ها و سپس بارگذاری محتوا
+        loadToggleStatuses().then(() => {
+            fetchAds(true);
+            loadProfile();
+            loadInlineBanners();
+            setTimeout(() => { loadSplashBanner(); }, 800);
+        });
+
         document.getElementById('searchInput').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') searchAds();
         });
@@ -3868,6 +3982,7 @@
         console.log('✅ نظرات، علاقه‌مندی‌ها و مدیریت کامل فعال است');
         console.log('🔴 رنگ‌های یاقوتی + سبز');
         console.log('🖼️ قابلیت بزرگنمایی تصاویر با کلیک روی عکس');
+        console.log('⚙️ هماهنگ با خاموش/روشن کردن خدمات از ربات');
     </script>
 </body>
     </html>
