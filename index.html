@@ -2023,7 +2023,7 @@
         let reviewRating = 0;
 
         // ============================================================
-        // TRANSLATIONS (ترجمه‌ها به اختصار)
+        // TRANSLATIONS (به اختصار)
         // ============================================================
         const translations = {
             fa: {
@@ -2577,17 +2577,37 @@
             const grid = document.getElementById('adsGrid');
             if (showLoading) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                // مستقیماً از آگهی‌های تایید شده استفاده می‌کنیم
-                let data = await apiCall('/ads?status=approved');
-                console.log('📡 دریافت از /ads?status=approved:', data);
+                // 1. تلاش با /ads?status=approved
+                let url = `${API_BASE}/ads?status=approved`;
+                console.log('📡 درخواست به:', url);
+                let response = await fetch(url);
+                let data = await response.json();
+                console.log('📡 پاسخ از /ads?status=approved:', data);
 
-                // اگر پاسخ ناموفق بود یا خالی، از /ads ساده استفاده می‌کنیم
+                // اگر خالی یا ناموفق بود، /ads را امتحان کن
                 if (!data.success || !data.ads || data.ads.length === 0) {
                     console.warn('⚠️ /ads?status=approved خالی یا ناموفق، تلاش با /ads');
-                    data = await apiCall('/ads');
-                    console.log('📡 دریافت از /ads:', data);
+                    url = `${API_BASE}/ads`;
+                    response = await fetch(url);
+                    data = await response.json();
+                    console.log('📡 پاسخ از /ads:', data);
                 }
 
+                // اگر باز هم خالی بود، از /myads برای دریافت آگهی‌های خود کاربر استفاده کن (راه‌حل جایگزین)
+                if (!data.success || !data.ads || data.ads.length === 0) {
+                    console.warn('⚠️ /ads هم خالی بود، تلاش با /myads');
+                    url = `${API_BASE}/myads/${guestId}`;
+                    response = await fetch(url);
+                    data = await response.json();
+                    console.log('📡 پاسخ از /myads:', data);
+                    // اگر /myads داده داشت، آن را به عنوان allAds در نظر بگیر
+                    if (data.success && data.data && data.data.length > 0) {
+                        // داده‌های /myads را به ساختار /ads تبدیل می‌کنیم
+                        data.ads = data.data;
+                    }
+                }
+
+                // پردازش نهایی
                 if (data.success && data.ads && data.ads.length > 0) {
                     allAds = data.ads.map(ad => {
                         // پردازش تصاویر
@@ -3702,4 +3722,4 @@
         console.log('✅ ثبت نظر و علاقه‌مندی‌ها فعال است');
     </script>
 </body>
-                </html>
+    </html>
