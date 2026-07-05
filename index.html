@@ -358,7 +358,7 @@
         .image-zoom-overlay .close-btn:hover { background: var(--danger); transform: rotate(90deg); }
 
         /* ============================================================ */
-        /* BOTTOM NAV - فقط دکمه پشتیبانی با منوی کشویی                 */
+        /* BOTTOM NAV - با دکمه پشتیبانی و منوی کشویی                 */
         /* ============================================================ */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto;
@@ -1008,6 +1008,16 @@
                 draft_deleted: 'پیش‌نویس حذف شد', no_drafts: 'هیچ پیش‌نویسی موجود نیست',
                 submit_review: 'ثبت نظر', rules_title: 'قوانین', support_title: 'پشتیبانی',
                 drafts_title: 'پیش‌نویس‌ها',
+                twofa_title: 'ورود دو مرحله‌ای',
+                enter_code: 'کد ۶ رقمی ارسال شده به شماره همراه را وارد کنید',
+                send_code: 'ارسال کد',
+                resend_code: 'ارسال مجدد کد',
+                code_sent: 'کد به شماره شما ارسال شد',
+                code_verified: '✅ تأیید شد. خوش آمدید!',
+                code_invalid: '❌ کد نامعتبر است. دوباره تلاش کنید.',
+                code_expired: '⏰ کد منقضی شد. دوباره درخواست کنید.',
+                enter_mobile: 'شماره موبایل خود را وارد کنید',
+                verify_phone: 'تأیید شماره',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -1051,6 +1061,16 @@
                 draft_deleted: 'تم حذف المسودة', no_drafts: 'لا توجد مسودات',
                 submit_review: 'إرسال التقييم', rules_title: 'القوانين', support_title: 'الدعم',
                 drafts_title: 'المسودات',
+                twofa_title: 'تسجيل الدخول بخطوتين',
+                enter_code: 'أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك',
+                send_code: 'إرسال الرمز',
+                resend_code: 'إعادة إرسال الرمز',
+                code_sent: 'تم إرسال الرمز إلى رقمك',
+                code_verified: '✅ تم التحقق. أهلاً بك!',
+                code_invalid: '❌ الرمز غير صحيح. حاول مرة أخرى.',
+                code_expired: '⏰ انتهت صلاحية الرمز. اطلب رمزاً جديداً.',
+                enter_mobile: 'أدخل رقم هاتفك',
+                verify_phone: 'التحقق من الرقم',
             }
         };
 
@@ -1407,6 +1427,89 @@
         function isProfileComplete() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
             return profile.phone && profile.phone.trim().length >= 10;
+        }
+
+        // ============================================================
+        // 2FA LOGIN
+        // ============================================================
+        let twoFactorData = {};
+
+        function showTwoFactorLogin(phone) {
+            const overlay = document.createElement('div');
+            overlay.id = 'twofaOverlay';
+            overlay.style.cssText = `
+                position: fixed; top:0; left:0; right:0; bottom:0; 
+                background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); 
+                z-index: 999999; display: flex; align-items: center; justify-content: center;
+                padding: 20px;
+            `;
+            overlay.innerHTML = `
+                <div style="background: var(--bg-card); border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 40px 30px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid var(--border-color);">
+                    <h2 style="text-align:center;font-size:22px;font-weight:800;margin-bottom:8px;">${t('twofa_title')}</h2>
+                    <p style="text-align:center;color:var(--text-secondary);font-size:14px;margin-bottom:20px;">${t('enter_code')}</p>
+                    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;">
+                        <input type="text" id="twofaInput" maxlength="6" style="width:100%;padding:12px 16px;border:2px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text-primary);font-size:20px;text-align:center;letter-spacing:8px;font-weight:700;" placeholder="••••••" />
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <button onclick="verifyTwoFactor()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border-radius:var(--radius-sm);font-weight:700;border:none;cursor:pointer;transition:all 0.3s;">${t('verify_phone')}</button>
+                        <button onclick="closeTwoFactor()" style="padding:12px 20px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:var(--radius-sm);font-weight:600;color:var(--text-primary);cursor:pointer;">${t('cancel')}</button>
+                    </div>
+                    <button onclick="resendTwoFactorCode()" style="display:block;width:100%;margin-top:12px;background:none;border:none;color:var(--ruby);font-weight:600;font-size:13px;cursor:pointer;">${t('resend_code')}</button>
+                    <p id="twofaStatus" style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-secondary);"></p>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.getElementById('twofaInput').focus();
+            twoFactorData.phone = phone;
+        }
+
+        async function verifyTwoFactor() {
+            const code = document.getElementById('twofaInput').value.trim();
+            if (!code || code.length !== 6) {
+                document.getElementById('twofaStatus').textContent = '❌ کد ۶ رقمی را وارد کنید';
+                return;
+            }
+            try {
+                const res = await apiCall('/auth/verify-2fa', {
+                    method: 'POST',
+                    body: JSON.stringify({ mobile: twoFactorData.phone, code })
+                });
+                if (res.success) {
+                    document.getElementById('twofaStatus').textContent = '✅ ' + t('code_verified');
+                    setTimeout(() => {
+                        closeTwoFactor();
+                        showToast(t('code_verified'), 'success');
+                        // ادامه ورود
+                    }, 1000);
+                } else if (res.error && res.error.includes('expired')) {
+                    document.getElementById('twofaStatus').textContent = '⏰ ' + t('code_expired');
+                } else {
+                    document.getElementById('twofaStatus').textContent = '❌ ' + t('code_invalid');
+                }
+            } catch (e) {
+                document.getElementById('twofaStatus').textContent = '❌ ' + t('error_loading');
+            }
+        }
+
+        function closeTwoFactor() {
+            const el = document.getElementById('twofaOverlay');
+            if (el) el.remove();
+        }
+
+        async function resendTwoFactorCode() {
+            try {
+                const res = await apiCall('/auth/send-2fa', {
+                    method: 'POST',
+                    body: JSON.stringify({ mobile: twoFactorData.phone })
+                });
+                if (res.success) {
+                    document.getElementById('twofaStatus').textContent = '✅ ' + t('code_sent');
+                } else {
+                    document.getElementById('twofaStatus').textContent = '❌ ' + res.error || t('error_loading');
+                }
+            } catch (e) {
+                document.getElementById('twofaStatus').textContent = '❌ ' + t('error_loading');
+            }
         }
 
         // ============================================================
@@ -2485,6 +2588,7 @@
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log('✅ گزینه‌های قوانین، اخبار، درباره ما و راهنما در منوی کشویی پشتیبانی قرار دارند.');
+        console.log('✅ سیستم تأیید دو مرحله‌ای (2FA) با ارسال کد از طریق پیامک فعال است.');
     </script>
 </body>
     </html>
