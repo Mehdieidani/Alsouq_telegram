@@ -66,7 +66,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--ruby); border-radius: 10px; }
 
-        /* ===== بقیه استایل‌ها مانند قبل ===== */
+        /* ===== بقیه استایل‌ها ===== */
         .lang-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
@@ -1420,7 +1420,7 @@
         }
 
         // ============================================================
-        //  2FA
+        //  2FA - فقط تلگرام و ایمیل (بدون پیامک)
         // ============================================================
         let twoFactorData = {};
 
@@ -1460,14 +1460,20 @@
                 return;
             }
             try {
-                const res = await apiCall('/auth/verify-2fa', {
+                // بررسی روش ارسال (تلگرام یا ایمیل)
+                const method = twoFactorData.method || 'telegram';
+                const endpoint = method === 'email' ? '/auth/verify-2fa-email' : '/auth/verify-2fa-telegram';
+                const payload = method === 'email' 
+                    ? { email: twoFactorData.email, code }
+                    : { mobile: twoFactorData.phone, code };
+                
+                const res = await apiCall(endpoint, {
                     method: 'POST',
-                    body: JSON.stringify({ mobile: twoFactorData.phone, code })
+                    body: JSON.stringify(payload)
                 });
                 if (res.success) {
                     document.getElementById('twofaStatus').textContent = '✅ ' + t('code_verified');
                     localStorage.setItem('jedar_phone_verified', 'true');
-                    // update profile phone
                     const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
                     profile.phone = twoFactorData.phone;
                     localStorage.setItem('jedar_profile', JSON.stringify(profile));
@@ -1495,9 +1501,15 @@
 
         async function resendTwoFactorCode() {
             try {
-                const res = await apiCall('/auth/send-2fa', {
+                const method = twoFactorData.method || 'telegram';
+                const endpoint = method === 'email' ? '/auth/send-2fa-email' : '/auth/send-2fa-telegram';
+                const payload = method === 'email' 
+                    ? { email: twoFactorData.email }
+                    : { mobile: twoFactorData.phone };
+                
+                const res = await apiCall(endpoint, {
                     method: 'POST',
-                    body: JSON.stringify({ mobile: twoFactorData.phone })
+                    body: JSON.stringify(payload)
                 });
                 if (res.success) {
                     document.getElementById('twofaStatus').textContent = '✅ ' + t('code_sent');
@@ -1509,23 +1521,28 @@
             }
         }
 
-        async function requestVerificationCode() {
+        // ===== درخواست کد از تلگرام =====
+        async function requestCodeViaTelegram() {
             const phone = document.getElementById('profilePhone').value.trim();
             if (!phone || phone.length < 10) {
                 showToast('⚠️ شماره تلفن را به درستی وارد کنید', 'error');
                 return;
             }
+            
+            twoFactorData.phone = phone;
+            twoFactorData.method = 'telegram';
+            
             const statusEl = document.getElementById('phoneVerifyStatus');
-            statusEl.textContent = '⏳ در حال ارسال کد...';
+            statusEl.textContent = '⏳ ارسال کد از طریق تلگرام...';
             statusEl.style.color = 'var(--gold)';
 
             try {
-                const res = await apiCall('/auth/send-2fa', {
+                const res = await apiCall('/auth/send-2fa-telegram', {
                     method: 'POST',
                     body: JSON.stringify({ mobile: phone })
                 });
                 if (res.success) {
-                    statusEl.textContent = '✅ کد به شماره شما ارسال شد';
+                    statusEl.textContent = '✅ کد از طریق ربات تلگرام ارسال شد';
                     statusEl.style.color = 'var(--green)';
                     showTwoFactorLogin(phone);
                 } else {
@@ -1536,6 +1553,84 @@
                 statusEl.textContent = '❌ خطا در ارتباط با سرور';
                 statusEl.style.color = 'var(--danger)';
             }
+        }
+
+        // ===== درخواست کد از ایمیل =====
+        async function requestCodeViaEmail() {
+            const email = document.getElementById('profileEmail').value.trim();
+            if (!email || !email.includes('@')) {
+                showToast('⚠️ ایمیل معتبر را وارد کنید', 'error');
+                return;
+            }
+            
+            const phone = document.getElementById('profilePhone').value.trim();
+            if (!phone || phone.length < 10) {
+                showToast('⚠️ شماره تلفن را وارد کنید', 'error');
+                return;
+            }
+            
+            twoFactorData.phone = phone;
+            twoFactorData.email = email;
+            twoFactorData.method = 'email';
+            
+            const statusEl = document.getElementById('phoneVerifyStatus');
+            statusEl.textContent = '⏳ ارسال کد از طریق ایمیل...';
+            statusEl.style.color = 'var(--gold)';
+
+            try {
+                const res = await apiCall('/auth/send-2fa-email', {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+                if (res.success) {
+                    statusEl.textContent = `✅ کد به ایمیل ${email} ارسال شد`;
+                    statusEl.style.color = 'var(--green)';
+                    showTwoFactorLogin(phone);
+                } else {
+                    statusEl.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
+                    statusEl.style.color = 'var(--danger)';
+                }
+            } catch (e) {
+                statusEl.textContent = '❌ خطا در ارتباط با سرور';
+                statusEl.style.color = 'var(--danger)';
+            }
+        }
+
+        // ===== دکمه تأیید شماره (برای انتخاب روش) =====
+        function requestVerificationCode() {
+            const phone = document.getElementById('profilePhone').value.trim();
+            if (!phone || phone.length < 10) {
+                showToast('⚠️ شماره تلفن را به درستی وارد کنید', 'error');
+                return;
+            }
+            
+            // نمایش انتخاب روش
+            const overlay = document.createElement('div');
+            overlay.id = 'methodOverlay';
+            overlay.style.cssText = `
+                position: fixed; top:0; left:0; right:0; bottom:0; 
+                background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); 
+                z-index: 999999; display: flex; align-items: center; justify-content: center;
+                padding: 20px;
+            `;
+            overlay.innerHTML = `
+                <div style="background: var(--bg-card); border-radius: var(--radius-lg); max-width: 400px; width: 100%; padding: 30px 24px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid var(--border-color); text-align: center;">
+                    <h3 style="margin-bottom:16px;font-size:18px;">📱 انتخاب روش دریافت کد</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">شماره: <strong>${phone}</strong></p>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <button onclick="document.getElementById('methodOverlay').remove();requestCodeViaTelegram();" style="padding:14px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">
+                            ✈️ تلگرام
+                        </button>
+                        <button onclick="document.getElementById('methodOverlay').remove();requestCodeViaEmail();" style="padding:14px;background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">
+                            📧 ایمیل
+                        </button>
+                        <button onclick="document.getElementById('methodOverlay').remove();" style="padding:12px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:10px;font-weight:600;color:var(--text-primary);cursor:pointer;">
+                            ❌ انصراف
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
         }
 
         // ============================================================
@@ -2147,18 +2242,17 @@
         }
 
         // ============================================================
-        //  SUBMIT AD (with phone verification & readonly phone)
+        //  SUBMIT AD (با تأیید شماره اجباری)
         // ============================================================
         async function submitAd() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
-            if (!requireVerifiedPhone()) return; // must have verified phone
+            if (!requireVerifiedPhone()) return; // تایید شماره اجباری
 
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
             const desc = document.getElementById('adDescription').value.trim();
             const location = document.getElementById('adLocation').value.trim();
-            // phone is taken from profile (verified)
             const contact = userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
             const durationDays = parseInt(document.getElementById('adDuration').value) || 30;
@@ -2235,7 +2329,7 @@
                 btn.innerHTML = '⏳ در حال ثبت...';
 
                 const payload = {
-                    username: getUserId(), // phone number
+                    username: getUserId(), // شماره تلفن تایید شده
                     title,
                     category,
                     price: parseInt(price),
@@ -2312,7 +2406,7 @@
         }
 
         // ============================================================
-        //  OPEN ADD MODAL (with phone verification check)
+        //  OPEN ADD MODAL (با بررسی تأیید شماره)
         // ============================================================
         function openAddModal() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
@@ -2327,7 +2421,6 @@
             document.getElementById('saveAsDraft').checked = false;
             wizardStep = 1;
             updateWizard();
-            // set phone readonly from profile
             const contactField = document.getElementById('adContact');
             if (userProfile.phone) {
                 contactField.value = userProfile.phone;
@@ -2343,7 +2436,7 @@
         }
 
         // ============================================================
-        //  REVIEW (comment)
+        //  REVIEW (نظر)
         // ============================================================
         function setDetailRating(val) {
             reviewRating = val;
@@ -2615,7 +2708,7 @@
         }
 
         // ============================================================
-        //  TOGGLE STATUSES (service on/off)
+        //  TOGGLE STATUSES
         // ============================================================
         async function loadToggleStatuses() {
             try {
@@ -2680,11 +2773,11 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        console.log(`🚀 جـدار بازار - نسخه نهایی با 2FA و تأیید شماره اجباری`);
+        console.log(`🚀 جـدار بازار - نسخه نهایی با 2FA (تلگرام + ایمیل)`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
-        console.log('📌 شماره تلفن به عنوان شناسه کاربری استفاده می‌شود.');
+        console.log('✈️ تلگرام و 📧 ایمیل - بدون پیامک');
     </script>
 </body>
                 </html>
