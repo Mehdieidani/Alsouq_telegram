@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== استایل‌ها ===== */
         * {
             margin: 0;
             padding: 0;
@@ -65,6 +66,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--ruby); border-radius: 10px; }
 
+        /* ===== بقیه استایل‌ها مانند قبل ===== */
         .lang-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
@@ -775,7 +777,9 @@
                         <div class="image-preview-grid" id="adImagePreview"></div>
                         <span id="uploadStatus" style="font-size:12px;color:var(--text-muted);display:block;margin-top:4px;"></span>
                     </div>
-                    <div class="form-group"><label id="adPhoneLabel">شماره تماس</label><input type="tel" id="adContact" placeholder="شماره شما" value="" /></div>
+                    <div class="form-group"><label id="adPhoneLabel">شماره تماس (تایید شده)</label>
+                        <input type="tel" id="adContact" placeholder="شماره شما" value="" readonly />
+                    </div>
                     <div class="form-group">
                         <label><input type="checkbox" id="saveAsDraft" /> <span id="saveDraftLabel">ذخیره به‌عنوان پیش‌نویس</span></label>
                     </div>
@@ -800,14 +804,14 @@
         <div class="profile-section">
             <div class="form-group">
                 <label id="profileUsernameLabel">نام کاربری</label>
-                <input type="text" id="profileUsername" placeholder="نام کاربری" />
+                <input type="text" id="profileUsername" placeholder="نام کاربری" readonly />
             </div>
             <div class="form-group">
                 <label id="profileFullnameLabel">نام کامل</label>
                 <input type="text" id="profileFullname" placeholder="نام و نام خانوادگی" />
             </div>
             <div class="form-group">
-                <label id="profilePhoneLabel">شماره تلفن</label>
+                <label id="profilePhoneLabel">شماره تلفن (شناسه کاربری)</label>
                 <input type="tel" id="profilePhone" placeholder="0912..." />
                 <button onclick="requestVerificationCode()" style="margin-top:8px;padding:8px 16px;background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;width:100%;">
                     📱 تأیید شماره
@@ -910,6 +914,9 @@
     </div>
 
     <script>
+        // ============================================================
+        //  CONSTANTS & GLOBALS
+        // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
 
@@ -937,6 +944,9 @@
         let toggleStatuses = {};
         let drafts = JSON.parse(localStorage.getItem('jedar_drafts') || '[]');
 
+        // ============================================================
+        //  TRANSLATIONS
+        // ============================================================
         const translations = {
             fa: {
                 home: 'خانه', add: 'ثبت', favorites: 'نشان‌ها', profile: 'پروفایل',
@@ -990,6 +1000,15 @@
                 code_expired: '⏰ کد منقضی شد. دوباره درخواست کنید.',
                 enter_mobile: 'شماره موبایل خود را وارد کنید',
                 verify_phone: 'تأیید شماره',
+                cancel: 'لغو',
+                phone_verified_label: '✅ تایید شده',
+                phone_not_verified_label: '⚠️ تایید نشده',
+                verify_required: '⚠️ برای ثبت آگهی و نظر، ابتدا شماره خود را تأیید کنید.',
+                user_blocked: 'کاربر مسدود شد',
+                user_unblocked: 'کاربر رفع انسداد شد',
+                admin_added: 'ادمین اضافه شد',
+                admin_removed: 'ادمین حذف شد',
+                announcement_sent: 'اطلاعیه ارسال شد',
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -1043,11 +1062,23 @@
                 code_expired: '⏰ انتهت صلاحية الرمز. اطلب رمزاً جديداً.',
                 enter_mobile: 'أدخل رقم هاتفك',
                 verify_phone: 'التحقق من الرقم',
+                cancel: 'إلغاء',
+                phone_verified_label: '✅ مؤكد',
+                phone_not_verified_label: '⚠️ غير مؤكد',
+                verify_required: '⚠️ لتسجيل إعلان أو تعليق، يرجى تأكيد رقم هاتفك أولاً.',
+                user_blocked: 'تم حظر المستخدم',
+                user_unblocked: 'تم إلغاء حظر المستخدم',
+                admin_added: 'تم إضافة المشرف',
+                admin_removed: 'تم حذف المشرف',
+                announcement_sent: 'تم إرسال الإشعار',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
+        // ============================================================
+        //  UTILITY FUNCTIONS
+        // ============================================================
         function showLanguageOverlay() { document.getElementById('langOverlay').classList.remove('hidden'); }
 
         function selectLanguage(lang) {
@@ -1084,7 +1115,7 @@
             document.getElementById('wizardNextBtn2').textContent = t('next');
             document.getElementById('adImagesLabel').textContent = t('images');
             document.getElementById('uploadClickLabel').textContent = t('upload_click');
-            document.getElementById('adPhoneLabel').textContent = t('phone');
+            document.getElementById('adPhoneLabel').textContent = t('phone') + ' (' + t('verify_phone') + ')';
             document.getElementById('saveDraftLabel').textContent = t('save_draft');
             document.getElementById('wizardPrevBtn3').textContent = t('prev');
             document.getElementById('submitAdBtn').textContent = t('submit');
@@ -1092,7 +1123,7 @@
             document.getElementById('profileTitle').textContent = '👤 ' + t('profile_title');
             document.getElementById('profileUsernameLabel').textContent = t('username');
             document.getElementById('profileFullnameLabel').textContent = t('fullname');
-            document.getElementById('profilePhoneLabel').textContent = t('phone_label');
+            document.getElementById('profilePhoneLabel').textContent = t('phone_label') + ' (' + t('verify_phone') + ')';
             document.getElementById('profileEmailLabel').textContent = t('email_label');
             document.getElementById('profileCityLabel').textContent = t('city_label');
             document.getElementById('profileSaveBtn').innerHTML = '💾 ' + t('save');
@@ -1189,36 +1220,31 @@
             }
         }
 
-        async function loadToggleStatuses() {
-            try {
-                const data = await apiCall(`/admin/toggle-status?adminId=${guestId}`);
-                if (data.success) { toggleStatuses = data.statuses; return true; }
-                return false;
-            } catch (e) { console.error('Error loading toggle statuses:', e); return false; }
+        // ============================================================
+        //  USER IDENTIFICATION & VERIFICATION
+        // ============================================================
+        function isPhoneVerified() {
+            return localStorage.getItem('jedar_phone_verified') === 'true';
         }
 
-        function isServiceEnabled(key) {
-            return toggleStatuses[key] !== undefined ? toggleStatuses[key] : true;
-        }
-
-        function openMediaZoom(url, type) {
-            const overlay = document.getElementById('imageZoomOverlay');
-            const container = document.getElementById('zoomMediaContainer');
-            if (type === 'video') {
-                container.innerHTML =
-                    `<video autoplay muted loop playsinline style="max-width:95%;max-height:95%;border-radius:8px;"><source src="${url}" type="video/mp4"></video>`;
-            } else {
-                container.innerHTML = `<img src="${url}" alt="نمایش" style="max-width:95%;max-height:95%;border-radius:8px;" />`;
+        function getUserId() {
+            if (isPhoneVerified() && userProfile.phone) {
+                return userProfile.phone;
             }
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            return guestId;
         }
 
-        function closeImageZoom() {
-            document.getElementById('imageZoomOverlay').classList.remove('show');
-            document.body.style.overflow = '';
+        function requireVerifiedPhone() {
+            if (!isPhoneVerified()) {
+                showToast(t('verify_required'), 'warning');
+                return false;
+            }
+            return true;
         }
 
+        // ============================================================
+        //  THEME
+        // ============================================================
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1227,6 +1253,9 @@
             localStorage.setItem('jedar_theme', currentTheme);
         }
 
+        // ============================================================
+        //  FILTER MODAL
+        // ============================================================
         function openFilter() {
             document.getElementById('filterModal').classList.add('show');
             document.getElementById('filterBackdrop').classList.add('show');
@@ -1239,6 +1268,9 @@
             document.body.style.overflow = '';
         }
 
+        // ============================================================
+        //  SUPPORT DROPDOWN
+        // ============================================================
         function toggleSupportMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('supportDropdownMenu');
@@ -1252,6 +1284,9 @@
             }
         });
 
+        // ============================================================
+        //  BANNER / SPLASH
+        // ============================================================
         async function loadSplashBanner() {
             if (bannerShown) return;
             if (!isServiceEnabled('splash')) return;
@@ -1325,20 +1360,41 @@
             } catch (err) { console.error('Error loading inline banners:', err); }
         }
 
+        // ============================================================
+        //  PROFILE
+        // ============================================================
         function loadProfile() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+            userProfile = profile;
             document.getElementById('profileUsername').value = profile.username || guestId;
             document.getElementById('profileFullname').value = profile.fullname || '';
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
             document.getElementById('profileCity').value = profile.city || '';
-            document.getElementById('adContact').value = profile.phone || '';
+            // fill contact in add form
+            const contactField = document.getElementById('adContact');
+            if (isPhoneVerified() && profile.phone) {
+                contactField.value = profile.phone;
+                contactField.readOnly = true;
+            } else {
+                contactField.value = '';
+                contactField.readOnly = true; // always readonly
+            }
+            // update verify status
+            const statusEl = document.getElementById('phoneVerifyStatus');
+            if (isPhoneVerified()) {
+                statusEl.textContent = '✅ ' + t('phone_verified_label');
+                statusEl.style.color = 'var(--green)';
+            } else {
+                statusEl.textContent = '⚠️ ' + t('phone_not_verified_label') + ' — ' + t('verify_required');
+                statusEl.style.color = 'var(--gold)';
+            }
             checkAdminStatus();
         }
 
         async function checkAdminStatus() {
             try {
-                const data = await apiCall(`/profile/${guestId}`);
+                const data = await apiCall(`/profile/${getUserId()}`);
                 if (data.success && data.user) {
                     const user = data.user;
                     isAdmin = user.is_admin || user.is_super_admin || false;
@@ -1363,12 +1419,9 @@
             showToast(t('profile_saved'), 'success');
         }
 
-        function isProfileComplete() {
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            return profile.phone && profile.phone.trim().length >= 10;
-        }
-
-        // ===== 2FA FUNCTIONS =====
+        // ============================================================
+        //  2FA
+        // ============================================================
         let twoFactorData = {};
 
         function showTwoFactorLogin(phone) {
@@ -1414,9 +1467,16 @@
                 if (res.success) {
                     document.getElementById('twofaStatus').textContent = '✅ ' + t('code_verified');
                     localStorage.setItem('jedar_phone_verified', 'true');
+                    // update profile phone
+                    const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
+                    profile.phone = twoFactorData.phone;
+                    localStorage.setItem('jedar_profile', JSON.stringify(profile));
+                    userProfile = profile;
                     setTimeout(() => {
                         closeTwoFactor();
                         showToast('✅ شماره شما تأیید شد!', 'success');
+                        loadProfile();
+                        fetchAds(false);
                     }, 1000);
                 } else if (res.error && res.error.includes('expired')) {
                     document.getElementById('twofaStatus').textContent = '⏰ ' + t('code_expired');
@@ -1479,7 +1539,7 @@
         }
 
         // ============================================================
-        // ADS (سایر توابع مثل fetchAds, renderAds و ... مشابه قبل)
+        //  ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -1658,6 +1718,9 @@
             });
         }
 
+        // ============================================================
+        //  TAB SWITCHING
+        // ============================================================
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
@@ -1707,6 +1770,9 @@
             }
         }
 
+        // ============================================================
+        //  RULES, SUPPORT, NEWS, ABOUT, GUIDE
+        // ============================================================
         async function loadRules() {
             const container = document.getElementById('rulesContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -1764,6 +1830,9 @@
             } catch (err) { container.innerHTML = `<div class="support-content">${t('error_loading')}</div>`; }
         }
 
+        // ============================================================
+        //  AD DETAIL MODAL
+        // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
             if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
@@ -1848,6 +1917,9 @@
             }
         }
 
+        // ============================================================
+        //  FAVORITE
+        // ============================================================
         async function toggleFavoriteAndUpdateDetail(adId) {
             await toggleFavorite(adId);
             const btn = document.querySelector('.btn-fav');
@@ -1858,78 +1930,12 @@
             }
         }
 
-        function setDetailRating(val) {
-            reviewRating = val;
-            document.getElementById('detailReviewRating').value = val;
-            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => {
-                el.className = idx < val ? 'active' : '';
-                el.textContent = idx < val ? '★' : '☆';
-            });
-        }
-
-        async function submitDetailReview() {
-            const adId = document.getElementById('detailReviewAdId').value;
-            const rating = parseInt(document.getElementById('detailReviewRating').value);
-            const comment = document.getElementById('detailReviewComment').value.trim();
-            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
-            try {
-                const data = await apiCall('/review', {
-                    method: 'POST',
-                    body: JSON.stringify({ adId: parseInt(adId), userId: guestId, rating, comment })
-                });
-                if (data.success) {
-                    showToast(t('review_success'), 'success');
-                    loadDetailReviews(adId);
-                    document.getElementById('detailReviewRating').value = 0;
-                    document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
-                    reviewRating = 0;
-                    fetchAds(false);
-                } else {
-                    showToast(data.error || t('review_error'), 'error');
-                }
-            } catch (err) { showToast(t('review_error'), 'error'); }
-        }
-
-        async function loadDetailReviews(adId) {
-            const container = document.getElementById('detailReviews');
-            try {
-                const data = await apiCall(`/reviews?adId=${adId}`);
-                if (data.success && data.reviews && data.reviews.length > 0) {
-                    container.innerHTML = '';
-                    data.reviews.forEach(r => {
-                        const div = document.createElement('div');
-                        div.className = 'review-item';
-                        div.innerHTML =
-                            `<div class="header"><span class="name">${r.user_id || 'کاربر'}</span><span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span></div><div class="comment">${r.comment || ''}</div><div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>`;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
-            }
-        }
-
-        async function loadFavorites() {
-            try {
-                const data = await apiCall(`/favorites/${guestId}`);
-                if (data.success) {
-                    favorites = data.data.map(ad => ad.id);
-                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
-                }
-            } catch (e) { console.error('loadFavorites error:', e); }
-        }
-
         async function toggleFavorite(adId) {
+            if (!requireVerifiedPhone()) return;
             try {
                 const data = await apiCall('/favorite/toggle', {
                     method: 'POST',
-                    body: JSON.stringify({ username: guestId, adId })
+                    body: JSON.stringify({ username: getUserId(), adId })
                 });
                 if (data.success) {
                     if (data.isFavorite) { favorites.push(adId);
@@ -1941,10 +1947,25 @@
             } catch (err) { showToast('خطا', 'error'); }
         }
 
+        async function loadFavorites() {
+            try {
+                const data = await apiCall(`/favorites/${getUserId()}`);
+                if (data.success) {
+                    favorites = data.data.map(ad => ad.id);
+                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
+                }
+            } catch (e) { console.error('loadFavorites error:', e); }
+        }
+
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
+            if (!requireVerifiedPhone()) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('verify_required')}</div>`;
+                return;
+            }
             try {
-                const data = await apiCall(`/favorites/${guestId}`);
+                const data = await apiCall(`/favorites/${getUserId()}`);
                 if (data.success && data.data && data.data.length > 0) {
                     container.innerHTML = '';
                     data.data.forEach(ad => {
@@ -1974,11 +1995,19 @@
             }
         }
 
+        // ============================================================
+        //  MY ADS
+        // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
+            if (!requireVerifiedPhone()) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('verify_required')}</div>`;
+                return;
+            }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall(`/myads/${guestId}`);
+                const data = await apiCall(`/myads/${getUserId()}`);
                 if (data.success && data.data && data.data.length > 0) {
                     container.innerHTML = '';
                     data.data.forEach(ad => {
@@ -2005,7 +2034,7 @@
             try {
                 const data = await apiCall('/ad/delete', {
                     method: 'POST',
-                    body: JSON.stringify({ adId, username: guestId })
+                    body: JSON.stringify({ adId, username: getUserId() })
                 });
                 if (data.success) { showToast('آگهی حذف شد', 'success');
                     fetchMyAds();
@@ -2033,6 +2062,9 @@
             document.getElementById('addAdForm').dataset.editId = adId;
         }
 
+        // ============================================================
+        //  DRAFTS
+        // ============================================================
         function loadDrafts() {
             const container = document.getElementById('draftsList');
             drafts = JSON.parse(localStorage.getItem('jedar_drafts') || '[]');
@@ -2059,7 +2091,7 @@
                 city: document.getElementById('adLocation').value.trim(),
                 country: document.getElementById('adCountry').value,
                 duration: document.getElementById('adDuration').value,
-                phone: document.getElementById('adContact').value.trim(),
+                phone: userProfile.phone || '',
                 saved_at: Date.now()
             };
             if (!draft.title && !draft.description) { showToast('حداقل عنوان یا توضیحات را وارد کنید', 'warning'); return; }
@@ -2079,7 +2111,7 @@
             document.getElementById('adLocation').value = draft.city || '';
             document.getElementById('adCountry').value = draft.country || 'ایران';
             document.getElementById('adDuration').value = draft.duration || '30';
-            document.getElementById('adContact').value = draft.phone || '';
+            document.getElementById('adContact').value = userProfile.phone || draft.phone || '';
             showToast(t('draft_loaded'), 'success');
             closeModal('addAdModal');
             openAddModal();
@@ -2093,6 +2125,9 @@
             loadDrafts();
         }
 
+        // ============================================================
+        //  WIZARD
+        // ============================================================
         function wizardNext() { if (wizardStep < 3) { wizardStep++;
                 updateWizard(); } }
 
@@ -2111,15 +2146,20 @@
             }
         }
 
+        // ============================================================
+        //  SUBMIT AD (with phone verification & readonly phone)
+        // ============================================================
         async function submitAd() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
-            if (!isProfileComplete()) { showToast(t('complete_profile_first'), 'warning'); return; }
+            if (!requireVerifiedPhone()) return; // must have verified phone
+
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
             const price = document.getElementById('adPrice').value;
             const desc = document.getElementById('adDescription').value.trim();
             const location = document.getElementById('adLocation').value.trim();
-            const contact = document.getElementById('adContact').value.trim() || userProfile.phone || '';
+            // phone is taken from profile (verified)
+            const contact = userProfile.phone || '';
             const country = document.getElementById('adCountry').value;
             const durationDays = parseInt(document.getElementById('adDuration').value) || 30;
             const saveAsDraft = document.getElementById('saveAsDraft').checked;
@@ -2128,6 +2168,11 @@
                 showToast('لطفاً تمام فیلدهای اجباری را پر کنید', 'warning');
                 return;
             }
+            if (!contact) {
+                showToast('شماره تلفن تأیید شده در پروفایل یافت نشد.', 'error');
+                return;
+            }
+
             if (saveAsDraft) {
                 const draft = { title, category, price, description: desc, city: location, country, duration: durationDays,
                     phone: contact, saved_at: Date.now() };
@@ -2190,7 +2235,7 @@
                 btn.innerHTML = '⏳ در حال ثبت...';
 
                 const payload = {
-                    username: guestId,
+                    username: getUserId(), // phone number
                     title,
                     category,
                     price: parseInt(price),
@@ -2230,6 +2275,9 @@
             }
         }
 
+        // ============================================================
+        //  IMAGE UPLOAD PREVIEW
+        // ============================================================
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             const grid = document.getElementById('adImagePreview');
@@ -2263,9 +2311,13 @@
             input.dispatchEvent(event);
         }
 
+        // ============================================================
+        //  OPEN ADD MODAL (with phone verification check)
+        // ============================================================
         function openAddModal() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
-            if (!isProfileComplete()) { showToast(t('complete_profile_first'), 'warning'); return; }
+            if (!requireVerifiedPhone()) return;
+
             document.getElementById('addAdModal').classList.add('show');
             document.getElementById('addAdForm').dataset.editId = '';
             document.getElementById('addAdForm').reset();
@@ -2275,14 +2327,86 @@
             document.getElementById('saveAsDraft').checked = false;
             wizardStep = 1;
             updateWizard();
-            const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-            document.getElementById('adContact').value = profile.phone || '';
+            // set phone readonly from profile
+            const contactField = document.getElementById('adContact');
+            if (userProfile.phone) {
+                contactField.value = userProfile.phone;
+                contactField.readOnly = true;
+            } else {
+                contactField.value = '';
+                contactField.readOnly = true;
+            }
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('show');
         }
 
+        // ============================================================
+        //  REVIEW (comment)
+        // ============================================================
+        function setDetailRating(val) {
+            reviewRating = val;
+            document.getElementById('detailReviewRating').value = val;
+            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => {
+                el.className = idx < val ? 'active' : '';
+                el.textContent = idx < val ? '★' : '☆';
+            });
+        }
+
+        async function submitDetailReview() {
+            if (!requireVerifiedPhone()) return;
+
+            const adId = document.getElementById('detailReviewAdId').value;
+            const rating = parseInt(document.getElementById('detailReviewRating').value);
+            const comment = document.getElementById('detailReviewComment').value.trim();
+            if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
+            try {
+                const data = await apiCall('/review', {
+                    method: 'POST',
+                    body: JSON.stringify({ adId: parseInt(adId), userId: getUserId(), rating, comment })
+                });
+                if (data.success) {
+                    showToast(t('review_success'), 'success');
+                    loadDetailReviews(adId);
+                    document.getElementById('detailReviewRating').value = 0;
+                    document.getElementById('detailReviewComment').value = '';
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
+                        el.textContent = '☆'; });
+                    reviewRating = 0;
+                    fetchAds(false);
+                } else {
+                    showToast(data.error || t('review_error'), 'error');
+                }
+            } catch (err) { showToast(t('review_error'), 'error'); }
+        }
+
+        async function loadDetailReviews(adId) {
+            const container = document.getElementById('detailReviews');
+            try {
+                const data = await apiCall(`/reviews?adId=${adId}`);
+                if (data.success && data.reviews && data.reviews.length > 0) {
+                    container.innerHTML = '';
+                    data.reviews.forEach(r => {
+                        const div = document.createElement('div');
+                        div.className = 'review-item';
+                        div.innerHTML =
+                            `<div class="header"><span class="name">${r.user_id || 'کاربر'}</span><span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span></div><div class="comment">${r.comment || ''}</div><div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>`;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML =
+                        `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('no_reviews')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML =
+                    `<div style="text-align:center;color:var(--text-muted);font-size:13px;">${t('error_loading')}</div>`;
+            }
+        }
+
+        // ============================================================
+        //  ADMIN
+        // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
             return true;
@@ -2292,7 +2416,7 @@
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/ads?adminId=${guestId}&status=pending`);
+            const data = await apiCall(`/admin/ads?adminId=${getUserId()}&status=pending`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('pending_ads')}</h4>`;
                 data.data.forEach(ad => {
@@ -2309,7 +2433,7 @@
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/ads?adminId=${guestId}`);
+            const data = await apiCall(`/admin/ads?adminId=${getUserId()}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('all_ads')}</h4>`;
                 data.data.forEach(ad => {
@@ -2327,7 +2451,7 @@
             if (!confirm(t('approve'))) return;
             const data = await apiCall('/admin/ad/approve', {
                 method: 'POST',
-                body: JSON.stringify({ adId, adminId: guestId })
+                body: JSON.stringify({ adId, adminId: getUserId() })
             });
             if (data.success) { showToast('✅ آگهی تایید شد', 'success');
                 adminPendingAds();
@@ -2339,7 +2463,7 @@
             if (reason === null) return;
             const data = await apiCall('/admin/ad/reject', {
                 method: 'POST',
-                body: JSON.stringify({ adId, reason, adminId: guestId })
+                body: JSON.stringify({ adId, reason, adminId: getUserId() })
             });
             if (data.success) { showToast('❌ آگهی رد شد', 'warning');
                 adminPendingAds();
@@ -2350,7 +2474,7 @@
             if (!confirm(t('confirm_delete'))) return;
             const data = await apiCall('/admin/ad/delete', {
                 method: 'POST',
-                body: JSON.stringify({ adId, adminId: guestId })
+                body: JSON.stringify({ adId, adminId: getUserId() })
             });
             if (data.success) { showToast('🗑 آگهی حذف شد', 'success');
                 adminAllAds();
@@ -2363,7 +2487,7 @@
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/users?adminId=${guestId}`);
+            const data = await apiCall(`/admin/users?adminId=${getUserId()}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('users')}</h4>`;
                 data.data.forEach(user => {
@@ -2382,7 +2506,7 @@
             if (reason === null) return;
             const data = await apiCall('/admin/block', {
                 method: 'POST',
-                body: JSON.stringify({ userId, reason, adminId: guestId })
+                body: JSON.stringify({ userId, reason, adminId: getUserId() })
             });
             if (data.success) { showToast(t('user_blocked'), 'success');
                 adminUsers(); } else { showToast(data.error || 'خطا', 'error'); }
@@ -2392,7 +2516,7 @@
             if (!confirm(t('unblock'))) return;
             const data = await apiCall('/admin/unblock', {
                 method: 'POST',
-                body: JSON.stringify({ userId, adminId: guestId })
+                body: JSON.stringify({ userId, adminId: getUserId() })
             });
             if (data.success) { showToast(t('user_unblocked'), 'success');
                 adminUsers(); } else { showToast(data.error || 'خطا', 'error'); }
@@ -2412,7 +2536,7 @@
             if (!checkAdminAccess() || !isSuperAdmin) { showToast(t('no_permission'), 'error'); return; }
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/admins?adminId=${guestId}`);
+            const data = await apiCall(`/admin/admins?adminId=${getUserId()}`);
             if (data.success && data.data && data.data.length > 0) {
                 let html = `<h4>${t('admins')}</h4>`;
                 data.data.forEach(admin => {
@@ -2433,7 +2557,7 @@
             if (!role) return;
             const data = await apiCall('/admin/add', {
                 method: 'POST',
-                body: JSON.stringify({ userId, role, adminId: guestId })
+                body: JSON.stringify({ userId, role, adminId: getUserId() })
             });
             if (data.success) { showToast(t('admin_added'), 'success');
                 adminAdmins(); } else { showToast(data.error || 'خطا', 'error'); }
@@ -2443,7 +2567,7 @@
             if (!confirm(t('remove_admin'))) return;
             const data = await apiCall('/admin/remove', {
                 method: 'POST',
-                body: JSON.stringify({ userId, adminId: guestId })
+                body: JSON.stringify({ userId, adminId: getUserId() })
             });
             if (data.success) { showToast(t('admin_removed'), 'success');
                 adminAdmins(); } else { showToast(data.error || 'خطا', 'error'); }
@@ -2469,7 +2593,7 @@
             if (target === 'individual' && !targetId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
             const data = await apiCall('/admin/announce', {
                 method: 'POST',
-                body: JSON.stringify({ title, message, target, targetId, adminId: guestId })
+                body: JSON.stringify({ title, message, target, targetId, adminId: getUserId() })
             });
             if (data.success) { showToast(t('announcement_sent'), 'success');
                 document.getElementById('announceTitle').value = '';
@@ -2480,7 +2604,7 @@
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/stats?adminId=${guestId}`);
+            const data = await apiCall(`/admin/stats?adminId=${getUserId()}`);
             if (data.success) {
                 const s = data.data;
                 container.innerHTML =
@@ -2490,6 +2614,45 @@
             }
         }
 
+        // ============================================================
+        //  TOGGLE STATUSES (service on/off)
+        // ============================================================
+        async function loadToggleStatuses() {
+            try {
+                const data = await apiCall(`/admin/toggle-status?adminId=${getUserId()}`);
+                if (data.success) { toggleStatuses = data.statuses; return true; }
+                return false;
+            } catch (e) { console.error('Error loading toggle statuses:', e); return false; }
+        }
+
+        function isServiceEnabled(key) {
+            return toggleStatuses[key] !== undefined ? toggleStatuses[key] : true;
+        }
+
+        // ============================================================
+        //  MEDIA ZOOM
+        // ============================================================
+        function openMediaZoom(url, type) {
+            const overlay = document.getElementById('imageZoomOverlay');
+            const container = document.getElementById('zoomMediaContainer');
+            if (type === 'video') {
+                container.innerHTML =
+                    `<video autoplay muted loop playsinline style="max-width:95%;max-height:95%;border-radius:8px;"><source src="${url}" type="video/mp4"></video>`;
+            } else {
+                container.innerHTML = `<img src="${url}" alt="نمایش" style="max-width:95%;max-height:95%;border-radius:8px;" />`;
+            }
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageZoom() {
+            document.getElementById('imageZoomOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
         document.documentElement.setAttribute('data-theme', currentTheme);
         document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
             '<i class="fa-solid fa-sun"></i>';
@@ -2517,10 +2680,11 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        console.log(`🚀 جـدار بازار - نسخه نهایی با 2FA`);
+        console.log(`🚀 جـدار بازار - نسخه نهایی با 2FA و تأیید شماره اجباری`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
-        console.log('✅ سیستم تأیید دو مرحله‌ای (2FA) فعال شد.');
+        console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
+        console.log('📌 شماره تلفن به عنوان شناسه کاربری استفاده می‌شود.');
     </script>
 </body>
-    </html>
+                </html>
