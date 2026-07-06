@@ -811,25 +811,51 @@
                 <input type="text" id="profileFullname" placeholder="نام و نام خانوادگی" />
             </div>
             <div class="form-group">
-                <label id="profilePhoneLabel">شماره تلفن (شناسه کاربری)</label>
+                <label id="profilePhoneLabel">📱 شماره تلفن (شناسه کاربری)</label>
                 <input type="tel" id="profilePhone" placeholder="0912..." />
-                <button onclick="requestVerificationCode()" style="margin-top:8px;padding:8px 16px;background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;width:100%;">
-                    📱 تأیید شماره
-                </button>
-                <span id="phoneVerifyStatus" style="display:block;margin-top:4px;font-size:12px;color:var(--text-secondary);"></span>
             </div>
             <div class="form-group">
-                <label id="profileEmailLabel">ایمیل</label>
+                <label id="profileEmailLabel">📧 ایمیل</label>
                 <input type="email" id="profileEmail" placeholder="ایمیل" />
             </div>
             <div class="form-group">
                 <label id="profileCityLabel">شهر</label>
                 <input type="text" id="profileCity" placeholder="شهر محل سکونت" />
             </div>
-            <div class="profile-actions">
+            
+            <!-- ===== دکمه‌های تأیید ===== -->
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
+                <button onclick="requestCodeViaTelegram()" style="padding:12px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">
+                    ✈️ دریافت کد از تلگرام
+                </button>
+                <button onclick="requestCodeViaEmail()" style="padding:12px;background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">
+                    📧 دریافت کد از ایمیل
+                </button>
+            </div>
+            
+            <div id="verifyStatus" style="margin-top:12px;padding:10px;border-radius:8px;text-align:center;background:#fef3c7;color:#f39c12;font-size:13px;font-weight:600;">
+                ⚠️ شماره خود را تأیید کنید
+            </div>
+            
+            <!-- ===== بخش وارد کردن کد ===== -->
+            <div id="codeSection" style="display:none;margin-top:12px;padding:16px;background:#f8f9fa;border-radius:10px;border:1px solid #e8ecf1;">
+                <div class="form-group">
+                    <label>🔑 کد ۶ رقمی را وارد کنید</label>
+                    <input type="text" id="codeInput" maxlength="6" placeholder="مثال: ۱۲۳۴۵۶" style="text-align:center;letter-spacing:4px;font-size:22px;font-weight:700;" />
+                </div>
+                <button onclick="verifyCode()" style="width:100%;padding:12px;background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">
+                    ✅ تأیید کد
+                </button>
+                <button onclick="closeCodeSection()" style="width:100%;margin-top:8px;padding:10px;background:#f0f2f5;border:2px solid #e8ecf1;border-radius:10px;font-weight:600;color:#1a1a2e;cursor:pointer;">
+                    ❌ انصراف
+                </button>
+            </div>
+            
+            <div class="profile-actions" style="margin-top:12px;">
                 <button class="btn-save" id="profileSaveBtn" onclick="saveProfile()">💾 ذخیره</button>
             </div>
         </div>
+        
         <h3 style="margin:14px 0 8px;font-size:16px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3>
         <div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
         <h3 style="margin:14px 0 8px;font-size:16px;font-weight:700;" id="draftsTitle">📝 پیش‌نویس‌ها</h3>
@@ -915,7 +941,7 @@
 
     <script>
         // ============================================================
-        //  CONSTANTS & GLOBALS
+        // CONSTANTS
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
@@ -943,9 +969,10 @@
         let reviewRating = 0;
         let toggleStatuses = {};
         let drafts = JSON.parse(localStorage.getItem('jedar_drafts') || '[]');
+        let pendingMethod = '';
 
         // ============================================================
-        //  TRANSLATIONS
+        // TRANSLATIONS
         // ============================================================
         const translations = {
             fa: {
@@ -991,14 +1018,7 @@
                 submit_review: 'ثبت نظر', rules_title: 'قوانین', support_title: 'پشتیبانی',
                 drafts_title: 'پیش‌نویس‌ها',
                 twofa_title: 'ورود دو مرحله‌ای',
-                enter_code: 'کد ۶ رقمی ارسال شده به شماره همراه را وارد کنید',
-                send_code: 'ارسال کد',
-                resend_code: 'ارسال مجدد کد',
-                code_sent: 'کد به شماره شما ارسال شد',
-                code_verified: '✅ تأیید شد. خوش آمدید!',
-                code_invalid: '❌ کد نامعتبر است. دوباره تلاش کنید.',
-                code_expired: '⏰ کد منقضی شد. دوباره درخواست کنید.',
-                enter_mobile: 'شماره موبایل خود را وارد کنید',
+                enter_code: 'کد ۶ رقمی ارسال شده را وارد کنید',
                 verify_phone: 'تأیید شماره',
                 cancel: 'لغو',
                 phone_verified_label: '✅ تایید شده',
@@ -1009,164 +1029,14 @@
                 admin_added: 'ادمین اضافه شد',
                 admin_removed: 'ادمین حذف شد',
                 announcement_sent: 'اطلاعیه ارسال شد',
-            },
-            ar: {
-                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
-                rules: 'القوانين', support: 'الدعم', admin: 'الإدارة', news: 'الأخبار', about: 'من نحن', guide: 'الدليل',
-                currency_toman: 'تومان', search_placeholder: 'ابحث في الإعلانات...',
-                pilgrimage: 'زيارة', tourism: 'سياحة', medical: 'طبي', beauty: 'تجميل',
-                services: 'خدمات', jobs: 'توظيف', real_estate: 'عقارات', vehicles: 'سيارات',
-                add_ad: 'إعلان جديد', title: 'عنوان الإعلان', category: 'الفئة', price: 'السعر (تومان)',
-                next: 'التالي', prev: 'السابق', description: 'الوصف', location: 'الموقع / المدينة',
-                country: 'الدولة', images: 'الصور/الفيديو (حد أقصى ٤)', upload_click: 'اضغط للتحميل (صورة أو فيديو)',
-                phone: 'رقم الهاتف', submit: 'نشر الإعلان', save_draft: 'حفظ كمسودة',
-                no_ads: 'لا توجد إعلانات', no_favorites: 'لا توجد مفضلات',
-                no_rules: 'لم يتم تسجيل أي قوانين.', no_support: 'لم يتم تسجيل معلومات الدعم.',
-                no_data: 'لا توجد بيانات', no_permission: '⛔ غير مصرح لك.',
-                ad_not_found: 'الإعلان غير موجود', error_loading: 'خطأ في التحميل',
-                no_reviews: 'لا توجد تقييمات بعد', loading_reviews: 'جاري تحميل التقييمات...',
-                review_success: 'تم إرسال التقييم', review_error: 'فشل إرسال التقييم',
-                comment: 'اكتب تعليقك...', complete_profile_first: '⚠️ الرجاء إدخال رقم الهاتف',
-                call: 'اتصال', whatsapp: 'واتساب', share: 'مشاركة',
-                add_fav: 'أضف للمفضلة', remove_fav: 'إزالة من المفضلة',
-                favorite_added: 'تمت الإضافة إلى المفضلة', favorite_removed: 'تمت الإزالة من المفضلة',
-                my_ads: 'إعلاناتي', edit: 'تعديل', delete: 'حذف',
-                pending: 'قيد المراجعة', approved: 'تمت الموافقة', rejected: 'مرفوض',
-                confirm_delete: 'هل أنت متأكد من الحذف؟',
-                pending_ads: 'قيد المراجعة', all_ads: 'جميع الإعلانات', users: 'المستخدمين',
-                admins: 'المشرفين', announcement: 'إشعار', stats: 'الإحصائيات',
-                approve: 'موافقة', reject: 'رفض', block: 'حظر', unblock: 'إلغاء الحظر',
-                add_admin: 'إضافة مشرف', remove_admin: 'حذف مشرف', send: 'إرسال',
-                banner_open: 'فتح الرابط', banner_skip: 'تخطي',
-                profile_title: 'الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل',
-                phone_label: 'رقم الهاتف', email_label: 'البريد الإلكتروني', city_label: 'المدينة',
-                save: 'حفظ', profile_saved: 'تم حفظ الملف الشخصي',
-                today: 'اليوم', online: 'نشط',
-                service_disabled: '⛔ هذه الخدمة غير متاحة.',
-                ads_disabled: '⛔ إضافة الإعلانات غير متاحة.',
-                support_disabled: '⛔ الدعم غير متاح.',
-                banners_disabled: '⛔ اللافتات غير متاحة.',
-                splash_disabled: '⛔ الشاشة الافتتاحية غير متاحة.',
-                duration: 'مدة العرض',
-                draft_saved: 'تم حفظ المسودة', draft_loaded: 'تم تحميل المسودة',
-                draft_deleted: 'تم حذف المسودة', no_drafts: 'لا توجد مسودات',
-                submit_review: 'إرسال التقييم', rules_title: 'القوانين', support_title: 'الدعم',
-                drafts_title: 'المسودات',
-                twofa_title: 'تسجيل الدخول بخطوتين',
-                enter_code: 'أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك',
-                send_code: 'إرسال الرمز',
-                resend_code: 'إعادة إرسال الرمز',
-                code_sent: 'تم إرسال الرمز إلى رقمك',
-                code_verified: '✅ تم التحقق. أهلاً بك!',
-                code_invalid: '❌ الرمز غير صحيح. حاول مرة أخرى.',
-                code_expired: '⏰ انتهت صلاحية الرمز. اطلب رمزاً جديداً.',
-                enter_mobile: 'أدخل رقم هاتفك',
-                verify_phone: 'التحقق من الرقم',
-                cancel: 'إلغاء',
-                phone_verified_label: '✅ مؤكد',
-                phone_not_verified_label: '⚠️ غير مؤكد',
-                verify_required: '⚠️ لتسجيل إعلان أو تعليق، يرجى تأكيد رقم هاتفك أولاً.',
-                user_blocked: 'تم حظر المستخدم',
-                user_unblocked: 'تم إلغاء حظر المستخدم',
-                admin_added: 'تم إضافة المشرف',
-                admin_removed: 'تم حذف المشرف',
-                announcement_sent: 'تم إرسال الإشعار',
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || key; }
 
         // ============================================================
-        //  UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS
         // ============================================================
-        function showLanguageOverlay() { document.getElementById('langOverlay').classList.remove('hidden'); }
-
-        function selectLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('jedar_lang', lang);
-            localStorage.setItem('jedar_lang_overlay', 'true');
-            document.getElementById('langOverlay').classList.add('hidden');
-            updateAllTexts();
-            showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
-            fetchAds(true);
-            loadProfile();
-            loadInlineBanners();
-        }
-
-        function updateAllTexts() {
-            document.getElementById('navHomeLabel').textContent = t('home');
-            document.getElementById('navAddLabel').textContent = t('add');
-            document.getElementById('navFavLabel').textContent = t('favorites');
-            document.getElementById('navProfileLabel').textContent = t('profile');
-            document.getElementById('navSupportLabel').textContent = t('support');
-
-            document.getElementById('searchInput').placeholder = t('search_placeholder');
-
-            document.getElementById('addAdTitle').textContent = '📌 ' + t('add_ad');
-            document.getElementById('adTitleLabel').innerHTML = t('title') + ' <span class="required">*</span>';
-            document.getElementById('adCategoryLabel').innerHTML = t('category') + ' <span class="required">*</span>';
-            document.getElementById('adPriceLabel').innerHTML = t('price') + ' <span class="required">*</span>';
-            document.getElementById('wizardNextBtn1').textContent = t('next');
-            document.getElementById('adDescLabel').innerHTML = t('description') + ' <span class="required">*</span>';
-            document.getElementById('adLocationLabel').innerHTML = t('location') + ' <span class="required">*</span>';
-            document.getElementById('adCountryLabel').textContent = t('country');
-            document.getElementById('adDurationLabel').textContent = '⏳ ' + t('duration');
-            document.getElementById('wizardPrevBtn2').textContent = t('prev');
-            document.getElementById('wizardNextBtn2').textContent = t('next');
-            document.getElementById('adImagesLabel').textContent = t('images');
-            document.getElementById('uploadClickLabel').textContent = t('upload_click');
-            document.getElementById('adPhoneLabel').textContent = t('phone') + ' (' + t('verify_phone') + ')';
-            document.getElementById('saveDraftLabel').textContent = t('save_draft');
-            document.getElementById('wizardPrevBtn3').textContent = t('prev');
-            document.getElementById('submitAdBtn').textContent = t('submit');
-
-            document.getElementById('profileTitle').textContent = '👤 ' + t('profile_title');
-            document.getElementById('profileUsernameLabel').textContent = t('username');
-            document.getElementById('profileFullnameLabel').textContent = t('fullname');
-            document.getElementById('profilePhoneLabel').textContent = t('phone_label') + ' (' + t('verify_phone') + ')';
-            document.getElementById('profileEmailLabel').textContent = t('email_label');
-            document.getElementById('profileCityLabel').textContent = t('city_label');
-            document.getElementById('profileSaveBtn').innerHTML = '💾 ' + t('save');
-            document.getElementById('myAdsTitle').textContent = '📋 ' + t('my_ads');
-            document.getElementById('draftsTitle').textContent = '📝 ' + t('drafts_title');
-
-            document.getElementById('favTitle').textContent = '❤️ ' + t('favorites');
-
-            document.getElementById('rulesTitle').textContent = '📜 ' + t('rules_title');
-            document.getElementById('supportTitle').textContent = '🆘 ' + t('support_title');
-            document.getElementById('aboutTitle').textContent = '🌟 ' + t('about');
-            document.getElementById('guideTitle').textContent = '📖 ' + t('guide');
-            document.getElementById('newsTitle').textContent = '📰 ' + t('news');
-
-            document.getElementById('adminTitle').textContent = '🔧 ' + t('admin');
-            document.getElementById('adminPendingLabel').innerHTML = '<i class="fa-solid fa-clock"></i> ' + t('pending_ads');
-            document.getElementById('adminAllAdsLabel').innerHTML = '<i class="fa-solid fa-list"></i> ' + t('all_ads');
-            document.getElementById('adminUsersLabel').innerHTML = '<i class="fa-solid fa-users"></i> ' + t('users');
-            document.getElementById('adminAdminsLabel').innerHTML = '<i class="fa-solid fa-user-shield"></i> ' + t('admins');
-            document.getElementById('adminAnnounceLabel').innerHTML = '<i class="fa-solid fa-bullhorn"></i> ' + t('announcement');
-            document.getElementById('adminStatsLabel').innerHTML = '<i class="fa-solid fa-chart-bar"></i> ' + t('stats');
-
-            document.getElementById('bannerOpenLabel').textContent = t('banner_open');
-            document.getElementById('bannerSkipLabel').textContent = t('banner_skip');
-
-            renderCategories();
-
-            document.querySelectorAll('#filterCategory option').forEach(opt => {
-                if (opt.value === 'all') opt.textContent = 'همه دسته‌ها';
-                else if (opt.value === 'pilgrimage') opt.textContent = t('pilgrimage');
-                else if (opt.value === 'tourism') opt.textContent = t('tourism');
-                else if (opt.value === 'medical') opt.textContent = t('medical');
-                else if (opt.value === 'beauty') opt.textContent = t('beauty');
-                else if (opt.value === 'services') opt.textContent = t('services');
-                else if (opt.value === 'jobs') opt.textContent = t('jobs');
-                else if (opt.value === 'real_estate') opt.textContent = t('real_estate');
-                else if (opt.value === 'vehicles') opt.textContent = t('vehicles');
-            });
-
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = 'rtl';
-        }
-
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1220,9 +1090,6 @@
             }
         }
 
-        // ============================================================
-        //  USER IDENTIFICATION & VERIFICATION
-        // ============================================================
         function isPhoneVerified() {
             return localStorage.getItem('jedar_phone_verified') === 'true';
         }
@@ -1243,7 +1110,7 @@
         }
 
         // ============================================================
-        //  THEME
+        // THEME
         // ============================================================
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -1254,114 +1121,192 @@
         }
 
         // ============================================================
-        //  FILTER MODAL
+        // ===== دریافت کد از تلگرام =====
         // ============================================================
-        function openFilter() {
-            document.getElementById('filterModal').classList.add('show');
-            document.getElementById('filterBackdrop').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeFilter() {
-            document.getElementById('filterModal').classList.remove('show');
-            document.getElementById('filterBackdrop').classList.remove('show');
-            document.body.style.overflow = '';
-        }
-
-        // ============================================================
-        //  SUPPORT DROPDOWN
-        // ============================================================
-        function toggleSupportMenu(event) {
-            event.stopPropagation();
-            const menu = document.getElementById('supportDropdownMenu');
-            menu.classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('supportDropdownMenu');
-            if (!e.target.closest('.support-dropdown')) {
-                menu.classList.remove('show');
-            }
-        });
-
-        // ============================================================
-        //  BANNER / SPLASH
-        // ============================================================
-        async function loadSplashBanner() {
-            if (bannerShown) return;
-            if (!isServiceEnabled('splash')) return;
-            try {
-                const data = await apiCall('/banner/splash');
-                if (data.success && data.splash && data.splash.is_active) {
-                    const banner = data.splash;
-                    const isVideo = banner.media_type === 'video';
-                    const mediaUrl = normalizeImageUrl(banner.image_id) || '';
-                    const container = document.getElementById('bannerMediaContainer');
-                    container.innerHTML = isVideo ?
-                        `<video class="banner-image" autoplay muted loop playsinline><source src="${mediaUrl}" type="video/mp4"></video>` :
-                        `<img class="banner-image" src="${mediaUrl}" alt="تبلیغ" />`;
-                    document.getElementById('bannerTitle').textContent = banner.title || 'تبلیغ';
-                    document.getElementById('bannerDesc').textContent = banner.description || '';
-                    document.getElementById('bannerLink').href = banner.link || '#';
-                    bannerTimer = banner.duration || 5;
-                    document.getElementById('bannerTimer').textContent = bannerTimer;
-                    document.getElementById('bannerOverlay').classList.add('show');
-                    bannerShown = true;
-                    if (bannerTimerInterval) clearInterval(bannerTimerInterval);
-                    bannerTimerInterval = setInterval(() => {
-                        bannerTimer--;
-                        document.getElementById('bannerTimer').textContent = bannerTimer;
-                        if (bannerTimer <= 0) { clearInterval(bannerTimerInterval);
-                            bannerTimerInterval = null;
-                            setTimeout(() => closeBanner(), 1000); }
-                    }, 1000);
-                }
-            } catch (err) { console.error('Error loading splash banner:', err); }
-        }
-
-        function closeBanner() {
-            document.getElementById('bannerOverlay').classList.remove('show');
-            if (bannerTimerInterval) { clearInterval(bannerTimerInterval);
-                bannerTimerInterval = null; }
-        }
-
-        async function loadInlineBanners() {
-            const container = document.getElementById('bannerAdsContainer');
-            if (!isServiceEnabled('banners')) {
-                container.innerHTML = `<div class="service-disabled"><i class="fa-solid fa-ban"></i> ${t('banners_disabled')}</div>`;
+        async function requestCodeViaTelegram() {
+            const phone = document.getElementById('profilePhone').value.trim();
+            if (!phone || phone.length < 10) {
+                showToast('⚠️ شماره موبایل معتبر وارد کنید', 'error');
                 return;
             }
+
+            pendingMethod = 'telegram';
+            const status = document.getElementById('verifyStatus');
+            status.className = 'status-text info';
+            status.textContent = '⏳ ارسال کد از طریق تلگرام...';
+            status.style.background = '#e3f2fd';
+            status.style.color = '#1a73e8';
+
             try {
-                const data = await apiCall('/banners');
-                if (data.success && data.banners && data.banners.length > 0) {
-                    container.innerHTML = '';
-                    data.banners.forEach(banner => {
-                        const isVideo = banner.media_type === 'video';
-                        const mediaUrl = normalizeImageUrl(banner.image_id) || '';
-                        const div = document.createElement('div');
-                        div.className = 'banner-ad-container';
-                        div.innerHTML = `
-                            <div class="banner-ad-inner">
-                                ${isVideo ? `<video class="banner-ad-video" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-ad-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}
-                                <div class="banner-ad-info"><div class="banner-ad-title">${banner.title || 'تبلیغ'}</div><div class="banner-ad-desc">${banner.description || ''}</div></div>
-                                <a href="${banner.link || '#'}" target="_blank" class="banner-ad-link"><i class="fa-solid fa-arrow-left"></i> ${t('banner_open')}</a>
-                            </div>
-                        `;
-                        container.appendChild(div);
-                        if (isVideo) {
-                            const video = div.querySelector('video');
-                            if (video) {
-                                video.addEventListener('mouseenter', () => video.play());
-                                video.addEventListener('mouseleave', () => video.pause());
-                            }
-                        }
-                    });
-                } else { container.innerHTML = ''; }
-            } catch (err) { console.error('Error loading inline banners:', err); }
+                const res = await apiCall('/auth/send-2fa-telegram', {
+                    method: 'POST',
+                    body: JSON.stringify({ mobile: phone })
+                });
+
+                if (res.success) {
+                    status.className = 'status-text success';
+                    status.textContent = '✅ کد از طریق ربات تلگرام ارسال شد';
+                    status.style.background = '#e8f5e9';
+                    status.style.color = '#27ae60';
+                    document.getElementById('codeSection').style.display = 'block';
+                    document.getElementById('codeInput').focus();
+                    showToast('✈️ کد ۶ رقمی از طریق تلگرام ارسال شد', 'success');
+                } else if (res.action === 'start_bot') {
+                    status.className = 'status-text warning';
+                    status.textContent = '⚠️ ' + res.error;
+                    status.style.background = '#fef3c7';
+                    status.style.color = '#f39c12';
+                    showToast('⚠️ ' + res.error, 'warning');
+                    
+                    if (confirm('⚠️ لطفاً ابتدا ربات را استارت کنید و شماره خود را به ربات بفرستید.\n\nربات: @AlsouqAlmaftuhiran_bot\n\nآیا می‌خواهید ربات را باز کنید؟')) {
+                        window.open('https://t.me/AlsouqAlmaftuhiran_bot', '_blank');
+                    }
+                } else {
+                    status.className = 'status-text error';
+                    status.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
+                    status.style.background = '#fde8e8';
+                    status.style.color = '#e74c3c';
+                    showToast('❌ ' + (res.error || 'خطا در ارسال کد'), 'error');
+                }
+            } catch (e) {
+                status.className = 'status-text error';
+                status.textContent = '❌ خطا در ارتباط با سرور';
+                status.style.background = '#fde8e8';
+                status.style.color = '#e74c3c';
+                showToast('❌ خطا در ارتباط با سرور', 'error');
+            }
         }
 
         // ============================================================
-        //  PROFILE
+        // ===== دریافت کد از ایمیل =====
+        // ============================================================
+        async function requestCodeViaEmail() {
+            const email = document.getElementById('profileEmail').value.trim();
+            if (!email || !email.includes('@')) {
+                showToast('⚠️ ایمیل معتبر وارد کنید', 'error');
+                return;
+            }
+
+            const phone = document.getElementById('profilePhone').value.trim();
+            if (!phone || phone.length < 10) {
+                showToast('⚠️ شماره تلفن را وارد کنید', 'error');
+                return;
+            }
+
+            pendingMethod = 'email';
+            const status = document.getElementById('verifyStatus');
+            status.className = 'status-text info';
+            status.textContent = '⏳ ارسال کد از طریق ایمیل...';
+            status.style.background = '#e3f2fd';
+            status.style.color = '#1a73e8';
+
+            try {
+                const res = await apiCall('/auth/send-2fa-email', {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+
+                if (res.success) {
+                    status.className = 'status-text success';
+                    status.textContent = `✅ کد به ایمیل ${email} ارسال شد`;
+                    status.style.background = '#e8f5e9';
+                    status.style.color = '#27ae60';
+                    document.getElementById('codeSection').style.display = 'block';
+                    document.getElementById('codeInput').focus();
+                    showToast(`📧 کد ۶ رقمی به ${email} ارسال شد`, 'success');
+                } else {
+                    status.className = 'status-text error';
+                    status.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
+                    status.style.background = '#fde8e8';
+                    status.style.color = '#e74c3c';
+                    showToast('❌ ' + (res.error || 'خطا در ارسال کد'), 'error');
+                }
+            } catch (e) {
+                status.className = 'status-text error';
+                status.textContent = '❌ خطا در ارتباط با سرور';
+                status.style.background = '#fde8e8';
+                status.style.color = '#e74c3c';
+                showToast('❌ خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // ============================================================
+        // ===== تأیید کد =====
+        // ============================================================
+        async function verifyCode() {
+            const phone = document.getElementById('profilePhone').value.trim();
+            const code = document.getElementById('codeInput').value.trim();
+
+            if (!code || code.length !== 6) {
+                showToast('⚠️ کد ۶ رقمی را وارد کنید', 'warning');
+                return;
+            }
+
+            const status = document.getElementById('verifyStatus');
+            status.className = 'status-text info';
+            status.textContent = '⏳ در حال تأیید کد...';
+            status.style.background = '#e3f2fd';
+            status.style.color = '#1a73e8';
+
+            let endpoint = '/auth/verify-2fa-telegram';
+            let payload = { mobile: phone, code };
+
+            if (pendingMethod === 'email') {
+                const email = document.getElementById('profileEmail').value.trim();
+                if (!email || !email.includes('@')) {
+                    showToast('⚠️ ایمیل معتبر وارد کنید', 'error');
+                    return;
+                }
+                endpoint = '/auth/verify-2fa-email';
+                payload = { email, code };
+            }
+
+            try {
+                const res = await apiCall(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.success) {
+                    status.className = 'status-text success';
+                    status.textContent = '✅ شماره شما با موفقیت تأیید شد!';
+                    status.style.background = '#e8f5e9';
+                    status.style.color = '#27ae60';
+                    document.getElementById('codeSection').style.display = 'none';
+                    document.getElementById('codeInput').value = '';
+                    
+                    isVerified = true;
+                    verifiedPhone = phone;
+                    localStorage.setItem('jedar_phone_verified', 'true');
+                    localStorage.setItem('jedar_verified_phone', phone);
+                    
+                    showToast('✅ شماره شما تأیید شد!', 'success');
+                    loadProfile();
+                    fetchAds(false);
+                } else {
+                    status.className = 'status-text error';
+                    status.textContent = '❌ ' + (res.error || 'کد نامعتبر است');
+                    status.style.background = '#fde8e8';
+                    status.style.color = '#e74c3c';
+                    showToast('❌ ' + (res.error || 'کد نامعتبر است'), 'error');
+                }
+            } catch (e) {
+                status.className = 'status-text error';
+                status.textContent = '❌ خطا در تأیید کد';
+                status.style.background = '#fde8e8';
+                status.style.color = '#e74c3c';
+                showToast('❌ خطا در تأیید کد', 'error');
+            }
+        }
+
+        function closeCodeSection() {
+            document.getElementById('codeSection').style.display = 'none';
+            document.getElementById('codeInput').value = '';
+            pendingMethod = '';
+        }
+
+        // ============================================================
+        // PROFILE
         // ============================================================
         function loadProfile() {
             const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
@@ -1371,23 +1316,27 @@
             document.getElementById('profilePhone').value = profile.phone || '';
             document.getElementById('profileEmail').value = profile.email || '';
             document.getElementById('profileCity').value = profile.city || '';
-            // fill contact in add form
+            
             const contactField = document.getElementById('adContact');
             if (isPhoneVerified() && profile.phone) {
                 contactField.value = profile.phone;
                 contactField.readOnly = true;
             } else {
                 contactField.value = '';
-                contactField.readOnly = true; // always readonly
+                contactField.readOnly = true;
             }
-            // update verify status
-            const statusEl = document.getElementById('phoneVerifyStatus');
+            
+            const statusEl = document.getElementById('verifyStatus');
             if (isPhoneVerified()) {
+                statusEl.className = 'status-text success';
                 statusEl.textContent = '✅ ' + t('phone_verified_label');
-                statusEl.style.color = 'var(--green)';
+                statusEl.style.background = '#e8f5e9';
+                statusEl.style.color = '#27ae60';
             } else {
+                statusEl.className = 'status-text warning';
                 statusEl.textContent = '⚠️ ' + t('phone_not_verified_label') + ' — ' + t('verify_required');
-                statusEl.style.color = 'var(--gold)';
+                statusEl.style.background = '#fef3c7';
+                statusEl.style.color = '#f39c12';
             }
             checkAdminStatus();
         }
@@ -1420,221 +1369,7 @@
         }
 
         // ============================================================
-        //  2FA - فقط تلگرام و ایمیل (بدون پیامک)
-        // ============================================================
-        let twoFactorData = {};
-
-        function showTwoFactorLogin(phone) {
-            const overlay = document.createElement('div');
-            overlay.id = 'twofaOverlay';
-            overlay.style.cssText = `
-                position: fixed; top:0; left:0; right:0; bottom:0; 
-                background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); 
-                z-index: 999999; display: flex; align-items: center; justify-content: center;
-                padding: 20px;
-            `;
-            overlay.innerHTML = `
-                <div style="background: var(--bg-card); border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 40px 30px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid var(--border-color);">
-                    <h2 style="text-align:center;font-size:22px;font-weight:800;margin-bottom:8px;">${t('twofa_title')}</h2>
-                    <p style="text-align:center;color:var(--text-secondary);font-size:14px;margin-bottom:20px;">${t('enter_code')}</p>
-                    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;">
-                        <input type="text" id="twofaInput" maxlength="6" style="width:100%;padding:12px 16px;border:2px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text-primary);font-size:20px;text-align:center;letter-spacing:8px;font-weight:700;" placeholder="••••••" />
-                    </div>
-                    <div style="display:flex;gap:10px;">
-                        <button onclick="verifyTwoFactor()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border-radius:var(--radius-sm);font-weight:700;border:none;cursor:pointer;transition:all 0.3s;">${t('verify_phone')}</button>
-                        <button onclick="closeTwoFactor()" style="padding:12px 20px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:var(--radius-sm);font-weight:600;color:var(--text-primary);cursor:pointer;">${t('cancel')}</button>
-                    </div>
-                    <button onclick="resendTwoFactorCode()" style="display:block;width:100%;margin-top:12px;background:none;border:none;color:var(--ruby);font-weight:600;font-size:13px;cursor:pointer;">${t('resend_code')}</button>
-                    <p id="twofaStatus" style="text-align:center;margin-top:12px;font-size:13px;color:var(--text-secondary);"></p>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-            document.getElementById('twofaInput').focus();
-            twoFactorData.phone = phone;
-        }
-
-        async function verifyTwoFactor() {
-            const code = document.getElementById('twofaInput').value.trim();
-            if (!code || code.length !== 6) {
-                document.getElementById('twofaStatus').textContent = '❌ کد ۶ رقمی را وارد کنید';
-                return;
-            }
-            try {
-                // بررسی روش ارسال (تلگرام یا ایمیل)
-                const method = twoFactorData.method || 'telegram';
-                const endpoint = method === 'email' ? '/auth/verify-2fa-email' : '/auth/verify-2fa-telegram';
-                const payload = method === 'email' 
-                    ? { email: twoFactorData.email, code }
-                    : { mobile: twoFactorData.phone, code };
-                
-                const res = await apiCall(endpoint, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                if (res.success) {
-                    document.getElementById('twofaStatus').textContent = '✅ ' + t('code_verified');
-                    localStorage.setItem('jedar_phone_verified', 'true');
-                    const profile = JSON.parse(localStorage.getItem('jedar_profile') || '{}');
-                    profile.phone = twoFactorData.phone;
-                    localStorage.setItem('jedar_profile', JSON.stringify(profile));
-                    userProfile = profile;
-                    setTimeout(() => {
-                        closeTwoFactor();
-                        showToast('✅ شماره شما تأیید شد!', 'success');
-                        loadProfile();
-                        fetchAds(false);
-                    }, 1000);
-                } else if (res.error && res.error.includes('expired')) {
-                    document.getElementById('twofaStatus').textContent = '⏰ ' + t('code_expired');
-                } else {
-                    document.getElementById('twofaStatus').textContent = '❌ ' + (res.error || t('code_invalid'));
-                }
-            } catch (e) {
-                document.getElementById('twofaStatus').textContent = '❌ ' + t('error_loading');
-            }
-        }
-
-        function closeTwoFactor() {
-            const el = document.getElementById('twofaOverlay');
-            if (el) el.remove();
-        }
-
-        async function resendTwoFactorCode() {
-            try {
-                const method = twoFactorData.method || 'telegram';
-                const endpoint = method === 'email' ? '/auth/send-2fa-email' : '/auth/send-2fa-telegram';
-                const payload = method === 'email' 
-                    ? { email: twoFactorData.email }
-                    : { mobile: twoFactorData.phone };
-                
-                const res = await apiCall(endpoint, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                if (res.success) {
-                    document.getElementById('twofaStatus').textContent = '✅ ' + t('code_sent');
-                } else {
-                    document.getElementById('twofaStatus').textContent = '❌ ' + (res.error || t('error_loading'));
-                }
-            } catch (e) {
-                document.getElementById('twofaStatus').textContent = '❌ ' + t('error_loading');
-            }
-        }
-
-        // ===== درخواست کد از تلگرام =====
-        async function requestCodeViaTelegram() {
-            const phone = document.getElementById('profilePhone').value.trim();
-            if (!phone || phone.length < 10) {
-                showToast('⚠️ شماره تلفن را به درستی وارد کنید', 'error');
-                return;
-            }
-            
-            twoFactorData.phone = phone;
-            twoFactorData.method = 'telegram';
-            
-            const statusEl = document.getElementById('phoneVerifyStatus');
-            statusEl.textContent = '⏳ ارسال کد از طریق تلگرام...';
-            statusEl.style.color = 'var(--gold)';
-
-            try {
-                const res = await apiCall('/auth/send-2fa-telegram', {
-                    method: 'POST',
-                    body: JSON.stringify({ mobile: phone })
-                });
-                if (res.success) {
-                    statusEl.textContent = '✅ کد از طریق ربات تلگرام ارسال شد';
-                    statusEl.style.color = 'var(--green)';
-                    showTwoFactorLogin(phone);
-                } else {
-                    statusEl.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
-                    statusEl.style.color = 'var(--danger)';
-                }
-            } catch (e) {
-                statusEl.textContent = '❌ خطا در ارتباط با سرور';
-                statusEl.style.color = 'var(--danger)';
-            }
-        }
-
-        // ===== درخواست کد از ایمیل =====
-        async function requestCodeViaEmail() {
-            const email = document.getElementById('profileEmail').value.trim();
-            if (!email || !email.includes('@')) {
-                showToast('⚠️ ایمیل معتبر را وارد کنید', 'error');
-                return;
-            }
-            
-            const phone = document.getElementById('profilePhone').value.trim();
-            if (!phone || phone.length < 10) {
-                showToast('⚠️ شماره تلفن را وارد کنید', 'error');
-                return;
-            }
-            
-            twoFactorData.phone = phone;
-            twoFactorData.email = email;
-            twoFactorData.method = 'email';
-            
-            const statusEl = document.getElementById('phoneVerifyStatus');
-            statusEl.textContent = '⏳ ارسال کد از طریق ایمیل...';
-            statusEl.style.color = 'var(--gold)';
-
-            try {
-                const res = await apiCall('/auth/send-2fa-email', {
-                    method: 'POST',
-                    body: JSON.stringify({ email })
-                });
-                if (res.success) {
-                    statusEl.textContent = `✅ کد به ایمیل ${email} ارسال شد`;
-                    statusEl.style.color = 'var(--green)';
-                    showTwoFactorLogin(phone);
-                } else {
-                    statusEl.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
-                    statusEl.style.color = 'var(--danger)';
-                }
-            } catch (e) {
-                statusEl.textContent = '❌ خطا در ارتباط با سرور';
-                statusEl.style.color = 'var(--danger)';
-            }
-        }
-
-        // ===== دکمه تأیید شماره (برای انتخاب روش) =====
-        function requestVerificationCode() {
-            const phone = document.getElementById('profilePhone').value.trim();
-            if (!phone || phone.length < 10) {
-                showToast('⚠️ شماره تلفن را به درستی وارد کنید', 'error');
-                return;
-            }
-            
-            // نمایش انتخاب روش
-            const overlay = document.createElement('div');
-            overlay.id = 'methodOverlay';
-            overlay.style.cssText = `
-                position: fixed; top:0; left:0; right:0; bottom:0; 
-                background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); 
-                z-index: 999999; display: flex; align-items: center; justify-content: center;
-                padding: 20px;
-            `;
-            overlay.innerHTML = `
-                <div style="background: var(--bg-card); border-radius: var(--radius-lg); max-width: 400px; width: 100%; padding: 30px 24px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid var(--border-color); text-align: center;">
-                    <h3 style="margin-bottom:16px;font-size:18px;">📱 انتخاب روش دریافت کد</h3>
-                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">شماره: <strong>${phone}</strong></p>
-                    <div style="display:flex;flex-direction:column;gap:10px;">
-                        <button onclick="document.getElementById('methodOverlay').remove();requestCodeViaTelegram();" style="padding:14px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">
-                            ✈️ تلگرام
-                        </button>
-                        <button onclick="document.getElementById('methodOverlay').remove();requestCodeViaEmail();" style="padding:14px;background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;">
-                            📧 ایمیل
-                        </button>
-                        <button onclick="document.getElementById('methodOverlay').remove();" style="padding:12px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:10px;font-weight:600;color:var(--text-primary);cursor:pointer;">
-                            ❌ انصراف
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-        }
-
-        // ============================================================
-        //  ADS
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
@@ -1814,7 +1549,7 @@
         }
 
         // ============================================================
-        //  TAB SWITCHING
+        // TAB SWITCHING
         // ============================================================
         function switchTab(tab) {
             currentTab = tab;
@@ -1866,7 +1601,7 @@
         }
 
         // ============================================================
-        //  RULES, SUPPORT, NEWS, ABOUT, GUIDE
+        // RULES, SUPPORT
         // ============================================================
         async function loadRules() {
             const container = document.getElementById('rulesContent');
@@ -1926,7 +1661,7 @@
         }
 
         // ============================================================
-        //  AD DETAIL MODAL
+        // AD DETAIL
         // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
@@ -2013,7 +1748,7 @@
         }
 
         // ============================================================
-        //  FAVORITE
+        // FAVORITE
         // ============================================================
         async function toggleFavoriteAndUpdateDetail(adId) {
             await toggleFavorite(adId);
@@ -2091,7 +1826,7 @@
         }
 
         // ============================================================
-        //  MY ADS
+        // MY ADS
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
@@ -2158,7 +1893,7 @@
         }
 
         // ============================================================
-        //  DRAFTS
+        // DRAFTS
         // ============================================================
         function loadDrafts() {
             const container = document.getElementById('draftsList');
@@ -2221,7 +1956,7 @@
         }
 
         // ============================================================
-        //  WIZARD
+        // WIZARD
         // ============================================================
         function wizardNext() { if (wizardStep < 3) { wizardStep++;
                 updateWizard(); } }
@@ -2242,11 +1977,11 @@
         }
 
         // ============================================================
-        //  SUBMIT AD (با تأیید شماره اجباری)
+        // SUBMIT AD
         // ============================================================
         async function submitAd() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
-            if (!requireVerifiedPhone()) return; // تایید شماره اجباری
+            if (!requireVerifiedPhone()) return;
 
             const title = document.getElementById('adTitle').value.trim();
             const category = document.getElementById('adCategory').value;
@@ -2329,7 +2064,7 @@
                 btn.innerHTML = '⏳ در حال ثبت...';
 
                 const payload = {
-                    username: getUserId(), // شماره تلفن تایید شده
+                    username: getUserId(),
                     title,
                     category,
                     price: parseInt(price),
@@ -2370,7 +2105,7 @@
         }
 
         // ============================================================
-        //  IMAGE UPLOAD PREVIEW
+        // IMAGE UPLOAD
         // ============================================================
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
@@ -2406,7 +2141,7 @@
         }
 
         // ============================================================
-        //  OPEN ADD MODAL (با بررسی تأیید شماره)
+        // OPEN ADD MODAL
         // ============================================================
         function openAddModal() {
             if (!isServiceEnabled('ads')) { showToast(t('ads_disabled'), 'error'); return; }
@@ -2436,7 +2171,7 @@
         }
 
         // ============================================================
-        //  REVIEW (نظر)
+        // REVIEW
         // ============================================================
         function setDetailRating(val) {
             reviewRating = val;
@@ -2498,7 +2233,7 @@
         }
 
         // ============================================================
-        //  ADMIN
+        // ADMIN (ساده شده)
         // ============================================================
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
@@ -2625,74 +2360,6 @@
             } else { showToast('خطا در دریافت اطلاعات', 'error'); }
         }
 
-        async function adminAdmins() {
-            if (!checkAdminAccess() || !isSuperAdmin) { showToast(t('no_permission'), 'error'); return; }
-            const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            const data = await apiCall(`/admin/admins?adminId=${getUserId()}`);
-            if (data.success && data.data && data.data.length > 0) {
-                let html = `<h4>${t('admins')}</h4>`;
-                data.data.forEach(admin => {
-                    html +=
-                        `<div class="my-ad-item"><div class="info"><div class="title">${admin.first_name || admin.username || admin.telegram_id}</div><div class="sub">${admin.role || 'admin'}</div></div><div class="actions">${admin.telegram_id !== '6522877528' ? `<button class="delete" onclick="adminRemoveAdmin('${admin.telegram_id}')"><i class="fa-solid fa-user-minus"></i></button>` : ''}</div></div>`;
-                });
-                container.innerHTML = html +
-                    `<div class="admin-row" style="margin-top:12px;"><input type="text" id="newAdminId" placeholder="شناسه کاربر" /><button onclick="adminAddAdmin()">➕ ${t('add_admin')}</button></div>`;
-            } else {
-                container.innerHTML = `<div class="text-secondary">${t('no_data')}</div>`;
-            }
-        }
-
-        async function adminAddAdmin() {
-            const userId = document.getElementById('newAdminId').value.trim();
-            if (!userId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const role = prompt('نقش: (admin / super_admin)');
-            if (!role) return;
-            const data = await apiCall('/admin/add', {
-                method: 'POST',
-                body: JSON.stringify({ userId, role, adminId: getUserId() })
-            });
-            if (data.success) { showToast(t('admin_added'), 'success');
-                adminAdmins(); } else { showToast(data.error || 'خطا', 'error'); }
-        }
-
-        async function adminRemoveAdmin(userId) {
-            if (!confirm(t('remove_admin'))) return;
-            const data = await apiCall('/admin/remove', {
-                method: 'POST',
-                body: JSON.stringify({ userId, adminId: getUserId() })
-            });
-            if (data.success) { showToast(t('admin_removed'), 'success');
-                adminAdmins(); } else { showToast(data.error || 'خطا', 'error'); }
-        }
-
-        function adminAnnounce() {
-            if (!checkAdminAccess()) return;
-            const container = document.getElementById('adminResult');
-            container.innerHTML =
-                `<h4>${t('announcement')}</h4><div class="admin-row"><input type="text" id="announceTitle" placeholder="عنوان" /></div><div class="admin-row"><textarea id="announceMessage" placeholder="متن پیام..." rows="3" style="width:100%;padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);"></textarea></div><div class="admin-row"><select id="announceTarget"><option value="all">${t('all')}</option><option value="admins">${t('admins')}</option><option value="individual">فردی</option></select><input type="text" id="announceTargetId" placeholder="شناسه کاربر" style="display:none;" /><button onclick="adminSendAnnounce()">📤 ${t('send')}</button></div>`;
-            document.getElementById('announceTarget').addEventListener('change', function() {
-                document.getElementById('announceTargetId').style.display = this.value === 'individual' ? 'block' :
-                    'none';
-            });
-        }
-
-        async function adminSendAnnounce() {
-            const title = document.getElementById('announceTitle').value.trim();
-            const message = document.getElementById('announceMessage').value.trim();
-            const target = document.getElementById('announceTarget').value;
-            const targetId = document.getElementById('announceTargetId').value.trim();
-            if (!title || !message) { showToast('عنوان و متن را وارد کنید', 'error'); return; }
-            if (target === 'individual' && !targetId) { showToast('شناسه کاربر را وارد کنید', 'error'); return; }
-            const data = await apiCall('/admin/announce', {
-                method: 'POST',
-                body: JSON.stringify({ title, message, target, targetId, adminId: getUserId() })
-            });
-            if (data.success) { showToast(t('announcement_sent'), 'success');
-                document.getElementById('announceTitle').value = '';
-                document.getElementById('announceMessage').value = ''; } else { showToast(data.error || 'خطا', 'error'); }
-        }
-
         async function adminStats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -2708,7 +2375,7 @@
         }
 
         // ============================================================
-        //  TOGGLE STATUSES
+        // TOGGLE STATUSES & BANNER
         // ============================================================
         async function loadToggleStatuses() {
             try {
@@ -2722,8 +2389,33 @@
             return toggleStatuses[key] !== undefined ? toggleStatuses[key] : true;
         }
 
+        function openFilter() {
+            document.getElementById('filterModal').classList.add('show');
+            document.getElementById('filterBackdrop').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFilter() {
+            document.getElementById('filterModal').classList.remove('show');
+            document.getElementById('filterBackdrop').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSupportMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('supportDropdownMenu');
+            menu.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('supportDropdownMenu');
+            if (!e.target.closest('.support-dropdown')) {
+                menu.classList.remove('show');
+            }
+        });
+
         // ============================================================
-        //  MEDIA ZOOM
+        // MEDIA ZOOM
         // ============================================================
         function openMediaZoom(url, type) {
             const overlay = document.getElementById('imageZoomOverlay');
@@ -2744,7 +2436,169 @@
         }
 
         // ============================================================
-        //  INIT
+        // BANNER
+        // ============================================================
+        async function loadSplashBanner() {
+            if (bannerShown) return;
+            if (!isServiceEnabled('splash')) return;
+            try {
+                const data = await apiCall('/banner/splash');
+                if (data.success && data.splash && data.splash.is_active) {
+                    const banner = data.splash;
+                    const isVideo = banner.media_type === 'video';
+                    const mediaUrl = normalizeImageUrl(banner.image_id) || '';
+                    const container = document.getElementById('bannerMediaContainer');
+                    container.innerHTML = isVideo ?
+                        `<video class="banner-image" autoplay muted loop playsinline><source src="${mediaUrl}" type="video/mp4"></video>` :
+                        `<img class="banner-image" src="${mediaUrl}" alt="تبلیغ" />`;
+                    document.getElementById('bannerTitle').textContent = banner.title || 'تبلیغ';
+                    document.getElementById('bannerDesc').textContent = banner.description || '';
+                    document.getElementById('bannerLink').href = banner.link || '#';
+                    bannerTimer = banner.duration || 5;
+                    document.getElementById('bannerTimer').textContent = bannerTimer;
+                    document.getElementById('bannerOverlay').classList.add('show');
+                    bannerShown = true;
+                    if (bannerTimerInterval) clearInterval(bannerTimerInterval);
+                    bannerTimerInterval = setInterval(() => {
+                        bannerTimer--;
+                        document.getElementById('bannerTimer').textContent = bannerTimer;
+                        if (bannerTimer <= 0) { clearInterval(bannerTimerInterval);
+                            bannerTimerInterval = null;
+                            setTimeout(() => closeBanner(), 1000); }
+                    }, 1000);
+                }
+            } catch (err) { console.error('Error loading splash banner:', err); }
+        }
+
+        function closeBanner() {
+            document.getElementById('bannerOverlay').classList.remove('show');
+            if (bannerTimerInterval) { clearInterval(bannerTimerInterval);
+                bannerTimerInterval = null; }
+        }
+
+        async function loadInlineBanners() {
+            const container = document.getElementById('bannerAdsContainer');
+            if (!isServiceEnabled('banners')) {
+                container.innerHTML = `<div class="service-disabled"><i class="fa-solid fa-ban"></i> ${t('banners_disabled')}</div>`;
+                return;
+            }
+            try {
+                const data = await apiCall('/banners');
+                if (data.success && data.banners && data.banners.length > 0) {
+                    container.innerHTML = '';
+                    data.banners.forEach(banner => {
+                        const isVideo = banner.media_type === 'video';
+                        const mediaUrl = normalizeImageUrl(banner.image_id) || '';
+                        const div = document.createElement('div');
+                        div.className = 'banner-ad-container';
+                        div.innerHTML = `
+                            <div class="banner-ad-inner">
+                                ${isVideo ? `<video class="banner-ad-video" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-ad-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}
+                                <div class="banner-ad-info"><div class="banner-ad-title">${banner.title || 'تبلیغ'}</div><div class="banner-ad-desc">${banner.description || ''}</div></div>
+                                <a href="${banner.link || '#'}" target="_blank" class="banner-ad-link"><i class="fa-solid fa-arrow-left"></i> ${t('banner_open')}</a>
+                            </div>
+                        `;
+                        container.appendChild(div);
+                        if (isVideo) {
+                            const video = div.querySelector('video');
+                            if (video) {
+                                video.addEventListener('mouseenter', () => video.play());
+                                video.addEventListener('mouseleave', () => video.pause());
+                            }
+                        }
+                    });
+                } else { container.innerHTML = ''; }
+            } catch (err) { console.error('Error loading inline banners:', err); }
+        }
+
+        // ============================================================
+        // LANGUAGE
+        // ============================================================
+        function showLanguageOverlay() { document.getElementById('langOverlay').classList.remove('hidden'); }
+
+        function selectLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('jedar_lang', lang);
+            localStorage.setItem('jedar_lang_overlay', 'true');
+            document.getElementById('langOverlay').classList.add('hidden');
+            updateAllTexts();
+            showToast(currentLang === 'fa' ? '🌍 زبان به فارسی تغییر کرد' : '🌍 تم تغيير اللغة إلى العربية', 'success');
+            fetchAds(true);
+            loadProfile();
+            loadInlineBanners();
+        }
+
+        function updateAllTexts() {
+            document.getElementById('navHomeLabel').textContent = t('home');
+            document.getElementById('navAddLabel').textContent = t('add');
+            document.getElementById('navFavLabel').textContent = t('favorites');
+            document.getElementById('navProfileLabel').textContent = t('profile');
+            document.getElementById('navSupportLabel').textContent = t('support');
+
+            document.getElementById('searchInput').placeholder = t('search_placeholder');
+
+            document.getElementById('addAdTitle').textContent = '📌 ' + t('add_ad');
+            document.getElementById('adTitleLabel').innerHTML = t('title') + ' <span class="required">*</span>';
+            document.getElementById('adCategoryLabel').innerHTML = t('category') + ' <span class="required">*</span>';
+            document.getElementById('adPriceLabel').innerHTML = t('price') + ' <span class="required">*</span>';
+            document.getElementById('wizardNextBtn1').textContent = t('next');
+            document.getElementById('adDescLabel').innerHTML = t('description') + ' <span class="required">*</span>';
+            document.getElementById('adLocationLabel').innerHTML = t('location') + ' <span class="required">*</span>';
+            document.getElementById('adCountryLabel').textContent = t('country');
+            document.getElementById('adDurationLabel').textContent = '⏳ ' + t('duration');
+            document.getElementById('wizardPrevBtn2').textContent = t('prev');
+            document.getElementById('wizardNextBtn2').textContent = t('next');
+            document.getElementById('adImagesLabel').textContent = t('images');
+            document.getElementById('uploadClickLabel').textContent = t('upload_click');
+            document.getElementById('adPhoneLabel').textContent = t('phone') + ' (' + t('verify_phone') + ')';
+            document.getElementById('saveDraftLabel').textContent = t('save_draft');
+            document.getElementById('wizardPrevBtn3').textContent = t('prev');
+            document.getElementById('submitAdBtn').textContent = t('submit');
+
+            document.getElementById('profileTitle').textContent = '👤 ' + t('profile_title');
+            document.getElementById('profileUsernameLabel').textContent = t('username');
+            document.getElementById('profileFullnameLabel').textContent = t('fullname');
+            document.getElementById('profilePhoneLabel').textContent = t('phone_label');
+            document.getElementById('profileEmailLabel').textContent = t('email_label');
+            document.getElementById('profileCityLabel').textContent = t('city_label');
+            document.getElementById('profileSaveBtn').innerHTML = '💾 ' + t('save');
+            document.getElementById('myAdsTitle').textContent = '📋 ' + t('my_ads');
+            document.getElementById('draftsTitle').textContent = '📝 ' + t('drafts_title');
+
+            document.getElementById('favTitle').textContent = '❤️ ' + t('favorites');
+            document.getElementById('rulesTitle').textContent = '📜 ' + t('rules_title');
+            document.getElementById('supportTitle').textContent = '🆘 ' + t('support_title');
+            document.getElementById('aboutTitle').textContent = '🌟 ' + t('about');
+            document.getElementById('guideTitle').textContent = '📖 ' + t('guide');
+            document.getElementById('newsTitle').textContent = '📰 ' + t('news');
+            document.getElementById('adminTitle').textContent = '🔧 ' + t('admin');
+            document.getElementById('adminPendingLabel').innerHTML = '<i class="fa-solid fa-clock"></i> ' + t('pending_ads');
+            document.getElementById('adminAllAdsLabel').innerHTML = '<i class="fa-solid fa-list"></i> ' + t('all_ads');
+            document.getElementById('adminUsersLabel').innerHTML = '<i class="fa-solid fa-users"></i> ' + t('users');
+            document.getElementById('adminAdminsLabel').innerHTML = '<i class="fa-solid fa-user-shield"></i> ' + t('admins');
+            document.getElementById('adminAnnounceLabel').innerHTML = '<i class="fa-solid fa-bullhorn"></i> ' + t('announcement');
+            document.getElementById('adminStatsLabel').innerHTML = '<i class="fa-solid fa-chart-bar"></i> ' + t('stats');
+            document.getElementById('bannerOpenLabel').textContent = t('banner_open');
+            document.getElementById('bannerSkipLabel').textContent = t('banner_skip');
+
+            document.querySelectorAll('#filterCategory option').forEach(opt => {
+                if (opt.value === 'all') opt.textContent = 'همه دسته‌ها';
+                else if (opt.value === 'pilgrimage') opt.textContent = t('pilgrimage');
+                else if (opt.value === 'tourism') opt.textContent = t('tourism');
+                else if (opt.value === 'medical') opt.textContent = t('medical');
+                else if (opt.value === 'beauty') opt.textContent = t('beauty');
+                else if (opt.value === 'services') opt.textContent = t('services');
+                else if (opt.value === 'jobs') opt.textContent = t('jobs');
+                else if (opt.value === 'real_estate') opt.textContent = t('real_estate');
+                else if (opt.value === 'vehicles') opt.textContent = t('vehicles');
+            });
+
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = 'rtl';
+        }
+
+        // ============================================================
+        // INIT
         // ============================================================
         document.documentElement.setAttribute('data-theme', currentTheme);
         document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
@@ -2773,11 +2627,11 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        console.log(`🚀 جـدار بازار - نسخه نهایی با 2FA (تلگرام + ایمیل)`);
+        console.log(`🚀 جـدار بازار - نسخه نهایی با تلگرام + ایمیل`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
-        console.log('✈️ تلگرام و 📧 ایمیل - بدون پیامک');
+        console.log('✈️ تلگرام و 📧 ایمیل - هر دو فعال هستند');
     </script>
 </body>
-                </html>
+                                                               </html>
