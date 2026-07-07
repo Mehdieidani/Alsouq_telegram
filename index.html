@@ -60,6 +60,183 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--ruby); border-radius: 10px; }
 
+        /* ===== صندوق پیام‌ها ===== */
+        .inbox-icon {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            z-index: 9999;
+            background: var(--ruby);
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 25px var(--ruby-glow);
+            transition: all var(--transition);
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+        .inbox-icon:hover { transform: scale(1.1) translateY(-3px); box-shadow: 0 8px 35px var(--ruby-glow); }
+        .inbox-icon .badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--gold);
+            color: #fff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-card);
+            animation: pulseBadge 2s ease-in-out infinite;
+        }
+        @keyframes pulseBadge { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        .inbox-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            z-index: 99999;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            animation: overlayFade 0.3s ease;
+        }
+        .inbox-overlay.show { display: flex; }
+        @keyframes overlayFade { from { opacity: 0; } to { opacity: 1; } }
+        .inbox-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            padding: 20px 18px 30px;
+            animation: slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            overflow-y: auto;
+            border-top: 1px solid var(--border-color);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .inbox-panel .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .inbox-panel .inbox-header h3 {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .inbox-panel .inbox-header h3 i { color: var(--ruby); }
+        .inbox-panel .inbox-header .close-inbox {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: 4px 8px;
+            border-radius: 50%;
+        }
+        .inbox-panel .inbox-header .close-inbox:hover { background: var(--ruby-light); color: var(--ruby); transform: rotate(90deg); }
+        .inbox-panel .inbox-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .inbox-panel .inbox-actions button {
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .inbox-panel .inbox-actions button:hover { background: var(--ruby-light); border-color: var(--ruby); color: var(--ruby); transform: translateY(-2px); }
+        .inbox-panel .inbox-actions button.danger:hover { background: #fde8e8; border-color: var(--danger); color: var(--danger); }
+
+        .inbox-message {
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border-right: 4px solid var(--ruby);
+            transition: all var(--transition);
+            animation: msgIn 0.3s ease;
+            position: relative;
+        }
+        .inbox-message:hover { transform: translateX(-4px); box-shadow: var(--shadow-sm); }
+        .inbox-message .msg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .inbox-message .msg-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .inbox-message .msg-time {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .inbox-message .msg-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .inbox-message .msg-icon {
+            font-size: 18px;
+            margin-left: 8px;
+        }
+        .inbox-message.unread { border-right-color: var(--gold); background: rgba(243,156,18,0.05); }
+        .inbox-message .msg-delete {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all var(--transition);
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+        .inbox-message .msg-delete:hover { background: var(--danger); color: #fff; transform: scale(1.1); }
+        .inbox-message.system { border-right-color: #3498db; }
+        .inbox-message.success { border-right-color: var(--green); }
+        .inbox-message.welcome { border-right-color: var(--gold); background: linear-gradient(135deg, rgba(243,156,18,0.05), rgba(231,76,60,0.05)); }
+        .inbox-message.thankyou { border-right-color: var(--green); background: linear-gradient(135deg, rgba(39,174,96,0.05), rgba(231,76,60,0.05)); }
+
+        @keyframes msgIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .inbox-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .inbox-empty i { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.3; }
+
+        /* ===== بقیه استایل‌ها ===== */
         .lang-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 1; transition: opacity 0.8s ease; }
         .lang-overlay.hidden { opacity: 0; pointer-events: none; }
         .lang-overlay .lang-box { background: var(--bg-card); border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 50px 35px 55px; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5); animation: langIn 0.8s cubic-bezier(0.34,1.56,0.64,1); border: 1px solid var(--border-color); position: relative; overflow: hidden; }
@@ -86,13 +263,6 @@
         .toast.warning { border-right-color: var(--gold); }
         .toast .close { margin-right: auto; background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px 12px; position: sticky; top: 0; z-index: 50; background: var(--bg-primary); backdrop-filter: blur(16px); }
-        .logo-text { font-size: 24px; font-weight: 900; color: var(--ruby); text-decoration: none; letter-spacing: 0.5px; background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-actions { display: flex; gap: 6px; align-items: center; }
-        .header-actions button { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); box-shadow: var(--shadow-sm); }
-        .header-actions button:hover { background: var(--ruby-light); border-color: var(--ruby); color: var(--ruby); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .lang-switch-btn { padding: 0 14px !important; width: auto !important; font-size: 13px !important; font-weight: 600 !important; gap: 6px; }
-
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
         .loading-overlay.show { display: flex; }
         .loading-overlay .loader { position: relative; width: 70px; height: 70px; }
@@ -106,7 +276,14 @@
         .loading-overlay .loading-text .dots { display: inline-block; animation: dots 1.5s steps(4) infinite; }
         @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } 100% { content: ''; } }
 
-        .search-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 4px 18px; display: flex; align-items: center; gap: 12px; transition: all var(--transition); box-shadow: var(--shadow-sm); margin-bottom: 6px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px 12px; position: sticky; top: 0; z-index: 50; background: var(--bg-primary); backdrop-filter: blur(16px); }
+        .logo-text { font-size: 24px; font-weight: 900; color: var(--ruby); text-decoration: none; letter-spacing: 0.5px; background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-actions { display: flex; gap: 6px; align-items: center; }
+        .header-actions button { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); box-shadow: var(--shadow-sm); }
+        .header-actions button:hover { background: var(--ruby-light); border-color: var(--ruby); color: var(--ruby); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .lang-switch-btn { padding: 0 14px !important; width: auto !important; font-size: 13px !important; font-weight: 600 !important; gap: 6px; }
+
+        .search-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 4px 18px; display: flex; align-items: center; gap: 12px; transition: all var(--transition); box-shadow: var(--shadow-sm); margin-bottom: 8px; }
         .search-box:focus-within { border-color: var(--ruby); box-shadow: 0 0 0 4px var(--ruby-glow), var(--shadow-md); transform: translateY(-2px); }
         .search-box i { color: var(--text-muted); font-size: 16px; }
         .search-box input { flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 14px; padding: 12px 0; }
@@ -114,34 +291,117 @@
         .search-box .search-btn { background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; border-radius: var(--radius-full); padding: 8px 20px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all var(--transition); white-space: nowrap; }
         .search-box .search-btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px var(--ruby-glow); }
 
-        .filter-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); font-weight: 600; font-size: 14px; color: var(--text-primary); cursor: pointer; transition: all var(--transition); margin: 8px 0 14px; box-shadow: var(--shadow-sm); }
-        .filter-btn:hover { border-color: var(--ruby); background: var(--ruby-light); color: var(--ruby); transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .filter-btn i { font-size: 18px; color: var(--ruby); }
-        .filter-btn .arrow { margin-right: auto; font-size: 14px; color: var(--text-muted); transition: transform var(--transition); }
+        /* ===== دکمه فیلتر (به‌صورت دکمه معمولی) ===== */
+        .filter-btn-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-btn-row .filter-toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+            flex: 1;
+            justify-content: center;
+        }
+        .filter-btn-row .filter-toggle-btn:hover {
+            border-color: var(--ruby);
+            background: var(--ruby-light);
+            color: var(--ruby);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .filter-btn-row .filter-toggle-btn i { color: var(--ruby); font-size: 16px; }
+        .filter-btn-row .filter-toggle-btn.active {
+            background: var(--ruby);
+            color: #fff;
+            border-color: var(--ruby);
+        }
+        .filter-btn-row .filter-toggle-btn.active i { color: #fff; }
 
-        .filter-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 9998; display: none; animation: fadeIn 0.3s ease; }
-        .filter-backdrop.show { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .filter-modal { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-radius: var(--radius-lg) var(--radius-lg) 0 0; padding: 20px 22px 30px; z-index: 9999; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 -20px 60px rgba(0,0,0,0.15); max-height: 80vh; overflow-y: auto; }
-        .filter-modal.show { transform: translateY(0); }
-        .filter-modal .modal-handle { width: 50px; height: 5px; background: var(--border-color); border-radius: 10px; margin: 0 auto 18px; transition: all var(--transition); }
-        .filter-modal .modal-handle:hover { background: var(--ruby); width: 70px; }
-        .filter-modal .filter-title { font-weight: 800; font-size: 20px; margin-bottom: 18px; text-align: center; color: var(--text-primary); }
-        .filter-modal .filter-title i { color: var(--ruby); margin-left: 8px; }
-        .filter-modal .filter-group { margin-bottom: 16px; }
-        .filter-modal .filter-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
-        .filter-modal .filter-group select, .filter-modal .filter-group input { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-primary); font-size: 14px; transition: all var(--transition); }
-        .filter-modal .filter-group select:focus, .filter-modal .filter-group input:focus { border-color: var(--ruby); box-shadow: 0 0 0 4px var(--ruby-glow); }
-        .filter-modal .filter-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .filter-modal .filter-actions button { flex: 1; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 15px; border: none; cursor: pointer; transition: all var(--transition); }
-        .filter-modal .filter-actions .apply { background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; }
-        .filter-modal .filter-actions .apply:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--ruby-glow); }
-        .filter-modal .filter-actions .clear { background: var(--bg-input); border: 2px solid var(--border-color); color: var(--text-primary); }
-        .filter-modal .filter-actions .clear:hover { background: var(--border-color); transform: translateY(-2px); }
+        /* ===== پنل فیلتر که با کلیک باز/بسته می‌شود ===== */
+        .filter-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        .filter-panel.show { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .filter-panel .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .filter-panel .filter-group { margin-bottom: 4px; }
+        .filter-panel .filter-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+        .filter-panel .filter-group select,
+        .filter-panel .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all var(--transition);
+        }
+        .filter-panel .filter-group select:focus,
+        .filter-panel .filter-group input:focus {
+            border-color: var(--ruby);
+            box-shadow: 0 0 0 3px var(--ruby-glow);
+        }
+        .filter-panel .filter-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .filter-panel .filter-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .filter-panel .filter-actions .apply {
+            background: linear-gradient(135deg, var(--ruby), var(--ruby-dark));
+            color: #fff;
+        }
+        .filter-panel .filter-actions .apply:hover { transform: translateY(-2px); box-shadow: 0 4px 20px var(--ruby-glow); }
+        .filter-panel .filter-actions .clear {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .filter-panel .filter-actions .clear:hover { background: var(--border-color); transform: translateY(-2px); }
 
-        .categories-scroll { display: flex; overflow-x: auto; gap: 8px; padding: 6px 0 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .categories-scroll { display: flex; overflow-x: auto; gap: 8px; padding: 6px 0 10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .categories-scroll::-webkit-scrollbar { display: none; }
-        .category-chip { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 6px 20px; white-space: nowrap; font-size: 13px; font-weight: 600; cursor: pointer; transition: all var(--transition); color: var(--text-primary); flex-shrink: 0; box-shadow: var(--shadow-sm); }
+        .category-chip { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-full); padding: 6px 18px; white-space: nowrap; font-size: 12px; font-weight: 600; cursor: pointer; transition: all var(--transition); color: var(--text-primary); flex-shrink: 0; box-shadow: var(--shadow-sm); }
         .category-chip:hover { border-color: var(--ruby); background: var(--ruby-light); transform: translateY(-3px) scale(1.03); box-shadow: var(--shadow-md); }
         .category-chip.active { background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; border-color: var(--ruby); box-shadow: 0 4px 20px var(--ruby-glow); }
 
@@ -155,7 +415,6 @@
         .ad-card:hover .ad-image img, .ad-card:hover .ad-image video { transform: scale(1.05); }
         .ad-card .ad-image .no-image { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-size: 12px; background: var(--bg-input); }
         .ad-card .ad-image .no-image i { font-size: 28px; opacity: 0.3; }
-        .ad-card .ad-image .media-badge { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); border-radius: var(--radius-full); padding: 2px 10px; color: #fff; font-size: 9px; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(255,255,255,0.08); }
         .ad-card .ad-image .favorite { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; cursor: pointer; transition: all var(--transition); border: 1px solid rgba(255,255,255,0.08); }
         .ad-card .ad-image .favorite:hover { background: var(--danger); transform: scale(1.15); }
         .ad-card .ad-image .favorite.active { color: var(--danger); background: rgba(231,76,60,0.4); }
@@ -167,7 +426,6 @@
         .ad-card .ad-content .meta .time { display: flex; align-items: center; gap: 4px; }
         .ad-card .ad-content .meta .status-badge { font-size: 9px; padding: 2px 12px; border-radius: var(--radius-full); font-weight: 600; background: var(--ruby-light); color: var(--ruby); }
         .ad-card .ad-content .meta .status-badge.special { background: #fef3c7; color: var(--gold); }
-        .ad-card .ad-content .meta .status-badge.vip { background: var(--ruby-light); color: var(--ruby); }
 
         .banner-ad-container { margin: 10px 0; border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-card); border: 1px solid var(--border-color); transition: all var(--transition); box-shadow: var(--shadow-sm); }
         .banner-ad-container:hover { box-shadow: var(--shadow-md); border-color: var(--ruby); transform: translateY(-2px); }
@@ -216,7 +474,6 @@
         .bottom-nav .support-dropdown { position: relative; }
         .bottom-nav .support-dropdown .dropdown-menu { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--bg-card); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: 8px 0; min-width: 150px; display: none; border: 1px solid var(--border-color); backdrop-filter: blur(16px); margin-bottom: 8px; z-index: 999; }
         .bottom-nav .support-dropdown .dropdown-menu.show { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .bottom-nav .support-dropdown .dropdown-menu button { display: flex; align-items: center; gap: 12px; padding: 10px 18px; width: 100%; background: none; border: none; color: var(--text-primary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all var(--transition); text-align: right; justify-content: center; }
         .bottom-nav .support-dropdown .dropdown-menu button:hover { background: var(--ruby-light); color: var(--ruby); }
         .bottom-nav .support-dropdown .dropdown-menu button i { font-size: 16px; color: var(--ruby); width: 22px; text-align: center; }
@@ -229,13 +486,10 @@
         .modal-box .modal-close { position: sticky; top: 0; float: left; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 50%; width: 38px; height: 38px; font-size: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; transition: all var(--transition); z-index: 10; margin-bottom: 8px; }
         .modal-box .modal-close:hover { background: var(--danger); color: #fff; transform: rotate(90deg); }
         .modal-box .modal-title { font-size: 22px; font-weight: 800; margin: 4px 0 8px; line-height: 1.3; }
-        .modal-box .ad-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
-        .modal-box .ad-meta span { background: var(--bg-input); padding: 3px 12px; border-radius: var(--radius-full); font-size: 11px; }
         .modal-box .ad-price { font-size: 26px; font-weight: 800; color: var(--ruby); margin: 4px 0 8px; }
         .modal-box .ad-description { background: var(--bg-input); border-radius: var(--radius-sm); padding: 14px; margin: 10px 0; font-size: 14px; line-height: 1.8; white-space: pre-wrap; color: var(--text-primary); }
         .modal-box .ad-gallery { position: relative; width: 100%; aspect-ratio: 16/9; background: var(--bg-input); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 10px; cursor: zoom-in; }
         .modal-box .ad-gallery img, .modal-box .ad-gallery video { width: 100%; height: 100%; object-fit: contain; background: var(--bg-input); }
-        .modal-box .ad-gallery .no-image { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-size: 16px; }
         .modal-box .gallery-controls { display: flex; justify-content: center; gap: 14px; margin: 6px 0 10px; }
         .modal-box .gallery-controls button { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 50%; width: 34px; height: 34px; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; transition: var(--transition); }
         .modal-box .gallery-controls button:hover { background: var(--ruby); color: #fff; border-color: var(--ruby); transform: scale(1.1); }
@@ -329,8 +583,6 @@
         .support-card-item .info .label { font-size: 10px; color: var(--text-muted); font-weight: 500; display: block; }
         .support-card-item .info .value { font-size: 14px; font-weight: 700; color: var(--text-primary); word-break: break-word; }
         .support-card-item .info .value a { color: var(--ruby); text-decoration: none; }
-        .support-link-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; border-radius: var(--radius-full); font-weight: 700; font-size: 14px; text-decoration: none; transition: all var(--transition); box-shadow: 0 4px 20px var(--ruby-glow); margin-top: 8px; width: 100%; }
-        .support-link-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--ruby-glow); color: #fff; }
 
         .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
         .admin-grid button { padding: 10px 8px; border-radius: var(--radius-sm); font-weight: 600; font-size: 12px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); transition: all var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
@@ -369,7 +621,6 @@
 
         .loading-spinner { text-align: center; padding: 40px 0; color: var(--ruby); }
         .loading-spinner i { font-size: 32px; animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .required { color: var(--danger); }
         .text-secondary { color: var(--text-secondary); }
@@ -395,7 +646,9 @@
             .modal-box { padding: 16px 14px 20px; }
             .support-card-grid { grid-template-columns: 1fr; }
             .sitemap-grid { grid-template-columns: 1fr 1fr; }
-            .filter-modal { padding: 16px 16px 24px; }
+            .inbox-icon { bottom: 80px; right: 12px; width: 48px; height: 48px; font-size: 20px; }
+            .inbox-panel { padding: 16px 12px 24px; }
+            .filter-panel .filter-grid { grid-template-columns: 1fr; }
         }
         @media (min-width: 768px) {
             .ads-grid { max-width: 500px; margin: 0 auto; }
@@ -426,6 +679,32 @@
     <!-- ===== توست ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ===== دکمه صندوق پیام‌ها ===== -->
+    <div class="inbox-icon" id="inboxIcon" onclick="toggleInbox()">
+        <i class="fa-regular fa-envelope"></i>
+        <span class="badge" id="inboxBadge">0</span>
+    </div>
+
+    <!-- ===== صندوق پیام‌ها ===== -->
+    <div class="inbox-overlay" id="inboxOverlay" onclick="if(event.target===this) toggleInbox()">
+        <div class="inbox-panel">
+            <div class="inbox-header">
+                <h3><i class="fa-regular fa-envelope"></i> <span id="inboxTitle">صندوق پیام‌ها</span></h3>
+                <button class="close-inbox" onclick="toggleInbox()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="inbox-actions">
+                <button onclick="markAllRead()" id="inboxMarkAllBtn">✅ خوانده شدن همه</button>
+                <button class="danger" onclick="clearAllMessages()" id="inboxClearBtn">🗑 پاک کردن همه</button>
+            </div>
+            <div id="inboxMessages">
+                <div class="inbox-empty">
+                    <i class="fa-regular fa-envelope-open"></i>
+                    <p id="inboxEmptyText">هیچ پیامی وجود ندارد</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== بنر اسپلش ===== -->
     <div class="banner-overlay" id="bannerOverlay">
         <div class="banner-box">
@@ -447,63 +726,6 @@
         <div id="zoomMediaContainer"></div>
     </div>
 
-    <!-- ===== فیلتر ===== -->
-    <div class="filter-backdrop" id="filterBackdrop" onclick="closeFilter()"></div>
-    <div class="filter-modal" id="filterModal">
-        <div class="modal-handle"></div>
-        <div class="filter-title"><i class="fa-solid fa-sliders"></i> <span id="filterTitle">فیلترهای پیشرفته</span></div>
-        <div class="filter-group"><label id="filterCategoryLabel">دسته‌بندی</label>
-            <select id="filterCategory">
-                <option value="all">همه دسته‌ها</option>
-                <option value="pilgrimage">زیارت</option>
-                <option value="tourism">گردشگری</option>
-                <option value="medical">پزشکی</option>
-                <option value="beauty">زیبایی</option>
-                <option value="services">خدمات</option>
-                <option value="jobs">کاریابی</option>
-                <option value="real_estate">املاک</option>
-                <option value="vehicles">خودرو</option>
-            </select>
-        </div>
-        <div class="filter-group"><label id="filterPriceLabel">محدوده قیمت (تومان)</label>
-            <select id="filterPrice">
-                <option value="all">همه قیمت‌ها</option>
-                <option value="0-500000">تا ۵۰۰ هزار</option>
-                <option value="500000-2000000">۵۰۰ هزار تا ۲ میلیون</option>
-                <option value="2000000-10000000">۲ تا ۱۰ میلیون</option>
-                <option value="10000000-50000000">۱۰ تا ۵۰ میلیون</option>
-                <option value="50000000+">بیش از ۵۰ میلیون</option>
-            </select>
-        </div>
-        <div class="filter-group"><label id="filterCityLabel">شهر</label>
-            <select id="filterCity">
-                <option value="all">همه شهرها</option>
-                <option value="تهران">تهران</option>
-                <option value="مشهد">مشهد</option>
-                <option value="اصفهان">اصفهان</option>
-                <option value="شیراز">شیراز</option>
-                <option value="تبریز">تبریز</option>
-                <option value="کرج">کرج</option>
-                <option value="قم">قم</option>
-                <option value="اهواز">اهواز</option>
-                <option value="کرمانشاه">کرمانشاه</option>
-                <option value="رشت">رشت</option>
-            </select>
-        </div>
-        <div class="filter-group"><label id="filterStatusLabel">وضعیت</label>
-            <select id="filterStatus">
-                <option value="all">همه</option>
-                <option value="approved">تایید شده</option>
-                <option value="pending">در انتظار</option>
-                <option value="rejected">رد شده</option>
-            </select>
-        </div>
-        <div class="filter-actions">
-            <button class="apply" onclick="applyAdvancedFilters()" id="filterApplyBtn">✅ اعمال فیلتر</button>
-            <button class="clear" onclick="clearFilters()" id="filterClearBtn">❌ پاک کردن</button>
-        </div>
-    </div>
-
     <!-- ===== صفحه اصلی ===== -->
     <div id="app">
         <div class="header">
@@ -514,16 +736,90 @@
                 <button onclick="refreshAll()" id="refreshBtn" title="بروزرسانی"><i class="fa-solid fa-rotate"></i></button>
             </div>
         </div>
+
+        <!-- ===== جستجو ===== -->
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..." />
             <button class="search-btn" onclick="searchAds()" id="searchBtn">جستجو</button>
         </div>
-        <button class="filter-btn" onclick="openFilter()">
-            <i class="fa-solid fa-sliders"></i> <span id="filterBtnText">فیلترهای پیشرفته</span> <span class="arrow">🔽</span>
-        </button>
+
+        <!-- ===== دکمه فیلتر ===== -->
+        <div class="filter-btn-row">
+            <button class="filter-toggle-btn" onclick="toggleFilterPanel()" id="filterToggleBtn">
+                <i class="fa-solid fa-sliders"></i>
+                <span id="filterBtnText">فیلتر پیشرفته</span>
+                <i class="fa-solid fa-chevron-down" id="filterArrow"></i>
+            </button>
+        </div>
+
+        <!-- ===== پنل فیلتر (قابل باز/بسته شدن) ===== -->
+        <div class="filter-panel" id="filterPanel">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label id="filterCategoryLabel">دسته‌بندی</label>
+                    <select id="filterCategory">
+                        <option value="all">همه دسته‌ها</option>
+                        <option value="pilgrimage">زیارت</option>
+                        <option value="tourism">گردشگری</option>
+                        <option value="medical">پزشکی</option>
+                        <option value="beauty">زیبایی</option>
+                        <option value="services">خدمات</option>
+                        <option value="jobs">کاریابی</option>
+                        <option value="real_estate">املاک</option>
+                        <option value="vehicles">خودرو</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label id="filterPriceLabel">محدوده قیمت (تومان)</label>
+                    <select id="filterPrice">
+                        <option value="all">همه قیمت‌ها</option>
+                        <option value="0-500000">تا ۵۰۰ هزار</option>
+                        <option value="500000-2000000">۵۰۰ هزار تا ۲ میلیون</option>
+                        <option value="2000000-10000000">۲ تا ۱۰ میلیون</option>
+                        <option value="10000000-50000000">۱۰ تا ۵۰ میلیون</option>
+                        <option value="50000000+">بیش از ۵۰ میلیون</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label id="filterCityLabel">شهر</label>
+                    <select id="filterCity">
+                        <option value="all">همه شهرها</option>
+                        <option value="تهران">تهران</option>
+                        <option value="مشهد">مشهد</option>
+                        <option value="اصفهان">اصفهان</option>
+                        <option value="شیراز">شیراز</option>
+                        <option value="تبریز">تبریز</option>
+                        <option value="کرج">کرج</option>
+                        <option value="قم">قم</option>
+                        <option value="اهواز">اهواز</option>
+                        <option value="کرمانشاه">کرمانشاه</option>
+                        <option value="رشت">رشت</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label id="filterStatusLabel">وضعیت</label>
+                    <select id="filterStatus">
+                        <option value="all">همه</option>
+                        <option value="approved">تایید شده</option>
+                        <option value="pending">در انتظار</option>
+                        <option value="rejected">رد شده</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="apply" onclick="applyAdvancedFilters()" id="filterApplyBtn">✅ اعمال فیلتر</button>
+                <button class="clear" onclick="clearFilters()" id="filterClearBtn">❌ پاک کردن</button>
+            </div>
+        </div>
+
+        <!-- ===== دسته‌بندی‌ها ===== -->
         <div class="categories-scroll" id="categoriesContainer"></div>
+
+        <!-- ===== بنرها ===== -->
         <div id="bannerAdsContainer"></div>
+
+        <!-- ===== لیست آگهی‌ها ===== -->
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
@@ -767,17 +1063,10 @@
         </div>
     </div>
 
-    <!-- ===== تب اخبار ===== -->
+    <!-- ===== تب اخبار (همگام‌سازی با ربات) ===== -->
     <div id="newsTab">
         <h2 style="margin-bottom:14px;font-size:20px;font-weight:800;" id="newsTitle">📰 اخبار</h2>
-        <div id="newsContainer">
-            <div class="news-item">
-                <div class="news-badge" id="newsBadge1">📌 جدید</div>
-                <div class="news-title" id="newsTitle1">🚀 جـدار بازار راه‌اندازی شد!</div>
-                <div class="news-date" id="newsDate1">۴ تیر ۱۴۰۴</div>
-                <div class="news-body" id="newsBody1">پلتفرم جـدار بازار با امکانات کامل و طراحی مدرن شروع به کار کرد.</div>
-            </div>
-        </div>
+        <div id="newsContainer"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <!-- ===== تب مدیریت ===== -->
@@ -829,10 +1118,175 @@
         let drafts = JSON.parse(localStorage.getItem('jedar_drafts') || '[]');
         let pendingMethod = '';
         let currentUserId = null;
+        let filterPanelOpen = false;
 
         // ============================================================
-        // TRANSLATIONS (فارسی + عربی کامل)
+        // ===== صندوق پیام‌ها (Inbox) =====
         // ============================================================
+
+        let inboxMessages = JSON.parse(localStorage.getItem('jedar_inbox') || '[]');
+        let unreadCount = inboxMessages.filter(m => !m.read).length;
+
+        function updateInboxBadge() {
+            const badge = document.getElementById('inboxBadge');
+            const count = inboxMessages.filter(m => !m.read).length;
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+            unreadCount = count;
+            localStorage.setItem('jedar_inbox', JSON.stringify(inboxMessages));
+        }
+
+        function addInboxMessage(title, body, type = 'system', icon = '📩') {
+            const msg = {
+                id: Date.now(),
+                title: title,
+                body: body,
+                type: type,
+                icon: icon,
+                read: false,
+                created_at: new Date().toISOString()
+            };
+            inboxMessages.unshift(msg);
+            if (inboxMessages.length > 100) inboxMessages.pop();
+            updateInboxBadge();
+            renderInbox();
+            showToast('📬 پیام جدید: ' + title, 'success');
+        }
+
+        function renderInbox() {
+            const container = document.getElementById('inboxMessages');
+            if (inboxMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="inbox-empty">
+                        <i class="fa-regular fa-envelope-open"></i>
+                        <p id="inboxEmptyText">${currentLang === 'fa' ? 'هیچ پیامی وجود ندارد' : 'لا توجد رسائل'}</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = '';
+            inboxMessages.forEach((msg, index) => {
+                const div = document.createElement('div');
+                div.className = `inbox-message ${msg.type} ${msg.read ? '' : 'unread'}`;
+                div.innerHTML = `
+                    <div class="msg-header">
+                        <span class="msg-title"><span class="msg-icon">${msg.icon || '📩'}</span> ${msg.title}</span>
+                        <span class="msg-time">${new Date(msg.created_at).toLocaleDateString('fa-IR')}</span>
+                    </div>
+                    <div class="msg-body">${msg.body}</div>
+                    <button class="msg-delete" onclick="deleteInboxMessage(${index})" title="حذف"><i class="fa-solid fa-xmark"></i></button>
+                `;
+                div.onclick = () => {
+                    if (!msg.read) {
+                        msg.read = true;
+                        updateInboxBadge();
+                        renderInbox();
+                    }
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function deleteInboxMessage(index) {
+            inboxMessages.splice(index, 1);
+            updateInboxBadge();
+            renderInbox();
+        }
+
+        function markAllRead() {
+            inboxMessages.forEach(m => m.read = true);
+            updateInboxBadge();
+            renderInbox();
+            showToast('✅ همه پیام‌ها خوانده شدند', 'success');
+        }
+
+        function clearAllMessages() {
+            if (!confirm(currentLang === 'fa' ? 'آیا از پاک کردن همه پیام‌ها اطمینان دارید؟' : 'هل أنت متأكد من حذف جميع الرسائل؟')) return;
+            inboxMessages = [];
+            updateInboxBadge();
+            renderInbox();
+            showToast('🗑 همه پیام‌ها پاک شدند', 'success');
+        }
+
+        function toggleInbox() {
+            const overlay = document.getElementById('inboxOverlay');
+            overlay.classList.toggle('show');
+            if (overlay.classList.contains('show')) {
+                renderInbox();
+            }
+        }
+
+        // ============================================================
+        // ===== پیام‌های سیستمی =====
+        // ============================================================
+
+        function sendWelcomeMessage(phone) {
+            addInboxMessage(
+                '🎉 خوش آمدید به جـدار بازار!',
+                `شماره ${phone} با موفقیت تأیید شد.\n\n` +
+                `🌟 از این پس می‌توانید:\n` +
+                `• 📌 آگهی ثبت کنید\n` +
+                `• ❤️ آگهی‌ها را نشان کنید\n` +
+                `• ⭐ به آگهی‌ها امتیاز دهید\n` +
+                `• 📬 پیام‌های سیستمی را در اینجا مشاهده کنید\n\n` +
+                `🙏 سپاس از انتخاب شما`,
+                'welcome',
+                '🎉'
+            );
+        }
+
+        function sendAdSubmittedMessage(title) {
+            addInboxMessage(
+                '📌 آگهی شما ثبت شد!',
+                `آگهی "${title}" با موفقیت ثبت شد.\n\n` +
+                `⏳ در حال بررسی توسط تیم مدیریت...\n` +
+                `📬 پس از تایید، به شما اطلاع داده می‌شود.\n\n` +
+                `🙏 از اعتماد شما سپاسگزاریم`,
+                'thankyou',
+                '🙏'
+            );
+        }
+
+        function sendAdApprovedMessage(title) {
+            addInboxMessage(
+                '✅ آگهی شما تایید شد! 🎉',
+                `آگهی "${title}" توسط تیم مدیریت تایید شد.\n\n` +
+                `🌟 آگهی شما هم‌اکنون در معرض دید کاربران قرار دارد.\n` +
+                `📊 می‌توانید آمار بازدید آن را در پروفایل مشاهده کنید.\n\n` +
+                `🙏 با تشکر از همراهی شما`,
+                'success',
+                '✅'
+            );
+        }
+
+        function sendAdRejectedMessage(title, reason = '') {
+            addInboxMessage(
+                '❌ آگهی شما رد شد',
+                `آگهی "${title}" توسط تیم مدیریت رد شد.\n` +
+                `${reason ? `\n📝 دلیل: ${reason}\n` : ''}\n` +
+                `🔹 می‌توانید آگهی را ویرایش و مجدداً ارسال کنید.\n\n` +
+                `🙏 با احترام، تیم جـدار بازار`,
+                'system',
+                '❌'
+            );
+        }
+
+        function sendThankYouMessage() {
+            addInboxMessage(
+                '🙏 سپاس از شما!',
+                `از اینکه از جـدار بازار استفاده می‌کنید، بی‌نهایت سپاسگزاریم.\n\n` +
+                `🌟 ما متعهد به ارائه بهترین خدمات به شما هستیم.\n` +
+                `📬 هرگونه سوال یا پیشنهاد دارید، از بخش پشتیبانی با ما در ارتباط باشید.\n\n` +
+                `❤️ همراهی شما باعث افتخار ماست`,
+                'thankyou',
+                '❤️'
+            );
+        }
+
+        // ============================================================
+        // ===== TRANSLATIONS =====
+        // ============================================================
+
         const translations = {
             fa: {
                 home: 'خانه', add: 'ثبت', favorites: 'نشان‌ها', profile: 'پروفایل',
@@ -895,7 +1349,7 @@
                 filter_status: 'وضعیت',
                 filter_apply: '✅ اعمال فیلتر',
                 filter_clear: '❌ پاک کردن',
-                filter_btn: 'فیلترهای پیشرفته',
+                filter_btn: 'فیلتر پیشرفته',
                 search_btn: 'جستجو',
                 lang_switch: '🌐',
                 refresh: 'بروزرسانی',
@@ -921,10 +1375,6 @@
                 guide_text2: '۲. تصاویر یا ویدیو آپلود کنید.',
                 guide_text3: '۳. آگهی پس از تایید نمایش داده می‌شود.',
                 guide_search_text: 'از فیلترهای پیشرفته برای یافتن آگهی‌های مورد نظر استفاده کنید.',
-                news_badge: '📌 جدید',
-                news_title: '🚀 جـدار بازار راه‌اندازی شد!',
-                news_date: '۴ تیر ۱۴۰۴',
-                news_body: 'پلتفرم جـدار بازار با امکانات کامل و طراحی مدرن شروع به کار کرد.',
                 admin_title: '🔧 مدیریت',
                 admin_pending: 'در انتظار',
                 admin_all: 'همه',
@@ -957,7 +1407,12 @@
                 all: 'همه',
                 admins_label: 'ادمین‌ها',
                 individual: 'فردی',
-                enter_user_id: 'شناسه کاربر'
+                enter_user_id: 'شناسه کاربر',
+                inbox_title: 'صندوق پیام‌ها',
+                inbox_empty: 'هیچ پیامی وجود ندارد',
+                inbox_mark_all: 'خوانده شدن همه',
+                inbox_clear: 'پاک کردن همه',
+                thank_you: '🙏 سپاس از شما!'
             },
             ar: {
                 home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي',
@@ -1020,7 +1475,7 @@
                 filter_status: 'الحالة',
                 filter_apply: '✅ تطبيق الفلتر',
                 filter_clear: '❌ مسح',
-                filter_btn: 'فلاتر متقدمة',
+                filter_btn: 'الفلتر المتقدم',
                 search_btn: 'بحث',
                 lang_switch: '🌐',
                 refresh: 'تحديث',
@@ -1046,10 +1501,6 @@
                 guide_text2: '٢. قم بتحميل الصور أو الفيديو.',
                 guide_text3: '٣. يتم عرض الإعلان بعد الموافقة.',
                 guide_search_text: 'استخدم الفلاتر المتقدمة للعثور على الإعلانات المطلوبة.',
-                news_badge: '📌 جديد',
-                news_title: '🚀 تم إطلاق جـدار بازار!',
-                news_date: '٤ يوليو ٢٠٢٥',
-                news_body: 'تم إطلاق منصة جـدار بازار بميزات كاملة وتصميم حديث.',
                 admin_title: '🔧 الإدارة',
                 admin_pending: 'قيد المراجعة',
                 admin_all: 'الكل',
@@ -1082,14 +1533,19 @@
                 all: 'الكل',
                 admins_label: 'المشرفين',
                 individual: 'فردي',
-                enter_user_id: 'معرف المستخدم'
+                enter_user_id: 'معرف المستخدم',
+                inbox_title: 'صندوق الرسائل',
+                inbox_empty: 'لا توجد رسائل',
+                inbox_mark_all: 'تحديد الكل كمقروء',
+                inbox_clear: 'حذف الكل',
+                thank_you: '🙏 شكراً لك!'
             }
         };
 
         function t(key) { return translations[currentLang]?.[key] || translations.fa[key] || key; }
 
         // ============================================================
-        // ===== مدیریت نشست (Session) =====
+        // ===== SESSION FUNCTIONS =====
         // ============================================================
 
         function getSessionId() {
@@ -1146,7 +1602,8 @@
                     localStorage.setItem('jedar_verified_phone', phone);
                     localStorage.setItem('jedar_user_id', res.userId);
                     localStorage.setItem('jedar_verify_method', res.method || 'telegram');
-                    showToast(t('code_verified'), 'success');
+                    showToast('✅ شماره با موفقیت تأیید شد!', 'success');
+                    sendWelcomeMessage(phone);
                     loadProfile();
                     fetchAds(false);
                     return true;
@@ -1158,24 +1615,6 @@
                 showToast('❌ خطا در ورود', 'error');
                 return false;
             }
-        }
-
-        async function logoutUser() {
-            const sessionId = getSessionId();
-            try {
-                await apiCall('/auth/logout', {
-                    method: 'POST',
-                    body: JSON.stringify({ sessionId })
-                });
-            } catch (e) {}
-            clearSession();
-            localStorage.removeItem('jedar_profile');
-            userProfile = {};
-            currentUserId = null;
-            showToast(t('logout'), 'success');
-            loadProfile();
-            switchTab('home');
-            document.getElementById('logoutBtn').style.display = 'none';
         }
 
         // ============================================================
@@ -1240,7 +1679,28 @@
         }
 
         // ============================================================
-        // ===== VERIFICATION FUNCTIONS =====
+        // ===== FILTER PANEL TOGGLE =====
+        // ============================================================
+
+        function toggleFilterPanel() {
+            filterPanelOpen = !filterPanelOpen;
+            const panel = document.getElementById('filterPanel');
+            const btn = document.getElementById('filterToggleBtn');
+            const arrow = document.getElementById('filterArrow');
+            
+            if (filterPanelOpen) {
+                panel.classList.add('show');
+                btn.classList.add('active');
+                arrow.className = 'fa-solid fa-chevron-up';
+            } else {
+                panel.classList.remove('show');
+                btn.classList.remove('active');
+                arrow.className = 'fa-solid fa-chevron-down';
+            }
+        }
+
+        // ============================================================
+        // ===== VERIFICATION =====
         // ============================================================
 
         function isPhoneVerified() {
@@ -1351,7 +1811,7 @@
             try {
                 const res = await apiCall('/auth/send-2fa-email', {
                     method: 'POST',
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email, mobile: phone })
                 });
 
                 if (res.success) {
@@ -1417,6 +1877,24 @@
             pendingMethod = '';
         }
 
+        async function logoutUser() {
+            const sessionId = getSessionId();
+            try {
+                await apiCall('/auth/logout', {
+                    method: 'POST',
+                    body: JSON.stringify({ sessionId })
+                });
+            } catch (e) {}
+            clearSession();
+            localStorage.removeItem('jedar_profile');
+            userProfile = {};
+            currentUserId = null;
+            showToast('🚪 خروج موفق', 'success');
+            loadProfile();
+            switchTab('home');
+            document.getElementById('logoutBtn').style.display = 'none';
+        }
+
         // ============================================================
         // ===== PROFILE =====
         // ============================================================
@@ -1444,10 +1922,6 @@
                         statusEl.textContent = '✅ شماره شما تأیید شده است';
                         statusEl.style.background = '#e8f5e9';
                         statusEl.style.color = '#27ae60';
-
-                        const addBtn = document.getElementById('addAdBtn');
-                        if (addBtn) { addBtn.disabled = false;
-                            addBtn.innerHTML = '📌 ثبت آگهی جدید'; }
                         return;
                     }
                 } catch (e) {
@@ -1455,7 +1929,6 @@
                 }
             }
 
-            // اگر نشست معتبر نبود
             clearSession();
             document.getElementById('profileUsername').value = guestId;
             document.getElementById('profileFullname').value = '';
@@ -1469,10 +1942,6 @@
             statusEl.textContent = '⚠️ شماره خود را تأیید کنید';
             statusEl.style.background = '#fef3c7';
             statusEl.style.color = '#f39c12';
-
-            const addBtn = document.getElementById('addAdBtn');
-            if (addBtn) { addBtn.disabled = true;
-                addBtn.innerHTML = '📌 ثبت آگهی جدید'; }
 
             checkAdminStatus();
         }
@@ -1510,14 +1979,12 @@
         // ============================================================
 
         function updateAllTexts() {
-            // منوی پایین
             document.getElementById('navHomeLabel').textContent = t('nav_home');
             document.getElementById('navAddLabel').textContent = t('nav_add');
             document.getElementById('navFavLabel').textContent = t('nav_fav');
             document.getElementById('navProfileLabel').textContent = t('nav_profile');
             document.getElementById('navSupportLabel').textContent = t('nav_support');
 
-            // منوی کشویی
             const menuItems = document.querySelectorAll('#supportDropdownMenu button span');
             if (menuItems.length >= 5) {
                 menuItems[0].textContent = t('menu_rules');
@@ -1527,11 +1994,9 @@
                 if (menuItems[4]) menuItems[4].textContent = t('menu_admin');
             }
 
-            // جستجو و فیلتر
             document.getElementById('searchInput').placeholder = t('search_placeholder');
             document.getElementById('searchBtn').textContent = t('search_btn');
             document.getElementById('filterBtnText').textContent = t('filter_btn');
-            document.getElementById('filterTitle').textContent = t('filter_title');
             document.getElementById('filterCategoryLabel').textContent = t('filter_category');
             document.getElementById('filterPriceLabel').textContent = t('filter_price');
             document.getElementById('filterCityLabel').textContent = t('filter_city');
@@ -1539,7 +2004,6 @@
             document.getElementById('filterApplyBtn').textContent = t('filter_apply');
             document.getElementById('filterClearBtn').textContent = t('filter_clear');
 
-            // ثبت آگهی
             document.getElementById('addAdTitle').textContent = '📌 ' + t('add_ad');
             document.getElementById('adTitleLabel').innerHTML = t('title') + ' <span class="required">*</span>';
             document.getElementById('adCategoryLabel').innerHTML = t('category') + ' <span class="required">*</span>';
@@ -1558,7 +2022,6 @@
             document.getElementById('wizardPrevBtn3').textContent = t('prev');
             document.getElementById('submitAdBtn').textContent = t('submit');
 
-            // پروفایل
             document.getElementById('profileTitle').textContent = '👤 ' + t('profile_title');
             document.getElementById('profileUsernameLabel').textContent = t('username');
             document.getElementById('profileFullnameLabel').textContent = t('fullname');
@@ -1569,7 +2032,6 @@
             document.getElementById('myAdsTitle').textContent = '📋 ' + t('my_ads');
             document.getElementById('draftsTitle').textContent = '📝 ' + t('drafts_title');
 
-            // تأیید
             document.getElementById('telegramVerifyBtn').textContent = t('telegram_verify');
             document.getElementById('emailVerifyBtn').textContent = t('email_verify');
             document.getElementById('verifyStatus').textContent = t('verify_status');
@@ -1577,7 +2039,6 @@
             document.getElementById('verifyCodeBtn').textContent = t('verify_code');
             document.getElementById('cancelCodeBtn').textContent = t('cancel_code');
 
-            // تب‌ها
             document.getElementById('favTitle').textContent = '❤️ ' + t('favorites');
             document.getElementById('rulesTitle').textContent = '📜 ' + t('rules_title');
             document.getElementById('supportTitle').textContent = '🆘 ' + t('support_title');
@@ -1586,22 +2047,14 @@
             document.getElementById('newsTitle').textContent = '📰 ' + t('news');
             document.getElementById('adminTitle').textContent = '🔧 ' + t('admin_title');
 
-            // مدیریت
-            document.getElementById('adminPendingLabel').innerHTML = '<i class="fa-solid fa-clock"></i> <span>' + t(
-                'admin_pending') + '</span>';
-            document.getElementById('adminAllAdsLabel').innerHTML = '<i class="fa-solid fa-list"></i> <span>' + t(
-                'admin_all') + '</span>';
-            document.getElementById('adminUsersLabel').innerHTML = '<i class="fa-solid fa-users"></i> <span>' + t(
-                'admin_users') + '</span>';
-            document.getElementById('adminAdminsLabel').innerHTML = '<i class="fa-solid fa-user-shield"></i> <span>' + t(
-                'admin_admins') + '</span>';
-            document.getElementById('adminAnnounceLabel').innerHTML = '<i class="fa-solid fa-bullhorn"></i> <span>' + t(
-                'admin_announce') + '</span>';
-            document.getElementById('adminStatsLabel').innerHTML = '<i class="fa-solid fa-chart-bar"></i> <span>' + t(
-                'admin_stats') + '</span>';
+            document.getElementById('adminPendingLabel').innerHTML = '<i class="fa-solid fa-clock"></i> <span>' + t('admin_pending') + '</span>';
+            document.getElementById('adminAllAdsLabel').innerHTML = '<i class="fa-solid fa-list"></i> <span>' + t('admin_all') + '</span>';
+            document.getElementById('adminUsersLabel').innerHTML = '<i class="fa-solid fa-users"></i> <span>' + t('admin_users') + '</span>';
+            document.getElementById('adminAdminsLabel').innerHTML = '<i class="fa-solid fa-user-shield"></i> <span>' + t('admin_admins') + '</span>';
+            document.getElementById('adminAnnounceLabel').innerHTML = '<i class="fa-solid fa-bullhorn"></i> <span>' + t('admin_announce') + '</span>';
+            document.getElementById('adminStatsLabel').innerHTML = '<i class="fa-solid fa-chart-bar"></i> <span>' + t('admin_stats') + '</span>';
             document.getElementById('adminContentTitle').textContent = t('admin_content');
 
-            // درباره ما
             document.getElementById('aboutText').innerHTML = t('about_text');
             document.getElementById('sitemapTitle').textContent = t('sitemap');
             document.getElementById('sitemapHome').textContent = t('sitemap_home');
@@ -1613,7 +2066,6 @@
             document.getElementById('sitemapNews').textContent = t('sitemap_news');
             document.getElementById('sitemapAbout').textContent = t('sitemap_about');
 
-            // راهنما
             document.getElementById('guideStartTitle').textContent = t('guide_start');
             document.getElementById('guideStartText1').textContent = t('guide_text1');
             document.getElementById('guideStartText2').textContent = t('guide_text2');
@@ -1621,28 +2073,20 @@
             document.getElementById('guideSearchTitle').textContent = t('guide_search');
             document.getElementById('guideSearchText').textContent = t('guide_search_text');
 
-            // اخبار
-            document.getElementById('newsBadge1').textContent = t('news_badge');
-            document.getElementById('newsTitle1').textContent = t('news_title');
-            document.getElementById('newsDate1').textContent = t('news_date');
-            document.getElementById('newsBody1').textContent = t('news_body');
-
-            // بنر
             document.getElementById('bannerTimerText').textContent = t('banner_timer');
             document.getElementById('bannerOpenLabel').textContent = t('banner_open');
             document.getElementById('bannerSkipLabel').textContent = t('banner_skip');
 
-            // لودینگ
             document.getElementById('loadingText').innerHTML = t('loading_text') + '<span class="dots">...</span>';
-
-            // انتخاب زبان
             document.getElementById('langSubText').textContent = t('lang_sub');
-
-            // خروج
             document.getElementById('logoutBtn').textContent = t('logout');
 
-            // دسته‌بندی‌های فیلتر
+            document.getElementById('inboxTitle').textContent = t('inbox_title');
+            document.getElementById('inboxMarkAllBtn').textContent = t('inbox_mark_all');
+            document.getElementById('inboxClearBtn').textContent = t('inbox_clear');
+
             updateFilterCategories();
+            renderInbox();
 
             document.documentElement.lang = currentLang;
             document.documentElement.dir = 'rtl';
@@ -1720,11 +2164,10 @@
                         `<video muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` :
                         `<img src="${mediaUrl}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openMediaZoom('${mediaUrl}','image')" />`) :
                     `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
-                const mediaBadge = isVideo ? `<div class="media-badge"><i class="fa-solid fa-video"></i></div>` : '';
                 const specialBadge = ad.is_special ? `<span class="status-badge special">⭐ ویژه</span>` : '';
                 card.innerHTML = `
                     <div class="ad-image" onclick="event.stopPropagation();${mediaUrl ? `openMediaZoom('${mediaUrl}','${isVideo ? 'video' : 'image'}')` : ''}">
-                        ${mediaHtml}${mediaBadge}
+                        ${mediaHtml}
                         <div class="favorite ${isFav ? 'active' : ''}" onclick="event.stopPropagation();toggleFavorite(${ad.id})"><i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i></div>
                     </div>
                     <div class="ad-content">
@@ -1751,9 +2194,7 @@
 
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
             const catMap = {
                 'all': t('all'),
                 'pilgrimage': t('pilgrimage'),
@@ -1778,13 +2219,10 @@
         function filterAds(cat) {
             document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
-                'vehicles'
-            ];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
             const idx = cats.indexOf(cat);
             if (chips[idx]) chips[idx].classList.add('active');
-            filteredAds = cat === 'all' ? [...allAds] : allAds.filter(ad => ad.category === cat || ad.category?.includes(
-            cat));
+            filteredAds = cat === 'all' ? [...allAds] : allAds.filter(ad => ad.category === cat || ad.category?.includes(cat));
             renderAds(filteredAds);
         }
 
@@ -1809,14 +2247,14 @@
             if (status !== 'all') results = results.filter(a => a.status === status);
             if (priceRange !== 'all') {
                 const [min, max] = priceRange.split('-');
-                if (max && max !== '+') results = results.filter(a => a.price >= parseInt(min) && a.price <= parseInt(
-                    max));
+                if (max && max !== '+') results = results.filter(a => a.price >= parseInt(min) && a.price <= parseInt(max));
                 else if (priceRange.endsWith('+')) { const minVal = parseInt(priceRange.replace('+', ''));
                     results = results.filter(a => a.price >= minVal); }
             }
             filteredAds = results;
             renderAds(filteredAds);
-            closeFilter();
+            // بستن پنل فیلتر بعد از اعمال
+            if (filterPanelOpen) toggleFilterPanel();
             showToast(`${filteredAds.length} ${t('all_ads')} یافت شد`, 'success');
         }
 
@@ -1828,7 +2266,7 @@
             document.getElementById('searchInput').value = '';
             filteredAds = [...allAds];
             renderAds(filteredAds);
-            closeFilter();
+            if (filterPanelOpen) toggleFilterPanel();
             showToast('فیلترها پاک شدند', 'info');
         }
 
@@ -1840,9 +2278,11 @@
                 if (currentTab === 'favorites') fetchFavorites();
                 if (currentTab === 'rules') loadRules();
                 if (currentTab === 'support') loadSupport();
+                if (currentTab === 'news') loadNews();
                 checkAdminStatus();
                 loadInlineBanners();
                 loadSplashBanner();
+                renderInbox();
                 showLoading(false);
                 showToast('✅ ' + t('refresh'), 'success');
             });
@@ -1890,6 +2330,7 @@
                 document.getElementById('guideTab').style.display = 'block';
             } else if (tab === 'news') {
                 document.getElementById('newsTab').style.display = 'block';
+                loadNews();
             } else if (tab === 'admin') {
                 document.getElementById('adminTab').style.display = 'block';
                 if (isAdmin) {
@@ -1899,6 +2340,38 @@
                     showToast(t('no_permission'), 'error');
                     switchTab('home');
                 }
+            }
+        }
+
+        // ============================================================
+        // ===== NEWS (همگام‌سازی با ربات) =====
+        // ============================================================
+
+        async function loadNews() {
+            const container = document.getElementById('newsContainer');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/news');
+                if (data.success && data.data && data.data.length > 0) {
+                    container.innerHTML = '';
+                    data.data.forEach(news => {
+                        const div = document.createElement('div');
+                        div.className = 'news-item';
+                        div.innerHTML = `
+                            <div class="news-badge">📌 ${t('news_badge')}</div>
+                            <div class="news-title">${news.title}</div>
+                            <div class="news-date">${new Date(news.created_at * 1000).toLocaleDateString('fa-IR')}</div>
+                            <div class="news-body">${news.body}</div>
+                            ${news.image_id ? `<div style="margin-top:6px;"><img src="${normalizeImageUrl(news.image_id)}" style="max-width:100%;border-radius:8px;max-height:200px;object-fit:cover;" onerror="this.style.display='none'" /></div>` : ''}
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('no_data')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('error_loading')}</div>`;
             }
         }
 
@@ -2041,8 +2514,7 @@
                         const div = document.createElement('div');
                         div.className = 'my-ad-item';
                         const statusMap = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
-                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t(
-                            'rejected') };
+                        const statusLabels = { pending: t('pending'), approved: t('approved'), rejected: t('rejected') };
                         div.innerHTML = `
                             <div class="info">
                                 <div class="title">${ad.title}</div>
@@ -2303,6 +2775,7 @@
 
                 if (data.success) {
                     showToast('✅ ' + t('ad_saved'), 'success');
+                    sendAdSubmittedMessage(title);
                     closeModal('addAdModal');
                     document.getElementById('addAdForm').reset();
                     document.getElementById('adImagePreview').innerHTML = '';
@@ -2365,7 +2838,10 @@
         // ============================================================
 
         function openAddModal() {
-            if (!requireVerifiedPhone()) return;
+            if (!requireVerifiedPhone()) {
+                showToast(t('verify_required'), 'warning');
+                return;
+            }
             document.getElementById('addAdModal').classList.add('show');
             document.getElementById('addAdForm').dataset.editId = '';
             document.getElementById('addAdForm').reset();
@@ -2500,6 +2976,11 @@
                 navigator.clipboard.writeText(url).then(() => showToast('🔗 ' + t('share'), 'success'))
                     .catch(() => showToast('🔗 ' + url, 'info'));
             }
+        }
+
+        async function toggleFavoriteAndUpdateDetail(adId) {
+            await toggleFavorite(adId);
+            openAdDetail(adId);
         }
 
         // ============================================================
@@ -2682,20 +3163,8 @@
         }
 
         // ============================================================
-        // ===== FILTER FUNCTIONS =====
+        // ===== SUPPORT DROPDOWN =====
         // ============================================================
-
-        function openFilter() {
-            document.getElementById('filterModal').classList.add('show');
-            document.getElementById('filterBackdrop').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeFilter() {
-            document.getElementById('filterModal').classList.remove('show');
-            document.getElementById('filterBackdrop').classList.remove('show');
-            document.body.style.overflow = '';
-        }
 
         function toggleSupportMenu(event) {
             event.stopPropagation();
@@ -2726,6 +3195,7 @@
             fetchAds(true);
             loadProfile();
             loadInlineBanners();
+            loadNews();
         }
 
         // ============================================================
@@ -2775,9 +3245,13 @@
                 method: 'POST',
                 body: JSON.stringify({ adId, adminId: userId })
             });
-            if (data.success) { showToast('✅ ' + t('ad_approved'), 'success');
+            if (data.success) {
+                showToast('✅ ' + t('ad_approved'), 'success');
+                const ad = allAds.find(a => a.id === adId);
+                if (ad) sendAdApprovedMessage(ad.title);
                 adminPendingAds();
-                fetchAds(false); } else { showToast(data.error || 'خطا', 'error'); }
+                fetchAds(false);
+            } else { showToast(data.error || 'خطا', 'error'); }
         }
 
         async function adminRejectAd(adId) {
@@ -2788,9 +3262,13 @@
                 method: 'POST',
                 body: JSON.stringify({ adId, reason, adminId: userId })
             });
-            if (data.success) { showToast('❌ ' + t('ad_rejected'), 'warning');
+            if (data.success) {
+                showToast('❌ ' + t('ad_rejected'), 'warning');
+                const ad = allAds.find(a => a.id === adId);
+                if (ad) sendAdRejectedMessage(ad.title, reason);
                 adminPendingAds();
-                fetchAds(false); } else { showToast(data.error || 'خطا', 'error'); }
+                fetchAds(false);
+            } else { showToast(data.error || 'خطا', 'error'); }
         }
 
         async function adminSpecialAd(adId) {
@@ -3069,6 +3547,7 @@
             fetchAds(true);
             loadProfile();
             loadInlineBanners();
+            loadNews();
             setTimeout(() => {
                 loadSplashBanner();
                 showLoading(false);
@@ -3079,11 +3558,24 @@
             if (e.key === 'Enter') searchAds();
         });
 
-        console.log(`🚀 جـدار بازار - نسخه نهایی دوزبانه`);
+        setTimeout(() => {
+            if (isPhoneVerified()) {
+                const thankYouSent = localStorage.getItem('jedar_thankyou_sent');
+                if (!thankYouSent) {
+                    sendThankYouMessage();
+                    localStorage.setItem('jedar_thankyou_sent', 'true');
+                }
+            }
+        }, 2000);
+
+        console.log(`🚀 جـدار بازار - نسخه نهایی با فیلتر دکمه‌ای`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
+        console.log(`📬 صندوق پیام‌ها: ${inboxMessages.length} پیام`);
+        console.log(`🔘 فیلتر پیشرفته: داخل دکمه (قابل باز/بسته)`);
         console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
         console.log('🌍 فارسی و عربی - هر دو فعال هستند');
+        console.log('📰 اخبار همگام‌سازی شده با ربات');
     </script>
 </body>
-    </html>
+                </html>
