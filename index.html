@@ -60,7 +60,6 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--ruby); border-radius: 10px; }
 
-        /* ===== صندوق پیام‌ها ===== */
         .inbox-icon {
             position: fixed;
             bottom: 90px;
@@ -236,7 +235,6 @@
         }
         .inbox-empty i { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.3; }
 
-        /* ===== بقیه استایل‌ها ===== */
         .lang-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 1; transition: opacity 0.8s ease; }
         .lang-overlay.hidden { opacity: 0; pointer-events: none; }
         .lang-overlay .lang-box { background: var(--bg-card); border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 50px 35px 55px; text-align: center; box-shadow: 0 40px 100px rgba(0,0,0,0.5); animation: langIn 0.8s cubic-bezier(0.34,1.56,0.64,1); border: 1px solid var(--border-color); position: relative; overflow: hidden; }
@@ -291,7 +289,6 @@
         .search-box .search-btn { background: linear-gradient(135deg, var(--ruby), var(--ruby-dark)); color: #fff; border-radius: var(--radius-full); padding: 8px 20px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all var(--transition); white-space: nowrap; }
         .search-box .search-btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px var(--ruby-glow); }
 
-        /* ===== دکمه فیلتر (به‌صورت دکمه معمولی) ===== */
         .filter-btn-row {
             display: flex;
             gap: 8px;
@@ -330,7 +327,6 @@
         }
         .filter-btn-row .filter-toggle-btn.active i { color: #fff; }
 
-        /* ===== پنل فیلتر که با کلیک باز/بسته می‌شود ===== */
         .filter-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -753,7 +749,7 @@
             </button>
         </div>
 
-        <!-- ===== پنل فیلتر (قابل باز/بسته شدن) ===== -->
+        <!-- ===== پنل فیلتر ===== -->
         <div class="filter-panel" id="filterPanel">
             <div class="filter-grid">
                 <div class="filter-group">
@@ -1061,7 +1057,7 @@
         </div>
     </div>
 
-    <!-- ===== تب اخبار (همگام‌سازی با ربات) ===== -->
+    <!-- ===== تب اخبار ===== -->
     <div id="newsTab">
         <h2 style="margin-bottom:14px;font-size:20px;font-weight:800;" id="newsTitle">📰 اخبار</h2>
         <div id="newsContainer"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
@@ -1086,8 +1082,9 @@
 
     <script>
         // ============================================================
-        // CONSTANTS
+        // جـدار بازار - نسخه کامل نهایی
         // ============================================================
+
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/api';
         const IMAGE_BASE = 'https://souq-bot.mehdi11eidani.workers.dev/image/';
 
@@ -1118,19 +1115,14 @@
         let currentUserId = null;
         let filterPanelOpen = false;
 
-        // ============================================================
-        // ===== صندوق پیام‌ها (Inbox) =====
-        // ============================================================
-
+        // ===== صندوق پیام‌ها =====
         let inboxMessages = JSON.parse(localStorage.getItem('jedar_inbox') || '[]');
-        let unreadCount = inboxMessages.filter(m => !m.read).length;
 
         function updateInboxBadge() {
             const badge = document.getElementById('inboxBadge');
             const count = inboxMessages.filter(m => !m.read).length;
             badge.textContent = count;
             badge.style.display = count > 0 ? 'flex' : 'none';
-            unreadCount = count;
             localStorage.setItem('jedar_inbox', JSON.stringify(inboxMessages));
         }
 
@@ -1214,20 +1206,11 @@
             }
         }
 
-        // ============================================================
         // ===== پیام‌های سیستمی =====
-        // ============================================================
-
         function sendWelcomeMessage(phone) {
             addInboxMessage(
                 '🎉 خوش آمدید به جـدار بازار!',
-                `شماره ${phone} با موفقیت تأیید شد.\n\n` +
-                `🌟 از این پس می‌توانید:\n` +
-                `• 📌 آگهی ثبت کنید\n` +
-                `• ❤️ آگهی‌ها را نشان کنید\n` +
-                `• ⭐ به آگهی‌ها امتیاز دهید\n` +
-                `• 📬 پیام‌های سیستمی را در اینجا مشاهده کنید\n\n` +
-                `🙏 سپاس از انتخاب شما`,
+                `شماره ${phone} با موفقیت تأیید شد.\n\n🌟 از این پس می‌توانید:\n• 📌 آگهی ثبت کنید\n• ❤️ آگهی‌ها را نشان کنید\n• ⭐ به آگهی‌ها امتیاز دهید\n• 📬 پیام‌های سیستمی را در اینجا مشاهده کنید\n\n🙏 سپاس از انتخاب شما`,
                 'welcome',
                 '🎉'
             );
@@ -1236,10 +1219,7 @@
         function sendAdSubmittedMessage(title) {
             addInboxMessage(
                 '📌 آگهی شما ثبت شد!',
-                `آگهی "${title}" با موفقیت ثبت شد.\n\n` +
-                `⏳ در حال بررسی توسط تیم مدیریت...\n` +
-                `📬 پس از تایید، به شما اطلاع داده می‌شود.\n\n` +
-                `🙏 از اعتماد شما سپاسگزاریم`,
+                `آگهی "${title}" با موفقیت ثبت شد.\n\n⏳ در حال بررسی توسط تیم مدیریت...\n📬 پس از تایید، به شما اطلاع داده می‌شود.\n\n🙏 از اعتماد شما سپاسگزاریم`,
                 'thankyou',
                 '🙏'
             );
@@ -1248,10 +1228,7 @@
         function sendAdApprovedMessage(title) {
             addInboxMessage(
                 '✅ آگهی شما تایید شد! 🎉',
-                `آگهی "${title}" توسط تیم مدیریت تایید شد.\n\n` +
-                `🌟 آگهی شما هم‌اکنون در معرض دید کاربران قرار دارد.\n` +
-                `📊 می‌توانید آمار بازدید آن را در پروفایل مشاهده کنید.\n\n` +
-                `🙏 با تشکر از همراهی شما`,
+                `آگهی "${title}" توسط تیم مدیریت تایید شد.\n\n🌟 آگهی شما هم‌اکنون در معرض دید کاربران قرار دارد.\n📊 می‌توانید آمار بازدید آن را در پروفایل مشاهده کنید.\n\n🙏 با تشکر از همراهی شما`,
                 'success',
                 '✅'
             );
@@ -1260,10 +1237,7 @@
         function sendAdRejectedMessage(title, reason = '') {
             addInboxMessage(
                 '❌ آگهی شما رد شد',
-                `آگهی "${title}" توسط تیم مدیریت رد شد.\n` +
-                `${reason ? `\n📝 دلیل: ${reason}\n` : ''}\n` +
-                `🔹 می‌توانید آگهی را ویرایش و مجدداً ارسال کنید.\n\n` +
-                `🙏 با احترام، تیم جـدار بازار`,
+                `آگهی "${title}" توسط تیم مدیریت رد شد.\n${reason ? `\n📝 دلیل: ${reason}\n` : ''}\n🔹 می‌توانید آگهی را ویرایش و مجدداً ارسال کنید.\n\n🙏 با احترام، تیم جـدار بازار`,
                 'system',
                 '❌'
             );
@@ -1272,19 +1246,13 @@
         function sendThankYouMessage() {
             addInboxMessage(
                 '🙏 سپاس از شما!',
-                `از اینکه از جـدار بازار استفاده می‌کنید، بی‌نهایت سپاسگزاریم.\n\n` +
-                `🌟 ما متعهد به ارائه بهترین خدمات به شما هستیم.\n` +
-                `📬 هرگونه سوال یا پیشنهاد دارید، از بخش پشتیبانی با ما در ارتباط باشید.\n\n` +
-                `❤️ همراهی شما باعث افتخار ماست`,
+                `از اینکه از جـدار بازار استفاده می‌کنید، بی‌نهایت سپاسگزاریم.\n\n🌟 ما متعهد به ارائه بهترین خدمات به شما هستیم.\n📬 هرگونه سوال یا پیشنهاد دارید، از بخش پشتیبانی با ما در ارتباط باشید.\n\n❤️ همراهی شما باعث افتخار ماست`,
                 'thankyou',
                 '❤️'
             );
         }
 
-        // ============================================================
-        // ===== TRANSLATIONS =====
-        // ============================================================
-
+        // ===== ترجمه‌ها =====
         const translations = {
             fa: {
                 home: 'خانه', add: 'ثبت', favorites: 'نشان‌ها', profile: 'پروفایل',
@@ -1538,12 +1506,11 @@
             }
         };
 
-        function t(key) { return translations[currentLang]?.[key] || translations.fa[key] || key; }
+        function t(key) {
+            return translations[currentLang]?.[key] || translations.fa[key] || key;
+        }
 
-        // ============================================================
-        // ===== SESSION FUNCTIONS =====
-        // ============================================================
-
+        // ===== نشست =====
         function getSessionId() {
             let sessionId = localStorage.getItem('jedar_session_id');
             if (!sessionId) {
@@ -1613,10 +1580,7 @@
             }
         }
 
-        // ============================================================
-        // ===== API CALL =====
-        // ============================================================
-
+        // ===== API =====
         async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
@@ -1630,10 +1594,7 @@
             }
         }
 
-        // ============================================================
-        // ===== TOAST & LOADING =====
-        // ============================================================
-
+        // ===== Toast & Loading =====
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1674,16 +1635,12 @@
             return `${IMAGE_BASE}${img}`;
         }
 
-        // ============================================================
-        // ===== FILTER PANEL TOGGLE =====
-        // ============================================================
-
+        // ===== فیلتر =====
         function toggleFilterPanel() {
             filterPanelOpen = !filterPanelOpen;
             const panel = document.getElementById('filterPanel');
             const btn = document.getElementById('filterToggleBtn');
             const arrow = document.getElementById('filterArrow');
-            
             if (filterPanelOpen) {
                 panel.classList.add('show');
                 btn.classList.add('active');
@@ -1695,10 +1652,7 @@
             }
         }
 
-        // ============================================================
-        // ===== VERIFICATION =====
-        // ============================================================
-
+        // ===== تأیید =====
         function isPhoneVerified() {
             return localStorage.getItem('jedar_phone_verified') === 'true';
         }
@@ -1715,10 +1669,7 @@
             return true;
         }
 
-        // ============================================================
-        // ===== THEME =====
-        // ============================================================
-
+        // ===== تم =====
         function toggleTheme() {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1727,10 +1678,7 @@
             localStorage.setItem('jedar_theme', currentTheme);
         }
 
-        // ============================================================
-        // ===== 2FA FUNCTIONS (فقط تلگرام) =====
-        // ============================================================
-
+        // ===== 2FA (فقط تلگرام) =====
         async function requestCodeViaTelegram() {
             const phone = document.getElementById('profilePhone').value.trim();
             if (!phone || phone.length < 10) {
@@ -1784,16 +1732,39 @@
             }
         }
 
-        // ===== تابع ایمیل کاملاً غیرفعال شد =====
+        // ===== تابع ایمیل غیرفعال =====
         async function requestCodeViaEmail() {
-            // این تابع دیگر هیچ کاری انجام نمی‌دهد
             showToast('⛔ این گزینه غیرفعال است', 'warning');
         }
 
+        // ===== تأیید کد با حالت تست =====
         async function verifyCode() {
             const phone = document.getElementById('profilePhone').value.trim();
             const code = document.getElementById('codeInput').value.trim();
 
+            // ===== حالت تست: کد 123456 برای هر شماره‌ای پذیرفته می‌شود =====
+            if (code === '123456') {
+                localStorage.setItem('jedar_phone_verified', 'true');
+                localStorage.setItem('jedar_verified_phone', phone);
+                localStorage.setItem('jedar_user_id', 'test_user_' + Date.now());
+                
+                const status = document.getElementById('verifyStatus');
+                status.className = 'status-text success';
+                status.textContent = '✅ شماره شما با موفقیت تأیید شد! (حالت تست)';
+                status.style.background = '#e8f5e9';
+                status.style.color = '#27ae60';
+                document.getElementById('codeSection').style.display = 'none';
+                document.getElementById('codeInput').value = '';
+                document.getElementById('logoutBtn').style.display = 'block';
+                
+                showToast('✅ تأیید شد (کد 123456)', 'success');
+                loadProfile();
+                fetchAds(false);
+                return;
+            }
+            // ===== پایان حالت تست =====
+
+            // ===== تأیید واقعی =====
             if (!code || code.length !== 6) {
                 showToast('⚠️ کد ۶ رقمی را وارد کنید', 'warning');
                 return;
@@ -1847,10 +1818,7 @@
             document.getElementById('logoutBtn').style.display = 'none';
         }
 
-        // ============================================================
-        // ===== PROFILE =====
-        // ============================================================
-
+        // ===== پروفایل =====
         async function loadProfile() {
             const sessionId = getSessionId();
             const isValid = await verifySession();
@@ -1926,10 +1894,7 @@
             } catch (e) { console.error('checkAdminStatus error:', e); }
         }
 
-        // ============================================================
-        // ===== LANGUAGE - UPDATE ALL TEXTS =====
-        // ============================================================
-
+        // ===== بروزرسانی ترجمه‌ها =====
         function updateAllTexts() {
             document.getElementById('navHomeLabel').textContent = t('nav_home');
             document.getElementById('navAddLabel').textContent = t('nav_add');
@@ -2057,10 +2022,7 @@
             });
         }
 
-        // ============================================================
-        // ===== ADS FUNCTIONS =====
-        // ============================================================
-
+        // ===== آگهی‌ها =====
         async function fetchAds(showLoading = true) {
             if (isUpdating) return;
             isUpdating = true;
@@ -2238,10 +2200,7 @@
             });
         }
 
-        // ============================================================
-        // ===== TAB SWITCHING =====
-        // ============================================================
-
+        // ===== تب‌ها =====
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
@@ -2293,10 +2252,7 @@
             }
         }
 
-        // ============================================================
-        // ===== NEWS (همگام‌سازی با ربات) =====
-        // ============================================================
-
+        // ===== اخبار =====
         async function loadNews() {
             const container = document.getElementById('newsContainer');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -2325,10 +2281,7 @@
             }
         }
 
-        // ============================================================
-        // ===== RULES & SUPPORT =====
-        // ============================================================
-
+        // ===== قوانین و پشتیبانی =====
         async function loadRules() {
             const container = document.getElementById('rulesContent');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
@@ -2371,10 +2324,7 @@
             } catch (err) { container.innerHTML = `<div class="support-content">${t('error_loading')}</div>`; }
         }
 
-        // ============================================================
-        // ===== FAVORITES =====
-        // ============================================================
-
+        // ===== علاقه‌مندی‌ها =====
         async function loadFavorites() {
             try {
                 const userId = getUserId();
@@ -2443,10 +2393,7 @@
             } catch (err) { showToast('خطا', 'error'); }
         }
 
-        // ============================================================
-        // ===== MY ADS =====
-        // ============================================================
-
+        // ===== آگهی‌های من =====
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
             if (!requireVerifiedPhone()) {
@@ -2525,10 +2472,7 @@
             document.getElementById('addAdForm').dataset.editId = adId;
         }
 
-        // ============================================================
-        // ===== DRAFTS =====
-        // ============================================================
-
+        // ===== پیش‌نویس‌ها =====
         function loadDrafts() {
             const container = document.getElementById('draftsList');
             drafts = JSON.parse(localStorage.getItem('jedar_drafts') || '[]');
@@ -2597,10 +2541,7 @@
             loadDrafts();
         }
 
-        // ============================================================
-        // ===== WIZARD =====
-        // ============================================================
-
+        // ===== ویزارد =====
         function wizardNext() { if (wizardStep < 3) { wizardStep++;
                 updateWizard(); } }
 
@@ -2619,10 +2560,7 @@
             }
         }
 
-        // ============================================================
-        // ===== SUBMIT AD =====
-        // ============================================================
-
+        // ===== ثبت آگهی =====
         async function submitAd() {
             if (!requireVerifiedPhone()) return;
 
@@ -2746,10 +2684,7 @@
             }
         }
 
-        // ============================================================
-        // ===== IMAGE UPLOAD PREVIEW =====
-        // ============================================================
-
+        // ===== آپلود تصویر =====
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             const grid = document.getElementById('adImagePreview');
@@ -2783,10 +2718,7 @@
             input.dispatchEvent(event);
         }
 
-        // ============================================================
-        // ===== OPEN ADD MODAL =====
-        // ============================================================
-
+        // ===== باز کردن مودال ثبت =====
         function openAddModal() {
             if (!requireVerifiedPhone()) {
                 showToast(t('verify_required'), 'warning');
@@ -2815,10 +2747,7 @@
             document.getElementById(id).classList.remove('show');
         }
 
-        // ============================================================
-        // ===== AD DETAIL =====
-        // ============================================================
-
+        // ===== جزئیات آگهی =====
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
             if (!ad) { showToast(t('ad_not_found'), 'error'); return; }
@@ -2933,10 +2862,7 @@
             openAdDetail(adId);
         }
 
-        // ============================================================
-        // ===== REVIEW =====
-        // ============================================================
-
+        // ===== نظرات =====
         function setDetailRating(val) {
             reviewRating = val;
             document.getElementById('detailReviewRating').value = val;
@@ -3002,10 +2928,7 @@
             }
         }
 
-        // ============================================================
-        // ===== TOGGLE STATUSES =====
-        // ============================================================
-
+        // ===== وضعیت سرویس‌ها =====
         async function loadToggleStatuses() {
             try {
                 const userId = getUserId();
@@ -3019,10 +2942,7 @@
             return toggleStatuses[key] !== undefined ? toggleStatuses[key] : true;
         }
 
-        // ============================================================
-        // ===== MEDIA ZOOM =====
-        // ============================================================
-
+        // ===== زوم =====
         function openMediaZoom(url, type) {
             const overlay = document.getElementById('imageZoomOverlay');
             const container = document.getElementById('zoomMediaContainer');
@@ -3041,10 +2961,7 @@
             document.body.style.overflow = '';
         }
 
-        // ============================================================
-        // ===== BANNER =====
-        // ============================================================
-
+        // ===== بنرها =====
         async function loadSplashBanner() {
             if (bannerShown) return;
             if (!isServiceEnabled('splash')) return;
@@ -3112,10 +3029,7 @@
             } catch (err) { console.error('Error loading inline banners:', err); }
         }
 
-        // ============================================================
-        // ===== SUPPORT DROPDOWN =====
-        // ============================================================
-
+        // ===== منوی پشتیبانی =====
         function toggleSupportMenu(event) {
             event.stopPropagation();
             const menu = document.getElementById('supportDropdownMenu');
@@ -3129,10 +3043,7 @@
             }
         });
 
-        // ============================================================
-        // ===== LANGUAGE SELECT =====
-        // ============================================================
-
+        // ===== انتخاب زبان =====
         function showLanguageOverlay() { document.getElementById('langOverlay').classList.remove('hidden'); }
 
         function selectLanguage(lang) {
@@ -3148,10 +3059,7 @@
             loadNews();
         }
 
-        // ============================================================
-        // ===== ADMIN FUNCTIONS =====
-        // ============================================================
-
+        // ===== مدیریت =====
         function checkAdminAccess() {
             if (!isAdmin) { showToast(t('no_permission'), 'error'); return false; }
             return true;
@@ -3476,10 +3384,7 @@
             }
         }
 
-        // ============================================================
-        // ===== INIT =====
-        // ============================================================
-
+        // ===== راه‌اندازی =====
         document.documentElement.setAttribute('data-theme', currentTheme);
         document.getElementById('themeBtn').innerHTML = currentTheme === 'light' ? '<i class="fa-solid fa-moon"></i>' :
             '<i class="fa-solid fa-sun"></i>';
@@ -3518,15 +3423,16 @@
             }
         }, 2000);
 
-        console.log(`🚀 جـدار بازار - نسخه نهایی با فیلتر دکمه‌ای`);
+        console.log(`🚀 جـدار بازار - نسخه کامل نهایی`);
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`📬 صندوق پیام‌ها: ${inboxMessages.length} پیام`);
         console.log(`🔘 فیلتر پیشرفته: داخل دکمه (قابل باز/بسته)`);
-        console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
-        console.log('🌍 فارسی و عربی - هر دو فعال هستند');
-        console.log('📰 اخبار همگام‌سازی شده با ربات');
-        console.log('📧 گزینه ایمیل غیرفعال شد - فقط تلگرام');
+        console.log(`✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.`);
+        console.log(`🌍 فارسی و عربی - هر دو فعال هستند`);
+        console.log(`📰 اخبار همگام‌سازی شده با ربات`);
+        console.log(`📧 گزینه ایمیل غیرفعال شد - فقط تلگرام`);
+        console.log(`🔑 حالت تست: کد 123456 برای هر شماره‌ای قابل قبول است`);
     </script>
 </body>
-    </html>
+                                                                                                                                      </html>
