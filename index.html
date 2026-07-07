@@ -964,14 +964,12 @@
                 <input type="text" id="profileCity" placeholder="شهر محل سکونت" />
             </div>
             
-            <!-- ===== دکمه‌های تأیید ===== -->
+            <!-- ===== دکمه‌های تأیید (فقط تلگرام) ===== -->
             <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
                 <button onclick="requestCodeViaTelegram()" id="telegramVerifyBtn" style="padding:12px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">
                     ✈️ دریافت کد از تلگرام
                 </button>
-                <button onclick="requestCodeViaEmail()" id="emailVerifyBtn" style="padding:12px;background:linear-gradient(135deg,#ea4335,#c5221f);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">
-                    📧 دریافت کد از ایمیل
-                </button>
+                <!-- دکمه ایمیل حذف شد -->
             </div>
             
             <div id="verifyStatus" style="margin-top:12px;padding:10px;border-radius:8px;text-align:center;background:#fef3c7;color:#f39c12;font-size:13px;font-weight:600;">
@@ -1354,7 +1352,6 @@
                 lang_switch: '🌐',
                 refresh: 'بروزرسانی',
                 telegram_verify: '✈️ دریافت کد از تلگرام',
-                email_verify: '📧 دریافت کد از ایمیل',
                 verify_status: '⚠️ شماره خود را تأیید کنید',
                 code_input: '🔑 کد ۶ رقمی را وارد کنید',
                 verify_code: '✅ تأیید کد',
@@ -1480,7 +1477,6 @@
                 lang_switch: '🌐',
                 refresh: 'تحديث',
                 telegram_verify: '✈️ استلام الكود من تليجرام',
-                email_verify: '📧 استلام الكود من البريد الإلكتروني',
                 verify_status: '⚠️ يرجى تأكيد رقم هاتفك',
                 code_input: '🔑 أدخل الرمز المكون من 6 أرقام',
                 verify_code: '✅ تأكيد الرمز',
@@ -1732,7 +1728,7 @@
         }
 
         // ============================================================
-        // ===== 2FA FUNCTIONS =====
+        // ===== 2FA FUNCTIONS (فقط تلگرام) =====
         // ============================================================
 
         async function requestCodeViaTelegram() {
@@ -1788,54 +1784,10 @@
             }
         }
 
+        // ===== تابع ایمیل کاملاً غیرفعال شد =====
         async function requestCodeViaEmail() {
-            const email = document.getElementById('profileEmail').value.trim();
-            if (!email || !email.includes('@')) {
-                showToast('⚠️ ایمیل معتبر وارد کنید', 'error');
-                return;
-            }
-
-            const phone = document.getElementById('profilePhone').value.trim();
-            if (!phone || phone.length < 10) {
-                showToast('⚠️ شماره تلفن را وارد کنید', 'error');
-                return;
-            }
-
-            pendingMethod = 'email';
-            const status = document.getElementById('verifyStatus');
-            status.className = 'status-text info';
-            status.textContent = '⏳ ارسال کد از طریق ایمیل...';
-            status.style.background = '#e3f2fd';
-            status.style.color = '#1a73e8';
-
-            try {
-                const res = await apiCall('/auth/send-2fa-email', {
-                    method: 'POST',
-                    body: JSON.stringify({ email, mobile: phone })
-                });
-
-                if (res.success) {
-                    status.className = 'status-text success';
-                    status.textContent = `✅ کد به ایمیل ${email} ارسال شد`;
-                    status.style.background = '#e8f5e9';
-                    status.style.color = '#27ae60';
-                    document.getElementById('codeSection').style.display = 'block';
-                    document.getElementById('codeInput').focus();
-                    showToast(`📧 کد ۶ رقمی به ${email} ارسال شد`, 'success');
-                } else {
-                    status.className = 'status-text error';
-                    status.textContent = '❌ ' + (res.error || 'خطا در ارسال کد');
-                    status.style.background = '#fde8e8';
-                    status.style.color = '#e74c3c';
-                    showToast('❌ ' + (res.error || 'خطا در ارسال کد'), 'error');
-                }
-            } catch (e) {
-                status.className = 'status-text error';
-                status.textContent = '❌ خطا در ارتباط با سرور';
-                status.style.background = '#fde8e8';
-                status.style.color = '#e74c3c';
-                showToast('❌ خطا در ارتباط با سرور', 'error');
-            }
+            // این تابع دیگر هیچ کاری انجام نمی‌دهد
+            showToast('⛔ این گزینه غیرفعال است', 'warning');
         }
 
         async function verifyCode() {
@@ -2033,7 +1985,6 @@
             document.getElementById('draftsTitle').textContent = '📝 ' + t('drafts_title');
 
             document.getElementById('telegramVerifyBtn').textContent = t('telegram_verify');
-            document.getElementById('emailVerifyBtn').textContent = t('email_verify');
             document.getElementById('verifyStatus').textContent = t('verify_status');
             document.getElementById('codeInputLabel').textContent = t('code_input');
             document.getElementById('verifyCodeBtn').textContent = t('verify_code');
@@ -2253,7 +2204,6 @@
             }
             filteredAds = results;
             renderAds(filteredAds);
-            // بستن پنل فیلتر بعد از اعمال
             if (filterPanelOpen) toggleFilterPanel();
             showToast(`${filteredAds.length} ${t('all_ads')} یافت شد`, 'success');
         }
@@ -3576,6 +3526,7 @@
         console.log('✅ تأیید شماره برای ثبت آگهی و نظر الزامی است.');
         console.log('🌍 فارسی و عربی - هر دو فعال هستند');
         console.log('📰 اخبار همگام‌سازی شده با ربات');
+        console.log('📧 گزینه ایمیل غیرفعال شد - فقط تلگرام');
     </script>
 </body>
-                </html>
+    </html>
