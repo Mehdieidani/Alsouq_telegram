@@ -2312,7 +2312,7 @@
                 "phoneRequired": "⚠️ لطفاً شماره موبایل معتبر وارد کنید",
                 "codeSent": "✅ کد از طریق ربات تلگرام ارسال شد",
                 "codeError": "❌ خطا در ارسال کد",
-                "startBot": "⚠️ لطفاً ابتدا ربات را استارت کنید",
+                "startBot": "⚠️ لطفاً ابتدا ربات را استارت کنید و شماره خود را به ربات بفرستید، سپس دوباره روی \"دریافت کد\" کلیک کنید.",
                 "openBot": "آیا می‌خواهید ربات را باز کنید؟",
                 "codeInvalid": "❌ کد نامعتبر است",
                 "codeVerified": "✅ شماره شما با موفقیت تأیید شد! 🎉",
@@ -2459,7 +2459,7 @@
                 "phoneRequired": "⚠️ يرجى إدخال رقم هاتف صحيح",
                 "codeSent": "✅ تم إرسال الرمز عبر بوت التلجرام",
                 "codeError": "❌ خطأ في إرسال الرمز",
-                "startBot": "⚠️ يرجى تشغيل البوت أولاً",
+                "startBot": "⚠️ يرجى تشغيل البوت أولاً وإرسال رقمك إليه، ثم انقر على \"طلب رمز\" مجدداً.",
                 "openBot": "هل تريد فتح البوت؟",
                 "codeInvalid": "❌ رمز غير صحيح",
                 "codeVerified": "✅ تم تأكيد رقمك بنجاح! 🎉",
@@ -2850,7 +2850,7 @@
         }
 
         // ============================================================
-        // 2FA - REQUEST CODE (از طریق ربات)
+        // 2FA - REQUEST CODE (از طریق ربات) - بدون هدایت به ربات
         // ============================================================
         async function requestCodeViaTelegram() {
             const phone = document.getElementById('profilePhone').value.trim();
@@ -2881,12 +2881,10 @@
                     document.getElementById('profileCodeInput').focus();
                     showToast(t('codeSent'), 'success');
                 } else if (res.action === 'start_bot') {
+                    // فقط پیام خطا نشان می‌دهیم و هرگز هدایت نمی‌کنیم
                     status.className = 'verify-status warning';
                     status.textContent = t('startBot');
                     showToast(t('startBot'), 'warning');
-                    if (confirm(t('openBot'))) {
-                        window.open(BOT_URL, '_blank');
-                    }
                 } else {
                     status.className = 'verify-status error';
                     status.textContent = t('codeError');
