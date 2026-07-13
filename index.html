@@ -64,9 +64,6 @@
         .search-box input::placeholder{color:var(--text-muted)}
         .search-box .search-btn{background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border-radius:var(--radius-full);padding:10px 24px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all var(--transition);white-space:nowrap}
         .search-box .search-btn:hover{transform:scale(1.06);box-shadow:0 6px 30px var(--ruby-glow)}
-        .search-box .ai-btn{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:var(--radius-full);padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;transition:all var(--transition);white-space:nowrap}
-        .search-box .ai-btn:hover{transform:scale(1.06);box-shadow:0 6px 30px rgba(108,92,231,0.4)}
-        .search-box .ai-btn:disabled{opacity:0.6;cursor:not-allowed}
         .categories-scroll{display:flex;overflow-x:auto;gap:10px;padding:6px 0 12px;scrollbar-width:none}
         .categories-scroll::-webkit-scrollbar{display:none}
         .category-chip{background:var(--bg-card);border:2px solid var(--border-color);border-radius:var(--radius-full);padding:8px 22px;white-space:nowrap;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition);color:var(--text-primary);flex-shrink:0;box-shadow:var(--shadow-sm)}
@@ -269,7 +266,6 @@
         .image-zoom-overlay .close-btn:hover{background:var(--ruby);transform:rotate(90deg)}
         .image-zoom-overlay .zoom-content{max-width:95%;max-height:95%;border-radius:8px;cursor:default}
         .image-zoom-overlay .zoom-content img,.image-zoom-overlay .zoom-content video{max-width:100%;max-height:95vh;border-radius:8px;object-fit:contain}
-        .ai-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:#fff;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px}
     </style>
 </head>
 <body>
@@ -294,12 +290,7 @@
             <div class="verify-text"><i class="fa-solid fa-shield-halved"></i><span id="verifyBannerText">✅ شماره خود را تأیید کنید تا از تمام امکانات استفاده کنید</span></div>
             <button onclick="openTelegramBot()" class="verify-btn" id="verifyBannerBtn"><i class="fa-solid fa-paper-plane"></i> <span id="verifyBannerBtnText">📱 دریافت کد از ربات</span></button>
         </div>
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها...">
-            <button class="search-btn" onclick="searchAds()">جستجو</button>
-            <button class="ai-btn" onclick="aiSearch()" id="aiSearchBtn"><i class="fa-solid fa-brain"></i> جستجوی هوشمند</button>
-        </div>
+        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="searchInput" placeholder="جستجو در آگهی‌ها..."><button class="search-btn" onclick="searchAds()">جستجو</button></div>
         <div class="categories-scroll" id="categoriesContainer"></div>
         <div id="bannerAdsContainer"></div>
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
@@ -329,92 +320,31 @@
             <div class="wizard-progress"><div class="bar" id="wizardBar"></div><div class="step active" id="wStep1">۱</div><div class="step" id="wStep2">۲</div><div class="step" id="wStep3">۳</div></div>
             <form id="addAdForm" onsubmit="return false;">
                 <div class="wizard-step active" id="wizardStep1">
-                    <div class="form-group">
-                        <label id="adTitleLabel">عنوان آگهی <span class="required">*</span></label>
-                        <input type="text" id="adTitle" placeholder="مثال: تور مشهد" required>
-                        <button type="button" class="ai-btn" onclick="aiGenerateTitle()" id="aiTitleBtn" style="margin-top:6px;width:100%;padding:10px;font-size:13px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تولید عنوان با هوش مصنوعی</button>
-                    </div>
+                    <div class="form-group"><label id="adTitleLabel">عنوان آگهی <span class="required">*</span></label><input type="text" id="adTitle" placeholder="مثال: تور مشهد" required></div>
                     <div class="form-group"><label id="adCategoryLabel">دسته‌بندی <span class="required">*</span></label>
-                        <select id="adCategory" required>
-                            <option value="pilgrimage" id="catPilgrimage">زیارت</option>
-                            <option value="tourism" id="catTourism">گردشگری</option>
-                            <option value="medical" id="catMedical">پزشکی</option>
-                            <option value="beauty" id="catBeauty">زیبایی</option>
-                            <option value="services" id="catServices">خدمات</option>
-                            <option value="jobs" id="catJobs">کاریابی</option>
-                            <option value="real_estate" id="catRealEstate">املاک</option>
-                            <option value="vehicles" id="catVehicles">خودرو</option>
-                        </select>
+                        <select id="adCategory" required><option value="pilgrimage" id="catPilgrimage">زیارت</option><option value="tourism" id="catTourism">گردشگری</option><option value="medical" id="catMedical">پزشکی</option><option value="beauty" id="catBeauty">زیبایی</option><option value="services" id="catServices">خدمات</option><option value="jobs" id="catJobs">کاریابی</option><option value="real_estate" id="catRealEstate">املاک</option><option value="vehicles" id="catVehicles">خودرو</option></select>
                     </div>
                     <div class="form-group"><label id="adPriceLabel">قیمت <span class="required">*</span></label><input type="number" id="adPrice" placeholder="۰" required></div>
                     <div class="form-group"><label id="adCurrencyLabel">واحد پول <span class="required">*</span></label>
-                        <select id="adCurrency">
-                            <option value="ریال">ریال</option>
-                            <option value="دینار">دینار</option>
-                            <option value="لیر">لیر</option>
-                            <option value="درهم">درهم</option>
-                            <option value="دلار">دلار</option>
-                            <option value="یورو">یورو</option>
-                            <option value="ریال سعودی">ریال سعودی</option>
-                            <option value="دینار کویت">دینار کویت</option>
-                            <option value="ریال قطر">ریال قطر</option>
-                            <option value="دینار بحرین">دینار بحرین</option>
-                            <option value="ریال عمان">ریال عمان</option>
-                        </select>
+                        <select id="adCurrency"><option value="ریال">ریال</option><option value="دینار">دینار</option><option value="لیر">لیر</option><option value="درهم">درهم</option><option value="دلار">دلار</option><option value="یورو">یورو</option><option value="ریال سعودی">ریال سعودی</option><option value="دینار کویت">دینار کویت</option><option value="ریال قطر">ریال قطر</option><option value="دینار بحرین">دینار بحرین</option><option value="ریال عمان">ریال عمان</option></select>
                     </div>
                     <button type="button" class="btn-primary" onclick="wizardNext()" id="btnNext" style="margin-top:6px;">بعدی</button>
                 </div>
                 <div class="wizard-step" id="wizardStep2">
-                    <div class="form-group">
-                        <label id="adDescLabel">توضیحات <span class="required">*</span></label>
-                        <textarea id="adDescription" rows="4" placeholder="توضیحات کامل..." required></textarea>
-                        <button type="button" class="ai-btn" onclick="aiGenerateDescription()" id="aiDescBtn" style="margin-top:6px;width:100%;padding:10px;font-size:13px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تولید توضیحات با هوش مصنوعی</button>
-                    </div>
+                    <div class="form-group"><label id="adDescLabel">توضیحات <span class="required">*</span></label><textarea id="adDescription" rows="4" placeholder="توضیحات کامل..." required></textarea></div>
                     <div class="form-group"><label id="adLocationLabel">موقعیت / شهر <span class="required">*</span></label><input type="text" id="adLocation" placeholder="مثال: تهران" required></div>
-                    <div class="form-group"><label id="adCountryLabel">کشور</label>
-                        <select id="adCountry">
-                            <option value="ایران">🇮🇷 ایران</option>
-                            <option value="عراق">🇮🇶 عراق</option>
-                            <option value="امارات">🇦🇪 امارات</option>
-                            <option value="ترکیه">🇹🇷 ترکیه</option>
-                            <option value="کویت">🇰🇼 کویت</option>
-                            <option value="عربستان">🇸🇦 عربستان</option>
-                            <option value="قطر">🇶🇦 قطر</option>
-                            <option value="بحرین">🇧🇭 بحرین</option>
-                            <option value="عمان">🇴🇲 عمان</option>
-                            <option value="آمریکا">🇺🇸 آمریکا</option>
-                            <option value="اروپا">🇪🇺 اروپا</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label id="adDurationLabel">⏳ مدت زمان نمایش</label>
-                        <select id="adDuration">
-                            <option value="7">۷ روز</option>
-                            <option value="14">۱۴ روز</option>
-                            <option value="30" selected>۳۰ روز</option>
-                            <option value="60">۶۰ روز</option>
-                            <option value="90">۹۰ روز</option>
-                            <option value="0">♾️ نامحدود</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label id="adCountryLabel">کشور</label><select id="adCountry"><option value="ایران">🇮🇷 ایران</option><option value="عراق">🇮🇶 عراق</option><option value="امارات">🇦🇪 امارات</option><option value="ترکیه">🇹🇷 ترکیه</option><option value="کویت">🇰🇼 کویت</option><option value="عربستان">🇸🇦 عربستان</option><option value="قطر">🇶🇦 قطر</option><option value="بحرین">🇧🇭 بحرین</option><option value="عمان">🇴🇲 عمان</option><option value="آمریکا">🇺🇸 آمریکا</option><option value="اروپا">🇪🇺 اروپا</option></select></div>
+                    <div class="form-group"><label id="adDurationLabel">⏳ مدت زمان نمایش</label><select id="adDuration"><option value="7">۷ روز</option><option value="14">۱۴ روز</option><option value="30" selected>۳۰ روز</option><option value="60">۶۰ روز</option><option value="90">۹۰ روز</option><option value="0">♾️ نامحدود</option></select></div>
                     <div class="form-row"><button type="button" class="btn-secondary" onclick="wizardPrev()" id="btnPrev">قبلی</button><button type="button" class="btn-primary" onclick="wizardNext()" id="btnNext2">بعدی</button></div>
                 </div>
                 <div class="wizard-step" id="wizardStep3">
                     <div class="form-group"><label id="adImagesLabel">تصاویر/ویدیو (حداکثر ۴)</label>
-                        <div class="image-upload-area" onclick="document.getElementById('adImagesInput').click()">
-                            <i class="fa-solid fa-cloud-arrow-up"></i><p id="uploadText">برای آپلود کلیک کنید (تصویر یا ویدیو)</p>
-                            <input type="file" id="adImagesInput" accept="image/*,video/*" multiple>
-                        </div>
-                        <div class="image-preview-grid" id="adImagePreview"></div>
-                        <span id="uploadStatus" style="font-size:12px;color:var(--text-muted);display:block;margin-top:4px;"></span>
+                        <div class="image-upload-area" onclick="document.getElementById('adImagesInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i><p id="uploadText">برای آپلود کلیک کنید (تصویر یا ویدیو)</p><input type="file" id="adImagesInput" accept="image/*,video/*" multiple></div>
+                        <div class="image-preview-grid" id="adImagePreview"></div><span id="uploadStatus" style="font-size:12px;color:var(--text-muted);display:block;margin-top:4px;"></span>
                     </div>
-                    <div class="form-group"><label id="adContactLabel">شماره تماس (تایید شده)</label>
-                        <input type="tel" id="adContact" placeholder="شماره شما" readonly>
-                    </div>
+                    <div class="form-group"><label id="adContactLabel">شماره تماس (تایید شده)</label><input type="tel" id="adContact" placeholder="شماره شما" readonly></div>
                     <div class="form-group"><label><input type="checkbox" id="saveAsDraft"> <span id="draftLabel">ذخیره به‌عنوان پیش‌نویس</span></label></div>
-                    <div class="form-row">
-                        <button type="button" class="btn-secondary" onclick="wizardPrev()" id="btnPrev2">قبلی</button>
-                        <button type="button" class="btn-primary" id="submitAdBtn" onclick="submitAd()" id="btnSubmit">ثبت آگهی</button>
-                    </div>
+                    <div class="form-row"><button type="button" class="btn-secondary" onclick="wizardPrev()" id="btnPrev2">قبلی</button><button type="button" class="btn-primary" id="submitAdBtn" onclick="submitAd()" id="btnSubmit">ثبت آگهی</button></div>
                 </div>
             </form>
         </div>
@@ -425,17 +355,15 @@
     <div class="modal-overlay" id="ticketModal"><div class="modal-box" id="ticketBox"><button class="modal-close" onclick="closeTicketModal()"><i class="fa-solid fa-xmark"></i></button><div id="ticketContent"></div></div></div>
     <!-- TABS -->
     <div id="profileTab"><h2 style="margin-bottom:14px;font-size:20px;font-weight:800;" id="profileTitle">👤 پروفایل</h2>
-        <div class="profile-section">
-            <div class="form-group"><label id="usernameLabel">نام کاربری</label><input type="text" id="profileUsername" placeholder="نام کاربری" readonly></div>
-            <div class="form-group"><label id="fullnameLabel">نام کامل</label><input type="text" id="profileFullname" placeholder="نام و نام خانوادگی"></div>
-            <div class="form-group"><label id="phoneLabel">📱 شماره تلفن (شناسه کاربری)</label><input type="tel" id="profilePhone" placeholder="0912..."></div>
-            <div class="form-group"><label id="emailLabel">📧 ایمیل</label><input type="email" id="profileEmail" placeholder="ایمیل"></div>
-            <div class="form-group"><label id="cityLabel">شهر</label><input type="text" id="profileCity" placeholder="شهر محل سکونت"></div>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;"><button onclick="requestCodeViaTelegram()" id="telegramVerifyBtn" style="padding:14px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;cursor:pointer;width:100%;box-shadow:0 4px 20px rgba(0,136,204,0.3);display:flex;align-items:center;justify-content:center;gap:10px;">✈️ <span id="getCodeText">دریافت کد از ربات تلگرام</span></button></div>
-            <div id="verifyStatus" style="margin-top:12px;padding:14px;border-radius:8px;text-align:center;background:#fef3c7;color:#f39c12;font-size:14px;font-weight:600;"><span id="verifyStatusText">⚠️ شماره خود را تأیید کنید</span></div>
-            <div id="codeSection" style="display:none;margin-top:14px;padding:18px;background:var(--bg-input);border-radius:10px;border:1px solid var(--border-color);"><div class="form-group"><label id="codeInputLabel">🔑 کد ۶ رقمی را وارد کنید</label><input type="text" id="codeInput" maxlength="6" placeholder="مثال: ۱۲۳۴۵۶" style="text-align:center;letter-spacing:6px;font-size:24px;font-weight:700;"></div><button onclick="verifyCode()" id="verifyCodeBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;">✅ <span id="verifyCodeText">تأیید کد</span></button><button onclick="closeCodeSection()" id="cancelCodeBtn" style="width:100%;margin-top:8px;padding:12px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:10px;font-weight:600;color:var(--text-primary);cursor:pointer;">❌ <span id="cancelCodeText">انصراف</span></button></div>
-            <div class="profile-actions" style="margin-top:12px;"><button class="btn-save" onclick="saveProfile()" id="saveProfileBtn">💾 ذخیره</button><button id="logoutBtn" onclick="logoutUser()" style="display:none;background:var(--ruby);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:10px;" id="logoutBtnText">🚪 خروج</button></div>
-        </div>
+        <div class="profile-section"><div class="form-group"><label id="usernameLabel">نام کاربری</label><input type="text" id="profileUsername" placeholder="نام کاربری" readonly></div>
+        <div class="form-group"><label id="fullnameLabel">نام کامل</label><input type="text" id="profileFullname" placeholder="نام و نام خانوادگی"></div>
+        <div class="form-group"><label id="phoneLabel">📱 شماره تلفن (شناسه کاربری)</label><input type="tel" id="profilePhone" placeholder="0912..."></div>
+        <div class="form-group"><label id="emailLabel">📧 ایمیل</label><input type="email" id="profileEmail" placeholder="ایمیل"></div>
+        <div class="form-group"><label id="cityLabel">شهر</label><input type="text" id="profileCity" placeholder="شهر محل سکونت"></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;"><button onclick="requestCodeViaTelegram()" id="telegramVerifyBtn" style="padding:14px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:15px;cursor:pointer;width:100%;box-shadow:0 4px 20px rgba(0,136,204,0.3);display:flex;align-items:center;justify-content:center;gap:10px;">✈️ <span id="getCodeText">دریافت کد از ربات تلگرام</span></button></div>
+        <div id="verifyStatus" style="margin-top:12px;padding:14px;border-radius:8px;text-align:center;background:#fef3c7;color:#f39c12;font-size:14px;font-weight:600;"><span id="verifyStatusText">⚠️ شماره خود را تأیید کنید</span></div>
+        <div id="codeSection" style="display:none;margin-top:14px;padding:18px;background:var(--bg-input);border-radius:10px;border:1px solid var(--border-color);"><div class="form-group"><label id="codeInputLabel">🔑 کد ۶ رقمی را وارد کنید</label><input type="text" id="codeInput" maxlength="6" placeholder="مثال: ۱۲۳۴۵۶" style="text-align:center;letter-spacing:6px;font-size:24px;font-weight:700;"></div><button onclick="verifyCode()" id="verifyCodeBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#27ae60,#1e8449);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;">✅ <span id="verifyCodeText">تأیید کد</span></button><button onclick="closeCodeSection()" id="cancelCodeBtn" style="width:100%;margin-top:8px;padding:12px;background:var(--bg-input);border:2px solid var(--border-color);border-radius:10px;font-weight:600;color:var(--text-primary);cursor:pointer;">❌ <span id="cancelCodeText">انصراف</span></button></div>
+        <div class="profile-actions" style="margin-top:12px;"><button class="btn-save" onclick="saveProfile()" id="saveProfileBtn">💾 ذخیره</button><button id="logoutBtn" onclick="logoutUser()" style="display:none;background:var(--ruby);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-weight:700;font-size:15px;cursor:pointer;width:100%;margin-top:10px;" id="logoutBtnText">🚪 خروج</button></div></div>
         <h3 style="margin:14px 0 8px;font-size:16px;font-weight:700;" id="myAdsTitle">📋 آگهی‌های من</h3><div id="myAdsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
         <h3 style="margin:14px 0 8px;font-size:16px;font-weight:700;" id="draftsTitle">📝 پیش‌نویس‌ها</h3><div id="draftsList"><div class="text-secondary" id="noDraftsText">هیچ پیش‌نویسی موجود نیست.</div></div>
     </div>
@@ -546,7 +474,78 @@
                 footer_text: '© کلیه حقوق محفوظ است - جـدار بازار',
             },
             ar: {
-                // نسخه عربی برای اختصار حذف شده، ولی در پروژه کامل موجود است
+                home: 'الرئيسية', add: 'إضافة', favorites: 'المفضلة', profile: 'الملف الشخصي', support: 'الدعم',
+                rules: 'القوانين', about: 'من نحن', guide: 'الدليل', news: 'الأخبار', tickets: 'التذاكر', admin: 'الإدارة',
+                cancel: 'إلغاء', close: 'إلغاء', save: 'حفظ', logout: 'خروج',
+                search_placeholder: 'البحث في الإعلانات...', search_btn: 'بحث',
+                verify_text: '✅ تأكيد رقمك للوصول إلى جميع الميزات',
+                verify_btn: '📱 استلام الرمز من البوت', no_ads: 'لا توجد إعلانات',
+                no_favorites: 'لا توجد مفضلات', no_tickets: 'لا توجد تذاكر',
+                no_drafts: 'لا توجد مسودات.', loading: 'جاري التحميل...',
+                copyright: '© جميع الحقوق محفوظة - جـدار بازار',
+                profile_title: '👤 الملف الشخصي', username: 'اسم المستخدم', fullname: 'الاسم الكامل',
+                phone: '📱 رقم الهاتف', email: '📧 البريد الإلكتروني', city: 'المدينة',
+                verify_status: '⚠️ يرجى تأكيد رقمك', verified: '✅ رقمك مؤكد: ',
+                get_code: '✈️ استلام الرمز من بوت تليجرام', enter_code: '🔑 أدخل الرمز المكون من 6 أرقام',
+                verify_code: '✅ تأكيد الرمز', cancel_code: '❌ إلغاء',
+                my_ads_title: '📋 إعلاناتي', drafts_title: '📝 المسودات',
+                add_ad_title: '📌 إضافة إعلان جديد', ad_title: 'عنوان الإعلان', ad_category: 'الفئة',
+                ad_price: 'السعر', ad_currency: 'العملة', ad_description: 'الوصف',
+                ad_location: 'الموقع / المدينة', ad_country: 'الدولة', ad_duration: '⏳ مدة العرض',
+                ad_images: 'الصور/الفيديو (حد أقصى ٤)', ad_contact: 'رقم الهاتف (مؤكد)',
+                ad_draft: 'حفظ كمسودة', submit: 'إرسال الإعلان', next: 'التالي', prev: 'السابق',
+                upload_text: 'انقر للتحميل (صورة أو فيديو)',
+                cat_all: 'الكل', cat_pilgrimage: 'زيارة', cat_tourism: 'سياحة', cat_medical: 'طبي',
+                cat_beauty: 'تجميل', cat_services: 'خدمات', cat_jobs: 'توظيف', cat_real_estate: 'عقارات', cat_vehicles: 'سيارات',
+                status_pending: 'قيد المراجعة', status_approved: 'تمت الموافقة', status_rejected: 'مرفوض', status_all: 'الكل',
+                admin_pending: 'قيد المراجعة', admin_all: 'الكل', admin_users: 'المستخدمين', admin_admins: 'المشرفين',
+                admin_announce: 'إشعارات', admin_stats: 'إحصائيات', admin_manage: 'الإدارة', admin_result: 'استخدم الأزرار أعلاه.',
+                announce_title: 'عنوان الإشعار', announce_message: 'نص الإشعار', announce_target: 'الهدف',
+                announce_all: 'الكل', announce_admins: 'المشرفين', announce_individual: 'فردي', announce_send: '📤 إرسال',
+                stats_total_users: '👥 المستخدمين', stats_total_ads: '📌 الإعلانات', stats_pending: '⏳ قيد المراجعة',
+                stats_special: '⭐ مميز', stats_banners: '📢 بانر نشط',
+                new_ticket: 'تذكرة جديدة', ticket_subject: 'موضوع التذكرة', ticket_message: 'نص التذكرة',
+                ticket_sent: '✅ تم تسجيل تذكرتك', reply_ticket: 'الرد على التذكرة', send_reply: 'إرسال الرد',
+                close_ticket: 'إغلاق التذكرة', reply_required: 'أدخل نص الرد',
+                subject_required: 'أدخل موضوع التذكرة', message_required: 'أدخل نص التذكرة',
+                phone_required: '⚠️ يرجى إدخال رقم هاتف صحيح',
+                code_sent: '✅ تم إرسال الرمز عبر بوت تليجرام', code_error: '❌ خطأ في إرسال الرمز',
+                start_bot: '⚠️ يرجى تشغيل البوت أولاً وإرسال رقمك إليه.',
+                otp_sent: '✅ تم إرسال رمز التأكيد إلى رقمك', enter_otp: '⚠️ أدخل الرمز المكون من 6 أرقام',
+                otp_invalid: '❌ الرمز غير صحيح أو منتهي الصلاحية', verifying: '⏳ جاري التأكيد...',
+                sending: '⏳ جاري الإرسال...', network_error: '❌ خطأ في الاتصال بالخادم',
+                verified_success: '✅ تم تأكيد رقمك بنجاح! 🎉',
+                already_verified: '✅ تم تأكيد رقمك مسبقاً',
+                ad_saved: '✅ تم إرسال الإعلان بنجاح!', ad_error: '❌ خطأ في إرسال الإعلان',
+                draft_saved: 'تم حفظ المسودة', draft_loaded: 'تم تحميل المسودة',
+                draft_deleted: 'تم حذف المسودة', ad_deleted: 'تم حذف الإعلان',
+                ad_approved: 'تمت الموافقة على الإعلان', ad_rejected: 'تم رفض الإعلان',
+                no_pending: 'لا توجد إعلانات قيد المراجعة',
+                admin_added: 'تم إضافة المشرف', admin_removed: 'تم حذف المشرف',
+                announcement_sent: 'تم إرسال الإشعار', old_ads_deleted: 'تم حذف الإعلانات القديمة',
+                confirm_delete_old: 'هل أنت متأكد من حذف الإعلانات القديمة؟',
+                delete_old_ads: 'حذف الإعلانات القديمة (٣٠ يوماً)',
+                ticket_reply_sent: 'تم إرسال ردك', ticket_closed: 'تم إغلاق التذكرة',
+                no_ticket_found: 'التذكرة غير موجودة', favorite_add: 'تمت الإضافة إلى المفضلة',
+                favorite_remove: 'تمت الإزالة من المفضلة', review_submit: 'تم تسجيل تعليقك',
+                review_error: 'خطأ في تسجيل التعليق', select_image: 'اختر صورة واحدة على الأقل',
+                image_upload_error: 'خطأ في تحميل الصورة', image_too_large: 'حجم الصورة أكبر من ٥ ميجابايت',
+                invalid_format: 'تنسيق الصورة غير مدعوم', max_images: 'الحد الأقصى ٤ صور',
+                no_phone: 'رقم الهاتف المؤكد غير موجود في الملف الشخصي',
+                complete_fields: 'يرجى ملء جميع الحقول الإلزامية',
+                ad_not_found: 'الإعلان غير موجود', user_not_found: 'المستخدم غير موجود',
+                unauthorized: '⛔ غير مصرح لك', operation_cancelled: 'تم إلغاء العملية',
+                you_are_blocked: 'حسابك محظور', user_blocked: 'تم حظر المستخدم',
+                user_unblocked: 'تم إلغاء حظر المستخدم', open_bot_confirm: 'هل تريد فتح البوت؟',
+                unknown_error: 'خطأ غير معروف. يرجى المحاولة مرة أخرى.',
+                about_text: 'جـدار بازار', about_desc: 'منصة حديثة وذكية للبيع والشراء عبر الإنترنت.<br>بفضل التكنولوجيا المتطورة، نوفر لك تجربة آمنة وسريعة.',
+                guide_quick: '🚀 بداية سريعة', guide_step1: '١. أدخل المعلومات في قسم "إضافة إعلان".',
+                guide_step2: '٢. قم بتحميل الصور أو الفيديو.', guide_step3: '٣. سيتم عرض الإعلان بعد الموافقة عليه.',
+                guide_search_title: '🔍 البحث', guide_search_desc: 'استخدم الفلاتر المتقدمة للعثور على الإعلانات المطلوبة.',
+                splash_sub: 'جـدار بازار', menu_rules: 'القوانين', menu_news: 'الأخبار', menu_about: 'من نحن',
+                menu_guide: 'الدليل', menu_tickets: 'التذاكر', menu_admin: 'الإدارة',
+                btn_next: 'التالي', btn_prev: 'السابق', btn_submit: 'إرسال الإعلان',
+                footer_text: '© جميع الحقوق محفوظة - جـدار بازار',
             }
         };
 
@@ -825,13 +824,8 @@
                     renderAds(filteredAds);
                     renderCategories();
                     loadFavorites();
-                } else {
-                    grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-                }
-            } catch(err) {
-                console.error('fetchAds error:', err);
-                grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`;
-            }
+                } else { grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`; }
+            } catch(err) { grid.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text-muted);">${t('no_ads')}</div>`; }
         }
 
         function renderAds(ads) {
@@ -876,42 +870,6 @@
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
             filteredAds = query ? allAds.filter(ad => (ad.title && ad.title.toLowerCase().includes(query)) || (ad.description && ad.description.toLowerCase().includes(query)) || (ad.city && ad.city.toLowerCase().includes(query))) : [...allAds];
             renderAds(filteredAds);
-        }
-
-        async function aiSearch() {
-            const btn = document.getElementById('aiSearchBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="ai-spinner"></span> در حال تحلیل...';
-            const query = document.getElementById('searchInput').value.trim() || 'همه';
-            try {
-                const prompt = `لیستی از آگهی‌های موجود را دریافت کن و بر اساس جستجوی "${query}"، بهترین تطابق‌ها را به من بده. فقط شماره شناسه آگهی‌ها را با کاما جدا کن.`;
-                const result = await askDeepSeek(prompt);
-                if (result) {
-                    const ids = result.match(/\d+/g);
-                    if (ids && ids.length > 0) {
-                        const matched = allAds.filter(ad => ids.includes(ad.id.toString()));
-                        if (matched.length > 0) {
-                            renderAds(matched);
-                            showToast(`🧠 ${matched.length} نتیجه هوشمند یافت شد`, 'success');
-                        } else {
-                            renderAds(allAds);
-                            showToast('🧠 هیچ نتیجه‌ای یافت نشد، همه آگهی‌ها نمایش داده شدند.', 'info');
-                        }
-                    } else {
-                        renderAds(allAds);
-                        showToast('🧠 نتیجه‌ای یافت نشد.', 'info');
-                    }
-                } else {
-                    renderAds(allAds);
-                    showToast('🧠 خطا در جستجوی هوشمند، همه آگهی‌ها نمایش داده شدند.', 'error');
-                }
-            } catch(e) {
-                console.error(e);
-                renderAds(allAds);
-                showToast('🧠 خطا در جستجوی هوشمند', 'error');
-            }
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-brain"></i> جستجوی هوشمند';
         }
 
         function refreshAll() {
@@ -1089,12 +1047,7 @@
                     if (uploadResult.success && uploadResult.file_id) {
                         imageIds.push(uploadResult.file_id);
                         showToast(`✅ ${file.name} آپلود شد`, 'success');
-                    } else {
-                        const errMsg = uploadResult.error || 'خطای ناشناخته';
-                        showToast(`❌ ${file.name}: ${errMsg}`, 'error');
-                        btn.disabled = false; btn.innerHTML = t('submit'); statusEl.textContent = '';
-                        return;
-                    }
+                    } else { showToast(t('image_upload_error'), 'error'); btn.disabled = false; btn.innerHTML = t('submit'); statusEl.textContent = ''; return; }
                 }
                 if (imageIds.length === 0) { showToast(t('select_image'), 'error'); btn.disabled = false; btn.innerHTML = t('submit'); statusEl.textContent = ''; return; }
                 statusEl.textContent = '⏳ در حال ثبت آگهی...'; btn.innerHTML = '⏳ در حال ثبت...';
@@ -1239,41 +1192,23 @@
         function closeImageZoom() { document.getElementById('imageZoomOverlay').classList.remove('show'); document.body.style.overflow = ''; }
 
         // ============================================================
-        // BANNER & SPLASH - بارگذاری بنرها و اسپلش
+        // BANNER
         // ============================================================
         async function loadInlineBanners() {
             const container = document.getElementById('bannerAdsContainer');
             try {
-                // بارگذاری اسپلش
-                let splashHtml = '';
-                const splashRes = await apiCall('/api/banner/splash');
-                if (splashRes.success && splashRes.splash) {
-                    const splash = splashRes.splash;
-                    const isVideo = splash.media_type === 'video';
-                    const mediaUrl = normalizeImageUrl(splash.image_id) || '';
-                    splashHtml = `<div class="banner-ad-container" style="background:linear-gradient(135deg,var(--ruby),var(--ruby-dark));color:#fff;border-color:var(--ruby);">
-                        <div class="banner-ad-inner">
-                            ${isVideo ? `<video class="banner-ad-video" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-ad-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}
-                            <div class="banner-ad-info">
-                                <div class="banner-ad-title" style="color:#fff;">${splash.title || 'اسپلش'}</div>
-                                <div class="banner-ad-desc" style="color:rgba(255,255,255,0.8);">${splash.description || ''}</div>
-                            </div>
-                            ${splash.link ? `<a href="${splash.link}" target="_blank" class="banner-ad-link" style="background:rgba(255,255,255,0.2);color:#fff;"><i class="fa-solid fa-arrow-left"></i> باز کردن</a>` : ''}
-                        </div>
-                    </div>`;
-                }
-                // بارگذاری بنرهای عادی
-                const bannersRes = await apiCall('/api/banners');
-                let bannersHtml = '';
-                if (bannersRes.success && bannersRes.banners && bannersRes.banners.length > 0) {
-                    bannersRes.banners.forEach(banner => {
+                const data = await apiCall('/api/banners');
+                if (data.success && data.banners && data.banners.length > 0) {
+                    container.innerHTML = '';
+                    data.banners.forEach(banner => {
                         const isVideo = banner.media_type === 'video';
                         const mediaUrl = normalizeImageUrl(banner.image_id) || '';
-                        bannersHtml += `<div class="banner-ad-container"><div class="banner-ad-inner">${isVideo ? `<video class="banner-ad-video" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-ad-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}<div class="banner-ad-info"><div class="banner-ad-title">${banner.title || 'تبلیغ'}</div><div class="banner-ad-desc">${banner.description || ''}</div></div><a href="${banner.link || '#'}" target="_blank" class="banner-ad-link"><i class="fa-solid fa-arrow-left"></i> باز کردن لینک</a></div></div>`;
+                        const div = document.createElement('div'); div.className = 'banner-ad-container';
+                        div.innerHTML = `<div class="banner-ad-inner">${isVideo ? `<video class="banner-ad-video" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-ad-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}<div class="banner-ad-info"><div class="banner-ad-title">${banner.title || 'تبلیغ'}</div><div class="banner-ad-desc">${banner.description || ''}</div></div><a href="${banner.link || '#'}" target="_blank" class="banner-ad-link"><i class="fa-solid fa-arrow-left"></i> باز کردن لینک</a></div>`;
+                        container.appendChild(div);
                     });
-                }
-                container.innerHTML = splashHtml + bannersHtml;
-            } catch(err) { console.error('Error loading banners:', err); container.innerHTML = ''; }
+                } else { container.innerHTML = ''; }
+            } catch(err) { console.error(err); }
         }
 
         // ============================================================
@@ -1559,9 +1494,9 @@
         }
 
         // ============================================================
-        // DEEPSEEK AI INTEGRATION
+        // DEEPSEEK AI INTEGRATION (استفاده از کلید در تمام اجزا)
         // ============================================================
-        async function askDeepSeek(prompt, systemMessage = 'شما یک دستیار هوشمند برای پلتفرم جـدار بازار هستید. پاسخ‌ها را به فارسی و مختصر بدهید.') {
+        async function askDeepSeek(prompt, systemMessage = 'شما یک دستیار مفید و دقیق هستید.') {
             try {
                 const response = await fetch(DEEPSEEK_API_URL, {
                     method: 'POST',
@@ -1576,7 +1511,7 @@
                             { role: 'user', content: prompt }
                         ],
                         temperature: 0.7,
-                        max_tokens: 500
+                        max_tokens: 2000
                     })
                 });
                 const data = await response.json();
@@ -1590,49 +1525,6 @@
                 showToast('❌ خطا در ارتباط با هوش مصنوعی', 'error');
                 return null;
             }
-        }
-
-        // ===== تولید عنوان با هوش مصنوعی =====
-        async function aiGenerateTitle() {
-            const category = document.getElementById('adCategory').value;
-            const categoryName = document.getElementById('adCategory').selectedOptions[0]?.text || category;
-            const btn = document.getElementById('aiTitleBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="ai-spinner"></span> در حال تولید...';
-            try {
-                const prompt = `یک عنوان جذاب و حرفه‌ای برای آگهی در دسته‌بندی "${categoryName}" تولید کن. عنوان باید کوتاه، واضح و شامل کلمات کلیدی مرتبط باشد. فقط عنوان را برگردان.`;
-                const result = await askDeepSeek(prompt);
-                if (result) {
-                    document.getElementById('adTitle').value = result.trim();
-                    showToast('✅ عنوان با هوش مصنوعی تولید شد', 'success');
-                } else {
-                    showToast('❌ خطا در تولید عنوان', 'error');
-                }
-            } catch(e) { console.error(e); showToast('❌ خطا', 'error'); }
-            finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> تولید عنوان با هوش مصنوعی'; }
-        }
-
-        // ===== تولید توضیحات با هوش مصنوعی =====
-        async function aiGenerateDescription() {
-            const title = document.getElementById('adTitle').value.trim() || 'آگهی';
-            const category = document.getElementById('adCategory').value;
-            const categoryName = document.getElementById('adCategory').selectedOptions[0]?.text || category;
-            const location = document.getElementById('adLocation').value.trim() || 'شهر مورد نظر';
-            const price = document.getElementById('adPrice').value || 'قیمت';
-            const btn = document.getElementById('aiDescBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="ai-spinner"></span> در حال تولید...';
-            try {
-                const prompt = `یک توضیحات کامل و جذاب برای آگهی با عنوان "${title}" در دسته‌بندی "${categoryName}" در شهر "${location}" با قیمت ${price} تومان تولید کن. توضیحات باید حرفه‌ای، خوانا و شامل مزایا و ویژگی‌های کلیدی باشد. حدود ۳-۴ جمله.`;
-                const result = await askDeepSeek(prompt);
-                if (result) {
-                    document.getElementById('adDescription').value = result.trim();
-                    showToast('✅ توضیحات با هوش مصنوعی تولید شد', 'success');
-                } else {
-                    showToast('❌ خطا در تولید توضیحات', 'error');
-                }
-            } catch(e) { console.error(e); showToast('❌ خطا', 'error'); }
-            finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> تولید توضیحات با هوش مصنوعی'; }
         }
 
         // ============================================================
@@ -1662,7 +1554,7 @@
 
         document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') searchAds(); });
 
-        console.log('🚀 جـدار بازار - نسخه نهایی با AI و رفع خطاهای آپلود');
+        console.log('🚀 جـدار بازار - نسخه نهایی با API Key دیپ‌سیک');
         console.log(`👤 Guest ID: ${guestId}`);
         console.log(`📡 Worker URL: ${WORKER_URL}`);
         console.log(`🤖 BOT URL: ${BOT_URL}`);
@@ -1671,4 +1563,4 @@
         console.log(`🧠 DeepSeek API Key: ${DEEPSEEK_API_KEY ? '✅ تنظیم شده' : '❌ تنظیم نشده'}`);
     </script>
 </body>
-                             </html>
+    </html>
