@@ -699,6 +699,7 @@
         let currentTab = 'home', wizardStep = 1, reviewRating = 0;
         let inboxMessages = [];
         let adDetailGallery = [], adDetailIndex = 0;
+        let currentTelegramId = null; // برای تشخیص کاربر جاری در نظرات
 
         // ============================================================
         // UTILITY
@@ -790,6 +791,8 @@
             document.getElementById('profileCity').value=user.city||'';
             document.getElementById('profileUsername').value=user.phone||guestId;
             if(user.phone && user.is_verified){ setPhoneVerified(user.phone); const dp=document.querySelector('#profileDisplayPhone span'); if(dp) dp.textContent=user.phone; }
+            // ذخیره شناسه تلگرام برای استفاده در نظرات
+            if(user.telegram_id) currentTelegramId = user.telegram_id;
             updateVerificationUI();
         }
 
@@ -1332,7 +1335,7 @@
         async function toggleFavoriteAndUpdateDetail(adId){ await toggleFavorite(adId); const ad=allAds.find(item=>item.id==adId); if(ad){ const isFav=favorites.includes(ad.id); const statusLabels={ pending:t('status_pending'), approved:t('status_approved'), rejected:t('status_rejected') }; const ratingAvg=ad.rating_avg?Number(ad.rating_avg).toFixed(1):'—'; const phone=ad.phone||''; renderAdDetail(ad,isFav,statusLabels,ratingAvg,phone); } }
 
         // ============================================================
-        // REVIEW
+        // REVIEW (با نمایش شماره تلفن به جای شناسه)
         // ============================================================
         function setDetailRating(val){ reviewRating=val; document.getElementById('detailReviewRating').value=val; document.querySelectorAll('#detailReviewStars span').forEach((el,idx)=>{ el.className=idx<val?'active':''; el.textContent=idx<val?'★':'☆'; }); }
         async function submitDetailReview(){
@@ -1356,7 +1359,14 @@
                     container.innerHTML='';
                     data.reviews.forEach(r=>{
                         const div=document.createElement('div'); div.className='review-item';
-                        div.innerHTML=`<div class="header"><span class="name">${r.user_id||'کاربر'}</span><span class="stars">${'★'.repeat(Math.round(r.rating||0))}${'☆'.repeat(5-Math.round(r.rating||0))}</span></div><div class="comment">${r.comment||''}</div><div class="date">${new Date(r.created_at*1000).toLocaleDateString('fa-IR')}</div>`;
+                        // نمایش شماره تلفن به جای شناسه تلگرام، در صورت موجود بودن
+                        let reviewerName = r.user_id; // پیش‌فرض
+                        // اگر این نظر مربوط به کاربر فعلی است، شماره تلفن خودش را نشان بده
+                        if (currentTelegramId && r.user_id == currentTelegramId) {
+                            reviewerName = getVerifiedPhone() || 'شما';
+                        }
+                        // در غیر این صورت می‌توانیم یک lookup ساده انجام دهیم، اما فعلاً همان شناسه را نشان می‌دهیم
+                        div.innerHTML=`<div class="header"><span class="name">${reviewerName}</span><span class="stars">${'★'.repeat(Math.round(r.rating||0))}${'☆'.repeat(5-Math.round(r.rating||0))}</span></div><div class="comment">${r.comment||''}</div><div class="date">${new Date(r.created_at*1000).toLocaleDateString('fa-IR')}</div>`;
                         container.appendChild(div);
                     });
                 } else { container.innerHTML=`<div style="text-align:center;color:var(--text-muted);font-size:11px;">هنوز نظری ثبت نشده است</div>`; }
@@ -1636,4 +1646,4 @@
         console.log(`🌐 زبان: ${currentLang}`);
     </script>
 </body>
-            </html>
+</html>
