@@ -1812,7 +1812,7 @@
             <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
                 <button onclick="requestCodeViaTelegram()" id="telegramVerifyBtn" style="padding:10px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:13px;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;">✈️ دریافت کد از ربات</button>
             </div>
-            <div id="verifyStatus" style="margin-top:8px;padding:10px;border-radius:var(--radius);text-align:center;background:rgba(243,156,18,0.06);color:#f39c12;font-size:12px;font-weight:600;border:1px solid rgba(243,156,18,0.1);">⚠️ شماره خود را تأیید کنید</div>
+            <div id="profileVerifyStatus" style="margin-top:8px;padding:10px;border-radius:var(--radius);text-align:center;background:rgba(243,156,18,0.06);color:#f39c12;font-size:12px;font-weight:600;border:1px solid rgba(243,156,18,0.1);">⚠️ شماره خود را تأیید کنید</div>
 
             <div class="code-section" id="codeSection">
                 <div class="form-group"><label id="codeInputLabel">🔑 کد ۶ رقمی را وارد کنید</label><input type="text" id="codeInput" maxlength="6" placeholder="مثال: ۱۲۳۴۵۶" class="code-input" dir="ltr"></div>
@@ -2076,7 +2076,7 @@
     <!-- ========================================================== -->
     <script>
         // ============================================================
-        // CONFIG
+        // CONFIG - اتصال به Worker واقعی
         // ============================================================
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const IMAGE_BASE = API_BASE + '/image/';
@@ -2441,6 +2441,7 @@
                 refreshBtn: '🔄 بروزرسانی ... وتحدیث ...'
             },
             ar: {
+                // ... (برای اختصار حذف شده، اما در کد کامل موجود است)
                 authTitle: '🔑 تسجيل الدخول إلى جـدار بازار',
                 authSubText: 'أدخل رقمك لإرسال رمز التأكيد عبر البوت.',
                 authPhoneLabel: '📱 رقم الهاتف',
@@ -2782,6 +2783,7 @@
             totalAds = 0;
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let currentTheme = localStorage.getItem('jedar_theme') || 'light';
+        let sessionId = localStorage.getItem('jedar_session_id') || null;
 
         // ============================================================
         // UTILITY
@@ -2999,6 +3001,9 @@
             renderCategories();
         }
 
+        // ============================================================
+        // AUTH
+        // ============================================================
         function isUserVerified() {
             const phone = getVerifiedPhone();
             const verified = localStorage.getItem('jedar_phone_verified') === 'true';
@@ -3009,41 +3014,25 @@
             return localStorage.getItem('jedar_verified_phone') || '';
         }
 
-        function setPhoneVerified(phone) {
-            localStorage.setItem('jedar_phone_verified', 'true');
-            localStorage.setItem('jedar_verified_phone', phone);
-            localStorage.setItem('jedar_user_id', phone);
-        }
-
-        function clearPhoneVerification() {
-            localStorage.removeItem('jedar_phone_verified');
-            localStorage.removeItem('jedar_verified_phone');
-            localStorage.removeItem('jedar_user_id');
-            localStorage.removeItem('jedar_session_id');
-            localStorage.removeItem('jedar_token');
-            token = null;
-        }
-
         function getUserId() {
-            const phone = getVerifiedPhone();
-            if (phone && isUserVerified()) return phone;
-            return 'guest';
+            return localStorage.getItem('jedar_user_id') || 'guest';
         }
 
         function getSessionId() {
-            let s = localStorage.getItem('jedar_session_id');
-            if (!s) { s = 'session_' + Math.random().toString(36).substring(2, 15);
-                localStorage.setItem('jedar_session_id', s); }
-            return s;
+            if (!sessionId) {
+                sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('jedar_session_id', sessionId);
+            }
+            return sessionId;
         }
 
-        // ============================================================
-        // API CALL
-        // ============================================================
         async function apiCall(endpoint, options = {}) {
             const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
             if (token) headers['Authorization'] = `Bearer ${token}`;
-            const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+            let url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+            if (url.includes('/profile/me') && !url.includes('sessionId')) {
+                url += (url.includes('?') ? '&' : '?') + `sessionId=${getSessionId()}`;
+            }
             try {
                 const res = await fetch(url, { ...options, headers, mode: 'cors' });
                 const text = await res.text();
@@ -3062,26 +3051,34 @@
             }
         }
 
-        // ============================================================
-        // AUTH
-        // ============================================================
+        // OTP
         async function sendOTP() {
             const phone = document.getElementById('loginPhone').value.trim();
             const status = document.getElementById('otpStatus');
-            if (!phone) { showStatus(status, '❌ شماره را وارد کنید', true); return; }
-            showStatus(status, '⏳ ' + t('sending'), false);
+            if (!phone) { status.textContent = '❌ شماره را وارد کنید';
+                status.className = 'auth-status error'; return; }
+            status.textContent = '⏳ ' + t('sending');
+            status.className = 'auth-status';
             try {
                 const data = await apiCall('/api/auth/send-2fa-telegram', {
                     method: 'POST',
                     body: JSON.stringify({ mobile: phone })
                 });
                 if (data.success) {
-                    showStatus(status, '✅ کد تأیید به ربات شما ارسال شد', false);
+                    status.textContent = '✅ کد تأیید به ربات شما ارسال شد';
+                    status.className = 'auth-status success';
                 } else {
-                    showStatus(status, '❌ ' + (data.error || t('codeError')), true);
+                    if (data.action === 'start_bot') {
+                        status.textContent = '⚠️ لطفاً ابتدا ربات را استارت کنید: ' + BOT_URL;
+                        status.className = 'auth-status error';
+                    } else {
+                        status.textContent = '❌ ' + (data.error || t('codeError'));
+                        status.className = 'auth-status error';
+                    }
                 }
             } catch (err) {
-                showStatus(status, '❌ ' + err.message, true);
+                status.textContent = '❌ ' + err.message;
+                status.className = 'auth-status error';
             }
         }
 
@@ -3089,8 +3086,10 @@
             const phone = document.getElementById('loginPhone').value.trim();
             const code = document.getElementById('loginOtp').value.trim();
             const status = document.getElementById('verifyStatus');
-            if (!phone || !code) { showStatus(status, '❌ شماره و کد را وارد کنید', true); return; }
-            showStatus(status, '⏳ ' + t('verifying'), false);
+            if (!phone || !code) { status.textContent = '❌ شماره و کد را وارد کنید';
+                status.className = 'auth-status error'; return; }
+            status.textContent = '⏳ ' + t('verifying');
+            status.className = 'auth-status';
             try {
                 const data = await apiCall('/api/auth/login', {
                     method: 'POST',
@@ -3099,7 +3098,9 @@
                 if (data.success) {
                     token = data.token;
                     localStorage.setItem('jedar_token', token);
-                    localStorage.setItem('jedar_session_id', data.sessionId || getSessionId());
+                    localStorage.setItem('jedar_user_id', data.userId);
+                    sessionId = data.sessionId;
+                    localStorage.setItem('jedar_session_id', sessionId);
                     if (data.user && data.user.phone) {
                         setPhoneVerified(data.user.phone);
                     }
@@ -3110,16 +3111,28 @@
                     authCheck();
                     loadApp();
                 } else {
-                    showStatus(status, '❌ ' + (data.error || t('otpInvalid')), true);
+                    status.textContent = '❌ ' + (data.error || t('otpInvalid'));
+                    status.className = 'auth-status error';
                 }
             } catch (err) {
-                showStatus(status, '❌ ' + err.message, true);
+                status.textContent = '❌ ' + err.message;
+                status.className = 'auth-status error';
             }
         }
 
-        function showStatus(el, msg, isError = false) {
-            el.textContent = msg;
-            el.className = 'auth-status' + (isError ? ' error' : ' success');
+        function setPhoneVerified(phone) {
+            localStorage.setItem('jedar_phone_verified', 'true');
+            localStorage.setItem('jedar_verified_phone', phone);
+        }
+
+        function clearPhoneVerification() {
+            localStorage.removeItem('jedar_phone_verified');
+            localStorage.removeItem('jedar_verified_phone');
+            localStorage.removeItem('jedar_user_id');
+            localStorage.removeItem('jedar_session_id');
+            localStorage.removeItem('jedar_token');
+            token = null;
+            sessionId = null;
         }
 
         function authCheck() {
@@ -3141,7 +3154,6 @@
 
         function logoutUser() {
             clearPhoneVerification();
-            localStorage.removeItem('jedar_profile');
             currentUser = null;
             isAdmin = false;
             isSuperAdmin = false;
@@ -3157,7 +3169,7 @@
             const phone = getVerifiedPhone();
             const verified = isUserVerified();
             const banner = document.getElementById('verifyBanner');
-            const statusEl = document.getElementById('verifyStatus');
+            const statusEl = document.getElementById('profileVerifyStatus');
             const logoutBtn = document.getElementById('logoutBtn');
             const codeSection = document.getElementById('codeSection');
             const profileStatus = document.getElementById('profileStatus');
@@ -3175,7 +3187,7 @@
                 if (logoutBtn) logoutBtn.style.display = 'block';
                 if (codeSection) codeSection.classList.remove('show');
                 document.getElementById('profilePhone').value = phone;
-                document.getElementById('profileUsername').value = phone;
+                document.getElementById('profileUsername').value = getUserId();
                 document.getElementById('verifyBannerBtn').innerHTML = '✅ ' + t('verified');
                 document.getElementById('verifyBannerBtn').className = 'verify-btn verified';
                 if (profileStatus) { profileStatus.className = 'profile-status verified';
@@ -3209,8 +3221,9 @@
         async function requestCodeViaTelegram() {
             const phone = document.getElementById('profilePhone').value.trim();
             if (!phone) { showToast('⚠️ ' + t('phoneRequired'), 'error'); return; }
-            const status = document.getElementById('verifyStatus');
+            const status = document.getElementById('profileVerifyStatus');
             status.innerHTML = '⏳ ' + t('sending');
+            status.style.color = '#f39c12';
             try {
                 const data = await apiCall('/api/auth/send-2fa-telegram', { method: 'POST', body: JSON.stringify({ mobile: phone }) });
                 if (data.success) {
@@ -3230,14 +3243,18 @@
         async function verifyCode() {
             const phone = document.getElementById('profilePhone').value.trim();
             const code = document.getElementById('codeInput').value.trim();
-            if (!phone || !code) { showToast('⚠️ ' + t('phoneRequired') + ' و کد را وارد کنید', 'error'); return; }
-            const status = document.getElementById('verifyStatus');
+            if (!phone || !code) { showToast('⚠️ شماره و کد را وارد کنید', 'error'); return; }
+            const status = document.getElementById('profileVerifyStatus');
             status.innerHTML = '⏳ ' + t('verifying');
+            status.style.color = '#f39c12';
             try {
                 const data = await apiCall('/api/auth/login', { method: 'POST', body: JSON.stringify({ phone, code }) });
                 if (data.success) {
                     token = data.token;
                     localStorage.setItem('jedar_token', token);
+                    localStorage.setItem('jedar_user_id', data.userId);
+                    sessionId = data.sessionId;
+                    localStorage.setItem('jedar_session_id', sessionId);
                     if (data.user && data.user.phone) setPhoneVerified(data.user.phone);
                     currentUser = data.user || {};
                     isAdmin = data.isAdmin || false;
@@ -3270,7 +3287,7 @@
         function openTelegramBot() { window.open(BOT_URL, '_blank'); }
 
         // ============================================================
-        // PROFILE (بارگذاری و به‌روزرسانی)
+        // PROFILE
         // ============================================================
         async function loadProfile() {
             if (!token) { updateProfileUI({}); return; }
@@ -3355,20 +3372,29 @@
             }
             try {
                 const userId = getUserId();
-                const data = await apiCall(`/api/reviews/user/${userId}`);
+                const data = await apiCall(`/api/reviews?userId=${userId}`);
                 if (data.success && data.data && data.data.length > 0) {
                     container.innerHTML = '';
                     data.data.forEach(rev => {
                         const div = document.createElement('div');
                         div.className = 'review-item';
+                        // ===== اصلاح: نمایش نام کاربری به جای ID =====
+                        let reviewerName = 'کاربر ناشناس';
+                        if (rev.user) {
+                            reviewerName = rev.user.username || rev.user.first_name || 'کاربر ناشناس';
+                        }
+                        if (currentUser && currentUser.phone && rev.user_id == currentUser.phone) {
+                            reviewerName = 'شما';
+                        }
+                        // ===== پایان اصلاح =====
                         div.innerHTML = `
-                                <div class="header">
-                                    <span>📌 ${rev.ad_title || 'آگهی'}</span>
-                                    <span class="stars">${'★'.repeat(Math.round(rev.rating || 0))}${'☆'.repeat(5 - Math.round(rev.rating || 0))}</span>
-                                </div>
-                                <div class="comment">${rev.comment || ''}</div>
-                                <div class="date">${new Date(rev.created_at * 1000).toLocaleDateString('fa-IR')}</div>
-                            `;
+                            <div class="header">
+                                <span>📌 ${rev.ad_title || 'آگهی'} - <span style="color:var(--text-secondary);font-weight:400;">👤 ${reviewerName}</span></span>
+                                <span class="stars">${'★'.repeat(Math.round(rev.rating || 0))}${'☆'.repeat(5 - Math.round(rev.rating || 0))}</span>
+                            </div>
+                            <div class="comment">${rev.comment || ''}</div>
+                            <div class="date">${new Date(rev.created_at * 1000).toLocaleDateString('fa-IR')}</div>
+                        `;
                         container.appendChild(div);
                     });
                 } else {
@@ -3380,7 +3406,7 @@
         }
 
         // ============================================================
-        // ADS (مرتب‌سازی جدیدترین در بالا)
+        // ADS
         // ============================================================
         async function fetchAds(showLoading = true, reset = true) {
             if (reset) { page = 1;
@@ -3435,7 +3461,6 @@
                 const statusText = statusLabels[ad.status] || ad.status;
                 const likes = ad.views || 0;
                 const hidePhone = ad.hide_phone || false;
-                const contactLabel = hidePhone ? '🔒 ناشناس' : '📱 تماس';
                 card.innerHTML = `
                         <div class="ad-image" onclick="event.stopPropagation();${mediaUrl ? `openMediaZoom('${mediaUrl}','${isVideo?'video':'image'}')` : ''}">
                             ${mediaHtml}
@@ -3730,7 +3755,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD (رفع خطای آپلود و ارسال به کانال)
+        // SUBMIT AD
         // ============================================================
         async function submitAd() {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
@@ -4030,6 +4055,9 @@
             } catch (err) { showToast('❌ ' + t('reviewError'), 'error'); }
         }
 
+        // ============================================================
+        // loadDetailReviews (اصلاح شده با username)
+        // ============================================================
         async function loadDetailReviews(adId) {
             const container = document.getElementById('detailReviews');
             try {
@@ -4039,18 +4067,25 @@
                     data.reviews.forEach(r => {
                         const div = document.createElement('div');
                         div.className = 'review-item';
-                        let reviewerName = r.user_id;
+                        // ===== اصلاح: نمایش نام کاربری به جای ID =====
+                        let reviewerName = 'کاربر ناشناس';
+                        if (r.user) {
+                            reviewerName = r.user.username || r.user.first_name || 'کاربر ناشناس';
+                        }
                         if (currentUser && currentUser.phone && r.user_id == currentUser.phone) {
                             reviewerName = 'شما';
                         }
+                        // ===== پایان اصلاح =====
                         div.innerHTML =
                             `<div class="header"><span class="name">${reviewerName}</span><span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span></div><div class="comment">${r.comment || ''}</div><div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>`;
                         container.appendChild(div);
                     });
-                } else { container.innerHTML =
-                        `<div style="text-align:center;color:var(--text-muted);font-size:11px;">هنوز نظری ثبت نشده است</div>`; }
-            } catch (err) { container.innerHTML =
-                    `<div style="text-align:center;color:var(--text-muted);font-size:11px;">خطا در بارگذاری نظرات</div>`; }
+                } else {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:11px;">هنوز نظری ثبت نشده است</div>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:11px;">خطا در بارگذاری نظرات</div>`;
+            }
         }
 
         // ============================================================
@@ -4383,7 +4418,7 @@
                     container.innerHTML = '';
                     data.data.forEach(thread => {
                         const other = thread.other_user;
-                        const displayName = other?.phone || other?.first_name || other?.username ||
+                        const displayName = other?.first_name || other?.phone || other?.username ||
                             'کاربر ناشناس';
                         const div = document.createElement('div');
                         div.className = 'chat-thread';
@@ -4418,7 +4453,7 @@
                 const otherId = thread.user1 === getUserId() ? thread.user2 : thread.user1;
                 const otherUserData = await apiCall(`/api/profile/${otherId}`);
                 const otherUser = otherUserData.success ? otherUserData.user : null;
-                const displayName = otherUser?.phone || otherUser?.first_name || otherUser?.username ||
+                const displayName = otherUser?.first_name || otherUser?.phone || otherUser?.username ||
                     'کاربر ناشناس';
 
                 let html = `<div class="modal-title">${t('chatTitle')} - ${displayName}</div>`;
@@ -4598,11 +4633,10 @@
             document.getElementById('alertContent').innerHTML = ''; }
 
         // ============================================================
-        // ADMIN (توابع کامل)
+        // ADMIN FUNCTIONS
         // ============================================================
         function checkAdminAccess() { if (!isAdmin) { showToast('⛔ ' + t('unauthorized'), 'error'); return false; } return true; }
 
-        // ---- Pending Ads ----
         async function adminPendingAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4650,7 +4684,6 @@
                     adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
                     '❌ ' + t('unknownError'), 'error'); } }
 
-        // ---- All Ads ----
         async function adminAllAds() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4673,7 +4706,6 @@
 
         function adminViewAd(adId) { openAdDetail(adId); }
 
-        // ---- Users Management ----
         async function adminUsers() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4717,8 +4749,7 @@
             if (reason === null) return;
             if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/admin/user/block', { method: 'POST', body: JSON.stringify({ userId,
-                        reason }) });
+                const data = await apiCall('/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) });
                 if (data.success) { showToast('✅ ' + t('userBlockedSuccess'), 'success');
                     adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
@@ -4728,7 +4759,7 @@
             if (!checkAdminAccess()) return;
             if (!confirm(t('unblockConfirm'))) return;
             try {
-                const data = await apiCall('/api/admin/user/unblock', { method: 'POST', body: JSON.stringify({ userId }) });
+                const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) });
                 if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success');
                     adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
@@ -4738,7 +4769,7 @@
             if (!checkAdminAccess()) return;
             if (!confirm(t('deleteUserConfirm'))) return;
             try {
-                const data = await apiCall('/api/admin/user/delete', { method: 'POST', body: JSON.stringify({ userId }) });
+                const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) });
                 if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success');
                     adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
@@ -4752,8 +4783,8 @@
             if (body === null) return;
             if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/admin/send-private-msg', { method: 'POST', body: JSON.stringify({ userId,
-                        subject, body }) });
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId,
+                        message: `${subject}\n\n${body}` }) });
                 if (data.success) { showToast('✅ ' + t('messageSent'), 'success');
                     adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
@@ -4761,19 +4792,18 @@
 
         async function adminSetRole(userId) {
             if (!checkAdminAccess()) return;
-            const role = prompt(t('enterRole') + '\n( super_admin, admin_ads, admin_tickets, admin_monitor, user )');
+            const role = prompt(t('enterRole') + '\n( super_admin, admin, admin_ads, admin_tickets, admin_monitor, user )');
             if (role === null) return;
-            const validRoles = ['super_admin', 'admin_ads', 'admin_tickets', 'admin_monitor', 'user'];
+            const validRoles = ['super_admin', 'admin', 'admin_ads', 'admin_tickets', 'admin_monitor', 'user'];
             if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; }
             try {
-                const data = await apiCall('/api/admin/user/set-role', { method: 'POST', body: JSON.stringify({ userId,
+                const data = await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId,
                         role: role.trim() }) });
                 if (data.success) { showToast('✅ ' + t('roleChangedSuccess'), 'success');
                     adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admins List ----
         async function adminAdmins() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4791,7 +4821,6 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        // ---- Stats ----
         async function adminStats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4814,7 +4843,6 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        // ---- Delete Old Ads ----
         async function adminDeleteOldAds() {
             if (!checkAdminAccess()) return;
             if (!confirm(t('confirmDeleteOld'))) return;
@@ -4827,7 +4855,6 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Edit Requests ----
         async function adminEditRequests() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4858,7 +4885,6 @@
                     adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
                     '❌ ' + t('unknownError'), 'error'); } }
 
-        // ---- Admin Chats ----
         async function adminChats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4894,13 +4920,12 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admin Banners ----
         async function adminBanners() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/banners');
+                const data = await apiCall('/api/admin/banners');
                 if (data.success && data.banners && data.banners.length > 0) {
                     let html = `<h4 style="font-size:13px;">📢 ${t('adminBanners')}</h4>`;
                     data.banners.forEach(b => {
@@ -4999,7 +5024,6 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admin Announce ----
         function adminAnnounce() {
             if (!checkAdminAccess()) return;
             document.getElementById('adminResult').innerHTML = `
@@ -5022,7 +5046,6 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admin Sessions ----
         async function adminSessions() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -5054,7 +5077,6 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admin Settings ----
         async function adminSettings() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -5090,13 +5112,12 @@
 
         async function adminToggleSetting(key) {
             try {
-                const data = await apiCall('/api/admin/setting/toggle', { method: 'POST', body: JSON.stringify({ key }) });
+                const data = await apiCall('/api/admin/toggle', { method: 'POST', body: JSON.stringify({ key }) });
                 if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success');
                     adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        // ---- Admin Send Message ----
         function openSendMessageModal() {
             if (!checkAdminAccess()) return;
             const modal = document.getElementById('sendMessageModal');
@@ -5237,7 +5258,6 @@
                 updateVerificationUI();
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
-                // Welcome message
                 showToast('🎉 ' + t('welcomeMessage'), 'success');
             } catch (e) { console.error('Load app error:', e); }
         }
@@ -5247,13 +5267,14 @@
         document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') searchAds(); });
         document.getElementById('loginOtp').addEventListener('keyup', function(e) { if (e.key === 'Enter') verifyOTP(); });
 
-        console.log('🚀 جـدار بازار - پنل کامل');
+        console.log('🚀 جـدار بازار - پنل کامل متصل به Worker');
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🔑 Token: ${token ? '✅ موجود' : '❌ ندارد'}`);
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
         console.log(`👑 ادمین: ${isAdmin ? '✅' : '❌'}`);
         console.log(`🌐 زبان: ${currentLang}`);
-        console.log('📦 تمام قابلیت‌های ربات در وب‌سایت فعال هستند.');
+        console.log('📦 تمام قابلیت‌ها با Worker هماهنگ شده‌اند.');
+        console.log('✅ اصلاح نمایش نام کاربری در نظرات: به جای ID، username یا first_name نمایش داده می‌شود.');
     </script>
 </body>
-</html>
+    </html>
