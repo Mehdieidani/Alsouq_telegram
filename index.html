@@ -29,6 +29,8 @@
             --radius-full: 9999px;
             --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
             --transition: 0.25s ease;
+            --chat-sent: #ff385c;
+            --chat-received: #f0f0f0;
         }
         [data-theme="dark"] {
             --bg: #121212;
@@ -39,6 +41,7 @@
             --text-muted: #6a6a8a;
             --border: #3a3a4a;
             --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            --chat-received: #2a2a3a;
         }
         html { font-size: 16px; scroll-behavior: smooth; }
         body {
@@ -1010,278 +1013,123 @@
         .auth-status.success { color: var(--green); background: rgba(46,204,113,0.08); }
         .auth-status.error { color: var(--primary); background: rgba(231,76,60,0.08); }
 
-        .chat-thread {
+        /* ===== CHAT STYLES ===== */
+        .chat-thread-item {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 12px 14px;
             margin-bottom: 8px;
             transition: var(--transition);
-        }
-        .chat-thread:hover { border-color: var(--primary); }
-        .chat-thread .thread-header { display: flex; justify-content: space-between; align-items: center; }
-        .chat-thread .thread-user { font-weight: 600; font-size: 13px; }
-        .chat-thread .thread-last { font-size: 10px; color: var(--text-muted); }
-        .chat-thread .thread-preview {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .chat-message-container {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-height: 50vh;
-            overflow-y: auto;
-            padding: 4px 0;
-        }
-        .chat-message {
-            padding: 6px 12px;
-            margin-bottom: 4px;
-            border-radius: var(--radius);
-            max-width: 85%;
-        }
-        .chat-message.sent { background: var(--primary); color: #fff; align-self: flex-end; }
-        .chat-message.received { background: var(--input); color: var(--text); align-self: flex-start; }
-        .chat-message .msg-time { font-size: 8px; opacity: 0.6; display: block; text-align: left; margin-top: 2px; }
-        .chat-message .file-attachment {
-            display: block;
-            margin-top: 4px;
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 6px;
-            font-size: 11px;
             cursor: pointer;
-        }
-        .chat-message.sent .file-attachment { background: rgba(255,255,255,0.15); }
-        .chat-message.received .file-attachment { background: rgba(0,0,0,0.05); }
-
-        .alert-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            transition: var(--transition);
-        }
-        .alert-card:hover { border-color: var(--primary); }
-        .alert-card .alert-header { display: flex; justify-content: space-between; align-items: center; }
-        .alert-card .alert-filters {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 3px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-        .alert-card .alert-filters span { background: var(--input); padding: 0 6px; border-radius: var(--radius-full); }
-
-        .inbox-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            transition: var(--transition);
-        }
-        .inbox-item:hover { border-color: var(--primary); }
-        .inbox-item .header { display: flex; justify-content: space-between; align-items: center; }
-        .inbox-item .header .subject { font-weight: 700; font-size: 13px; }
-        .inbox-item .header .date { font-size: 9px; color: var(--text-muted); }
-        .inbox-item .body { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
-        .inbox-item.unread { border-right: 3px solid var(--primary); }
-
-        .ticket-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            transition: var(--transition);
-        }
-        .ticket-item:hover { border-color: var(--primary); }
-        .ticket-item .ticket-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .ticket-item .ticket-title { font-weight: 700; font-size: 13px; }
-        .ticket-item .ticket-status {
-            font-size: 9px;
-            padding: 1px 10px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
-        }
-        .ticket-item .ticket-status.open { background: rgba(52,152,219,0.08); color: var(--blue); }
-        .ticket-item .ticket-status.in_progress { background: rgba(243,156,18,0.08); color: var(--gold); }
-        .ticket-item .ticket-status.closed { background: rgba(255,255,255,0.04); color: var(--text-muted); }
-        .ticket-item .ticket-meta { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
-        .ticket-item .ticket-message {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 3px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .news-disabled {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
-        .news-disabled i { font-size: 40px; display: block; margin-bottom: 12px; color: var(--primary); }
-
-        .support-card-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px 14px;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: var(--transition);
-            margin-bottom: 8px;
         }
-        .support-card-item:hover { border-color: var(--primary); }
-        .support-card-item .icon-wrapper {
-            width: 36px;
-            height: 36px;
+        .chat-thread-item:hover { border-color: var(--primary); }
+        .chat-thread-item .avatar {
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(255,56,92,0.06);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 16px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
             flex-shrink: 0;
         }
-        .support-card-item .info .label { font-size: 9px; color: var(--text-muted); font-weight: 600; display: block; }
-        .support-card-item .info .value { font-size: 13px; font-weight: 600; }
-        .support-card-item .info .value a { color: var(--primary); text-decoration: none; }
-
-        .admin-user-row { display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-        .admin-user-row .user-info { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; font-size: 12px; }
-        .admin-user-row .user-actions { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
-        .admin-user-row .user-actions button {
-            padding: 2px 8px;
-            font-size: 9px;
-            border-radius: var(--radius-full);
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .admin-user-row .user-actions .block-btn { background: var(--primary); color: #fff; }
-        .admin-user-row .user-actions .unblock-btn { background: var(--green); color: #fff; }
-        .admin-user-row .user-actions .delete-btn { background: #c0392b; color: #fff; }
-        .admin-user-row .user-actions .msg-btn { background: var(--blue); color: #fff; }
-        .admin-user-row .user-actions .role-btn { background: var(--gold); color: #fff; }
-        .admin-user-row .verified-badge { color: var(--green); }
-        .admin-user-row .blocked-badge { color: var(--primary); }
-
-        /* ===== استایل جدید برای نمایش آگهی‌های کاربر در چت ===== */
-        .chat-user-ads {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            margin: 6px 0 10px 0;
-            max-height: 220px;
-            overflow-y: auto;
-        }
-        .chat-user-ads .ads-title {
-            font-size: 11px;
+        .chat-thread-item .info { flex: 1; min-width: 0; }
+        .chat-thread-item .info .name {
             font-weight: 700;
+            font-size: 14px;
+        }
+        .chat-thread-item .info .last-msg {
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .chat-user-ads .user-ad-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 6px;
-            border-bottom: 1px solid var(--border);
-            font-size: 11px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-radius: 4px;
-        }
-        .chat-user-ads .user-ad-item:hover {
-            background: rgba(255,56,92,0.04);
-        }
-        .chat-user-ads .user-ad-item .ad-title {
-            font-weight: 600;
-            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 180px;
         }
-        .chat-user-ads .user-ad-item .ad-price {
-            color: var(--primary);
-            font-weight: 700;
+        .chat-thread-item .info .time {
             font-size: 10px;
-            margin-right: 8px;
-            flex-shrink: 0;
-        }
-        .chat-user-ads .no-ads {
-            font-size: 11px;
             color: var(--text-muted);
+        }
+        .chat-thread-item .badge-unread {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 20px;
             text-align: center;
-            padding: 4px 0;
         }
 
-        /* ===== استایل پیش‌نمایش تصاویر (حجم صفحه) ===== */
-        .image-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-            margin-top: 6px;
-            max-width: 100%;
-        }
-        .image-preview-grid .image-preview-item {
-            position: relative;
-            aspect-ratio: 1/1;
-            background: var(--input);
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            max-width: 100%;
-            max-height: 120px;
-        }
-        .image-preview-grid .image-preview-item img,
-        .image-preview-grid .image-preview-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .image-preview-grid .image-preview-item .remove-img {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            cursor: pointer;
+        /* Chat messages inside modal */
+        .chat-messages-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
+            flex-direction: column;
+            gap: 6px;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 8px 4px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
         }
-        .image-preview-grid .image-preview-item .remove-img:hover {
-            background: var(--primary);
+        .chat-message-bubble {
+            max-width: 80%;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .chat-message-bubble.sent {
+            background: var(--chat-sent);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message-bubble.received {
+            background: var(--chat-received);
+            color: var(--text);
+            align-self: flex-start;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message-bubble .msg-time {
+            font-size: 8px;
+            opacity: 0.7;
+            display: block;
+            text-align: left;
+            margin-top: 4px;
+        }
+        .chat-message-bubble.sent .msg-time { color: rgba(255,255,255,0.8); }
+        .chat-message-bubble.received .msg-time { color: var(--text-muted); }
+
+        /* Ticket replies */
+        .ticket-reply {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: var(--radius);
+            background: var(--input);
+            border-right: 3px solid var(--primary);
+        }
+        .ticket-reply .reply-admin {
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--primary);
+        }
+        .ticket-reply .reply-message {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+        .ticket-reply .reply-date {
+            font-size: 9px;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -1567,6 +1415,12 @@
                             <option value="تومان">تومان</option><option value="ریال">ریال</option><option value="دینار">دینار</option><option value="لیر">لیر</option><option value="درهم">درهم</option><option value="دلار">دلار</option><option value="یورو">یورو</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                            <input type="checkbox" id="adHidePhone" style="width:auto;accent-color:var(--primary);">
+                            <span id="adHidePhoneLabel">🔒 شماره تماس در آگهی نمایش داده نشود (چت ناشناس)</span>
+                        </label>
+                    </div>
                     <button type="button" class="btn btn-block" onclick="wizardNext()" id="btnNext">بعدی</button>
                 </div>
                 <div class="wizard-step" id="wizardStep2" style="display:none;">
@@ -1667,7 +1521,7 @@
         const BOT_URL = 'https://t.me/AlsouqAlmaftuhiran_bot';
 
         // ============================================================
-        // TRANSLATIONS
+        // TRANSLATIONS (کامل)
         // ============================================================
         const LANG = {
             fa: {
@@ -1779,6 +1633,7 @@
                 btnNext: 'بعدی',
                 btnPrev: 'قبلی',
                 submit: 'ثبت آگهی',
+                adHidePhoneLabel: '🔒 شماره تماس در آگهی نمایش داده نشود (چت ناشناس)',
                 catAll: 'همه',
                 catPilgrimage: 'زیارت',
                 catTourism: 'گردشگری',
@@ -1936,7 +1791,7 @@
                 delete: 'حذف',
                 edit: 'ویرایش',
                 renew: 'تمدید',
-                updateMessage: 'بروزرسانی ...',
+                updateMessage: 'بروزرسانی ... وتحدیث ...',
                 blockUser: '🚫 مسدود کردن',
                 unblockUser: '✅ رفع انسداد',
                 deleteUser: '🗑 حذف کاربر',
@@ -1982,18 +1837,15 @@
                 noSessions: 'هیچ نشستی یافت نشد.',
                 noEditRequests: 'هیچ درخواست ویرایشی وجود ندارد.',
                 chatWithSeller: '💬 چت با فروشنده',
-                chatPhoneHidden: 'شماره تماس مخفی است.',
+                chatAnonymous: '🔒 چت ناشناس',
+                chatPhoneHidden: 'شماره تماس مخفی است. از طریق چت ناشناس ارتباط برقرار کنید.',
                 welcomeMessage: 'به جـدار بازار خوش آمدید! 🎉\nبرای شروع، شماره خود را تأیید کنید.',
                 adPublished: '✅ آگهی شما با موفقیت منتشر شد! 🎉',
                 adRejectedMsg: '❌ آگهی شما رد شد. دلیل: {reason}',
                 adPendingMsg: '⏳ آگهی شما در انتظار بررسی است.',
-                refreshBtn: '🔄 بروزرسانی ...',
-                userAdsTitle: '📦 آگهی‌های کاربر',
-                noUserAds: 'این کاربر هیچ آگهی‌ای ندارد.',
-                attachFile: '📎 پیوست',
-                fileAttached: '📎 فایل پیوست شد',
-                fileUploading: '⏳ در حال آپلود فایل...',
-                fileUploadError: '❌ خطا در آپلود فایل'
+                refreshBtn: '🔄 بروزرسانی ... وتحدیث ...',
+                phoneHiddenLabel: '🔒 شماره مخفی',
+                chatAnonymousLabel: 'چت ناشناس'
             },
             ar: {
                 authTitle: '🔑 تسجيل الدخول إلى جـدار بازار',
@@ -2104,6 +1956,7 @@
                 btnNext: 'التالي',
                 btnPrev: 'السابق',
                 submit: 'إرسال الإعلان',
+                adHidePhoneLabel: '🔒 عدم عرض رقم الهاتف في الإعلان (محادثة مجهولة)',
                 catAll: 'الكل',
                 catPilgrimage: 'زيارة',
                 catTourism: 'سياحة',
@@ -2261,7 +2114,7 @@
                 delete: 'حذف',
                 edit: 'تعديل',
                 renew: 'تجديد',
-                updateMessage: 'تحديث ...',
+                updateMessage: 'تحديث ... وتحديث ...',
                 blockUser: '🚫 حظر',
                 unblockUser: '✅ إلغاء الحظر',
                 deleteUser: '🗑 حذف المستخدم',
@@ -2307,18 +2160,15 @@
                 noSessions: 'لا توجد جلسات.',
                 noEditRequests: 'لا توجد طلبات تعديل.',
                 chatWithSeller: '💬 محادثة مع البائع',
-                chatPhoneHidden: 'رقم الهاتف مخفي.',
+                chatAnonymous: '🔒 محادثة مجهولة',
+                chatPhoneHidden: 'رقم الهاتف مخفي. تواصل عبر المحادثة المجهولة.',
                 welcomeMessage: 'مرحباً بك في جـدار بازار! 🎉\nللبدء، يرجى تأكيد رقمك.',
                 adPublished: '✅ تم نشر إعلانك بنجاح! 🎉',
                 adRejectedMsg: '❌ تم رفض إعلانك. السبب: {reason}',
                 adPendingMsg: '⏳ إعلانك قيد المراجعة.',
-                refreshBtn: '🔄 تحديث ...',
-                userAdsTitle: '📦 إعلانات المستخدم',
-                noUserAds: 'هذا المستخدم ليس لديه أي إعلانات.',
-                attachFile: '📎 مرفق',
-                fileAttached: '📎 تم إرفاق الملف',
-                fileUploading: '⏳ جاري تحميل الملف...',
-                fileUploadError: '❌ خطأ في تحميل الملف'
+                refreshBtn: '🔄 تحديث ... وتحديث ...',
+                phoneHiddenLabel: '🔒 الرقم مخفي',
+                chatAnonymousLabel: 'محادثة مجهولة'
             }
         };
 
@@ -2341,6 +2191,8 @@
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let currentTheme = localStorage.getItem('jedar_theme') || 'light';
         let sessionId = localStorage.getItem('jedar_session_id') || null;
+        let chatPollingInterval = null;
+        let currentChatThreadId = null;
 
         // ============================================================
         // UTILITY
@@ -2510,6 +2362,7 @@
                 'btnPrev': 'btnPrev',
                 'btnPrev2': 'btnPrev',
                 'submitAdBtn': 'submit',
+                'adHidePhoneLabel': 'adHidePhoneLabel',
                 'catPilgrimage': 'catPilgrimage',
                 'catTourism': 'catTourism',
                 'catMedical': 'catMedical',
@@ -2941,6 +2794,7 @@
                         if (!ad.image_ids) ad.image_ids = [];
                         if (ad.image_ids && Array.isArray(ad.image_ids)) { ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null); }
                         ad.media_type = ad.media_type || 'image';
+                        if (ad.hide_phone === undefined) ad.hide_phone = false;
                         return ad;
                     });
                     newAds.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
@@ -2969,7 +2823,7 @@
                 const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
                 const statusText = statusLabels[ad.status] || ad.status;
                 const likes = ad.views || 0;
-                const hidePhone = false; // حذف کامل قابلیت مخفی‌سازی شماره
+                const hidePhone = ad.hide_phone || false;
                 card.innerHTML = `
                         <div class="ad-image" onclick="event.stopPropagation();${mediaUrl ? `openMediaZoom('${mediaUrl}','${isVideo?'video':'image'}')` : ''}">
                             ${mediaHtml}
@@ -2984,6 +2838,7 @@
                                 ${specialBadge}
                                 <span class="rating"><i class="fa-solid fa-star"></i> ${ratingAvg}</span>
                                 <span class="status-badge">${statusText}</span>
+                                ${hidePhone ? '<span class="status-badge" style="background:rgba(52,152,219,0.08);color:var(--blue);">🔒 ناشناس</span>' : ''}
                             </div>
                         </div>
                         <div class="ad-actions">
@@ -2995,8 +2850,8 @@
                             ${ad.user_id === getUserId() ? `<button onclick="event.stopPropagation();editAd(${ad.id})" style="color:var(--blue);font-size:14px;"><i class="fa-solid fa-pen"></i></button>` : ''}
                             ${ad.user_id === getUserId() && ad.status === 'approved' ? `<button onclick="event.stopPropagation();renewAd(${ad.id})" style="color:var(--gold);font-size:14px;"><i class="fa-solid fa-rotate"></i></button>` : ''}
                             ${ad.user_id !== getUserId() && isUserVerified() ? `<button onclick="event.stopPropagation();openChatFromAd(${ad.id})" style="color:var(--green);font-size:14px;"><i class="fa-solid fa-comment"></i></button>` : ''}
-                            ${ad.phone ? `<a href="tel:${ad.phone}" onclick="event.stopPropagation();" style="color:var(--green);font-size:14px;text-decoration:none;"><i class="fa-solid fa-phone"></i></a>` : ''}
-                            ${ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g, '')}" target="_blank" onclick="event.stopPropagation();" style="color:#25D366;font-size:14px;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+                            ${!hidePhone && ad.phone ? `<a href="tel:${ad.phone}" onclick="event.stopPropagation();" style="color:var(--green);font-size:14px;text-decoration:none;"><i class="fa-solid fa-phone"></i></a>` : ''}
+                            ${!hidePhone && ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g, '')}" target="_blank" onclick="event.stopPropagation();" style="color:#25D366;font-size:14px;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
                         </div>
                     `;
                 grid.appendChild(card);
@@ -3194,6 +3049,7 @@
             document.getElementById('adDescription').value = ad.description;
             document.getElementById('adLocation').value = ad.city || '';
             document.getElementById('adCountry').value = ad.country || 'ایران';
+            document.getElementById('adHidePhone').checked = ad.hide_phone || false;
             const phone = getVerifiedPhone();
             document.getElementById('adContact').value = phone || '';
             document.getElementById('addAdModal').classList.add('show');
@@ -3224,7 +3080,7 @@
         }
 
         // ============================================================
-        // SUBMIT AD (بدون hide_phone)
+        // SUBMIT AD
         // ============================================================
         async function submitAd() {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
@@ -3236,6 +3092,7 @@
             const location = document.getElementById('adLocation').value.trim();
             const country = document.getElementById('adCountry').value;
             const durationDays = parseInt(document.getElementById('adDuration').value) || 30;
+            const hidePhone = document.getElementById('adHidePhone').checked;
             if (!title || !price || !desc || !location) { showToast('⚠️ ' + t('completeFields'), 'warning'); return; }
             const contact = getVerifiedPhone();
             if (!contact) { showToast('⚠️ ' + t('noPhone'), 'error'); return; }
@@ -3328,7 +3185,8 @@
                     image_ids: imageIds,
                     duration_days: durationDays,
                     media_type: mediaType,
-                    currency: currency
+                    currency: currency,
+                    hide_phone: hidePhone
                 };
                 let endpoint = '/api/ad/submit';
                 if (editId) {
@@ -3359,7 +3217,7 @@
         }
 
         // ============================================================
-        // IMAGE UPLOAD PREVIEW (حجم صفحه)
+        // IMAGE UPLOAD PREVIEW
         // ============================================================
         document.getElementById('adImagesInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
@@ -3372,7 +3230,7 @@
                     const item = document.createElement('div');
                     item.className = 'image-preview-item';
                     const isVideo = file.type.startsWith('video/');
-                    item.innerHTML = isVideo ? `<video src="${ev.target.result}" muted style="width:100%;height:100%;object-fit:cover;"></video><span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.5);color:#fff;font-size:7px;padding:1px 6px;border-radius:4px;"><i class="fa-solid fa-video"></i></span><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>` : `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;" /><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+                    item.innerHTML = isVideo ? `<video src="${ev.target.result}" muted style="width:100%;height:100%;object-fit:cover;"></video><span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.5);color:#fff;font-size:7px;padding:1px 6px;border-radius:4px;"><i class="fa-solid fa-video"></i></span><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>` : `<img src="${ev.target.result}" /><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
                     grid.appendChild(item);
                 };
                 reader.readAsDataURL(file);
@@ -3404,12 +3262,13 @@
             const phone = getVerifiedPhone();
             contactField.value = phone || '';
             contactField.readOnly = true;
+            document.getElementById('adHidePhone').checked = false;
         }
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
         // ============================================================
-        // AD DETAIL (بدون hide_phone)
+        // AD DETAIL
         // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
@@ -3419,13 +3278,14 @@
             const isFav = favorites.includes(ad.id);
             const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-            const phone = ad.phone || '';
-            renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone);
+            const hidePhone = ad.hide_phone || false;
+            const phone = hidePhone ? null : (ad.phone || '');
+            renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone);
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
         }
 
-        function renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone) {
+        function renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone) {
             const content = document.getElementById('adDetailContent');
             let galleryHtml = '';
             if (adDetailGallery.length > 0) {
@@ -3448,14 +3308,15 @@
                         <span><i class="fa-solid fa-star" style="color:var(--gold);"></i> ${ratingAvg}</span>
                         ${ad.media_type === 'video' ? '<span><i class="fa-solid fa-video"></i></span>' : ''}
                         ${ad.is_special ? '<span>⭐ ویژه</span>' : ''}
+                        ${hidePhone ? '<span style="color:var(--blue);">🔒 ناشناس</span>' : ''}
                         <span class="status-badge" style="padding:1px 8px;border-radius:var(--radius-full);font-size:9px;font-weight:700;background:rgba(255,56,92,0.06);color:var(--primary);">${statusLabels[ad.status] || ad.status}</span>
                     </div>
                     <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
                     <div class="action-buttons">
-                        ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                        ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g, '')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                        ${phone && !hidePhone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
+                        ${phone && !hidePhone ? `<a href="https://wa.me/${phone.replace(/\s/g, '')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                        ${!phone || hidePhone ? `<button onclick="openChatFromAd(${ad.id})" class="btn-call" style="background:var(--blue);"><i class="fa-solid fa-comment"></i> ${t('chatAnonymousLabel')}</button>` : ''}
                         <button class="btn-share" onclick="shareAd(${ad.id},'${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('shareAd')}</button>
-                        ${ad.user_id !== getUserId() ? `<button onclick="openChatFromAd(${ad.id})" style="background:var(--blue);color:#fff;border:none;border-radius:var(--radius);padding:8px;font-weight:700;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;"><i class="fa-solid fa-comment"></i> ${t('chatWith')}</button>` : ''}
                         ${ad.user_id !== getUserId() ? `<button onclick="reportAdViaTicket(${ad.id})" style="background:rgba(255,56,92,0.06);color:var(--primary);border:1px solid rgba(255,56,92,0.1);"><i class="fa-solid fa-flag"></i> ${t('reportAd')}</button>` : ''}
                     </div>
                     <button class="btn-fav" onclick="toggleFavoriteAndUpdateDetail(${ad.id})"><i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i> ${isFav ? t('favoriteRemove') : t('favoriteAdd')}</button>
@@ -3477,7 +3338,6 @@
                 `;
         }
 
-        // گزارش تخلف از طریق تیکت
         function reportAdViaTicket(adId) {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
             switchTab('tickets');
@@ -3518,7 +3378,7 @@
 
         function closeAdDetail() { document.getElementById('adDetailsModal').classList.remove('show'); }
 
-        async function toggleFavoriteAndUpdateDetail(adId) { await toggleFavorite(adId); const ad = allAds.find(item => item.id == adId); if (ad) { const isFav = favorites.includes(ad.id); const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') }; const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const phone = ad.phone || ''; renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone); } }
+        async function toggleFavoriteAndUpdateDetail(adId) { await toggleFavorite(adId); const ad = allAds.find(item => item.id == adId); if (ad) { const isFav = favorites.includes(ad.id); const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') }; const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const hidePhone = ad.hide_phone || false; const phone = hidePhone ? null : (ad.phone || ''); renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone); } }
 
         // ============================================================
         // REVIEW
@@ -3571,7 +3431,153 @@
         }
 
         // ============================================================
-        // CHAT FROM AD (با نام کاربری)
+        // CHAT (شبیه پیام‌رسان)
+        // ============================================================
+        async function loadChatThreads() {
+            const container = document.getElementById('chatThreadsList');
+            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/chat/threads');
+                if (data.success && data.data && data.data.length > 0) {
+                    container.innerHTML = '';
+                    data.data.forEach(thread => {
+                        const other = thread.other_user;
+                        const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
+                        const avatarLetter = displayName.charAt(0).toUpperCase();
+                        const lastMsg = thread.last_message || 'هیچ پیامی وجود ندارد';
+                        const time = thread.last_message_time ? formatTime(thread.last_message_time) : '';
+                        const div = document.createElement('div');
+                        div.className = 'chat-thread-item';
+                        div.innerHTML = `
+                            <div class="avatar">${avatarLetter}</div>
+                            <div class="info">
+                                <div class="name">${displayName}</div>
+                                <div class="last-msg">${lastMsg}</div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                                <div class="time">${time}</div>
+                            </div>
+                            <button onclick="event.stopPropagation();openChatThread('${thread.id}')" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;">💬</button>
+                        `;
+                        container.appendChild(div);
+                    });
+                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('chatThreadsEmpty')}</div>`; }
+            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`; }
+        }
+
+        async function openChatThread(threadId) {
+            if (!isUserVerified()) return;
+            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
+            currentChatThreadId = threadId;
+
+            const modal = document.getElementById('chatModal');
+            const content = document.getElementById('chatContent');
+            content.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            modal.classList.add('show');
+
+            await loadChatMessages(threadId);
+
+            // شروع پولینگ برای دریافت پیام‌های جدید
+            chatPollingInterval = setInterval(() => {
+                loadChatMessages(threadId, true);
+            }, 3000);
+        }
+
+        async function loadChatMessages(threadId, silent = false) {
+            try {
+                const data = await apiCall(`/api/chat/messages?threadId=${threadId}`);
+                if (!data.success) {
+                    if (!silent) showToast('❌ خطا در بارگذاری پیام‌ها', 'error');
+                    return;
+                }
+                const messages = data.data || [];
+                const thread = data.thread || {};
+                const otherId = thread.user1 === getUserId() ? thread.user2 : thread.user1;
+                const otherUserData = await apiCall(`/api/profile/${otherId}`);
+                const otherUser = otherUserData.success ? otherUserData.user : null;
+                const displayName = otherUser?.first_name || otherUser?.phone || otherUser?.username || 'کاربر ناشناس';
+
+                const content = document.getElementById('chatContent');
+                let html = `<div class="modal-title">💬 ${t('chatTitle')} - ${displayName}</div>`;
+                html += `<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">🔒 ${t('chatStartInfo')}</div>`;
+                html += `<div class="chat-messages-container" id="chatMessagesContainer">`;
+                if (messages.length === 0) {
+                    html += `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px;">${t('chatNoMessages')}</div>`;
+                } else {
+                    messages.forEach(m => {
+                        const isSent = m.sender_id === getUserId();
+                        const time = new Date(m.timestamp * 1000).toLocaleTimeString('fa-IR');
+                        html += `<div class="chat-message-bubble ${isSent ? 'sent' : 'received'}">
+                                    ${m.message}
+                                    <span class="msg-time">${time}</span>
+                                </div>`;
+                    });
+                }
+                html += `</div>`;
+                html += `<div style="display:flex;gap:8px;margin-top:8px;">
+                            <input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--input);color:var(--text);font-size:13px;font-family:var(--font);">
+                            <button onclick="sendChatMessage('${threadId}')" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;">${t('sendBtn')}</button>
+                        </div>`;
+                html += `<div style="display:flex;gap:6px;margin-top:8px;">
+                            <button onclick="blockChatUser('${threadId}')" style="flex:1;padding:6px;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('chatBlockUser')}</button>
+                            <button onclick="closeChatModal()" style="flex:1;padding:6px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('close')}</button>
+                        </div>`;
+                content.innerHTML = html;
+
+                const chatInput = document.getElementById('chatInput');
+                if (chatInput) {
+                    chatInput.focus();
+                    chatInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') sendChatMessage(threadId); });
+                }
+                // اسکرول به پایین
+                const containerDiv = document.getElementById('chatMessagesContainer');
+                if (containerDiv) containerDiv.scrollTop = containerDiv.scrollHeight;
+            } catch (err) {
+                if (!silent) showToast('❌ ' + t('networkError'), 'error');
+            }
+        }
+
+        async function sendChatMessage(threadId) {
+            const input = document.getElementById('chatInput');
+            const message = input?.value.trim();
+            if (!message) return;
+            try {
+                const data = await apiCall('/api/chat/send', { method: 'POST', body: JSON.stringify({ threadId, message }) });
+                if (data.success) {
+                    input.value = '';
+                    await loadChatMessages(threadId, false);
+                    // به‌روزرسانی لیست چت‌ها
+                    loadChatThreads();
+                    showToast('✅ ' + t('chatSent'), 'success');
+                } else {
+                    showToast('❌ ' + (data.error || t('unknownError')), 'error');
+                }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        async function blockChatUser(threadId) {
+            if (!confirm(t('chatBlockedConfirm'))) return;
+            try {
+                const data = await apiCall('/api/chat/block', { method: 'POST', body: JSON.stringify({ targetId: threadId }) });
+                if (data.success) {
+                    showToast('✅ ' + t('chatBlockSuccess'), 'success');
+                    closeChatModal();
+                    loadChatThreads();
+                } else { showToast('❌ ' + t('unknownError'), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        function closeChatModal() {
+            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
+            currentChatThreadId = null;
+            document.getElementById('chatModal').classList.remove('show');
+            document.getElementById('chatContent').innerHTML = '';
+            loadChatThreads();
+        }
+
+        // ============================================================
+        // CHAT FROM AD
         // ============================================================
         async function openChatFromAd(adId) {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
@@ -3579,6 +3585,20 @@
             if (!ad) { showToast(t('adNotFound'), 'error'); return; }
             const targetId = ad.user_id;
             try {
+                // اگر قبلاً چتی وجود دارد، آن را باز می‌کنیم
+                const threadsData = await apiCall('/api/chat/threads');
+                let existingThread = null;
+                if (threadsData.success && threadsData.data) {
+                    for (const t of threadsData.data) {
+                        const otherId = t.user1 === getUserId() ? t.user2 : t.user1;
+                        if (otherId === targetId) { existingThread = t; break; }
+                    }
+                }
+                if (existingThread) {
+                    openChatThread(existingThread.id);
+                    return;
+                }
+                // ایجاد thread جدید
                 const data = await apiCall('/api/chat/threads', { method: 'POST', body: JSON.stringify({ targetId, adId }) });
                 if (data.success && data.threadId) {
                     showToast('✅ ' + t('chatStart'), 'success');
@@ -3681,7 +3701,7 @@
         }
 
         // ============================================================
-        // TICKETS
+        // TICKETS (با ارسال و دریافت فعال)
         // ============================================================
         async function loadTickets() {
             const container = document.getElementById('ticketsList');
@@ -3702,7 +3722,7 @@
                                 <div class="ticket-meta">📅 ${new Date(ticket.created_at * 1000).toLocaleDateString('fa-IR')}</div>
                                 <div class="ticket-message">${ticket.message}</div>
                                 ${ticket.replies && ticket.replies.length > 0 ? `<div style="margin-top:2px;font-size:9px;color:var(--text-muted);">💬 ${ticket.replies.length} پاسخ</div>` : ''}
-                                <div style="margin-top:4px;"><button onclick="openTicketDetail(${ticket.id})" style="padding:3px 12px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;">👁 مشاهده</button>${ticket.status !== 'closed' ? `<button onclick="replyToTicket(${ticket.id})" style="padding:3px 12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;margin-right:4px;">💬 پاسخ</button>` : ''}</div>
+                                <div style="margin-top:4px;"><button onclick="openTicketDetail(${ticket.id})" style="padding:3px 12px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;">👁 مشاهده</button>${ticket.status !== 'closed' ? `<button onclick="openTicketReply(${ticket.id})" style="padding:3px 12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;margin-right:4px;">💬 پاسخ</button>` : ''}</div>
                             `;
                         container.appendChild(div);
                     });
@@ -3738,7 +3758,13 @@
                         repliesHtml = '<div style="margin:8px 0;"><strong>💬 پاسخ‌ها:</strong></div>';
                         ticket.replies.forEach(r => {
                             const adminName = r.admin_id === userId ? 'شما' : 'پشتیبان';
-                            repliesHtml += `<div class="ticket-reply"><div class="reply-admin">👤 ${adminName}</div><div class="reply-message">${r.message}</div><div class="reply-date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')} ${new Date(r.created_at * 1000).toLocaleTimeString('fa-IR')}</div></div>`;
+                            repliesHtml += `
+                                <div class="ticket-reply">
+                                    <div class="reply-admin">👤 ${adminName}</div>
+                                    <div class="reply-message">${r.message}</div>
+                                    <div class="reply-date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')} ${new Date(r.created_at * 1000).toLocaleTimeString('fa-IR')}</div>
+                                </div>
+                            `;
                         });
                     }
                     content.innerHTML = `
@@ -3747,13 +3773,20 @@
                             <div style="margin:4px 0;font-size:11px;color:var(--text-secondary);">📅 ${new Date(ticket.created_at * 1000).toLocaleDateString('fa-IR')}</div>
                             <div style="padding:8px 12px;background:var(--input);border-radius:var(--radius);margin:4px 0;">${ticket.message}</div>
                             ${repliesHtml}
-                            ${ticket.status !== 'closed' ? `<div style="margin-top:8px;"><div class="form-group"><label>💬 ${t('replyTicket')}</label><textarea id="ticketReplyText" rows="2" placeholder="${t('replyRequired')}"></textarea></div><button onclick="sendTicketReply(${ticket.id})" style="width:100%;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:12px;cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> ${t('sendReply')}</button></div>` : '<div style="margin:8px 0;color:var(--text-muted);">✅ این تیکت بسته شده است.</div>'}
-                            <button onclick="closeTicketModal()" style="width:100%;padding:8px;margin-top:4px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-weight:600;font-size:12px;color:var(--text);cursor:pointer;">❌ ${t('cancel')}</button>
+                            ${ticket.status !== 'closed' ? `
+                                <div style="margin-top:8px;">
+                                    <div class="form-group"><label>💬 ${t('replyTicket')}</label><textarea id="ticketReplyText" rows="2" placeholder="${t('replyRequired')}"></textarea></div>
+                                    <button onclick="sendTicketReply(${ticket.id})" style="width:100%;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:12px;cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> ${t('sendReply')}</button>
+                                </div>
+                            ` : '<div style="margin:8px 0;color:var(--text-muted);">✅ این تیکت بسته شده است.</div>'}
+                            <button onclick="closeTicketModal()" style="width:100%;padding:8px;margin-top:4px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-weight:600;font-size:12px;color:var(--text);cursor:pointer;">❌ ${t('close')}</button>
                         `;
                     modal.classList.add('show');
                 }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
+
+        function openTicketReply(ticketId) { openTicketDetail(ticketId); }
 
         async function sendTicketReply(ticketId) {
             const reply = document.getElementById('ticketReplyText').value.trim();
@@ -3761,15 +3794,18 @@
             try {
                 const userId = getUserId();
                 const data = await apiCall(`/api/tickets/${ticketId}`, { method: 'POST', body: JSON.stringify({ userId, reply }) });
-                if (data.success) { showToast('✅ ' + t('ticketReplySent'), 'success'); openTicketDetail(ticketId); loadTickets(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) {
+                    showToast('✅ ' + t('ticketReplySent'), 'success');
+                    openTicketDetail(ticketId);
+                    loadTickets();
+                } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        function replyToTicket(ticketId) { openTicketDetail(ticketId); }
         function closeTicketModal() { document.getElementById('ticketModal').classList.remove('show'); document.getElementById('ticketContent').innerHTML = ''; }
 
         // ============================================================
-        // INBOX
+        // INBOX (با استفاده از تیکت‌ها)
         // ============================================================
         async function fetchInbox() {
             const container = document.getElementById('inboxList');
@@ -3807,183 +3843,6 @@
                 container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`;
             }
         }
-
-        // ============================================================
-        // CHAT (با قابلیت ارسال فایل و نمایش آگهی‌های کاربر)
-        // ============================================================
-        async function loadChatThreads() {
-            const container = document.getElementById('chatThreadsList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/chat/threads');
-                if (data.success && data.data && data.data.length > 0) {
-                    container.innerHTML = '';
-                    data.data.forEach(thread => {
-                        const other = thread.other_user;
-                        const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
-                        const div = document.createElement('div');
-                        div.className = 'chat-thread';
-                        div.innerHTML = `
-                                <div class="thread-header">
-                                    <span class="thread-user">${displayName}</span>
-                                    <span class="thread-last">${thread.last_message_time ? formatTime(thread.last_message_time) : ''}</span>
-                                </div>
-                                <div class="thread-preview">${thread.last_message || 'هیچ پیامی وجود ندارد'}</div>
-                                <button onclick="openChatThread('${thread.id}')" style="margin-top:6px;padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;">💬 ${t('chatTitle')}</button>
-                            `;
-                        container.appendChild(div);
-                    });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('chatThreadsEmpty')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`; }
-        }
-
-        async function openChatThread(threadId) {
-            if (!isUserVerified()) return;
-            const modal = document.getElementById('chatModal');
-            const content = document.getElementById('chatContent');
-            content.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            modal.classList.add('show');
-            try {
-                const data = await apiCall(`/api/chat/messages?threadId=${threadId}`);
-                if (!data.success) { content.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">❌ خطا در بارگذاری پیام‌ها</div>`; return; }
-                const messages = data.data || [];
-                const thread = data.thread || {};
-                const otherId = thread.user1 === getUserId() ? thread.user2 : thread.user1;
-                const otherUserData = await apiCall(`/api/profile/${otherId}`);
-                const otherUser = otherUserData.success ? otherUserData.user : null;
-                const displayName = otherUser?.first_name || otherUser?.phone || otherUser?.username || 'کاربر ناشناس';
-
-                // دریافت آگهی‌های کاربر مقابل
-                let userAdsHtml = '';
-                try {
-                    const adsData = await apiCall(`/api/myads/${otherId}`);
-                    if (adsData.success && adsData.data && adsData.data.length > 0) {
-                        const activeAds = adsData.data.filter(a => a.status === 'approved');
-                        if (activeAds.length > 0) {
-                            userAdsHtml = `<div class="chat-user-ads"><div class="ads-title"><i class="fa-solid fa-box"></i> ${t('userAdsTitle')} (${activeAds.length})</div>`;
-                            activeAds.slice(0, 5).forEach(ad => {
-                                userAdsHtml += `<div class="user-ad-item" onclick="openAdDetail(${ad.id});closeChatModal();"><span class="ad-title">${ad.title}</span><span class="ad-price">${(ad.price || 0).toLocaleString()} ${ad.currency || 'تومان'}</span></div>`;
-                            });
-                            if (activeAds.length > 5) {
-                                userAdsHtml += `<div style="font-size:9px;color:var(--text-muted);text-align:center;padding:2px 0;">+ ${activeAds.length - 5} آگهی دیگر</div>`;
-                            }
-                            userAdsHtml += `</div>`;
-                        } else {
-                            userAdsHtml = `<div class="chat-user-ads"><div class="ads-title"><i class="fa-solid fa-box"></i> ${t('userAdsTitle')}</div><div class="no-ads">${t('noUserAds')}</div></div>`;
-                        }
-                    } else {
-                        userAdsHtml = `<div class="chat-user-ads"><div class="ads-title"><i class="fa-solid fa-box"></i> ${t('userAdsTitle')}</div><div class="no-ads">${t('noUserAds')}</div></div>`;
-                    }
-                } catch (err) { userAdsHtml = `<div class="chat-user-ads"><div class="ads-title"><i class="fa-solid fa-box"></i> ${t('userAdsTitle')}</div><div class="no-ads">${t('noUserAds')}</div></div>`; }
-
-                let html = `<div class="modal-title">${t('chatTitle')} - ${displayName}</div>`;
-                html += userAdsHtml;
-                html += `<div class="chat-message-container">`;
-                if (messages.length === 0) { html += `<div style="text-align:center;color:var(--text-muted);font-size:12px;">${t('chatNoMessages')}</div>`; } else {
-                    messages.forEach(m => {
-                        const isSent = m.sender_id === getUserId();
-                        let fileHtml = '';
-                        if (m.file_url) {
-                            const fileName = m.file_name || 'فایل';
-                            const fileIcon = m.file_type && m.file_type.startsWith('image/') ? 'fa-image' : (m.file_type && m.file_type.startsWith('video/') ? 'fa-video' : 'fa-file');
-                            fileHtml = `<span class="file-attachment" onclick="window.open('${m.file_url}','_blank')"><i class="fa-solid ${fileIcon}"></i> ${fileName}</span>`;
-                        }
-                        html += `<div class="chat-message ${isSent ? 'sent' : 'received'}">${isSent ? '' : displayName + ': '}${m.message}${fileHtml}<span class="msg-time">${new Date(m.timestamp * 1000).toLocaleTimeString('fa-IR')}</span></div>`;
-                    });
-                }
-                html += `</div>`;
-                html += `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">`;
-                html += `<input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" style="flex:1;min-width:120px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--input);color:var(--text);font-size:13px;font-family:var(--font);">`;
-                html += `<label for="chatFileInput" style="padding:8px 10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;color:var(--text-secondary);"><i class="fa-solid fa-paperclip"></i></label>`;
-                html += `<input type="file" id="chatFileInput" style="display:none;" accept="image/*,video/*,application/pdf,.doc,.docx,.txt" multiple>`;
-                html += `<button onclick="sendChatMessage('${threadId}')" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;">${t('sendBtn')}</button>`;
-                html += `</div>`;
-                html += `<div style="display:flex;gap:6px;margin-top:8px;"><button onclick="blockChatUser('${threadId}')" style="flex:1;padding:6px;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('chatBlockUser')}</button><button onclick="closeChatModal()" style="flex:1;padding:6px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('cancel')}</button></div>`;
-                content.innerHTML = html;
-
-                // Event listeners
-                const chatInput = document.getElementById('chatInput');
-                if (chatInput) { chatInput.focus(); chatInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') sendChatMessage(threadId); }); }
-                const fileInput = document.getElementById('chatFileInput');
-                if (fileInput) {
-                    fileInput.addEventListener('change', function(e) {
-                        if (this.files && this.files.length > 0) {
-                            // آپلود فایل و ارسال به عنوان پیام
-                            handleChatFileUpload(threadId, this.files);
-                            this.value = '';
-                        }
-                    });
-                }
-                const containerDiv = document.querySelector('.chat-message-container');
-                if (containerDiv) containerDiv.scrollTop = containerDiv.scrollHeight;
-            } catch (err) { content.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">${t('networkError')}</div>`; }
-        }
-
-        // ============================================================
-        // CHAT FILE UPLOAD
-        // ============================================================
-        async function handleChatFileUpload(threadId, files) {
-            if (!files || files.length === 0) return;
-            const file = files[0];
-            if (file.size > 10 * 1024 * 1024) { showToast('حجم فایل بیش از ۱۰ مگابایت است', 'error'); return; }
-            showToast('⏳ ' + t('fileUploading'), 'info');
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-                const uploadRes = await fetch(`${API_BASE}/api/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const uploadResult = await uploadRes.json();
-                if (uploadResult.success && uploadResult.file_id) {
-                    // ارسال پیام با فایل
-                    const fileUrl = IMAGE_BASE + uploadResult.file_id;
-                    const fileName = file.name;
-                    const fileType = file.type || 'application/octet-stream';
-                    const data = await apiCall('/api/chat/send', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            threadId,
-                            message: `📎 ${fileName}`,
-                            file_url: fileUrl,
-                            file_name: fileName,
-                            file_type: fileType
-                        })
-                    });
-                    if (data.success) {
-                        showToast('✅ ' + t('fileAttached'), 'success');
-                        openChatThread(threadId);
-                    } else {
-                        showToast('❌ ' + t('fileUploadError'), 'error');
-                    }
-                } else {
-                    showToast('❌ ' + t('fileUploadError'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ ' + t('fileUploadError'), 'error');
-            }
-        }
-
-        async function sendChatMessage(threadId) {
-            const input = document.getElementById('chatInput');
-            const message = input?.value.trim();
-            if (!message) return;
-            try {
-                const data = await apiCall('/api/chat/send', { method: 'POST', body: JSON.stringify({ threadId, message }) });
-                if (data.success) { input.value = ''; openChatThread(threadId); showToast('✅ ' + t('chatSent'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); }
-            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
-        }
-
-        async function blockChatUser(threadId) {
-            if (!confirm(t('chatBlockedConfirm'))) return;
-            try {
-                const data = await apiCall('/api/chat/block', { method: 'POST', body: JSON.stringify({ targetId: threadId }) });
-                if (data.success) { showToast('✅ ' + t('chatBlockSuccess'), 'success'); closeChatModal(); loadChatThreads(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
-            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
-        }
-
-        function closeChatModal() { document.getElementById('chatModal').classList.remove('show'); document.getElementById('chatContent').innerHTML = ''; }
 
         // ============================================================
         // ALERTS
@@ -4097,92 +3956,277 @@
         // ============================================================
         function checkAdminAccess() { if (!isAdmin) { showToast('⛔ ' + t('unauthorized'), 'error'); return false; } return true; }
 
-        async function adminPendingAds() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/ads/pending'); if (data.success && data.ads && data.ads.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">📋 آگهی‌های در انتظار:</div>'; data.ads.forEach(ad => { html += `<div class="admin-row"><span>${ad.title}</span><span style="font-size:10px;color:var(--text-secondary);">${ad.user_id}</span><button onclick="adminApproveAd(${ad.id})" style="padding:2px 8px;background:var(--green);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">✅ تایید</button><button onclick="adminRejectAd(${ad.id})" style="padding:2px 8px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">❌ رد</button><button onclick="adminDeleteAd(${ad.id})" style="padding:2px 8px;background:#c0392b;color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🗑</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noPending')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminPendingAds() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/ads?status=pending');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="margin-bottom:6px;font-size:13px;">${t('adminPending')}</h4>`;
+                    data.data.forEach(ad => {
+                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:12px;">#${ad.id} - ${ad.title}</div><div style="font-size:10px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'}</div></div><div style="display:flex;gap:2px;"><button onclick="adminApproveAd(${ad.id})" style="background:var(--green);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">✅</button><button onclick="adminRejectAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">❌</button><button onclick="adminSpecialAd(${ad.id})" style="background:var(--gold);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">⭐</button><button onclick="adminDeleteAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">🗑</button></div></div></div>`;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('noPending')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/ad/approve/${adId}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('adApproved'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('adApproved'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminRejectAd(adId) { if (!checkAdminAccess()) return; const reason = prompt('📝 دلیل رد:'); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/ad/reject', { method: 'POST', body: JSON.stringify({ adId, reason }) }); if (data.success) { showToast('❌ ' + t('adRejected'), 'warning'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); adminAllAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return; try { const data = await apiCall('/api/admin/ad/special', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(data.data.is_special ? t('specialToggleSuccess') : t('specialToggleRemove'), 'success'); adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminRejectAd(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/ad/reject/${adId}`, { method: 'POST' }); if (data.success) { showToast('❌ ' + t('adRejected'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(`/api/admin/ad/delete/${adId}`, { method: 'DELETE' }); if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return; try { const data = await apiCall(`/api/admin/ad/special/${adId}`, { method: 'POST' }); if (data.success) { showToast(data.is_special ? '⭐ ' + t('specialToggleSuccess') : '❌ ' + t('specialToggleRemove'), 'success'); adminAllAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminAllAds() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/ads/all'); if (data.success && data.ads && data.ads.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">📋 همه آگهی‌ها:</div>'; data.ads.forEach(ad => { const statusLabels = { pending: '⏳', approved: '✅', rejected: '❌' }; html += `<div class="admin-row"><span>${ad.title}</span><span style="font-size:10px;color:var(--text-secondary);">${ad.user_id}</span><span style="font-size:10px;">${statusLabels[ad.status] || ad.status}</span><button onclick="adminViewAd(${ad.id})" style="padding:2px 8px;background:var(--blue);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">👁</button>${ad.status === 'pending' ? `<button onclick="adminApproveAd(${ad.id})" style="padding:2px 8px;background:var(--green);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">✅</button><button onclick="adminRejectAd(${ad.id})" style="padding:2px 8px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">❌</button>` : ''}<button onclick="adminSpecialAd(${ad.id})" style="padding:2px 8px;background:var(--gold);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">⭐</button><button onclick="adminDeleteAd(${ad.id})" style="padding:2px 8px;background:#c0392b;color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🗑</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noAds')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminAllAds() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/ads');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="margin-bottom:6px;font-size:13px;">${t('adminAll')} (${data.data.length})</h4>`;
+                    data.data.forEach(ad => {
+                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ? '⏳' : '❌';
+                        const specialEmoji = ad.is_special ? '⭐ ' : '';
+                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:3px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:11px;">${statusEmoji} ${specialEmoji}#${ad.id} - ${ad.title}</div><div style="font-size:9px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'} • 📊 ${ad.status}</div></div><div style="display:flex;gap:2px;"><button onclick="adminViewAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;">👁</button><button onclick="adminDeleteAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;color:var(--primary);">🗑</button></div></div></div>`;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('noAdsFound')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
         function adminViewAd(adId) { openAdDetail(adId); }
 
-        async function adminUsers() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/users'); if (data.success && data.users && data.users.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">👥 کاربران:</div>'; data.users.forEach(user => { html += `<div class="admin-user-row"><div class="user-info"><span>${user.phone || user.username || 'نامشخص'}</span><span style="font-size:10px;color:var(--text-secondary);">${user.fullname || ''}</span>${user.is_verified ? '<span class="verified-badge">✅</span>' : ''}${user.is_blocked ? '<span class="blocked-badge">🚫</span>' : ''}${user.is_admin ? '<span style="color:var(--gold);">👑</span>' : ''}</div><div class="user-actions">${user.is_blocked ? `<button class="unblock-btn" onclick="adminUnblockUser('${user.phone}')">رفع انسداد</button>` : `<button class="block-btn" onclick="adminBlockUser('${user.phone}')">مسدود</button>`}<button class="delete-btn" onclick="adminDeleteUser('${user.phone}')">🗑</button><button class="msg-btn" onclick="adminSendPrivateMsg('${user.phone}')">📨</button><button class="role-btn" onclick="adminSetRole('${user.phone}')">👑</button></div></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noUsers') || 'هیچ کاربری یافت نشد'}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminUsers() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/users');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="font-size:13px;">👥 ${t('adminUsers')} (${data.data.length})</h4>`;
+                    data.data.forEach(u => {
+                        const verified = u.is_verified ? '✅' : '❌';
+                        const blocked = u.is_blocked ? '🚫' : '✅';
+                        const role = u.role || 'user';
+                        html += `
+                                <div class="admin-user-row">
+                                    <div class="user-info">
+                                        <span><strong>${u.fullname || u.first_name || u.phone || 'کاربر'}</strong></span>
+                                        <span>🆔 ${u.phone || u.telegram_id || 'نامشخص'}</span>
+                                        <span class="${u.is_verified ? 'verified-badge' : ''}">${verified}</span>
+                                        <span class="${u.is_blocked ? 'blocked-badge' : ''}">${blocked}</span>
+                                        <span>👑 ${role}</span>
+                                        <span>⭐ ${u.score || 0}</span>
+                                        <span>⚠️ ${u.warnings || 0}</span>
+                                    </div>
+                                    <div class="user-actions">
+                                        ${u.is_blocked ? `<button class="unblock-btn" onclick="adminUnblockUser('${u.phone}')">${t('unblockUser')}</button>` : `<button class="block-btn" onclick="adminBlockUser('${u.phone}')">${t('blockUser')}</button>`}
+                                        <button class="delete-btn" onclick="adminDeleteUser('${u.phone}')">${t('deleteUser')}</button>
+                                        <button class="msg-btn" onclick="adminSendPrivateMsg('${u.phone}')">${t('sendPrivateMsg')}</button>
+                                        <button class="role-btn" onclick="adminSetRole('${u.phone}')">${t('setRole')}</button>
+                                    </div>
+                                </div>
+                            `;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('userNotFound')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminBlockUser(userId) { if (!checkAdminAccess()) return; const reason = prompt('دلیل مسدود کردن را وارد کنید:'); if (reason === null) return; try { const data = await apiCall('/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data.success) { showToast('✅ ' + t('userBlockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
+        async function adminBlockUser(userId) { if (!checkAdminAccess()) return; const reason = prompt(t('enterBlockReason')); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data.success) { showToast('✅ ' + t('userBlockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
         async function adminUnblockUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('unblockConfirm'))) return; try { const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) }); if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm'))) return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) }); if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSendPrivateMsg(userId) { const subject = prompt('📝 ' + t('messageSubject') + ':'); if (subject === null) return; if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; } const body = prompt('📝 ' + t('messageBody') + ':'); if (body === null) return; if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId, message: `${subject}\n\n${body}` }) }); if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); } } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); } }
+        async function adminSetRole(userId) { if (!checkAdminAccess()) return; const role = prompt(t('enterRole') + '\n( super_admin, admin, admin_ads, admin_tickets, admin_monitor, user )'); if (role === null) return; const validRoles = ['super_admin','admin','admin_ads','admin_tickets','admin_monitor','user']; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data = await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId, role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm'))) return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ userId }) }); if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminAdmins() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/admins');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="font-size:13px;">👑 ${t('adminAdmins')}</h4>`;
+                    data.data.forEach(a => {
+                        html += `<div class="admin-user-row"><div class="user-info"><span><strong>${a.first_name || a.phone || 'ادمین'}</strong></span><span>🆔 ${a.telegram_id || a.phone}</span><span>👑 ${a.role || 'admin'}</span></div></div>`;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('userNotFound')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminSendPrivateMsg(userId) { if (!checkAdminAccess()) return; const msg = prompt('📨 متن پیام خصوصی را وارد کنید:'); if (!msg) return; try { const data = await apiCall('/api/admin/send-private', { method: 'POST', body: JSON.stringify({ userId, message: msg }) }); if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); } else { showToast('❌ ' + t('messageSendError'), 'error'); } } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); } }
+        async function adminStats() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/stats');
+                if (data.success) {
+                    const s = data.data;
+                    container.innerHTML = `
+                            <h4 style="font-size:13px;">📊 ${t('adminStats')}</h4>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+                                <div style="padding:10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);text-align:center;"><div style="font-size:9px;color:var(--text-secondary);">${t('statsTotalUsers')}</div><div style="font-size:18px;font-weight:800;color:var(--primary);">${s.totalUsers || 0}</div></div>
+                                <div style="padding:10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);text-align:center;"><div style="font-size:9px;color:var(--text-secondary);">${t('statsTotalAds')}</div><div style="font-size:18px;font-weight:800;color:var(--primary);">${s.totalAds || 0}</div></div>
+                                <div style="padding:10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);text-align:center;"><div style="font-size:9px;color:var(--text-secondary);">${t('statsPending')}</div><div style="font-size:18px;font-weight:800;color:var(--gold);">${s.pendingAds || 0}</div></div>
+                                <div style="padding:10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);text-align:center;"><div style="font-size:9px;color:var(--text-secondary);">${t('statsSpecial')}</div><div style="font-size:18px;font-weight:800;color:var(--gold);">${s.specialAds || 0}</div></div>
+                                <div style="grid-column:span 2;padding:10px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);text-align:center;"><div style="font-size:9px;color:var(--text-secondary);">${t('statsBanners')}</div><div style="font-size:18px;font-weight:800;color:var(--blue);">${s.activeBanners || 0}</div></div>
+                            </div>
+                        `;
+                } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminSetRole(userId) { if (!checkAdminAccess()) return; const role = prompt('👑 نقش جدید را وارد کنید (super_admin, admin_ads, admin_tickets, admin_monitor, user):'); if (!role) return; try { const data = await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId, role }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteOldAds() {
+            if (!checkAdminAccess()) return;
+            if (!confirm(t('confirmDeleteOld'))) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/delete-old-ads', { method: 'POST', body: JSON.stringify({ days: 30 }) });
+                if (data.success) { showToast('✅ ' + t('oldAdsDeleted'), 'success'); adminStats(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
 
-        async function adminAdmins() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/admins'); if (data.success && data.admins && data.admins.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">👑 ادمین‌ها:</div>'; data.admins.forEach(admin => { html += `<div class="admin-user-row"><div class="user-info"><span>${admin.phone || admin.username || 'نامشخص'}</span><span style="font-size:10px;color:var(--text-secondary);">${admin.fullname || ''}</span><span style="font-size:10px;color:var(--gold);">${admin.role || 'admin'}</span></div><div class="user-actions"><button class="delete-btn" onclick="adminDeleteUser('${admin.phone}')">🗑</button></div></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">هیچ ادمینی یافت نشد</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminEditRequests() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/edit-requests');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="font-size:13px;">✏️ ${t('adminEditRequests')}</h4>`;
+                    data.data.forEach(req => {
+                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="font-weight:600;font-size:12px;">#${req.adId} - ${req.userId}</div><div style="font-size:11px;color:var(--text-secondary);">عنوان جدید: ${req.changes.title || 'بدون تغییر'}</div><div style="font-size:11px;color:var(--text-secondary);">قیمت جدید: ${req.changes.price || 'بدون تغییر'}</div><div style="display:flex;gap:4px;margin-top:4px;"><button onclick="adminApproveEdit(${req.adId})" class="btn btn-sm btn-success">✅ ${t('editApproved')}</button><button onclick="adminRejectEdit(${req.adId})" class="btn btn-sm btn-danger">❌ ${t('editRejected')}</button></div></div>`;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('noEditRequests')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminStats() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/stats'); if (data.success) { const s = data.stats || {}; container.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;"><div class="card" style="text-align:center;padding:8px;"><div style="font-size:24px;font-weight:800;color:var(--primary);">${s.total_users || 0}</div><div style="font-size:9px;color:var(--text-muted);">${t('statsTotalUsers')}</div></div><div class="card" style="text-align:center;padding:8px;"><div style="font-size:24px;font-weight:800;color:var(--primary);">${s.total_ads || 0}</div><div style="font-size:9px;color:var(--text-muted);">${t('statsTotalAds')}</div></div><div class="card" style="text-align:center;padding:8px;"><div style="font-size:24px;font-weight:800;color:var(--gold);">${s.pending_ads || 0}</div><div style="font-size:9px;color:var(--text-muted);">${t('statsPending')}</div></div><div class="card" style="text-align:center;padding:8px;"><div style="font-size:24px;font-weight:800;color:var(--gold);">${s.special_ads || 0}</div><div style="font-size:9px;color:var(--text-muted);">${t('statsSpecial')}</div></div><div class="card" style="text-align:center;padding:8px;"><div style="font-size:24px;font-weight:800;color:var(--blue);">${s.active_banners || 0}</div><div style="font-size:9px;color:var(--text-muted);">${t('statsBanners')}</div></div></div>`; } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('editApproved'), 'success'); adminEditRequests(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/reject', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('❌ ' + t('editRejected'), 'success'); adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminDeleteOldAds() { if (!checkAdminAccess()) return; if (!confirm(t('confirmDeleteOld'))) return; try { const data = await apiCall('/api/admin/delete-old-ads', { method: 'POST' }); if (data.success) { showToast('🗑 ' + t('oldAdsDeleted'), 'success'); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminChats() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/chat/all');
+                if (data.success && data.data && data.data.length > 0) {
+                    let html = `<h4 style="font-size:13px;">💬 ${t('adminChats')}</h4>`;
+                    data.data.forEach(chat => {
+                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${chat.id}</strong> - ${chat.user1} ↔ ${chat.user2}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(chat.created_at)}</div><div style="display:flex;gap:4px;"><button onclick="adminBackupChat('${chat.id}')" class="btn btn-sm btn-outline">💾 ${t('backupChat')}</button><button onclick="adminRestoreChat()" class="btn btn-sm btn-outline">♻️ ${t('restoreChat')}</button></div></div>`;
+                    });
+                    container.innerHTML = html;
+                } else { container.innerHTML = `<div class="text-secondary">${t('noChats')}</div>`; }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminEditRequests() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/edit-requests'); if (data.success && data.requests && data.requests.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">✏️ درخواست‌های ویرایش:</div>'; data.requests.forEach(req => { html += `<div class="admin-row"><span>${req.ad_title}</span><span style="font-size:10px;color:var(--text-secondary);">${req.user_id}</span><button onclick="adminApproveEdit(${req.id})" style="padding:2px 8px;background:var(--green);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">✅</button><button onclick="adminRejectEdit(${req.id})" style="padding:2px 8px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">❌</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noEditRequests')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminBackupChat(threadId) { try { const data = await apiCall('/api/admin/chat/backup', { method: 'POST', body: JSON.stringify({ threadId }) }); if (data.success) { showToast('✅ ' + t('chatBackupSuccess'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminRestoreChat() { const backupKey = prompt(t('chatRestorePrompt')); if (!backupKey) return; try { const data = await apiCall('/api/admin/chat/restore', { method: 'POST', body: JSON.stringify({ backupKey }) }); if (data.success) { showToast('✅ ' + t('chatRestoreSuccess'), 'success'); adminChats(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/edit-approve/${adId}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('editApproved'), 'success'); adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminBanners() {
+            if (!checkAdminAccess()) return;
+            const container = document.getElementById('adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/admin/banners');
+                if (data.success && data.banners && data.banners.length > 0) {
+                    let html = `<h4 style="font-size:13px;">📢 ${t('adminBanners')}</h4>`;
+                    data.banners.forEach(b => {
+                        const status = b.is_active ? '✅ فعال' : '❌ غیرفعال';
+                        const type = b.type === 'splash' ? '📱 اسپلش' : '📋 بنر';
+                        html += `
+                                <div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;">
+                                    <div><strong>${b.title}</strong> (${type}) - ${status}</div>
+                                    <div style="font-size:10px;color:var(--text-secondary);">🔗 ${b.link || 'ندارد'}</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <button onclick="adminToggleBanner(${b.id})" class="btn btn-sm ${b.is_active ? 'btn-danger' : 'btn-success'}">${b.is_active ? '❌ غیرفعال' : '✅ فعال'}</button>
+                                        <button onclick="adminDeleteBanner(${b.id})" class="btn btn-sm btn-danger">🗑 حذف</button>
+                                    </div>
+                                </div>
+                            `;
+                    });
+                    html += `
+                            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                                <input type="text" id="bannerTitle" placeholder="${t('enterBannerTitle')}" style="flex:1;min-width:120px;">
+                                <input type="text" id="bannerLink" placeholder="${t('enterBannerLink')}" style="flex:1;min-width:120px;">
+                                <input type="file" id="bannerImageInput" accept="image/*" style="flex:1;min-width:120px;padding:4px;">
+                                <button onclick="adminAddBanner()" class="btn btn-sm">➕ ${t('bannerAddSuccess')}</button>
+                                <button onclick="adminAddSplash()" class="btn btn-sm">📱 ${t('splashAddSuccess')}</button>
+                            </div>
+                        `;
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `
+                            <div class="text-secondary">هیچ بنری وجود ندارد</div>
+                            <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+                                <input type="text" id="bannerTitle" placeholder="${t('enterBannerTitle')}" style="flex:1;min-width:120px;">
+                                <input type="text" id="bannerLink" placeholder="${t('enterBannerLink')}" style="flex:1;min-width:120px;">
+                                <input type="file" id="bannerImageInput" accept="image/*" style="flex:1;min-width:120px;padding:4px;">
+                                <button onclick="adminAddBanner()" class="btn btn-sm">➕ ${t('bannerAddSuccess')}</button>
+                                <button onclick="adminAddSplash()" class="btn btn-sm">📱 ${t('splashAddSuccess')}</button>
+                            </div>
+                        `;
+                }
+            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+        }
 
-        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/edit-reject/${adId}`, { method: 'POST' }); if (data.success) { showToast('❌ ' + t('editRejected'), 'success'); adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminAddBanner() { const title = document.getElementById('bannerTitle').value.trim(); const link = document.getElementById('bannerLink').value.trim(); if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, type: 'inline' }) }); if (data.success) { showToast('✅ ' + t('bannerAddSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminAddSplash() { const title = document.getElementById('bannerTitle').value.trim() || 'اسپلش'; const link = document.getElementById('bannerLink').value.trim() || ''; const fileInput = document.getElementById('bannerImageInput'); if (!fileInput.files || fileInput.files.length === 0) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; } const file = fileInput.files[0]; if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; } try { const formData = new FormData(); formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData }); const uploadResult = await uploadRes.json(); if (!uploadResult.success || !uploadResult.file_id) { showToast('خطا در آپلود تصویر', 'error'); return; } const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t('splashAddSuccess'), 'success'); adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminToggleBanner(bannerId) { try { const data = await apiCall('/api/admin/banner/toggle', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteBanner(bannerId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/banner/delete', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('🗑 ' + t('bannerDeleteSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminChats() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/chats'); if (data.success && data.chats && data.chats.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">💬 مدیریت چت‌ها:</div>'; data.chats.forEach(chat => { html += `<div class="admin-row"><span>${chat.user1} - ${chat.user2}</span><span style="font-size:10px;color:var(--text-secondary);">${chat.last_message || 'بدون پیام'}</span><button onclick="adminBackupChat('${chat.id}')" style="padding:2px 8px;background:var(--blue);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">💾</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noChats')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        function adminAnnounce() { if (!checkAdminAccess()) return; document.getElementById('adminResult').innerHTML = `
+                <h4 style="font-size:13px;">📢 ${t('adminAnnounce')}</h4>
+                <div class="admin-row"><input type="text" id="announceTitle" placeholder="${t('announceTitle')}"></div>
+                <div class="admin-row"><textarea id="announceMessage" rows="2" placeholder="${t('announceMessage')}"></textarea></div>
+                <button onclick="adminSendAnnounce()" class="btn btn-sm">${t('announceSend')}</button>
+            `; }
+        async function adminSendAnnounce() { const title = document.getElementById('announceTitle').value.trim(); const message = document.getElementById('announceMessage').value.trim(); if (!title || !message) { showToast('لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message, target: 'all' }) }); if (data.success) { showToast('✅ ' + t('announceSent'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminBackupChat(threadId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/chat-backup/${threadId}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('chatBackupSuccess'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/sessions'); if (data.success && data.data && data.data.length > 0) { let html = `<h4 style="font-size:13px;">💻 ${t('adminSessions')}</h4>`; data.data.forEach(sess => { html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${sess.userId}</strong> - ${sess.device || 'نامشخص'}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(sess.created_at)}</div><button onclick="adminRevokeSession('${sess.id}')" class="btn btn-sm btn-danger">${t('sessionRevoke')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminRevokeSession(sessionId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/session/revoke', { method: 'POST', body: JSON.stringify({ sessionId }) }); if (data.success) { showToast('✅ ' + t('sessionRevoked'), 'success'); adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminRestoreChat() { if (!checkAdminAccess()) return; const code = prompt(t('chatRestorePrompt')); if (!code) return; try { const data = await apiCall('/api/admin/chat-restore', { method: 'POST', body: JSON.stringify({ code }) }); if (data.success) { showToast('✅ ' + t('chatRestoreSuccess'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminBanners() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/banners'); if (data.success && data.banners && data.banners.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">📢 بنرها و اسپلش:</div><button onclick="adminAddBanner()" style="padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;margin-bottom:6px;">➕ افزودن بنر</button><button onclick="adminAddSplash()" style="padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;margin-bottom:6px;margin-right:4px;">➕ افزودن اسپلش</button>'; data.banners.forEach(banner => { const statusText = banner.is_active ? '✅' : '❌'; html += `<div class="admin-row"><span>${banner.title || 'بدون عنوان'}</span><span style="font-size:10px;color:var(--text-secondary);">${banner.type || 'banner'}</span><span>${statusText}</span><button onclick="adminToggleBanner(${banner.id})" style="padding:2px 8px;background:var(--gold);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🔄</button><button onclick="adminDeleteBanner(${banner.id})" style="padding:2px 8px;background:#c0392b;color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🗑</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">هیچ بنری یافت نشد</div><button onclick="adminAddBanner()" style="padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;margin-top:6px;">➕ افزودن بنر</button><button onclick="adminAddSplash()" style="padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;margin-top:6px;margin-right:4px;">➕ افزودن اسپلش</button>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
-
-        async function adminAddBanner() { if (!checkAdminAccess()) return; const title = prompt(t('enterBannerTitle')); if (!title) return; const link = prompt(t('enterBannerLink') + ' (یا خالی بگذارید)'); const imageInput = document.createElement('input'); imageInput.type = 'file'; imageInput.accept = 'image/*,video/*'; imageInput.onchange = async function(e) { const file = e.target.files[0]; if (!file) { showToast('لطفاً یک فایل انتخاب کنید', 'warning'); return; } try { const formData = new FormData(); formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData }); const uploadResult = await uploadRes.json(); if (uploadResult.success && uploadResult.file_id) { const data = await apiCall('/api/admin/banner', { method: 'POST', body: JSON.stringify({ title, link: link || '', image_id: uploadResult.file_id, type: 'banner' }) }); if (data.success) { showToast('✅ ' + t('bannerAddSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } else { showToast('❌ ' + t('imageUploadError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }; imageInput.click(); }
-
-        async function adminAddSplash() { if (!checkAdminAccess()) return; const title = prompt('عنوان اسپلش را وارد کنید:'); if (!title) return; const imageInput = document.createElement('input'); imageInput.type = 'file'; imageInput.accept = 'image/*,video/*'; imageInput.onchange = async function(e) { const file = e.target.files[0]; if (!file) { showToast('لطفاً یک فایل انتخاب کنید', 'warning'); return; } try { const formData = new FormData(); formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData }); const uploadResult = await uploadRes.json(); if (uploadResult.success && uploadResult.file_id) { const data = await apiCall('/api/admin/banner', { method: 'POST', body: JSON.stringify({ title, image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t('splashAddSuccess'), 'success'); adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } else { showToast('❌ ' + t('imageUploadError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }; imageInput.click(); }
-
-        async function adminToggleBanner(bannerId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/banner-toggle/${bannerId}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminDeleteBanner(bannerId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(`/api/admin/banner/${bannerId}`, { method: 'DELETE' }); if (data.success) { showToast('🗑 ' + t('bannerDeleteSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        function adminAnnounce() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div style="font-size:12px;font-weight:700;margin-bottom:6px;">📢 ارسال اطلاعیه</div><div class="admin-row"><input type="text" id="announceTitleInput" placeholder="${t('announceTitle')}" style="flex:1;min-width:100px;"></div><div class="admin-row"><textarea id="announceMessageInput" rows="3" placeholder="${t('announceMessage')}" style="flex:1;min-width:100px;"></textarea></div><button onclick="adminSendAnnounce()" style="padding:6px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:12px;cursor:pointer;">${t('announceSend')}</button>`; }
-
-        async function adminSendAnnounce() { if (!checkAdminAccess()) return; const title = document.getElementById('announceTitleInput').value.trim(); const message = document.getElementById('announceMessageInput').value.trim(); if (!title || !message) { showToast('لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message }) }); if (data.success) { showToast('✅ ' + t('announceSent'), 'success'); document.getElementById('announceTitleInput').value = ''; document.getElementById('announceMessageInput').value = ''; } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/sessions'); if (data.success && data.sessions && data.sessions.length > 0) { let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">💻 نشست‌ها:</div>'; data.sessions.forEach(session => { html += `<div class="admin-row"><span>${session.user_id}</span><span style="font-size:10px;color:var(--text-secondary);">${new Date(session.created_at * 1000).toLocaleDateString('fa-IR')}</span><button onclick="adminRevokeSession('${session.id}')" style="padding:2px 8px;background:#c0392b;color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🚫</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
-
-        async function adminRevokeSession(sessionId) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/revoke-session/${sessionId}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('sessionRevoked'), 'success'); adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-
-        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/settings'); if (data.success && data.settings) { const s = data.settings; let html = '<div style="font-size:12px;font-weight:700;margin-bottom:6px;">⚙️ تنظیمات:</div>'; const settings = [ { key: 'support_enabled', label: t('toggleSupport') }, { key: 'whatsapp_enabled', label: t('toggleWhatsapp') }, { key: 'phone_enabled', label: t('togglePhone') }, { key: 'telegram_enabled', label: t('toggleTelegram') }, { key: 'email_enabled', label: t('toggleEmail') }, { key: 'ads_enabled', label: t('toggleAds') }, { key: 'banners_enabled', label: t('toggleBanners') }, { key: 'splash_enabled', label: t('toggleSplash') } ]; settings.forEach(setting => { const isEnabled = s[setting.key] !== undefined ? s[setting.key] : true; html += `<div class="admin-row"><span>${setting.label}</span><span style="font-size:10px;color:${isEnabled ? 'var(--green)' : 'var(--primary)'};">${isEnabled ? t('enabled') : t('disabled')}</span><button onclick="adminToggleSetting('${setting.key}')" style="padding:2px 10px;background:${isEnabled ? 'var(--primary)' : 'var(--green)'};color:#fff;border:none;border-radius:4px;font-size:10px;cursor:pointer;">${isEnabled ? 'غیرفعال' : 'فعال'}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
-
-        async function adminToggleSetting(key) { if (!checkAdminAccess()) return; try { const data = await apiCall(`/api/admin/toggle-setting/${key}`, { method: 'POST' }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success'); adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/settings'); if (data.success) { const s = data.data || {}; let html = `<h4 style="font-size:13px;">⚙️ ${t('adminSettings')}</h4>`; const toggles = [ {key:'support',label:t('toggleSupport')}, {key:'whatsapp',label:t('toggleWhatsapp')}, {key:'phone',label:t('togglePhone')}, {key:'telegram',label:t('toggleTelegram')}, {key:'email',label:t('toggleEmail')}, {key:'ads',label:t('toggleAds')}, {key:'banners',label:t('toggleBanners')}, {key:'splash',label:t('toggleSplash')} ]; toggles.forEach(toggle => { const isEnabled = s[toggle.key] !== false; html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span>${toggle.label}</span><button onclick="adminToggleSetting('${toggle.key}')" class="btn btn-sm ${isEnabled ? 'btn-success' : 'btn-danger'}">${isEnabled ? t('enabled') : t('disabled')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminToggleSetting(key) { try { const data = await apiCall('/api/admin/toggle', { method: 'POST', body: JSON.stringify({ key }) }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success'); adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
         function openSendMessageModal() { if (!checkAdminAccess()) return; const modal = document.getElementById('sendMessageModal'); const content = document.getElementById('sendMessageContent'); content.innerHTML = `
-                <div class="modal-title">📨 ${t('adminSendMsg')}</div>
-                <div class="form-group"><label>${t('recipient')}</label>
-                    <select id="msgRecipient">
-                        <option value="all">${t('allUsers')}</option>
-                        <option value="specific">${t('specificUser')}</option>
-                    </select>
-                </div>
-                <div class="form-group" id="specificUserGroup" style="display:none;"><label>${t('specificUser')}</label><input type="text" id="msgSpecificUser" placeholder="شناسه کاربر"></div>
-                <div class="form-group"><label>${t('messageSubject')}</label><input type="text" id="msgSubject" placeholder="${t('messageSubject')}"></div>
-                <div class="form-group"><label>${t('messageBody')}</label><textarea id="msgBody" rows="3" placeholder="${t('messageBody')}"></textarea></div>
-                <button onclick="sendSystemMessage()" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:13px;cursor:pointer;"><i class="fa-solid fa-paper-plane"></i> ${t('sendBtn')}</button>
-                <button onclick="closeSendMessageModal()" style="width:100%;margin-top:4px;padding:8px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-weight:600;font-size:13px;color:var(--text);cursor:pointer;">❌ ${t('cancel')}</button>
-            `;
-        modal.classList.add('show');
-        document.getElementById('msgRecipient').addEventListener('change', function() { document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' : 'none'; }); }
+                    <div class="modal-title">📨 ${t('adminSendMsg')}</div>
+                    <div class="form-group"><label>${t('recipient')}</label>
+                        <select id="msgTarget">
+                            <option value="all">${t('allUsers')}</option>
+                            <option value="admins">${t('adminAdmins')}</option>
+                            <option value="specific">${t('specificUser')}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="specificUserGroup" style="display:none;"><label>🆔 ${t('specificUser')}</label><input type="text" id="msgUserId" placeholder="${t('user_id')}"></div>
+                    <div class="form-group"><label>${t('messageSubject')}</label><input type="text" id="msgSubject" placeholder="${t('messageSubject')}"></div>
+                    <div class="form-group"><label>${t('messageBody')}</label><textarea id="msgBody" rows="3" placeholder="${t('messageBody')}"></textarea></div>
+                    <button onclick="sendSystemMessage()" style="width:100%;padding:10px;background:linear-gradient(135deg,#0088cc,#005f8a);color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:13px;cursor:pointer;">${t('sendBtn')}</button>
+                    <button onclick="closeSendMessageModal()" style="width:100%;padding:8px;margin-top:4px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-weight:600;font-size:13px;color:var(--text);cursor:pointer;">❌ ${t('cancel')}</button>
+                `;
+            modal.classList.add('show');
+            document.getElementById('msgTarget').addEventListener('change', function() {
+                document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' : 'none';
+            });
+        }
+        function closeSendMessageModal() { document.getElementById('sendMessageModal').classList.remove('show'); }
 
-        function closeSendMessageModal() { document.getElementById('sendMessageModal').classList.remove('show'); document.getElementById('sendMessageContent').innerHTML = ''; }
-
-        async function sendSystemMessage() { if (!checkAdminAccess()) return; const recipient = document.getElementById('msgRecipient').value; const subject = document.getElementById('msgSubject').value.trim(); const body = document.getElementById('msgBody').value.trim(); if (!subject || !body) { showToast('لطفاً موضوع و متن را وارد کنید', 'warning'); return; } let userId = null; if (recipient === 'specific') { userId = document.getElementById('msgSpecificUser').value.trim(); if (!userId) { showToast('شناسه کاربر را وارد کنید', 'warning'); return; } } try { const data = await apiCall('/api/admin/send-system-message', { method: 'POST', body: JSON.stringify({ userId, subject, message: body }) }); if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); } } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); } }
+        async function sendSystemMessage() {
+            const target = document.getElementById('msgTarget').value;
+            const userId = target === 'specific' ? document.getElementById('msgUserId').value.trim() : null;
+            const subject = document.getElementById('msgSubject').value.trim();
+            const body = document.getElementById('msgBody').value.trim();
+            if (!subject || !body) { showToast('لطفاً موضوع و متن را وارد کنید', 'warning'); return; }
+            if (target === 'specific' && !userId) { showToast('لطفاً شناسه کاربر را وارد کنید', 'warning'); return; }
+            try {
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ target, userId, subject, body }) });
+                if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
+            } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
+        }
 
         // ============================================================
         // TAB SWITCHING
@@ -4259,17 +4303,9 @@
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
         console.log(`👑 ادمین: ${isAdmin ? '✅' : '❌'}`);
         console.log(`🌐 زبان: ${currentLang}`);
-        console.log('📦 تمام قابلیت‌ها با Worker هماهنگ شده‌اند.');
-        console.log('✅ اصلاح نمایش نام کاربری در نظرات و چت‌ها.');
-        console.log('✅ بخش اخبار غیرفعال شد.');
-        console.log('✅ قابلیت مخفی‌سازی شماره (چت ناشناس) به‌طور کامل حذف شد.');
-        console.log('✅ ویرایش آگهی‌ها با موفقیت انجام می‌شود.');
-        console.log('✅ چت در هر آگهی فعال است و با نام کاربری نمایش داده می‌شود.');
-        console.log('✅ گزارش تخلف به تیکت تبدیل شد.');
-        console.log('✅ پیام‌های مدیریت از طریق تیکت‌ها قابل مشاهده است.');
-        console.log('✅ ارسال فایل در چت اضافه شد.');
-        console.log('✅ نمایش آگهی‌های کاربر در چت اضافه شد.');
-        console.log('✅ پیش‌نمایش تصاویر با اندازه مناسب صفحه.');
+        console.log('✅ چت‌ها به‌صورت پیام‌رسان با پولینگ ۳ ثانیه‌ای');
+        console.log('✅ تیکت‌ها با ارسال و دریافت فعال');
+        console.log('✅ همه بخش‌ها با Worker هماهنگ شده‌اند.');
     </script>
 </body>
     </html>
