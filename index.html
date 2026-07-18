@@ -9,13 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* تمام استایل‌های قبلی به‌طور کامل حفظ شده‌اند */
+        /* ============================================================ */
+        /* RESET & BASE */
+        /* ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #ff385c;
             --primary-dark: #d70466;
             --gold: #f39c12;
             --green: #27ae60;
+            --green-chat: #25d366;
             --blue: #3498db;
             --bg: #fafafa;
             --card: #ffffff;
@@ -29,8 +32,10 @@
             --radius-full: 9999px;
             --font: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
             --transition: 0.25s ease;
-            --chat-sent: #ff385c;
-            --chat-received: #f0f0f0;
+            --chat-sent: #dcf8c6;
+            --chat-sent-text: #000000;
+            --chat-received: #ffffff;
+            --chat-received-text: #000000;
         }
         [data-theme="dark"] {
             --bg: #121212;
@@ -41,7 +46,10 @@
             --text-muted: #6a6a8a;
             --border: #3a3a4a;
             --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-            --chat-received: #2a2a3a;
+            --chat-sent: #075e54;
+            --chat-sent-text: #ffffff;
+            --chat-received: #262626;
+            --chat-received-text: #e8e8f0;
         }
         html { font-size: 16px; scroll-behavior: smooth; }
         body {
@@ -126,6 +134,9 @@
         .badge-warning { background: var(--gold); }
         .badge-danger { background: var(--primary); }
 
+        /* ============================================================ */
+        /* HEADER */
+        /* ============================================================ */
         .header {
             display: flex;
             justify-content: space-between;
@@ -161,6 +172,9 @@
         }
         .header-actions button:hover { border-color: var(--primary); color: var(--primary); }
 
+        /* ============================================================ */
+        /* VERIFY BANNER */
+        /* ============================================================ */
         .verify-banner {
             background: linear-gradient(135deg, rgba(255,56,92,0.08), rgba(215,4,102,0.04));
             border: 1px solid rgba(255,56,92,0.15);
@@ -198,6 +212,9 @@
             background: linear-gradient(135deg, var(--green), #1e8449);
         }
 
+        /* ============================================================ */
+        /* SEARCH */
+        /* ============================================================ */
         .search-box {
             background: var(--card);
             border: 1px solid var(--border);
@@ -233,6 +250,9 @@
             cursor: pointer;
         }
 
+        /* ============================================================ */
+        /* CATEGORIES */
+        /* ============================================================ */
         .categories-scroll {
             display: flex;
             overflow-x: auto;
@@ -257,6 +277,9 @@
         .category-chip:hover { border-color: var(--primary); background: rgba(255,56,92,0.04); }
         .category-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
+        /* ============================================================ */
+        /* ADS GRID */
+        /* ============================================================ */
         .ads-grid {
             display: flex;
             flex-direction: column;
@@ -358,15 +381,16 @@
         .ad-card .ad-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             padding: 6px 14px 10px;
             border-top: 1px solid var(--border);
+            flex-wrap: wrap;
         }
-        .ad-card .ad-actions button {
+        .ad-card .ad-actions button, .ad-card .ad-actions a {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -374,8 +398,9 @@
             gap: 4px;
             padding: 4px 0;
             font-family: var(--font);
+            text-decoration: none;
         }
-        .ad-card .ad-actions button:hover { color: var(--primary); }
+        .ad-card .ad-actions button:hover, .ad-card .ad-actions a:hover { color: var(--primary); }
         .ad-card .ad-actions button .count {
             font-size: 12px;
             font-weight: 600;
@@ -384,6 +409,9 @@
         .ad-card .ad-actions .liked { color: var(--primary); }
         #loadMoreBtn { text-align: center; margin: 16px 0; }
 
+        /* ============================================================ */
+        /* BANNER */
+        /* ============================================================ */
         .banner-ad-container {
             background: var(--card);
             border: 1px solid var(--border);
@@ -419,6 +447,9 @@
         }
         .banner-ad-container .banner-link:hover { transform: scale(1.04); }
 
+        /* ============================================================ */
+        /* BOTTOM NAV */
+        /* ============================================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -499,6 +530,9 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
+        /* ============================================================ */
+        /* MODAL */
+        /* ============================================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -628,6 +662,11 @@
             border: 1px solid var(--border);
             color: var(--text);
         }
+        /* دکمه چت داخلی (جایگزین چت ناشناس) */
+        .modal-box .action-buttons .btn-chat {
+            background: var(--blue);
+            color: #fff;
+        }
         .modal-box .btn-fav {
             width: 100%;
             padding: 8px;
@@ -646,6 +685,9 @@
             border-color: var(--primary);
         }
 
+        /* ============================================================ */
+        /* REVIEW */
+        /* ============================================================ */
         .review-section { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
         .review-section h4 { font-size: 14px; margin-bottom: 4px; }
         .review-stars span {
@@ -690,10 +732,16 @@
         .review-item .comment { font-size: 12px; margin: 2px 0; }
         .review-item .date { font-size: 9px; color: var(--text-muted); }
 
+        /* ============================================================ */
+        /* TABS */
+        /* ============================================================ */
         .tab-pane { display: none; max-width: 500px; margin: 0 auto; padding: 12px 10px 80px; animation: fadeIn 0.25s ease; }
         .tab-pane.show { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
+        /* ============================================================ */
+        /* PROFILE */
+        /* ============================================================ */
         .profile-header {
             background: var(--card);
             border: 1px solid var(--border);
@@ -857,6 +905,10 @@
             width: 100%;
             color: var(--text);
         }
+
+        /* ============================================================ */
+        /* FEED ITEM */
+        /* ============================================================ */
         .feed-item {
             background: var(--card);
             border: 1px solid var(--border);
@@ -885,6 +937,9 @@
         .feed-item .actions .delete { color: var(--primary); }
         .feed-item .actions .renew { color: var(--gold); }
 
+        /* ============================================================ */
+        /* ADMIN */
+        /* ============================================================ */
         .admin-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -938,10 +993,17 @@
             cursor: pointer;
             transition: var(--transition);
         }
+
+        /* ============================================================ */
+        /* LOADING */
+        /* ============================================================ */
         .loading-spinner { text-align: center; padding: 30px 0; color: var(--primary); }
         .loading-spinner i { font-size: 28px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
 
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
         @media(max-width:480px) {
             .grid-2 { grid-template-columns: 1fr; }
             .header .logo-text { font-size: 18px; }
@@ -956,6 +1018,9 @@
             .bottom-nav { max-width: 500px; }
         }
 
+        /* ============================================================ */
+        /* TOAST */
+        /* ============================================================ */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -998,6 +1063,9 @@
         }
         .toast .close:hover { color: var(--primary); }
 
+        /* ============================================================ */
+        /* AUTH */
+        /* ============================================================ */
         #authSection {
             max-width: 450px;
             margin: 60px auto;
@@ -1013,21 +1081,76 @@
         .auth-status.success { color: var(--green); background: rgba(46,204,113,0.08); }
         .auth-status.error { color: var(--primary); background: rgba(231,76,60,0.08); }
 
-        /* ===== CHAT STYLES ===== */
-        .chat-thread-item {
+        /* ============================================================ */
+        /* CHAT STYLES (واتساپ/روبیکا) */
+        /* ============================================================ */
+        /* لیست چت‌ها */
+        .chat-list-container {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .chat-list-header {
             padding: 12px 14px;
-            margin-bottom: 8px;
-            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-list-header .chat-count {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        .chat-list-search {
+            padding: 6px 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            background: var(--input);
+        }
+        .chat-list-search input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            background: var(--card);
+            color: var(--text);
+            font-size: 12px;
+            outline: none;
+        }
+        .chat-list-search input:focus { border-color: var(--primary); }
+        .chat-list-search button {
+            padding: 6px 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 700;
             cursor: pointer;
+        }
+        .chat-list-items {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .chat-list-item {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
         }
-        .chat-thread-item:hover { border-color: var(--primary); }
-        .chat-thread-item .avatar {
+        .chat-list-item:hover { background: rgba(255,56,92,0.04); }
+        .chat-list-item:last-child { border-bottom: none; }
+        .chat-list-item .avatar {
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -1040,23 +1163,23 @@
             font-weight: 700;
             flex-shrink: 0;
         }
-        .chat-thread-item .info { flex: 1; min-width: 0; }
-        .chat-thread-item .info .name {
+        .chat-list-item .info { flex: 1; min-width: 0; }
+        .chat-list-item .info .name {
             font-weight: 700;
             font-size: 14px;
         }
-        .chat-thread-item .info .last-msg {
+        .chat-list-item .info .last-msg {
             font-size: 12px;
             color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .chat-thread-item .info .time {
+        .chat-list-item .info .time {
             font-size: 10px;
             color: var(--text-muted);
         }
-        .chat-thread-item .badge-unread {
+        .chat-list-item .badge-unread {
             background: var(--primary);
             color: #fff;
             border-radius: 50%;
@@ -1067,17 +1190,71 @@
             text-align: center;
         }
 
-        /* Chat messages inside modal */
-        .chat-messages-container {
+        /* پنجره چت فعال */
+        .chat-window {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 50vh;
-            overflow-y: auto;
-            padding: 8px 4px;
+            height: 500px;
+            max-height: 70vh;
+        }
+        .chat-window-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
             background: var(--bg);
-            border-radius: var(--radius);
+            flex-shrink: 0;
+        }
+        .chat-window-header .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .chat-window-header .info { flex: 1; min-width: 0; }
+        .chat-window-header .info .name { font-weight: 700; font-size: 14px; }
+        .chat-window-header .info .status {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .chat-window-header .info .status.online { color: var(--green); }
+        .chat-window-header .btn-back {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+        }
+        .chat-window-header .secure-badge {
+            font-size: 9px;
+            color: var(--text-muted);
+            background: var(--input);
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
             border: 1px solid var(--border);
+        }
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 14px;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
         .chat-message-bubble {
             max-width: 80%;
@@ -1087,18 +1264,20 @@
             line-height: 1.5;
             word-wrap: break-word;
             position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
         }
         .chat-message-bubble.sent {
             background: var(--chat-sent);
-            color: #fff;
+            color: var(--chat-sent-text);
             align-self: flex-end;
             border-bottom-left-radius: 4px;
         }
         .chat-message-bubble.received {
             background: var(--chat-received);
-            color: var(--text);
+            color: var(--chat-received-text);
             align-self: flex-start;
             border-bottom-right-radius: 4px;
+            border: 1px solid var(--border);
         }
         .chat-message-bubble .msg-time {
             font-size: 8px;
@@ -1106,11 +1285,134 @@
             display: block;
             text-align: left;
             margin-top: 4px;
+            direction: ltr;
         }
-        .chat-message-bubble.sent .msg-time { color: rgba(255,255,255,0.8); }
+        .chat-message-bubble.sent .msg-time { color: var(--text-secondary); }
         .chat-message-bubble.received .msg-time { color: var(--text-muted); }
+        .chat-message-bubble .read-status {
+            font-size: 10px;
+            margin-right: 4px;
+            color: var(--blue);
+        }
+        .chat-message-bubble .read-status.read { color: var(--blue); }
+        .chat-message-bubble .read-status.delivered { color: var(--text-muted); }
 
-        /* Ticket replies */
+        .chat-input-area {
+            padding: 8px 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--card);
+            flex-shrink: 0;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            background: var(--input);
+            color: var(--text);
+            font-size: 13px;
+            font-family: var(--font);
+            outline: none;
+        }
+        .chat-input-area input:focus { border-color: var(--primary); }
+        .chat-input-area .btn-send {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .chat-input-area .btn-send:hover { transform: scale(1.05); opacity: 0.9; }
+        .chat-input-area .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* بنر هشدار ذخیره‌سازی */
+        .chat-retention-banner {
+            background: rgba(255,56,92,0.04);
+            border: 1px solid rgba(255,56,92,0.08);
+            border-radius: var(--radius);
+            padding: 6px 12px;
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .chat-retention-banner i { color: var(--primary); }
+
+        /* مودال چت */
+        #chatModal .modal-box {
+            max-width: 700px;
+            padding: 0;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+        #chatModal .chat-modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            max-height: 85vh;
+        }
+        #chatModal .chat-modal-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            background: var(--card);
+        }
+        #chatModal .chat-modal-header .title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        #chatModal .chat-modal-header .modal-close-chat {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        #chatModal .chat-modal-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+        }
+        #chatModal .chat-modal-body .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        #chatModal .chat-modal-body .chat-input-area {
+            border-top: 1px solid var(--border);
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--card);
+            flex-shrink: 0;
+        }
+
+        /* پاسخ‌های تیکت */
         .ticket-reply {
             padding: 8px 12px;
             margin: 4px 0;
@@ -1118,19 +1420,117 @@
             background: var(--input);
             border-right: 3px solid var(--primary);
         }
-        .ticket-reply .reply-admin {
-            font-weight: 700;
-            font-size: 11px;
-            color: var(--primary);
+        .ticket-reply .reply-admin { font-weight: 700; font-size: 11px; color: var(--primary); }
+        .ticket-reply .reply-message { font-size: 12px; margin: 2px 0; }
+        .ticket-reply .reply-date { font-size: 9px; color: var(--text-muted); }
+
+        /* مدیریت چت‌ها (ادمین) */
+        .chat-admin-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            transition: var(--transition);
         }
-        .ticket-reply .reply-message {
-            font-size: 12px;
-            margin: 2px 0;
+        .chat-admin-item:hover { border-color: var(--primary); }
+        .chat-admin-item .chat-admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
-        .ticket-reply .reply-date {
+        .chat-admin-item .chat-admin-users { font-weight: 600; font-size: 13px; }
+        .chat-admin-item .chat-admin-meta { font-size: 10px; color: var(--text-muted); }
+        .chat-admin-item .chat-admin-actions { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+        .chat-admin-item .chat-admin-actions button {
+            padding: 2px 10px;
+            border: none;
+            border-radius: var(--radius-full);
             font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-admin-item .chat-admin-actions .btn-backup { background: var(--blue); color: #fff; }
+        .chat-admin-item .chat-admin-actions .btn-delete { background: var(--primary); color: #fff; }
+        .chat-admin-item .chat-admin-actions .btn-view { background: var(--input); color: var(--text); border: 1px solid var(--border); }
+
+        /* سایر بخش‌ها */
+        .news-disabled {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             color: var(--text-muted);
         }
+        .news-disabled i { font-size: 40px; display: block; margin-bottom: 12px; color: var(--primary); }
+        .support-card-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            margin-bottom: 8px;
+        }
+        .support-card-item:hover { border-color: var(--primary); }
+        .support-card-item .icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,56,92,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .support-card-item .info .label { font-size: 9px; color: var(--text-muted); font-weight: 600; display: block; }
+        .support-card-item .info .value { font-size: 13px; font-weight: 600; }
+        .support-card-item .info .value a { color: var(--primary); text-decoration: none; }
+
+        .admin-user-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .admin-user-row .user-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 12px;
+            align-items: center;
+            font-size: 12px;
+        }
+        .admin-user-row .user-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .admin-user-row .user-actions button {
+            padding: 2px 8px;
+            font-size: 9px;
+            border-radius: var(--radius-full);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .admin-user-row .user-actions .block-btn { background: var(--primary); color: #fff; }
+        .admin-user-row .user-actions .unblock-btn { background: var(--green); color: #fff; }
+        .admin-user-row .user-actions .delete-btn { background: #c0392b; color: #fff; }
+        .admin-user-row .user-actions .msg-btn { background: var(--blue); color: #fff; }
+        .admin-user-row .user-actions .role-btn { background: var(--gold); color: #fff; }
+        .admin-user-row .verified-badge { color: var(--green); }
+        .admin-user-row .blocked-badge { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -1340,13 +1740,31 @@
         <div id="ticketsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
-    <!-- CHAT -->
+    <!-- ============================================================ -->
+    <!-- CHAT TAB (بازطراحی شده به‌سبک واتساپ/روبیکا) -->
+    <!-- ============================================================ -->
     <div id="chatTab" class="tab-pane">
         <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="chatTitle">💬 چت</h2>
-        <div style="background:rgba(255,56,92,0.04);border-radius:var(--radius);padding:8px 12px;margin-bottom:10px;font-size:11px;color:var(--text-secondary);border:1px solid rgba(255,56,92,0.08);">
-            <i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i> تمام چت‌ها به مدت ۶ ماه در سیستم ذخیره می‌شود و در صورت نیاز به مراجع قضایی ارائه خواهد شد.
+        <!-- بنر هشدار ذخیره‌سازی -->
+        <div class="chat-retention-banner">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>⚠️ طبق دستور مراجع قضایی، این گفتگو به مدت ۶ ماه در سیستم ذخیره می‌گردد.</span>
         </div>
-        <div id="chatThreadsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+
+        <!-- لیست چت‌ها (سمت چپ / بالا) -->
+        <div class="chat-list-container" id="chatListContainer">
+            <div class="chat-list-header">
+                <span>📋 پیام‌ها</span>
+                <span class="chat-count" id="chatCount">۰</span>
+            </div>
+            <div class="chat-list-search">
+                <input type="text" id="chatSearchInput" placeholder="جستجو در چت‌ها..." oninput="filterChatList()">
+                <button onclick="filterChatList()"><i class="fa-solid fa-search"></i></button>
+            </div>
+            <div class="chat-list-items" id="chatListItems">
+                <div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>
+            </div>
+        </div>
     </div>
 
     <!-- ALERTS -->
@@ -1418,7 +1836,7 @@
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
                             <input type="checkbox" id="adHidePhone" style="width:auto;accent-color:var(--primary);">
-                            <span id="adHidePhoneLabel">🔒 شماره تماس در آگهی نمایش داده نشود (چت ناشناس)</span>
+                            <span id="adHidePhoneLabel">🔒 شماره تماس در آگهی نمایش داده نشود</span>
                         </label>
                     </div>
                     <button type="button" class="btn btn-block" onclick="wizardNext()" id="btnNext">بعدی</button>
@@ -1477,11 +1895,30 @@
         </div>
     </div>
 
-    <!-- CHAT MODAL -->
+    <!-- ============================================================ -->
+    <!-- CHAT MODAL (پنجره چت به‌سبک واتساپ) -->
+    <!-- ============================================================ -->
     <div class="modal-overlay" id="chatModal">
         <div class="modal-box">
-            <button class="modal-close" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div id="chatContent"></div>
+            <div class="chat-modal-content">
+                <div class="chat-modal-header">
+                    <div class="title" id="chatModalTitle">💬 چت</div>
+                    <button class="modal-close-chat" onclick="closeChatModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="chat-modal-body">
+                    <div class="chat-retention-banner" style="margin:4px 10px 0;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>⚠️ ذخیره‌سازی ۶ ماهه به‌دستور مراجع قضایی</span>
+                    </div>
+                    <div class="chat-messages-area" id="chatMessagesArea">
+                        <div style="text-align:center;color:var(--text-muted);font-size:12px;padding:30px;">${t('loading')}</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید...">
+                        <button class="btn-send" id="chatSendBtn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1509,9 +1946,9 @@
         </div>
     </div>
 
-    <!-- ========================================================== -->
+    <!-- ============================================================ -->
     <!-- JAVASCRIPT -->
-    <!-- ========================================================== -->
+    <!-- ============================================================ -->
     <script>
         // ============================================================
         // CONFIG
@@ -1633,7 +2070,7 @@
                 btnNext: 'بعدی',
                 btnPrev: 'قبلی',
                 submit: 'ثبت آگهی',
-                adHidePhoneLabel: '🔒 شماره تماس در آگهی نمایش داده نشود (چت ناشناس)',
+                adHidePhoneLabel: '🔒 شماره تماس در آگهی نمایش داده نشود',
                 catAll: 'همه',
                 catPilgrimage: 'زیارت',
                 catTourism: 'گردشگری',
@@ -1837,15 +2274,29 @@
                 noSessions: 'هیچ نشستی یافت نشد.',
                 noEditRequests: 'هیچ درخواست ویرایشی وجود ندارد.',
                 chatWithSeller: '💬 چت با فروشنده',
-                chatAnonymous: '🔒 چت ناشناس',
-                chatPhoneHidden: 'شماره تماس مخفی است. از طریق چت ناشناس ارتباط برقرار کنید.',
+                chatPhoneHidden: 'شماره تماس مخفی است. از طریق چت ارتباط برقرار کنید.',
                 welcomeMessage: 'به جـدار بازار خوش آمدید! 🎉\nبرای شروع، شماره خود را تأیید کنید.',
                 adPublished: '✅ آگهی شما با موفقیت منتشر شد! 🎉',
                 adRejectedMsg: '❌ آگهی شما رد شد. دلیل: {reason}',
                 adPendingMsg: '⏳ آگهی شما در انتظار بررسی است.',
                 refreshBtn: '🔄 بروزرسانی ... وتحدیث ...',
                 phoneHiddenLabel: '🔒 شماره مخفی',
-                chatAnonymousLabel: 'چت ناشناس'
+                chatManagementTitle: '📋 مدیریت چت‌ها',
+                chatSearchPlaceholder: 'جستجو بر اساس شماره یا شناسه کاربر',
+                chatDeleteConfirm: '⚠️ آیا از حذف این چت و تمام پیام‌های آن اطمینان دارید؟',
+                chatView: '👁 مشاهده چت',
+                chatNotFound: '❌ چت یافت نشد',
+                chatDeleted: '✅ چت با موفقیت حذف شد.',
+                noChatsFound: '📭 هیچ چتی یافت نشد.',
+                chatParticipants: '👥 شرکت‌کنندگان',
+                chatMessagesCount: '📨 تعداد پیام‌ها',
+                chatCreatedAt: '📅 تاریخ ایجاد',
+                chatLastMessage: '💬 آخرین پیام',
+                chatBackupAll: '💾 بک‌آپ همه چت‌ها',
+                chatRestorePrompt: '♻️ کد بک‌آپ را وارد کنید:',
+                chatSearchBtn: '🔍 جستجو',
+                chatClearSearch: '🧹 پاک کردن جستجو',
+                chatDetails: '📋 جزئیات چت',
             },
             ar: {
                 authTitle: '🔑 تسجيل الدخول إلى جـدار بازار',
@@ -1956,7 +2407,7 @@
                 btnNext: 'التالي',
                 btnPrev: 'السابق',
                 submit: 'إرسال الإعلان',
-                adHidePhoneLabel: '🔒 عدم عرض رقم الهاتف في الإعلان (محادثة مجهولة)',
+                adHidePhoneLabel: '🔒 عدم عرض رقم الهاتف في الإعلان',
                 catAll: 'الكل',
                 catPilgrimage: 'زيارة',
                 catTourism: 'سياحة',
@@ -2160,15 +2611,29 @@
                 noSessions: 'لا توجد جلسات.',
                 noEditRequests: 'لا توجد طلبات تعديل.',
                 chatWithSeller: '💬 محادثة مع البائع',
-                chatAnonymous: '🔒 محادثة مجهولة',
-                chatPhoneHidden: 'رقم الهاتف مخفي. تواصل عبر المحادثة المجهولة.',
+                chatPhoneHidden: 'رقم الهاتف مخفي. تواصل عبر المحادثة.',
                 welcomeMessage: 'مرحباً بك في جـدار بازار! 🎉\nللبدء، يرجى تأكيد رقمك.',
                 adPublished: '✅ تم نشر إعلانك بنجاح! 🎉',
                 adRejectedMsg: '❌ تم رفض إعلانك. السبب: {reason}',
                 adPendingMsg: '⏳ إعلانك قيد المراجعة.',
                 refreshBtn: '🔄 تحديث ... وتحديث ...',
                 phoneHiddenLabel: '🔒 الرقم مخفي',
-                chatAnonymousLabel: 'محادثة مجهولة'
+                chatManagementTitle: '📋 إدارة المحادثات',
+                chatSearchPlaceholder: 'بحث برقم الهاتف أو معرف المستخدم',
+                chatDeleteConfirm: '⚠️ هل أنت متأكد من حذف هذه المحادثة وجميع رسائلها؟',
+                chatView: '👁 مشاهدة المحادثة',
+                chatNotFound: '❌ المحادثة غير موجودة',
+                chatDeleted: '✅ تم حذف المحادثة بنجاح.',
+                noChatsFound: '📭 لا توجد محادثات.',
+                chatParticipants: '👥 المشاركون',
+                chatMessagesCount: '📨 عدد الرسائل',
+                chatCreatedAt: '📅 تاريخ الإنشاء',
+                chatLastMessage: '💬 آخر رسالة',
+                chatBackupAll: '💾 نسخ احتياطي لكل المحادثات',
+                chatRestorePrompt: '♻️ أدخل رمز النسخ الاحتياطي:',
+                chatSearchBtn: '🔍 بحث',
+                chatClearSearch: '🧹 مسح البحث',
+                chatDetails: '📋 تفاصيل المحادثة',
             }
         };
 
@@ -2187,12 +2652,17 @@
         let reviewRating = 0;
         let adDetailGallery = [];
         let adDetailIndex = 0;
-        let page = 1, perPage = 20, totalAds = 0;
+        let page = 1,
+            perPage = 20,
+            totalAds = 0;
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
         let currentTheme = localStorage.getItem('jedar_theme') || 'light';
         let sessionId = localStorage.getItem('jedar_session_id') || null;
         let chatPollingInterval = null;
         let currentChatThreadId = null;
+        let lastMessagesHash = '';
+        let chatThreads = [];
+        let activeChatThreadId = null;
 
         // ============================================================
         // UTILITY
@@ -2202,11 +2672,9 @@
         function normalizePhone(phone) {
             if (!phone) return '';
             let p = phone.replace(/[^0-9]/g, '');
-            if (p.startsWith('98') && p.length === 11) { p = '0' + p.substring(2); }
-            else if (p.startsWith('98') && p.length === 10) { p = '0' + p.substring(2); }
-            else if (p.startsWith('0') && p.length === 11) { return p; }
-            else if (p.length === 10) { p = '0' + p; }
-            else if (p.length === 11 && p.startsWith('09')) { return p; }
+            if (p.startsWith('98') && p.length === 11) { p = '0' + p.substring(2); } else if (p.startsWith('98') && p.length ===
+                    10) { p = '0' + p.substring(2); } else if (p.startsWith('0') && p.length === 11) { return p; } else if (p
+                    .length === 10) { p = '0' + p; } else if (p.length === 11 && p.startsWith('09')) { return p; }
             return p;
         }
 
@@ -2226,6 +2694,12 @@
             return Math.floor(diff / 2592000) + ' ماه پیش';
         }
 
+        function formatTimeShort(ts) {
+            if (!ts) return '';
+            const d = new Date(ts * 1000);
+            return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+        }
+
         function normalizeImageUrl(img) {
             if (!img) return null;
             if (img.startsWith('http://') || img.startsWith('https://')) return img;
@@ -2237,17 +2711,21 @@
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
-            toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${msg}</span><button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info' };
+            toast.innerHTML =
+                `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${msg}</span><button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 30);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4500);
+            setTimeout(() => { toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400); }, 4500);
         }
 
         function toggleTheme() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('themeBtn').innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+            document.getElementById('themeBtn').innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' :
+                '<i class="fa-solid fa-sun"></i>';
             localStorage.setItem('jedar_theme', isDark ? 'light' : 'dark');
         }
 
@@ -2389,7 +2867,8 @@
                     else if (id === 'adminAdminsBtn') el.innerHTML = `<i class="fa-solid fa-user-shield"></i> ${t(key)}`;
                     else if (id === 'adminStatsBtn') el.innerHTML = `<i class="fa-solid fa-chart-bar"></i> ${t(key)}`;
                     else if (id === 'adminDeleteOldBtn') el.innerHTML = `<i class="fa-solid fa-trash"></i> ${t(key)}`;
-                    else if (id === 'adminEditRequestsBtn') el.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${t(key)}`;
+                    else if (id === 'adminEditRequestsBtn') el.innerHTML =
+                        `<i class="fa-solid fa-pen-to-square"></i> ${t(key)}`;
                     else if (id === 'adminChatsBtn') el.innerHTML = `<i class="fa-solid fa-comments"></i> ${t(key)}`;
                     else if (id === 'adminBannersBtn') el.innerHTML = `<i class="fa-solid fa-image"></i> ${t(key)}`;
                     else if (id === 'adminAnnounceBtn') el.innerHTML = `<i class="fa-solid fa-bullhorn"></i> ${t(key)}`;
@@ -2414,9 +2893,14 @@
         }
 
         function getVerifiedPhone() { return localStorage.getItem('jedar_verified_phone') || ''; }
+
         function getUserId() { return localStorage.getItem('jedar_user_id') || 'guest'; }
+
         function getSessionId() {
-            if (!sessionId) { sessionId = 'session_' + Math.random().toString(36).substring(2,15); localStorage.setItem('jedar_session_id', sessionId); }
+            if (!sessionId) {
+                sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('jedar_session_id', sessionId);
+            }
             return sessionId;
         }
 
@@ -2445,10 +2929,12 @@
             }
         }
 
+        // OTP
         async function sendOTP() {
             const phone = document.getElementById('loginPhone').value.trim();
             const status = document.getElementById('otpStatus');
-            if (!phone) { status.textContent = '❌ شماره را وارد کنید'; status.className = 'auth-status error'; return; }
+            if (!phone) { status.textContent = '❌ شماره را وارد کنید';
+                status.className = 'auth-status error'; return; }
             status.textContent = '⏳ ' + t('sending');
             status.className = 'auth-status';
             try {
@@ -2478,7 +2964,8 @@
             const phone = document.getElementById('loginPhone').value.trim();
             const code = document.getElementById('loginOtp').value.trim();
             const status = document.getElementById('verifyStatus');
-            if (!phone || !code) { status.textContent = '❌ شماره و کد را وارد کنید'; status.className = 'auth-status error'; return; }
+            if (!phone || !code) { status.textContent = '❌ شماره و کد را وارد کنید';
+                status.className = 'auth-status error'; return; }
             status.textContent = '⏳ ' + t('verifying');
             status.className = 'auth-status';
             try {
@@ -2513,6 +3000,7 @@
             localStorage.setItem('jedar_phone_verified', 'true');
             localStorage.setItem('jedar_verified_phone', phone);
         }
+
         function clearPhoneVerification() {
             localStorage.removeItem('jedar_phone_verified');
             localStorage.removeItem('jedar_verified_phone');
@@ -2578,7 +3066,8 @@
                 document.getElementById('profileUsername').value = getUserId();
                 document.getElementById('verifyBannerBtn').innerHTML = '✅ ' + t('verified');
                 document.getElementById('verifyBannerBtn').className = 'verify-btn verified';
-                if (profileStatus) { profileStatus.className = 'profile-status verified'; profileStatus.innerHTML = '✅ ' + t('verified'); }
+                if (profileStatus) { profileStatus.className = 'profile-status verified';
+                    profileStatus.innerHTML = '✅ ' + t('verified'); }
                 if (verifiedBadge) verifiedBadge.style.display = 'flex';
                 if (displayPhone) displayPhone.textContent = phone;
             } else {
@@ -2593,7 +3082,8 @@
                 if (codeSection) codeSection.classList.remove('show');
                 document.getElementById('verifyBannerBtn').innerHTML = '📱 ' + t('verifyBtn');
                 document.getElementById('verifyBannerBtn').className = 'verify-btn';
-                if (profileStatus) { profileStatus.className = 'profile-status unverified'; profileStatus.innerHTML = '❌ ' + t('verifyStatus'); }
+                if (profileStatus) { profileStatus.className = 'profile-status unverified';
+                    profileStatus.innerHTML = '❌ ' + t('verifyStatus'); }
                 if (verifiedBadge) verifiedBadge.style.display = 'none';
                 if (displayPhone) displayPhone.textContent = 'ثبت نشده';
                 document.getElementById('profilePhone').value = '';
@@ -2730,15 +3220,21 @@
         }
 
         async function checkAdminStatus() {
-            if (!token) { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; return; }
+            if (!token) { isAdmin = false;
+                isSuperAdmin = false;
+                document.getElementById('adminMenuBtn').style.display = 'none'; return; }
             try {
                 const data = await apiCall('/api/profile/me?sessionId=' + getSessionId());
                 if (data.success && data.user) {
                     isAdmin = data.user.is_admin || data.user.is_super_admin || false;
                     isSuperAdmin = data.user.is_super_admin || false;
                     document.getElementById('adminMenuBtn').style.display = isAdmin ? 'flex' : 'none';
-                } else { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; }
-            } catch (e) { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; }
+                } else { isAdmin = false;
+                    isSuperAdmin = false;
+                    document.getElementById('adminMenuBtn').style.display = 'none'; }
+            } catch (e) { isAdmin = false;
+                isSuperAdmin = false;
+                document.getElementById('adminMenuBtn').style.display = 'none'; }
         }
 
         // ============================================================
@@ -2783,32 +3279,40 @@
         // ADS
         // ============================================================
         async function fetchAds(showLoading = true, reset = true) {
-            if (reset) { page = 1; filteredAds = []; }
+            if (reset) { page = 1;
+                filteredAds = []; }
             const grid = document.getElementById('adsGrid');
             if (showLoading && reset) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/ads?page=' + page + '&limit=' + perPage);
                 if (data.success && data.ads && data.ads.length > 0) {
                     let newAds = data.ads.map(ad => {
-                        if (ad.image_ids && typeof ad.image_ids === 'string') { try { ad.image_ids = JSON.parse(ad.image_ids); } catch { ad.image_ids = []; } }
+                        if (ad.image_ids && typeof ad.image_ids === 'string') { try { ad.image_ids = JSON.parse(ad
+                                .image_ids); } catch { ad.image_ids = []; } }
                         if (!ad.image_ids) ad.image_ids = [];
-                        if (ad.image_ids && Array.isArray(ad.image_ids)) { ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null); }
+                        if (ad.image_ids && Array.isArray(ad.image_ids)) { ad.image_ids = ad.image_ids.map(img =>
+                            normalizeImageUrl(img)).filter(url => url !== null); }
                         ad.media_type = ad.media_type || 'image';
                         if (ad.hide_phone === undefined) ad.hide_phone = false;
                         return ad;
                     });
                     newAds.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
-                    if (reset) { allAds = newAds; filteredAds = [...allAds]; } else { allAds = allAds.concat(newAds); filteredAds = filteredAds.concat(newAds); }
+                    if (reset) { allAds = newAds;
+                        filteredAds = [...allAds]; } else { allAds = allAds.concat(newAds);
+                        filteredAds = filteredAds.concat(newAds); }
                     totalAds = data.total || allAds.length;
                     renderAds(filteredAds);
                     document.getElementById('loadMoreBtn').style.display = (allAds.length < totalAds) ? 'block' : 'none';
-                } else { if (reset) { grid.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; } }
-            } catch (err) { if (reset) { grid.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; } }
+                } else { if (reset) { grid.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; } }
+            } catch (err) { if (reset) { grid.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; } }
         }
 
         function renderAds(ads) {
             const grid = document.getElementById('adsGrid');
-            if (!ads || ads.length === 0) { if (page === 1) grid.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; return; }
+            if (!ads || ads.length === 0) { if (page === 1) grid.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; return; }
             if (page === 1) grid.innerHTML = '';
             ads.forEach(ad => {
                 const card = document.createElement('div');
@@ -2818,9 +3322,13 @@
                 const isVideo = ad.media_type === 'video' || (mediaUrl && mediaUrl.match(/\.(mp4|webm|mov)$/i));
                 const isFav = favorites.includes(ad.id);
                 const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-                const mediaHtml = mediaUrl ? (isVideo ? `<video muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img src="${mediaUrl}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openMediaZoom('${mediaUrl}','image')" />`) : `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
+                const mediaHtml = mediaUrl ? (isVideo ?
+                    `<video muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` :
+                    `<img src="${mediaUrl}" alt="${ad.title}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" onclick="event.stopPropagation();openMediaZoom('${mediaUrl}','image')" />`) :
+                    `<div class="no-image"><i class="fa-solid fa-image"></i></div>`;
                 const specialBadge = ad.is_special ? `<span class="status-badge special">⭐ ویژه</span>` : '';
-                const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
+                const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'),
+                    rejected: t('statusRejected') };
                 const statusText = statusLabels[ad.status] || ad.status;
                 const likes = ad.views || 0;
                 const hidePhone = ad.hide_phone || false;
@@ -2865,15 +3373,24 @@
             });
         }
 
-        function loadMoreAds() { page++; fetchAds(true, false); }
+        function loadMoreAds() { page++;
+            fetchAds(true, false); }
 
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
+                'vehicles'
+            ];
             const catMap = {
-                'all': t('catAll'), 'pilgrimage': t('catPilgrimage'), 'tourism': t('catTourism'),
-                'medical': t('catMedical'), 'beauty': t('catBeauty'), 'services': t('catServices'),
-                'jobs': t('catJobs'), 'real_estate': t('catRealEstate'), 'vehicles': t('catVehicles')
+                'all': t('catAll'),
+                'pilgrimage': t('catPilgrimage'),
+                'tourism': t('catTourism'),
+                'medical': t('catMedical'),
+                'beauty': t('catBeauty'),
+                'services': t('catServices'),
+                'jobs': t('catJobs'),
+                'real_estate': t('catRealEstate'),
+                'vehicles': t('catVehicles')
             };
             container.innerHTML = '';
             cats.forEach((cat, i) => {
@@ -2888,10 +3405,13 @@
         function filterAds(cat) {
             document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
             const chips = document.querySelectorAll('.category-chip');
-            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate', 'vehicles'];
+            const cats = ['all', 'pilgrimage', 'tourism', 'medical', 'beauty', 'services', 'jobs', 'real_estate',
+                'vehicles'
+            ];
             const idx = cats.indexOf(cat);
             if (chips[idx]) chips[idx].classList.add('active');
-            filteredAds = cat === 'all' ? [...allAds] : allAds.filter(ad => ad.category === cat || ad.category?.includes(cat));
+            filteredAds = cat === 'all' ? [...allAds] : allAds.filter(ad => ad.category === cat || ad.category?.includes(
+                cat));
             page = 1;
             renderAds(filteredAds);
             document.getElementById('loadMoreBtn').style.display = 'none';
@@ -2899,7 +3419,9 @@
 
         function searchAds() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            filteredAds = query ? allAds.filter(ad => (ad.title && ad.title.toLowerCase().includes(query)) || (ad.description && ad.description.toLowerCase().includes(query)) || (ad.city && ad.city.toLowerCase().includes(query))) : [...allAds];
+            filteredAds = query ? allAds.filter(ad => (ad.title && ad.title.toLowerCase().includes(query)) || (ad
+                .description && ad.description.toLowerCase().includes(query)) || (ad.city && ad.city.toLowerCase()
+                .includes(query))) : [...allAds];
             page = 1;
             renderAds(filteredAds);
             document.getElementById('loadMoreBtn').style.display = 'none';
@@ -2911,7 +3433,9 @@
             setTimeout(async () => {
                 try {
                     await fetchAds(true, true);
-                    if (currentTab === 'profile') { await loadProfile(); await fetchMyAds(); await fetchMyReviews(); }
+                    if (currentTab === 'profile') { await loadProfile();
+                        await fetchMyAds();
+                        await fetchMyReviews(); }
                     if (currentTab === 'favorites') await fetchFavorites();
                     if (currentTab === 'inbox') await fetchInbox();
                     if (currentTab === 'rules') await loadRules();
@@ -2935,13 +3459,15 @@
             try {
                 const userId = getUserId();
                 const data = await apiCall(`/api/favorites/${userId}`);
-                if (data.success) { favorites = data.data.map(ad => ad.id); localStorage.setItem('jedar_favorites', JSON.stringify(favorites)); }
+                if (data.success) { favorites = data.data.map(ad => ad.id);
+                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites)); }
             } catch (e) { console.error(e); }
         }
 
         async function fetchFavorites() {
             const container = document.getElementById('favoritesList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            if (!isUserVerified()) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const userId = getUserId();
@@ -2962,17 +3488,23 @@
                             `;
                         container.appendChild(div);
                     });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noFavorites')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noFavorites')}</div>`; }
+                } else { container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noFavorites')}</div>`; }
+            } catch (err) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noFavorites')}</div>`; }
         }
 
         async function toggleFavorite(adId) {
             if (!isUserVerified()) return;
             try {
                 const userId = getUserId();
-                const data = await apiCall('/api/favorite/toggle', { method: 'POST', body: JSON.stringify({ username: userId, adId }) });
+                const data = await apiCall('/api/favorite/toggle', { method: 'POST', body: JSON.stringify({ username: userId,
+                        adId }) });
                 if (data.success) {
-                    if (data.isFavorite) { favorites.push(adId); showToast('❤️ ' + t('favoriteAdd'), 'success'); } else { favorites = favorites.filter(id => id !== adId); showToast('💔 ' + t('favoriteRemove'), 'info'); }
+                    if (data.isFavorite) { favorites.push(adId);
+                        showToast('❤️ ' + t('favoriteAdd'), 'success'); } else { favorites = favorites.filter(id => id !==
+                            adId);
+                        showToast('💔 ' + t('favoriteRemove'), 'info'); }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     if (currentTab === 'favorites') fetchFavorites();
                     fetchAds(false);
@@ -2982,17 +3514,22 @@
 
         function shareAd(adId, title) {
             const url = `https://j-dar.ir/ad/${adId}`;
-            if (navigator.share) { navigator.share({ title, text: `🔥 ${title} - جـدار`, url }).catch(() => {}); } else { navigator.clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success')).catch(() => showToast('🔗 ' + url, 'info')); }
+            if (navigator.share) { navigator.share({ title, text: `🔥 ${title} - جـدار`, url }).catch(() => {}); } else { navigator
+                    .clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success')).catch(() => showToast(
+                    '🔗 ' + url, 'info')); }
         }
 
-        function showReviewQuick(adId) { openAdDetail(adId); setTimeout(() => { const section = document.querySelector('.review-section'); if (section) section.scrollIntoView({ behavior: 'smooth' }); }, 300); }
+        function showReviewQuick(adId) { openAdDetail(adId);
+            setTimeout(() => { const section = document.querySelector('.review-section'); if (section) section
+                    .scrollIntoView({ behavior: 'smooth' }); }, 300); }
 
         // ============================================================
         // MY ADS
         // ============================================================
         async function fetchMyAds() {
             const container = document.getElementById('myAdsList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            if (!isUserVerified()) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const userId = getUserId();
@@ -3003,7 +3540,8 @@
                     data.data.forEach(ad => {
                         const div = document.createElement('div');
                         div.className = 'feed-item';
-                        const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
+                        const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'),
+                            rejected: t('statusRejected') };
                         div.innerHTML = `
                                 <div class="info" onclick="openAdDetail(${ad.id})" style="cursor:pointer;">
                                     <div class="title">${ad.title}</div>
@@ -3018,8 +3556,10 @@
                             `;
                         container.appendChild(div);
                     });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; }
+                } else { container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; }
+            } catch (err) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noAds')}</div>`; }
         }
 
         async function deleteAd(adId) {
@@ -3027,7 +3567,9 @@
             try {
                 const userId = getUserId();
                 const data = await apiCall('/api/ad/delete', { method: 'POST', body: JSON.stringify({ adId, username: userId }) });
-                if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); fetchMyAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success');
+                    fetchMyAds();
+                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3035,7 +3577,9 @@
             if (!confirm(t('renewAd'))) return;
             try {
                 const data = await apiCall('/api/ad/renew', { method: 'POST', body: JSON.stringify({ adId }) });
-                if (data.success) { showToast('✅ ' + t('adRenewed'), 'success'); fetchMyAds(); fetchAds(false); } else { showToast('❌ ' + t('adRenewFailed'), 'error'); }
+                if (data.success) { showToast('✅ ' + t('adRenewed'), 'success');
+                    fetchMyAds();
+                    fetchAds(false); } else { showToast('❌ ' + t('adRenewFailed'), 'error'); }
             } catch (err) { showToast('❌ ' + t('adRenewFailed'), 'error'); }
         }
 
@@ -3065,8 +3609,12 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() { if (wizardStep < 3) { wizardStep++; updateWizard(); } }
-        function wizardPrev() { if (wizardStep > 1) { wizardStep--; updateWizard(); } }
+        function wizardNext() { if (wizardStep < 3) { wizardStep++;
+                updateWizard(); } }
+
+        function wizardPrev() { if (wizardStep > 1) { wizardStep--;
+                updateWizard(); } }
+
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
             document.getElementById(`wizardStep${wizardStep}`).style.display = 'block';
@@ -3112,7 +3660,8 @@
                     for (let i = 0; i < Math.min(files.length, 4); i++) {
                         const file = files[i];
                         if (file.size > 5 * 1024 * 1024) { showToast(t('imageTooLarge'), 'error'); continue; }
-                        if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) { showToast(t('invalidFormat'), 'error'); continue; }
+                        if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) { showToast(t(
+                            'invalidFormat'), 'error'); continue; }
                         if (file.type.startsWith('video/')) mediaType = 'video';
                         statusEl.textContent = `در حال آپلود ${file.name}...`;
                         const formData = new FormData();
@@ -3223,14 +3772,17 @@
             const files = Array.from(e.target.files);
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
-            if (files.length > 4) { showToast(t('maxImages'), 'warning'); this.value = ''; return; }
+            if (files.length > 4) { showToast(t('maxImages'), 'warning');
+                this.value = ''; return; }
             files.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function(ev) {
                     const item = document.createElement('div');
                     item.className = 'image-preview-item';
                     const isVideo = file.type.startsWith('video/');
-                    item.innerHTML = isVideo ? `<video src="${ev.target.result}" muted style="width:100%;height:100%;object-fit:cover;"></video><span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.5);color:#fff;font-size:7px;padding:1px 6px;border-radius:4px;"><i class="fa-solid fa-video"></i></span><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>` : `<img src="${ev.target.result}" /><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+                    item.innerHTML = isVideo ?
+                        `<video src="${ev.target.result}" muted style="width:100%;height:100%;object-fit:cover;"></video><span style="position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,0.5);color:#fff;font-size:7px;padding:1px 6px;border-radius:4px;"><i class="fa-solid fa-video"></i></span><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>` :
+                        `<img src="${ev.target.result}" /><button class="remove-img" onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
                     grid.appendChild(item);
                 };
                 reader.readAsDataURL(file);
@@ -3268,7 +3820,7 @@
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
         // ============================================================
-        // AD DETAIL
+        // AD DETAIL (با حذف چت ناشناس و جایگزینی با چت داخلی)
         // ============================================================
         function openAdDetail(adId) {
             const ad = allAds.find(item => item.id == adId);
@@ -3276,7 +3828,8 @@
             adDetailGallery = (ad.image_ids || []).map(url => normalizeImageUrl(url)).filter(url => url !== null);
             adDetailIndex = 0;
             const isFav = favorites.includes(ad.id);
-            const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
+            const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'),
+                rejected: t('statusRejected') };
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
             const hidePhone = ad.hide_phone || false;
             const phone = hidePhone ? null : (ad.phone || '');
@@ -3291,11 +3844,14 @@
             if (adDetailGallery.length > 0) {
                 const firstItem = adDetailGallery[0];
                 const isVideo = ad.media_type === 'video' || (firstItem && firstItem.match(/\.(mp4|webm|mov)$/i));
-                galleryHtml = `<div class="ad-gallery" onclick="event.stopPropagation();openMediaZoom('${adDetailGallery[0]}','${isVideo?'video':'image'}')">${isVideo?`<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${adDetailGallery[0]}" type="video/mp4"></video>`:`<img id="detailGalleryImg" src="${adDetailGallery[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />`}</div>`;
+                galleryHtml =
+                    `<div class="ad-gallery" onclick="event.stopPropagation();openMediaZoom('${adDetailGallery[0]}','${isVideo?'video':'image'}')">${isVideo?`<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${adDetailGallery[0]}" type="video/mp4"></video>`:`<img id="detailGalleryImg" src="${adDetailGallery[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />`}</div>`;
                 if (adDetailGallery.length > 1) {
-                    galleryHtml += `<div class="gallery-controls"><button onclick="detailGalleryPrev()">‹</button><span style="color:var(--text-muted);font-size:12px;display:flex;align-items:center;"><span id="detailGalleryIndex">1</span> / ${adDetailGallery.length}</span><button onclick="detailGalleryNext()">›</button></div>`;
+                    galleryHtml +=
+                        `<div class="gallery-controls"><button onclick="detailGalleryPrev()">‹</button><span style="color:var(--text-muted);font-size:12px;display:flex;align-items:center;"><span id="detailGalleryIndex">1</span> / ${adDetailGallery.length}</span><button onclick="detailGalleryNext()">›</button></div>`;
                 }
-            } else { galleryHtml = `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:28px;opacity:0.3;"></i></div></div>`; }
+            } else { galleryHtml =
+                    `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:28px;opacity:0.3;"></i></div></div>`; }
 
             content.innerHTML = `
                     <div class="modal-title">${ad.title || 'بدون عنوان'}</div>
@@ -3315,7 +3871,7 @@
                     <div class="action-buttons">
                         ${phone && !hidePhone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
                         ${phone && !hidePhone ? `<a href="https://wa.me/${phone.replace(/\s/g, '')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
-                        ${!phone || hidePhone ? `<button onclick="openChatFromAd(${ad.id})" class="btn-call" style="background:var(--blue);"><i class="fa-solid fa-comment"></i> ${t('chatAnonymousLabel')}</button>` : ''}
+                        <button onclick="openChatFromAd(${ad.id})" class="btn-chat"><i class="fa-solid fa-comment"></i> ${t('chatWith')}</button>
                         <button class="btn-share" onclick="shareAd(${ad.id},'${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('shareAd')}</button>
                         ${ad.user_id !== getUserId() ? `<button onclick="reportAdViaTicket(${ad.id})" style="background:rgba(255,56,92,0.06);color:var(--primary);border:1px solid rgba(255,56,92,0.1);"><i class="fa-solid fa-flag"></i> ${t('reportAd')}</button>` : ''}
                     </div>
@@ -3359,15 +3915,20 @@
             modal.classList.add('show');
         }
 
-        window.detailGalleryPrev = function() { if (adDetailGallery.length === 0) return; adDetailIndex = (adDetailIndex - 1 + adDetailGallery.length) % adDetailGallery.length; updateDetailGallery(); };
-        window.detailGalleryNext = function() { if (adDetailGallery.length === 0) return; adDetailIndex = (adDetailIndex + 1) % adDetailGallery.length; updateDetailGallery(); };
+        window.detailGalleryPrev = function() { if (adDetailGallery.length === 0) return;
+            adDetailIndex = (adDetailIndex - 1 + adDetailGallery.length) % adDetailGallery.length;
+            updateDetailGallery(); };
+        window.detailGalleryNext = function() { if (adDetailGallery.length === 0) return;
+            adDetailIndex = (adDetailIndex + 1) % adDetailGallery.length;
+            updateDetailGallery(); };
 
         function updateDetailGallery() {
             const item = adDetailGallery[adDetailIndex];
             const isVideo = item && item.match(/\.(mp4|webm|mov)$/i);
             const gallery = document.querySelector('.ad-gallery');
             if (isVideo) {
-                gallery.innerHTML = `<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${item}" type="video/mp4"></video>`;
+                gallery.innerHTML =
+                    `<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${item}" type="video/mp4"></video>`;
                 gallery.onclick = () => openMediaZoom(item, 'video');
             } else {
                 gallery.innerHTML = `<img id="detailGalleryImg" src="${item}" />`;
@@ -3378,12 +3939,21 @@
 
         function closeAdDetail() { document.getElementById('adDetailsModal').classList.remove('show'); }
 
-        async function toggleFavoriteAndUpdateDetail(adId) { await toggleFavorite(adId); const ad = allAds.find(item => item.id == adId); if (ad) { const isFav = favorites.includes(ad.id); const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') }; const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const hidePhone = ad.hide_phone || false; const phone = hidePhone ? null : (ad.phone || ''); renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone); } }
+        async function toggleFavoriteAndUpdateDetail(adId) { await toggleFavorite(adId); const ad = allAds.find(item => item
+                .id == adId); if (ad) { const isFav = favorites.includes(ad.id); const statusLabels = { pending: t(
+                    'statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
+                const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const hidePhone = ad.hide_phone ||
+                    false; const phone = hidePhone ? null : (ad.phone || '');
+                renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone); } }
 
         // ============================================================
         // REVIEW
         // ============================================================
-        function setDetailRating(val) { reviewRating = val; document.getElementById('detailReviewRating').value = val; document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => { el.className = idx < val ? 'active' : ''; el.textContent = idx < val ? '★' : '☆'; }); }
+        function setDetailRating(val) { reviewRating = val;
+            document.getElementById('detailReviewRating').value = val;
+            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => { el.className = idx < val ?
+                    'active' : '';
+                el.textContent = idx < val ? '★' : '☆'; }); }
 
         async function submitDetailReview() {
             if (!isUserVerified()) return;
@@ -3393,13 +3963,15 @@
             if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
             try {
                 const userId = getUserId();
-                const data = await apiCall('/api/review', { method: 'POST', body: JSON.stringify({ adId: parseInt(adId), userId, rating, comment }) });
+                const data = await apiCall('/api/review', { method: 'POST', body: JSON.stringify({ adId: parseInt(adId),
+                        userId, rating, comment }) });
                 if (data.success) {
                     showToast('✅ ' + t('reviewSubmit'), 'success');
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
+                        el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                     fetchMyReviews();
@@ -3419,69 +3991,141 @@
                         let reviewerName = 'کاربر ناشناس';
                         if (r.user) reviewerName = r.user.username || r.user.first_name || 'کاربر ناشناس';
                         if (currentUser && currentUser.phone && r.user_id == currentUser.phone) reviewerName = 'شما';
-                        div.innerHTML = `<div class="header"><span class="name">${reviewerName}</span><span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span></div><div class="comment">${r.comment || ''}</div><div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>`;
+                        div.innerHTML =
+                            `<div class="header"><span class="name">${reviewerName}</span><span class="stars">${'★'.repeat(Math.round(r.rating || 0))}${'☆'.repeat(5 - Math.round(r.rating || 0))}</span></div><div class="comment">${r.comment || ''}</div><div class="date">${new Date(r.created_at * 1000).toLocaleDateString('fa-IR')}</div>`;
                         container.appendChild(div);
                     });
                 } else {
-                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:11px;">هنوز نظری ثبت نشده است</div>`;
+                    container.innerHTML =
+                        `<div style="text-align:center;color:var(--text-muted);font-size:11px;">هنوز نظری ثبت نشده است</div>`;
                 }
             } catch (err) {
-                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:11px;">خطا در بارگذاری نظرات</div>`;
+                container.innerHTML =
+                    `<div style="text-align:center;color:var(--text-muted);font-size:11px;">خطا در بارگذاری نظرات</div>`;
             }
         }
 
         // ============================================================
-        // CHAT (شبیه پیام‌رسان)
+        // CHAT (واتساپ/روبیکا استایل - کاملاً بازطراحی شده)
         // ============================================================
         async function loadChatThreads() {
-            const container = document.getElementById('chatThreadsList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            const container = document.getElementById('chatListItems');
+            const countEl = document.getElementById('chatCount');
+            if (!isUserVerified()) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`;
+                if (countEl) countEl.textContent = '۰';
+                return;
+            }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/chat/threads');
                 if (data.success && data.data && data.data.length > 0) {
-                    container.innerHTML = '';
-                    data.data.forEach(thread => {
-                        const other = thread.other_user;
-                        const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
-                        const avatarLetter = displayName.charAt(0).toUpperCase();
-                        const lastMsg = thread.last_message || 'هیچ پیامی وجود ندارد';
-                        const time = thread.last_message_time ? formatTime(thread.last_message_time) : '';
-                        const div = document.createElement('div');
-                        div.className = 'chat-thread-item';
-                        div.innerHTML = `
-                            <div class="avatar">${avatarLetter}</div>
-                            <div class="info">
-                                <div class="name">${displayName}</div>
-                                <div class="last-msg">${lastMsg}</div>
-                            </div>
-                            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-                                <div class="time">${time}</div>
-                            </div>
-                            <button onclick="event.stopPropagation();openChatThread('${thread.id}')" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-full);font-size:10px;cursor:pointer;">💬</button>
-                        `;
-                        container.appendChild(div);
-                    });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('chatThreadsEmpty')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`; }
+                    chatThreads = data.data;
+                    if (countEl) countEl.textContent = chatThreads.length;
+                    renderChatList(chatThreads);
+                } else {
+                    chatThreads = [];
+                    if (countEl) countEl.textContent = '۰';
+                    container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('chatThreadsEmpty')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`;
+                if (countEl) countEl.textContent = '۰';
+            }
+        }
+
+        function renderChatList(threads) {
+            const container = document.getElementById('chatListItems');
+            if (!container) return;
+            if (!threads || threads.length === 0) {
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('chatThreadsEmpty')}</div>`;
+                return;
+            }
+            container.innerHTML = '';
+            threads.forEach(thread => {
+                const other = thread.other_user;
+                const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
+                const avatarLetter = displayName.charAt(0).toUpperCase();
+                const lastMsg = thread.last_message || 'هیچ پیامی وجود ندارد';
+                const time = thread.last_message_time ? formatTime(thread.last_message_time) : '';
+                const div = document.createElement('div');
+                div.className = 'chat-list-item';
+                div.dataset.threadId = thread.id;
+                div.innerHTML = `
+                    <div class="avatar">${avatarLetter}</div>
+                    <div class="info">
+                        <div class="name">${displayName}</div>
+                        <div class="last-msg">${lastMsg}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+                        <div class="time">${time}</div>
+                        <div class="badge-unread" style="${thread.unread_count && thread.unread_count > 0 ? '' : 'display:none;'}">${thread.unread_count || 0}</div>
+                    </div>
+                `;
+                div.addEventListener('click', () => openChatThread(thread.id));
+                container.appendChild(div);
+            });
+        }
+
+        function filterChatList() {
+            const query = document.getElementById('chatSearchInput')?.value.trim().toLowerCase() || '';
+            if (!query) {
+                renderChatList(chatThreads);
+                return;
+            }
+            const filtered = chatThreads.filter(thread => {
+                const other = thread.other_user;
+                const name = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
+                return name.toLowerCase().includes(query);
+            });
+            renderChatList(filtered);
         }
 
         async function openChatThread(threadId) {
             if (!isUserVerified()) return;
-            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
-            currentChatThreadId = threadId;
+            if (chatPollingInterval) { clearInterval(chatPollingInterval);
+                chatPollingInterval = null; }
+            activeChatThreadId = threadId;
+            lastMessagesHash = '';
 
             const modal = document.getElementById('chatModal');
-            const content = document.getElementById('chatContent');
-            content.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            modal.classList.add('show');
+            const titleEl = document.getElementById('chatModalTitle');
+            const messagesArea = document.getElementById('chatMessagesArea');
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
 
+            // پیدا کردن اطلاعات کاربر دیگر
+            const thread = chatThreads.find(t => t.id === threadId);
+            const other = thread?.other_user || {};
+            const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
+            if (titleEl) titleEl.textContent = `💬 ${displayName}`;
+
+            modal.classList.add('show');
+            if (messagesArea) messagesArea.innerHTML =
+                `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:30px;">${t('loading')}</div>`;
+
+            // بارگذاری پیام‌ها
             await loadChatMessages(threadId);
 
-            // شروع پولینگ برای دریافت پیام‌های جدید
+            // پولینگ
             chatPollingInterval = setInterval(() => {
                 loadChatMessages(threadId, true);
             }, 3000);
+
+            // رویداد Enter
+            if (input) {
+                input.focus();
+                input.onkeyup = function(e) {
+                    if (e.key === 'Enter') sendChatMessage();
+                };
+            }
+            if (sendBtn) {
+                sendBtn.onclick = sendChatMessage;
+            }
         }
 
         async function loadChatMessages(threadId, silent = false) {
@@ -3493,99 +4137,100 @@
                 }
                 const messages = data.data || [];
                 const thread = data.thread || {};
-                const otherId = thread.user1 === getUserId() ? thread.user2 : thread.user1;
-                const otherUserData = await apiCall(`/api/profile/${otherId}`);
-                const otherUser = otherUserData.success ? otherUserData.user : null;
-                const displayName = otherUser?.first_name || otherUser?.phone || otherUser?.username || 'کاربر ناشناس';
 
-                const content = document.getElementById('chatContent');
-                let html = `<div class="modal-title">💬 ${t('chatTitle')} - ${displayName}</div>`;
-                html += `<div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">🔒 ${t('chatStartInfo')}</div>`;
-                html += `<div class="chat-messages-container" id="chatMessagesContainer">`;
+                // هش برای جلوگیری از رندر مجدد غیرضروری
+                const currentHash = messages.map(m => m.id + m.message + m.timestamp).join('|');
+                if (silent && currentHash === lastMessagesHash) {
+                    return;
+                }
+                lastMessagesHash = currentHash;
+
+                const messagesArea = document.getElementById('chatMessagesArea');
+                if (!messagesArea) return;
+
                 if (messages.length === 0) {
-                    html += `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px;">${t('chatNoMessages')}</div>`;
+                    messagesArea.innerHTML =
+                        `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:30px;">${t('chatNoMessages')}</div>`;
                 } else {
+                    let html = '';
                     messages.forEach(m => {
                         const isSent = m.sender_id === getUserId();
-                        const time = new Date(m.timestamp * 1000).toLocaleTimeString('fa-IR');
-                        html += `<div class="chat-message-bubble ${isSent ? 'sent' : 'received'}">
-                                    ${m.message}
-                                    <span class="msg-time">${time}</span>
-                                </div>`;
+                        const time = formatTimeShort(m.timestamp);
+                        const readStatus = isSent ? (m.is_read ? '✓✓' : '✓') : '';
+                        html += `
+                            <div class="chat-message-bubble ${isSent ? 'sent' : 'received'}">
+                                ${m.message}
+                                <span class="msg-time">
+                                    ${time}
+                                    ${readStatus ? `<span class="read-status ${m.is_read ? 'read' : 'delivered'}">${readStatus}</span>` : ''}
+                                </span>
+                            </div>
+                        `;
                     });
+                    messagesArea.innerHTML = html;
                 }
-                html += `</div>`;
-                html += `<div style="display:flex;gap:8px;margin-top:8px;">
-                            <input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--input);color:var(--text);font-size:13px;font-family:var(--font);">
-                            <button onclick="sendChatMessage('${threadId}')" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;">${t('sendBtn')}</button>
-                        </div>`;
-                html += `<div style="display:flex;gap:6px;margin-top:8px;">
-                            <button onclick="blockChatUser('${threadId}')" style="flex:1;padding:6px;background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('chatBlockUser')}</button>
-                            <button onclick="closeChatModal()" style="flex:1;padding:6px;background:var(--input);border:1px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;">${t('close')}</button>
-                        </div>`;
-                content.innerHTML = html;
 
-                const chatInput = document.getElementById('chatInput');
-                if (chatInput) {
-                    chatInput.focus();
-                    chatInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') sendChatMessage(threadId); });
-                }
                 // اسکرول به پایین
-                const containerDiv = document.getElementById('chatMessagesContainer');
-                if (containerDiv) containerDiv.scrollTop = containerDiv.scrollHeight;
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+
+                // به‌روزرسانی لیست چت‌ها در پس‌زمینه
+                if (!silent) {
+                    loadChatThreads();
+                }
             } catch (err) {
                 if (!silent) showToast('❌ ' + t('networkError'), 'error');
             }
         }
 
-        async function sendChatMessage(threadId) {
+        async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const message = input?.value.trim();
-            if (!message) return;
+            if (!message || !activeChatThreadId) return;
+            const sendBtn = document.getElementById('chatSendBtn');
+            if (sendBtn) sendBtn.disabled = true;
+
             try {
-                const data = await apiCall('/api/chat/send', { method: 'POST', body: JSON.stringify({ threadId, message }) });
+                const data = await apiCall('/api/chat/send', {
+                    method: 'POST',
+                    body: JSON.stringify({ threadId: activeChatThreadId, message })
+                });
                 if (data.success) {
                     input.value = '';
-                    await loadChatMessages(threadId, false);
-                    // به‌روزرسانی لیست چت‌ها
-                    loadChatThreads();
+                    await loadChatMessages(activeChatThreadId, false);
                     showToast('✅ ' + t('chatSent'), 'success');
                 } else {
                     showToast('❌ ' + (data.error || t('unknownError')), 'error');
                 }
-            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
-        }
-
-        async function blockChatUser(threadId) {
-            if (!confirm(t('chatBlockedConfirm'))) return;
-            try {
-                const data = await apiCall('/api/chat/block', { method: 'POST', body: JSON.stringify({ targetId: threadId }) });
-                if (data.success) {
-                    showToast('✅ ' + t('chatBlockSuccess'), 'success');
-                    closeChatModal();
-                    loadChatThreads();
-                } else { showToast('❌ ' + t('unknownError'), 'error'); }
-            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+            } catch (err) {
+                showToast('❌ ' + t('unknownError'), 'error');
+            } finally {
+                if (sendBtn) sendBtn.disabled = false;
+                if (input) input.focus();
+            }
         }
 
         function closeChatModal() {
-            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
-            currentChatThreadId = null;
+            if (chatPollingInterval) { clearInterval(chatPollingInterval);
+                chatPollingInterval = null; }
+            activeChatThreadId = null;
+            lastMessagesHash = '';
             document.getElementById('chatModal').classList.remove('show');
-            document.getElementById('chatContent').innerHTML = '';
+            document.getElementById('chatMessagesArea').innerHTML = '';
+            document.getElementById('chatInput').value = '';
             loadChatThreads();
         }
 
         // ============================================================
-        // CHAT FROM AD
+        // CHAT FROM AD (جایگزین چت ناشناس)
         // ============================================================
         async function openChatFromAd(adId) {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
             const ad = allAds.find(a => a.id === adId);
             if (!ad) { showToast(t('adNotFound'), 'error'); return; }
             const targetId = ad.user_id;
+            if (targetId === getUserId()) { showToast('⚠️ شما نمی‌توانید با خودتان چت کنید.', 'warning'); return; }
             try {
-                // اگر قبلاً چتی وجود دارد، آن را باز می‌کنیم
+                // بررسی وجود چت قبلی
                 const threadsData = await apiCall('/api/chat/threads');
                 let existingThread = null;
                 if (threadsData.success && threadsData.data) {
@@ -3598,10 +4243,15 @@
                     openChatThread(existingThread.id);
                     return;
                 }
-                // ایجاد thread جدید
-                const data = await apiCall('/api/chat/threads', { method: 'POST', body: JSON.stringify({ targetId, adId }) });
+                // ایجاد چت جدید
+                const data = await apiCall('/api/chat/threads', {
+                    method: 'POST',
+                    body: JSON.stringify({ targetId, adId })
+                });
                 if (data.success && data.threadId) {
                     showToast('✅ ' + t('chatStart'), 'success');
+                    // بارگذاری مجدد لیست چت‌ها
+                    await loadChatThreads();
                     openChatThread(data.threadId);
                 } else {
                     showToast('❌ ' + (data.error || t('unknownError')), 'error');
@@ -3618,14 +4268,18 @@
             const overlay = document.getElementById('imageZoomOverlay');
             const container = document.getElementById('zoomMediaContainer');
             if (type === 'video') {
-                container.innerHTML = `<video autoplay muted loop playsinline style="max-width:100%;max-height:90vh;border-radius:var(--radius);"><source src="${url}" type="video/mp4"></video>`;
+                container.innerHTML =
+                    `<video autoplay muted loop playsinline style="max-width:100%;max-height:90vh;border-radius:var(--radius);"><source src="${url}" type="video/mp4"></video>`;
             } else {
-                container.innerHTML = `<img src="${url}" alt="نمایش" style="max-width:100%;max-height:90vh;border-radius:var(--radius);" />`;
+                container.innerHTML =
+                    `<img src="${url}" alt="نمایش" style="max-width:100%;max-height:90vh;border-radius:var(--radius);" />`;
             }
             overlay.classList.add('show');
             document.body.style.overflow = 'hidden';
         }
-        function closeImageZoom() { document.getElementById('imageZoomOverlay').classList.remove('show'); document.body.style.overflow = ''; }
+
+        function closeImageZoom() { document.getElementById('imageZoomOverlay').classList.remove('show');
+            document.body.style.overflow = ''; }
 
         // ============================================================
         // BANNER
@@ -3642,7 +4296,8 @@
                         const mediaUrl = normalizeImageUrl(banner.image_id) || '';
                         const div = document.createElement('div');
                         div.className = 'banner-ad-container';
-                        div.innerHTML = `${isVideo ? `<video class="banner-image" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}<div class="banner-info"><div class="banner-title">${banner.title || 'تبلیغ'}</div><div class="banner-desc">${banner.description || ''}</div></div><a href="${banner.link || '#'}" target="_blank" class="banner-link"><i class="fa-solid fa-arrow-left"></i> باز کردن</a>`;
+                        div.innerHTML =
+                            `${isVideo ? `<video class="banner-image" muted playsinline><source src="${mediaUrl}" type="video/mp4"></video>` : `<img class="banner-image" src="${mediaUrl}" onerror="this.style.display='none'" />`}<div class="banner-info"><div class="banner-title">${banner.title || 'تبلیغ'}</div><div class="banner-desc">${banner.description || ''}</div></div><a href="${banner.link || '#'}" target="_blank" class="banner-link"><i class="fa-solid fa-arrow-left"></i> باز کردن</a>`;
                         container.appendChild(div);
                     });
                 } else { container.innerHTML = ''; }
@@ -3652,13 +4307,20 @@
         // ============================================================
         // SUPPORT DROPDOWN
         // ============================================================
-        function toggleSupportMenu(event) { event.stopPropagation(); document.getElementById('supportDropdownMenu').classList.toggle('show'); }
-        document.addEventListener('click', function(e) { if (!e.target.closest('.support-dropdown')) { document.getElementById('supportDropdownMenu').classList.remove('show'); } });
+        function toggleSupportMenu(event) { event.stopPropagation();
+            document.getElementById('supportDropdownMenu').classList.toggle('show'); }
+        document.addEventListener('click', function(e) { if (!e.target.closest('.support-dropdown')) { document
+                    .getElementById('supportDropdownMenu').classList.remove('show'); } });
 
         // ============================================================
         // RULES & SUPPORT
         // ============================================================
-        async function loadRules() { const container = document.getElementById('rulesContent'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/rules'); container.innerHTML = (data.success && data.rules) ? data.rules : `<div class="text-secondary">قوانینی ثبت نشده است.</div>`; } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function loadRules() { const container = document.getElementById('rulesContent');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
+                    await apiCall('/api/rules');
+                container.innerHTML = (data.success && data.rules) ? data.rules :
+                    `<div class="text-secondary">قوانینی ثبت نشده است.</div>`; } catch (err) { container.innerHTML =
+                        `<div class="text-secondary">${t('networkError')}</div>`; } }
 
         async function loadSupport() {
             const container = document.getElementById('supportContent');
@@ -3669,18 +4331,23 @@
                     const s = data.support;
                     let html = '<div class="support-card-grid">';
                     if (s.phones && s.phones.length) {
-                        html += `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-phone"></i></div><div class="info"><span class="label">📞 شماره تلفن</span><div class="value">${s.phones.join('، ')}</div></div></div>`;
+                        html +=
+                            `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-phone"></i></div><div class="info"><span class="label">📞 شماره تلفن</span><div class="value">${s.phones.join('، ')}</div></div></div>`;
                     }
                     if (s.whatsapps && s.whatsapps.length) {
-                        html += `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-brands fa-whatsapp"></i></div><div class="info"><span class="label">💬 واتساپ</span><div class="value">${s.whatsapps.map(w => `<a href="https://wa.me/${w.replace(/\s/g, '')}" target="_blank">${w}</a>`).join('، ')}</div></div></div>`;
+                        html +=
+                            `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-brands fa-whatsapp"></i></div><div class="info"><span class="label">💬 واتساپ</span><div class="value">${s.whatsapps.map(w => `<a href="https://wa.me/${w.replace(/\s/g, '')}" target="_blank">${w}</a>`).join('، ')}</div></div></div>`;
                     }
                     if (s.telegrams && s.telegrams.length) {
-                        html += `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div><div class="info"><span class="label">✈️ تلگرام</span><div class="value">${s.telegrams.map(t => `<a href="https://t.me/${t.replace('@', '')}" target="_blank">${t}</a>`).join('، ')}</div></div></div>`;
+                        html +=
+                            `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div><div class="info"><span class="label">✈️ تلگرام</span><div class="value">${s.telegrams.map(t => `<a href="https://t.me/${t.replace('@', '')}" target="_blank">${t}</a>`).join('، ')}</div></div></div>`;
                     }
                     if (s.emails && s.emails.length) {
-                        html += `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-envelope"></i></div><div class="info"><span class="label">📧 ایمیل</span><div class="value">${s.emails.join('، ')}</div></div></div>`;
+                        html +=
+                            `<div class="support-card-item"><div class="icon-wrapper"><i class="fa-solid fa-envelope"></i></div><div class="info"><span class="label">📧 ایمیل</span><div class="value">${s.emails.join('، ')}</div></div></div>`;
                     }
-                    html += `<div class="support-card-item" onclick="submitFeedback()" style="cursor:pointer;"><div class="icon-wrapper"><i class="fa-solid fa-comment"></i></div><div class="info"><span class="label">💬 ${t('feedback')}</span><div class="value">${t('feedbackPlaceholder')}</div></div></div>`;
+                    html +=
+                        `<div class="support-card-item" onclick="submitFeedback()" style="cursor:pointer;"><div class="icon-wrapper"><i class="fa-solid fa-comment"></i></div><div class="info"><span class="label">💬 ${t('feedback')}</span><div class="value">${t('feedbackPlaceholder')}</div></div></div>`;
                     html += '</div>';
                     container.innerHTML = html;
                 } else {
@@ -3695,8 +4362,10 @@
             const message = prompt('💬 ' + t('feedback') + ':\n' + t('feedbackPlaceholder'));
             if (!message || message.trim() === '') return;
             try {
-                const data = await apiCall('/api/feedback', { method: 'POST', body: JSON.stringify({ message: message.trim() }) });
-                if (data.success) { showToast('✅ ' + t('feedbackSent'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                const data = await apiCall('/api/feedback', { method: 'POST', body: JSON.stringify({ message: message
+                        .trim() }) });
+                if (data.success) { showToast('✅ ' + t('feedbackSent'), 'success'); } else { showToast('❌ ' + t(
+                        'unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3705,7 +4374,8 @@
         // ============================================================
         async function loadTickets() {
             const container = document.getElementById('ticketsList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            if (!isUserVerified()) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const userId = getUserId();
@@ -3726,11 +4396,14 @@
                             `;
                         container.appendChild(div);
                     });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noTickets')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noTickets')}</div>`; }
+                } else { container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noTickets')}</div>`; }
+            } catch (err) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noTickets')}</div>`; }
         }
 
-        function openNewTicket() { if (!isUserVerified()) return; openNewTicketWithSubject(''); }
+        function openNewTicket() { if (!isUserVerified()) return;
+            openNewTicketWithSubject(''); }
 
         async function submitTicket() {
             const subject = document.getElementById('ticketSubject').value.trim();
@@ -3738,8 +4411,11 @@
             if (!subject || !message) { showToast('لطفاً همه فیلدها را پر کنید', 'warning'); return; }
             try {
                 const userId = getUserId();
-                const data = await apiCall('/api/tickets', { method: 'POST', body: JSON.stringify({ userId, subject, message, category: 'general' }) });
-                if (data.success) { showToast('✅ ' + t('ticketSent'), 'success'); closeTicketModal(); loadTickets(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                const data = await apiCall('/api/tickets', { method: 'POST', body: JSON.stringify({ userId, subject,
+                        message, category: 'general' }) });
+                if (data.success) { showToast('✅ ' + t('ticketSent'), 'success');
+                    closeTicketModal();
+                    loadTickets(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3793,7 +4469,8 @@
             if (!reply) { showToast(t('replyRequired'), 'warning'); return; }
             try {
                 const userId = getUserId();
-                const data = await apiCall(`/api/tickets/${ticketId}`, { method: 'POST', body: JSON.stringify({ userId, reply }) });
+                const data = await apiCall(`/api/tickets/${ticketId}`, { method: 'POST', body: JSON.stringify({ userId,
+                        reply }) });
                 if (data.success) {
                     showToast('✅ ' + t('ticketReplySent'), 'success');
                     openTicketDetail(ticketId);
@@ -3802,14 +4479,16 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        function closeTicketModal() { document.getElementById('ticketModal').classList.remove('show'); document.getElementById('ticketContent').innerHTML = ''; }
+        function closeTicketModal() { document.getElementById('ticketModal').classList.remove('show');
+            document.getElementById('ticketContent').innerHTML = ''; }
 
         // ============================================================
         // INBOX (با استفاده از تیکت‌ها)
         // ============================================================
         async function fetchInbox() {
             const container = document.getElementById('inboxList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            if (!isUserVerified()) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const userId = getUserId();
@@ -3834,13 +4513,16 @@
                             container.appendChild(div);
                         });
                     } else {
-                        container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noInboxMessages')}</div>`;
+                        container.innerHTML =
+                            `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noInboxMessages')}</div>`;
                     }
                 } else {
-                    container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noInboxMessages')}</div>`;
+                    container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noInboxMessages')}</div>`;
                 }
             } catch (err) {
-                container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`;
+                container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`;
             }
         }
 
@@ -3849,7 +4531,8 @@
         // ============================================================
         async function loadAlerts() {
             const container = document.getElementById('alertsList');
-            if (!isUserVerified()) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
+            if (!isUserVerified()) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/alerts');
@@ -3861,7 +4544,10 @@
                         const statusText = alert.is_active ? t('alertStatusActive') : t('alertStatusInactive');
                         const cat = alert.category || 'همه';
                         const city = alert.city || 'همه';
-                        const priceRange = (alert.min_price !== null && alert.max_price !== null) ? `${alert.min_price} - ${alert.max_price}` : (alert.min_price !== null) ? `≥ ${alert.min_price}` : (alert.max_price !== null) ? `≤ ${alert.max_price}` : 'نامحدود';
+                        const priceRange = (alert.min_price !== null && alert.max_price !== null) ?
+                            `${alert.min_price} - ${alert.max_price}` : (alert.min_price !== null) ?
+                            `≥ ${alert.min_price}` : (alert.max_price !== null) ? `≤ ${alert.max_price}` :
+                            'نامحدود';
                         div.innerHTML = `
                                 <div class="alert-header">
                                     <span style="font-weight:600;font-size:13px;">#${alert.id}</span>
@@ -3881,8 +4567,10 @@
                             `;
                         container.appendChild(div);
                     });
-                } else { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('alertEmpty')}</div>`; }
-            } catch (err) { container.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`; }
+                } else { container.innerHTML =
+                        `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('alertEmpty')}</div>`; }
+            } catch (err) { container.innerHTML =
+                    `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('networkError')}</div>`; }
         }
 
         function openAddAlert() {
@@ -3924,13 +4612,18 @@
         async function submitAlert() {
             const category = document.getElementById('alertCategoryInput').value || null;
             const keywords = document.getElementById('alertKeywordsInput').value.trim() || null;
-            const min_price = document.getElementById('alertMinPriceInput').value ? parseInt(document.getElementById('alertMinPriceInput').value) : null;
-            const max_price = document.getElementById('alertMaxPriceInput').value ? parseInt(document.getElementById('alertMaxPriceInput').value) : null;
+            const min_price = document.getElementById('alertMinPriceInput').value ? parseInt(document.getElementById(
+                'alertMinPriceInput').value) : null;
+            const max_price = document.getElementById('alertMaxPriceInput').value ? parseInt(document.getElementById(
+                'alertMaxPriceInput').value) : null;
             const city = document.getElementById('alertCityInput').value.trim() || null;
             const frequency = document.getElementById('alertFrequencyInput').value || 'immediate';
             try {
-                const data = await apiCall('/api/alerts', { method: 'POST', body: JSON.stringify({ category, keywords, min_price, max_price, city, frequency }) });
-                if (data.success) { showToast('✅ ' + t('alertSaved'), 'success'); closeAlertModal(); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                const data = await apiCall('/api/alerts', { method: 'POST', body: JSON.stringify({ category, keywords,
+                        min_price, max_price, city, frequency }) });
+                if (data.success) { showToast('✅ ' + t('alertSaved'), 'success');
+                    closeAlertModal();
+                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3938,21 +4631,24 @@
             if (!confirm(t('alertDeletedConfirm'))) return;
             try {
                 const data = await apiCall(`/api/alerts/${alertId}`, { method: 'DELETE' });
-                if (data.success) { showToast('🗑 ' + t('alertDeleted'), 'success'); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('🗑 ' + t('alertDeleted'), 'success');
+                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
         async function toggleAlert(alertId) {
             try {
                 const data = await apiCall(`/api/alerts/toggle/${alertId}`, { method: 'POST' });
-                if (data.success) { showToast(data.is_active ? '✅ فعال شد' : '❌ غیرفعال شد', 'success'); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast(data.is_active ? '✅ فعال شد' : '❌ غیرفعال شد', 'success');
+                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        function closeAlertModal() { document.getElementById('alertModal').classList.remove('show'); document.getElementById('alertContent').innerHTML = ''; }
+        function closeAlertModal() { document.getElementById('alertModal').classList.remove('show');
+            document.getElementById('alertContent').innerHTML = ''; }
 
         // ============================================================
-        // ADMIN FUNCTIONS (همان‌های قبل)
+        // ADMIN FUNCTIONS
         // ============================================================
         function checkAdminAccess() { if (!isAdmin) { showToast('⛔ ' + t('unauthorized'), 'error'); return false; } return true; }
 
@@ -3965,17 +4661,43 @@
                 if (data.success && data.data && data.data.length > 0) {
                     let html = `<h4 style="margin-bottom:6px;font-size:13px;">${t('adminPending')}</h4>`;
                     data.data.forEach(ad => {
-                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:12px;">#${ad.id} - ${ad.title}</div><div style="font-size:10px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'}</div></div><div style="display:flex;gap:2px;"><button onclick="adminApproveAd(${ad.id})" style="background:var(--green);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">✅</button><button onclick="adminRejectAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">❌</button><button onclick="adminSpecialAd(${ad.id})" style="background:var(--gold);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">⭐</button><button onclick="adminDeleteAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">🗑</button></div></div></div>`;
+                        html +=
+                            `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:12px;">#${ad.id} - ${ad.title}</div><div style="font-size:10px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'}</div></div><div style="display:flex;gap:2px;"><button onclick="adminApproveAd(${ad.id})" style="background:var(--green);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">✅</button><button onclick="adminRejectAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">❌</button><button onclick="adminSpecialAd(${ad.id})" style="background:var(--gold);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">⭐</button><button onclick="adminDeleteAd(${ad.id})" style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 6px;font-size:10px;border:none;cursor:pointer;">🗑</button></div></div></div>`;
                     });
                     container.innerHTML = html;
                 } else { container.innerHTML = `<div class="text-secondary">${t('noPending')}</div>`; }
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('adApproved'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminRejectAd(adId) { if (!checkAdminAccess()) return; const reason = prompt('📝 دلیل رد:'); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/ad/reject', { method: 'POST', body: JSON.stringify({ adId, reason }) }); if (data.success) { showToast('❌ ' + t('adRejected'), 'warning'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); adminAllAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return; try { const data = await apiCall('/api/admin/ad/special', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(data.data.is_special ? t('specialToggleSuccess') : t('specialToggleRemove'), 'success'); adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return;
+            try { const data = await apiCall('/api/admin/ad/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (
+                    data.success) { showToast('✅ ' + t('adApproved'), 'success');
+                    adminPendingAds();
+                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminRejectAd(adId) { if (!checkAdminAccess()) return;
+            const reason = prompt('📝 دلیل رد:'); if (reason === null) return; if (!reason.trim()) { showToast(
+                    'لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall(
+                    '/api/admin/ad/reject', { method: 'POST', body: JSON.stringify({ adId, reason }) }); if (data
+                    .success) { showToast('❌ ' + t('adRejected'), 'warning');
+                    adminPendingAds();
+                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return;
+            try { const data = await apiCall('/api/admin/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) }); if (
+                    data.success) { showToast('🗑 ' + t('adDeleted'), 'success');
+                    adminAllAds();
+                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return;
+            try { const data = await apiCall('/api/admin/ad/special', { method: 'POST', body: JSON.stringify({ adId }) }); if (
+                    data.success) { showToast(data.data.is_special ? t('specialToggleSuccess') : t(
+                        'specialToggleRemove'), 'success');
+                    adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
 
         async function adminAllAds() {
             if (!checkAdminAccess()) return;
@@ -3986,9 +4708,11 @@
                 if (data.success && data.data && data.data.length > 0) {
                     let html = `<h4 style="margin-bottom:6px;font-size:13px;">${t('adminAll')} (${data.data.length})</h4>`;
                     data.data.forEach(ad => {
-                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ? '⏳' : '❌';
+                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ?
+                            '⏳' : '❌';
                         const specialEmoji = ad.is_special ? '⭐ ' : '';
-                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:3px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:11px;">${statusEmoji} ${specialEmoji}#${ad.id} - ${ad.title}</div><div style="font-size:9px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'} • 📊 ${ad.status}</div></div><div style="display:flex;gap:2px;"><button onclick="adminViewAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;">👁</button><button onclick="adminDeleteAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;color:var(--primary);">🗑</button></div></div></div>`;
+                        html +=
+                            `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:3px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:11px;">${statusEmoji} ${specialEmoji}#${ad.id} - ${ad.title}</div><div style="font-size:9px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'} • 📊 ${ad.status}</div></div><div style="display:flex;gap:2px;"><button onclick="adminViewAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;">👁</button><button onclick="adminDeleteAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;color:var(--primary);">🗑</button></div></div></div>`;
                     });
                     container.innerHTML = html;
                 } else { container.innerHTML = `<div class="text-secondary">${t('noAdsFound')}</div>`; }
@@ -4034,11 +4758,51 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminBlockUser(userId) { if (!checkAdminAccess()) return; const reason = prompt(t('enterBlockReason')); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data.success) { showToast('✅ ' + t('userBlockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminUnblockUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('unblockConfirm'))) return; try { const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) }); if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm'))) return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) }); if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminSendPrivateMsg(userId) { const subject = prompt('📝 ' + t('messageSubject') + ':'); if (subject === null) return; if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; } const body = prompt('📝 ' + t('messageBody') + ':'); if (body === null) return; if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId, message: `${subject}\n\n${body}` }) }); if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); } } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); } }
-        async function adminSetRole(userId) { if (!checkAdminAccess()) return; const role = prompt(t('enterRole') + '\n( super_admin, admin, admin_ads, admin_tickets, admin_monitor, user )'); if (role === null) return; const validRoles = ['super_admin','admin','admin_ads','admin_tickets','admin_monitor','user']; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data = await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId, role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminBlockUser(userId) { if (!checkAdminAccess()) return;
+            const reason = prompt(t('enterBlockReason')); if (reason === null) return; if (!reason.trim()) { showToast(
+                    'لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall(
+                    '/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data
+                    .success) { showToast('✅ ' + t('userBlockedSuccess'), 'success');
+                    adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminUnblockUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('unblockConfirm')))
+            return; try { const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) });
+            if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success');
+                adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm')))
+            return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) });
+            if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success');
+                adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminSendPrivateMsg(userId) {
+            const subject = prompt('📝 ' + t('messageSubject') + ':');
+            if (subject === null) return;
+            if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; }
+            const body = prompt('📝 ' + t('messageBody') + ':');
+            if (body === null) return;
+            if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; }
+            try {
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId,
+                        message: `${subject}\n\n${body}` }) });
+                if (data.success) { showToast('✅ ' + t('messageSent'), 'success');
+                    adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
+            } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
+        }
+
+        async function adminSetRole(userId) { if (!checkAdminAccess()) return;
+            const role = prompt(t('enterRole') + '\n( super_admin, admin, admin_ads, admin_tickets, admin_monitor, user )');
+            if (role === null) return; const validRoles = ['super_admin', 'admin', 'admin_ads', 'admin_tickets',
+                'admin_monitor', 'user'
+            ]; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data =
+                    await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId,
+                            role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'),
+                        'success');
+                    adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
 
         async function adminAdmins() {
             if (!checkAdminAccess()) return;
@@ -4049,7 +4813,8 @@
                 if (data.success && data.data && data.data.length > 0) {
                     let html = `<h4 style="font-size:13px;">👑 ${t('adminAdmins')}</h4>`;
                     data.data.forEach(a => {
-                        html += `<div class="admin-user-row"><div class="user-info"><span><strong>${a.first_name || a.phone || 'ادمین'}</strong></span><span>🆔 ${a.telegram_id || a.phone}</span><span>👑 ${a.role || 'admin'}</span></div></div>`;
+                        html +=
+                            `<div class="admin-user-row"><div class="user-info"><span><strong>${a.first_name || a.phone || 'ادمین'}</strong></span><span>🆔 ${a.telegram_id || a.phone}</span><span>👑 ${a.role || 'admin'}</span></div></div>`;
                     });
                     container.innerHTML = html;
                 } else { container.innerHTML = `<div class="text-secondary">${t('userNotFound')}</div>`; }
@@ -4085,7 +4850,8 @@
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/admin/delete-old-ads', { method: 'POST', body: JSON.stringify({ days: 30 }) });
-                if (data.success) { showToast('✅ ' + t('oldAdsDeleted'), 'success'); adminStats(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('✅ ' + t('oldAdsDeleted'), 'success');
+                    adminStats(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -4098,35 +4864,236 @@
                 if (data.success && data.data && data.data.length > 0) {
                     let html = `<h4 style="font-size:13px;">✏️ ${t('adminEditRequests')}</h4>`;
                     data.data.forEach(req => {
-                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="font-weight:600;font-size:12px;">#${req.adId} - ${req.userId}</div><div style="font-size:11px;color:var(--text-secondary);">عنوان جدید: ${req.changes.title || 'بدون تغییر'}</div><div style="font-size:11px;color:var(--text-secondary);">قیمت جدید: ${req.changes.price || 'بدون تغییر'}</div><div style="display:flex;gap:4px;margin-top:4px;"><button onclick="adminApproveEdit(${req.adId})" class="btn btn-sm btn-success">✅ ${t('editApproved')}</button><button onclick="adminRejectEdit(${req.adId})" class="btn btn-sm btn-danger">❌ ${t('editRejected')}</button></div></div>`;
+                        html +=
+                            `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div style="font-weight:600;font-size:12px;">#${req.adId} - ${req.userId}</div><div style="font-size:11px;color:var(--text-secondary);">عنوان جدید: ${req.changes.title || 'بدون تغییر'}</div><div style="font-size:11px;color:var(--text-secondary);">قیمت جدید: ${req.changes.price || 'بدون تغییر'}</div><div style="display:flex;gap:4px;margin-top:4px;"><button onclick="adminApproveEdit(${req.adId})" class="btn btn-sm btn-success">✅ ${t('editApproved')}</button><button onclick="adminRejectEdit(${req.adId})" class="btn btn-sm btn-danger">❌ ${t('editRejected')}</button></div></div>`;
                     });
                     container.innerHTML = html;
                 } else { container.innerHTML = `<div class="text-secondary">${t('noEditRequests')}</div>`; }
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('editApproved'), 'success'); adminEditRequests(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/reject', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('❌ ' + t('editRejected'), 'success'); adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(
+                    '/api/admin/edit/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(
+                        '✅ ' + t('editApproved'), 'success');
+                    adminEditRequests();
+                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
 
+        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(
+                    '/api/admin/edit/reject', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(
+                        '❌ ' + t('editRejected'), 'success');
+                    adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        // ============================================================
+        // ADMIN: مدیریت چت‌ها (کامل)
+        // ============================================================
         async function adminChats() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            container.innerHTML = `
+                <h4 style="font-size:13px;margin-bottom:6px;">📋 ${t('chatManagementTitle')}</h4>
+                <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+                    <input type="text" id="adminChatSearch" placeholder="${t('chatSearchPlaceholder')}" style="flex:1;min-width:150px;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--input);color:var(--text);font-size:12px;">
+                    <button onclick="adminChatSearch()" class="btn btn-sm btn-success">${t('chatSearchBtn')}</button>
+                    <button onclick="adminChatClearSearch()" class="btn btn-sm btn-outline">${t('chatClearSearch')}</button>
+                    <button onclick="adminBackupAllChats()" class="btn btn-sm btn-primary" style="background:var(--blue);color:#fff;">${t('chatBackupAll')}</button>
+                    <button onclick="adminRestoreChatPrompt()" class="btn btn-sm btn-outline">♻️ ${t('restoreChat')}</button>
+                </div>
+                <div id="adminChatsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+            `;
+            await adminChatsLoad();
+        }
+
+        async function adminChatsLoad() {
+            const listContainer = document.getElementById('adminChatsList');
+            if (!listContainer) return;
+            listContainer.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/admin/chat/all');
                 if (data.success && data.data && data.data.length > 0) {
-                    let html = `<h4 style="font-size:13px;">💬 ${t('adminChats')}</h4>`;
+                    listContainer.innerHTML = '';
                     data.data.forEach(chat => {
-                        html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${chat.id}</strong> - ${chat.user1} ↔ ${chat.user2}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(chat.created_at)}</div><div style="display:flex;gap:4px;"><button onclick="adminBackupChat('${chat.id}')" class="btn btn-sm btn-outline">💾 ${t('backupChat')}</button><button onclick="adminRestoreChat()" class="btn btn-sm btn-outline">♻️ ${t('restoreChat')}</button></div></div>`;
+                        const user1 = chat.user1_info || {};
+                        const user2 = chat.user2_info || {};
+                        const name1 = user1.first_name || user1.phone || chat.user1 || 'کاربر';
+                        const name2 = user2.first_name || user2.phone || chat.user2 || 'کاربر';
+                        const lastMsg = chat.last_message || 'هیچ پیامی وجود ندارد';
+                        const time = chat.last_message_time ? formatTime(chat.last_message_time) : '';
+                        const div = document.createElement('div');
+                        div.className = 'chat-admin-item';
+                        div.innerHTML = `
+                            <div class="chat-admin-header">
+                                <span class="chat-admin-users">💬 ${name1} ↔ ${name2}</span>
+                                <span style="font-size:10px;color:var(--text-muted);">${time}</span>
+                            </div>
+                            <div style="font-size:11px;color:var(--text-secondary);margin:2px 0;">${lastMsg}</div>
+                            <div class="chat-admin-meta">
+                                🆔 ${chat.id} • ${t('chatParticipants')}: ${chat.user1} | ${chat.user2}
+                                • ${t('chatMessagesCount')}: ${chat.messages_count || 0}
+                                • ${t('chatCreatedAt')}: ${new Date(chat.created_at * 1000).toLocaleDateString('fa-IR')}
+                            </div>
+                            <div class="chat-admin-actions">
+                                <button class="btn-view" onclick="adminViewChat('${chat.id}')">${t('chatView')}</button>
+                                <button class="btn-backup" onclick="adminBackupChat('${chat.id}')">${t('backupChat')}</button>
+                                <button class="btn-delete" onclick="adminDeleteChat('${chat.id}')">${t('delete')}</button>
+                            </div>
+                        `;
+                        listContainer.appendChild(div);
                     });
-                    container.innerHTML = html;
-                } else { container.innerHTML = `<div class="text-secondary">${t('noChats')}</div>`; }
-            } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
+                } else {
+                    listContainer.innerHTML = `<div class="text-secondary">${t('noChatsFound')}</div>`;
+                }
+            } catch (err) {
+                listContainer.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`;
+            }
         }
 
-        async function adminBackupChat(threadId) { try { const data = await apiCall('/api/admin/chat/backup', { method: 'POST', body: JSON.stringify({ threadId }) }); if (data.success) { showToast('✅ ' + t('chatBackupSuccess'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminRestoreChat() { const backupKey = prompt(t('chatRestorePrompt')); if (!backupKey) return; try { const data = await apiCall('/api/admin/chat/restore', { method: 'POST', body: JSON.stringify({ backupKey }) }); if (data.success) { showToast('✅ ' + t('chatRestoreSuccess'), 'success'); adminChats(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminChatSearch() {
+            const query = document.getElementById('adminChatSearch')?.value.trim();
+            if (!query) { adminChatsLoad(); return; }
+            const listContainer = document.getElementById('adminChatsList');
+            if (!listContainer) return;
+            listContainer.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall(`/api/admin/chat/search?q=${encodeURIComponent(query)}`);
+                if (data.success && data.data && data.data.length > 0) {
+                    listContainer.innerHTML = '';
+                    data.data.forEach(chat => {
+                        const user1 = chat.user1_info || {};
+                        const user2 = chat.user2_info || {};
+                        const name1 = user1.first_name || user1.phone || chat.user1 || 'کاربر';
+                        const name2 = user2.first_name || user2.phone || chat.user2 || 'کاربر';
+                        const lastMsg = chat.last_message || 'هیچ پیامی وجود ندارد';
+                        const time = chat.last_message_time ? formatTime(chat.last_message_time) : '';
+                        const div = document.createElement('div');
+                        div.className = 'chat-admin-item';
+                        div.innerHTML = `
+                            <div class="chat-admin-header">
+                                <span class="chat-admin-users">💬 ${name1} ↔ ${name2}</span>
+                                <span style="font-size:10px;color:var(--text-muted);">${time}</span>
+                            </div>
+                            <div style="font-size:11px;color:var(--text-secondary);margin:2px 0;">${lastMsg}</div>
+                            <div class="chat-admin-meta">
+                                🆔 ${chat.id} • ${t('chatParticipants')}: ${chat.user1} | ${chat.user2}
+                                • ${t('chatMessagesCount')}: ${chat.messages_count || 0}
+                                • ${t('chatCreatedAt')}: ${new Date(chat.created_at * 1000).toLocaleDateString('fa-IR')}
+                            </div>
+                            <div class="chat-admin-actions">
+                                <button class="btn-view" onclick="adminViewChat('${chat.id}')">${t('chatView')}</button>
+                                <button class="btn-backup" onclick="adminBackupChat('${chat.id}')">${t('backupChat')}</button>
+                                <button class="btn-delete" onclick="adminDeleteChat('${chat.id}')">${t('delete')}</button>
+                            </div>
+                        `;
+                        listContainer.appendChild(div);
+                    });
+                } else {
+                    listContainer.innerHTML = `<div class="text-secondary">${t('noChatsFound')}</div>`;
+                }
+            } catch (err) {
+                listContainer.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`;
+            }
+        }
 
+        function adminChatClearSearch() {
+            const input = document.getElementById('adminChatSearch');
+            if (input) input.value = '';
+            adminChatsLoad();
+        }
+
+        async function adminViewChat(threadId) {
+            if (!checkAdminAccess()) return;
+            try {
+                const data = await apiCall(`/api/chat/messages?threadId=${threadId}`);
+                if (!data.success) { showToast(t('chatNotFound'), 'error'); return; }
+                const messages = data.data || [];
+                const thread = data.thread || {};
+                const user1 = await getUser(thread.user1);
+                const user2 = await getUser(thread.user2);
+                const name1 = user1?.first_name || user1?.phone || thread.user1;
+                const name2 = user2?.first_name || user2?.phone || thread.user2;
+
+                let msgText = `📋 ${t('chatDetails')}\n\n`;
+                msgText += `👥 ${t('chatParticipants')}: ${name1} ↔ ${name2}\n`;
+                msgText += `🆔 ${thread.id}\n`;
+                msgText += `📅 ${t('chatCreatedAt')}: ${new Date(thread.created_at * 1000).toLocaleDateString('fa-IR')}\n`;
+                msgText += `📨 ${t('chatMessagesCount')}: ${messages.length}\n\n`;
+                msgText += `📝 ${t('chatLastMessage')}: ${thread.last_message || 'هیچ پیامی وجود ندارد'}\n\n`;
+
+                if (messages.length > 0) {
+                    msgText += '💬 پیام‌ها:\n\n';
+                    const last20 = messages.slice(-20);
+                    last20.forEach(m => {
+                        const sender = m.sender_id === thread.user1 ? name1 : name2;
+                        const time = new Date(m.timestamp * 1000).toLocaleTimeString('fa-IR');
+                        msgText += `👤 ${sender}: ${m.message}\n⏱ ${time}\n\n`;
+                    });
+                    if (messages.length > 20) msgText += `... و ${messages.length - 20} پیام دیگر\n`;
+                } else {
+                    msgText += '📭 هیچ پیامی در این چت وجود ندارد.';
+                }
+
+                const container = document.getElementById('adminResult');
+                container.innerHTML = `
+                    <div style="background:var(--input);border:1px solid var(--border);border-radius:var(--radius);padding:12px;max-height:60vh;overflow-y:auto;white-space:pre-wrap;font-size:12px;direction:ltr;text-align:left;font-family:monospace;">
+                        ${msgText}
+                    </div>
+                    <button onclick="adminChats()" style="margin-top:8px;padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;">🔙 بازگشت به لیست چت‌ها</button>
+                `;
+            } catch (err) {
+                showToast('❌ ' + t('networkError'), 'error');
+            }
+        }
+
+        async function adminDeleteChat(threadId) {
+            if (!checkAdminAccess()) return;
+            if (!confirm(t('chatDeleteConfirm'))) return;
+            try {
+                const data = await apiCall(`/api/admin/chat/delete?threadId=${threadId}`, { method: 'DELETE' });
+                if (data.success) { showToast('✅ ' + t('chatDeleted'), 'success');
+                    adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        async function adminBackupChat(threadId) {
+            if (!checkAdminAccess()) return;
+            try {
+                const data = await apiCall('/api/admin/chat/backup', { method: 'POST', body: JSON.stringify({ threadId }) });
+                if (data.success) {
+                    showToast('✅ ' + t('backupSuccess') + ' - کد: ' + data.backupKey, 'success');
+                } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        async function adminBackupAllChats() {
+            if (!checkAdminAccess()) return;
+            try {
+                const data = await apiCall('/api/admin/chat/backup/all', { method: 'POST' });
+                if (data.success) {
+                    showToast('✅ ' + t('backupSuccess') + ' - ' + data.count + ' چت', 'success');
+                } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        function adminRestoreChatPrompt() {
+            if (!checkAdminAccess()) return;
+            const key = prompt(t('chatRestorePrompt'));
+            if (!key) return;
+            adminRestoreChat(key);
+        }
+
+        async function adminRestoreChat(backupKey) {
+            if (!checkAdminAccess()) return;
+            try {
+                const data = await apiCall('/api/admin/chat/restore', { method: 'POST', body: JSON.stringify({ backupKey }) });
+                if (data.success) { showToast('✅ ' + t('restoreSuccess'), 'success');
+                    adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
+        }
+
+        // ============================================================
+        // ADMIN: سایر توابع
+        // ============================================================
         async function adminBanners() {
             if (!checkAdminAccess()) return;
             const container = document.getElementById('adminResult');
@@ -4174,26 +5141,101 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminAddBanner() { const title = document.getElementById('bannerTitle').value.trim(); const link = document.getElementById('bannerLink').value.trim(); if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, type: 'inline' }) }); if (data.success) { showToast('✅ ' + t('bannerAddSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminAddSplash() { const title = document.getElementById('bannerTitle').value.trim() || 'اسپلش'; const link = document.getElementById('bannerLink').value.trim() || ''; const fileInput = document.getElementById('bannerImageInput'); if (!fileInput.files || fileInput.files.length === 0) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; } const file = fileInput.files[0]; if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; } try { const formData = new FormData(); formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData }); const uploadResult = await uploadRes.json(); if (!uploadResult.success || !uploadResult.file_id) { showToast('خطا در آپلود تصویر', 'error'); return; } const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t('splashAddSuccess'), 'success'); adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminToggleBanner(bannerId) { try { const data = await apiCall('/api/admin/banner/toggle', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
-        async function adminDeleteBanner(bannerId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/banner/delete', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('🗑 ' + t('bannerDeleteSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminAddBanner() { const title = document.getElementById('bannerTitle').value.trim(); const link =
+                document.getElementById('bannerLink').value.trim(); if (!title) { showToast('لطفاً عنوان را وارد کنید',
+                'warning'); return; } try { const data = await apiCall('/api/admin/banner/add', { method: 'POST',
+                    body: JSON.stringify({ title, link, type: 'inline' }) }); if (data.success) { showToast('✅ ' + t(
+                        'bannerAddSuccess'), 'success');
+                    adminBanners();
+                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
 
-        function adminAnnounce() { if (!checkAdminAccess()) return; document.getElementById('adminResult').innerHTML = `
+        async function adminAddSplash() { const title = document.getElementById('bannerTitle').value.trim() || 'اسپلش';
+            const link = document.getElementById('bannerLink').value.trim() || ''; const fileInput = document.getElementById(
+                'bannerImageInput'); if (!fileInput.files || fileInput.files.length === 0) { showToast(
+                    'لطفاً تصویر را انتخاب کنید', 'warning'); return; } const file = fileInput.files[0]; if (file.size > 5 *
+                1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; } try { const formData =
+                    new FormData();
+                formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST',
+                        body: formData }); const uploadResult = await uploadRes.json(); if (!uploadResult.success || !
+                    uploadResult.file_id) { showToast('خطا در آپلود تصویر', 'error'); return; } const data = await apiCall(
+                    '/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link,
+                        image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t(
+                        'splashAddSuccess'), 'success');
+                    adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminToggleBanner(bannerId) { try { const data = await apiCall('/api/admin/banner/toggle', { method: 'POST',
+                    body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'),
+                        'success');
+                    adminBanners();
+                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminDeleteBanner(bannerId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(
+                    '/api/admin/banner/delete', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) {
+                    showToast('🗑 ' + t('bannerDeleteSuccess'), 'success');
+                    adminBanners();
+                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        function adminAnnounce() { if (!checkAdminAccess()) return;
+            document.getElementById('adminResult').innerHTML = `
                 <h4 style="font-size:13px;">📢 ${t('adminAnnounce')}</h4>
                 <div class="admin-row"><input type="text" id="announceTitle" placeholder="${t('announceTitle')}"></div>
                 <div class="admin-row"><textarea id="announceMessage" rows="2" placeholder="${t('announceMessage')}"></textarea></div>
                 <button onclick="adminSendAnnounce()" class="btn btn-sm">${t('announceSend')}</button>
             `; }
-        async function adminSendAnnounce() { const title = document.getElementById('announceTitle').value.trim(); const message = document.getElementById('announceMessage').value.trim(); if (!title || !message) { showToast('لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message, target: 'all' }) }); if (data.success) { showToast('✅ ' + t('announceSent'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/sessions'); if (data.success && data.data && data.data.length > 0) { let html = `<h4 style="font-size:13px;">💻 ${t('adminSessions')}</h4>`; data.data.forEach(sess => { html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${sess.userId}</strong> - ${sess.device || 'نامشخص'}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(sess.created_at)}</div><button onclick="adminRevokeSession('${sess.id}')" class="btn btn-sm btn-danger">${t('sessionRevoke')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
-        async function adminRevokeSession(sessionId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/session/revoke', { method: 'POST', body: JSON.stringify({ sessionId }) }); if (data.success) { showToast('✅ ' + t('sessionRevoked'), 'success'); adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSendAnnounce() { const title = document.getElementById('announceTitle').value.trim(); const message =
+                document.getElementById('announceMessage').value.trim(); if (!title || !message) { showToast(
+                    'لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall(
+                    '/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message, target: 'all' }) }); if (
+                    data.success) { showToast('✅ ' + t('announceSent'), 'success'); } else { showToast('❌ ' + t(
+                        'unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/settings'); if (data.success) { const s = data.data || {}; let html = `<h4 style="font-size:13px;">⚙️ ${t('adminSettings')}</h4>`; const toggles = [ {key:'support',label:t('toggleSupport')}, {key:'whatsapp',label:t('toggleWhatsapp')}, {key:'phone',label:t('togglePhone')}, {key:'telegram',label:t('toggleTelegram')}, {key:'email',label:t('toggleEmail')}, {key:'ads',label:t('toggleAds')}, {key:'banners',label:t('toggleBanners')}, {key:'splash',label:t('toggleSplash')} ]; toggles.forEach(toggle => { const isEnabled = s[toggle.key] !== false; html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span>${toggle.label}</span><button onclick="adminToggleSetting('${toggle.key}')" class="btn btn-sm ${isEnabled ? 'btn-success' : 'btn-danger'}">${isEnabled ? t('enabled') : t('disabled')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
-        async function adminToggleSetting(key) { try { const data = await apiCall('/api/admin/toggle', { method: 'POST', body: JSON.stringify({ key }) }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success'); adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById(
+                'adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
+                    await apiCall('/api/admin/sessions'); if (data.success && data.data && data.data.length > 0) { let html =
+                        `<h4 style="font-size:13px;">💻 ${t('adminSessions')}</h4>`; data.data.forEach(sess => { html +=
+                            `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${sess.userId}</strong> - ${sess.device || 'نامشخص'}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(sess.created_at)}</div><button onclick="adminRevokeSession('${sess.id}')" class="btn btn-sm btn-danger">${t('sessionRevoke')}</button></div>`; });
+                    container.innerHTML = html; } else { container.innerHTML =
+                        `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML =
+                        `<div class="text-secondary">${t('networkError')}</div>`; } }
 
-        function openSendMessageModal() { if (!checkAdminAccess()) return; const modal = document.getElementById('sendMessageModal'); const content = document.getElementById('sendMessageContent'); content.innerHTML = `
+        async function adminRevokeSession(sessionId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(
+                    '/api/admin/session/revoke', { method: 'POST', body: JSON.stringify({ sessionId }) }); if (data.success) {
+                    showToast('✅ ' + t('sessionRevoked'), 'success');
+                    adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById(
+                'adminResult');
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
+                    await apiCall('/api/admin/settings'); if (data.success) { const s = data.data || {}; let html =
+                        `<h4 style="font-size:13px;">⚙️ ${t('adminSettings')}</h4>`; const toggles = [
+                        { key: 'support', label: t('toggleSupport') },
+                        { key: 'whatsapp', label: t('toggleWhatsapp') },
+                        { key: 'phone', label: t('togglePhone') },
+                        { key: 'telegram', label: t('toggleTelegram') },
+                        { key: 'email', label: t('toggleEmail') },
+                        { key: 'ads', label: t('toggleAds') },
+                        { key: 'banners', label: t('toggleBanners') },
+                        { key: 'splash', label: t('toggleSplash') }
+                    ]; toggles.forEach(toggle => { const isEnabled = s[toggle.key] !== false; html +=
+                            `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span>${toggle.label}</span><button onclick="adminToggleSetting('${toggle.key}')" class="btn btn-sm ${isEnabled ? 'btn-success' : 'btn-danger'}">${isEnabled ? t('enabled') : t('disabled')}</button></div>`; });
+                    container.innerHTML = html; } else { container.innerHTML =
+                        `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML =
+                        `<div class="text-secondary">${t('networkError')}</div>`; } }
+
+        async function adminToggleSetting(key) { try { const data = await apiCall('/api/admin/toggle', { method: 'POST',
+                    body: JSON.stringify({ key }) }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success');
+                    adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
+                    '❌ ' + t('unknownError'), 'error'); } }
+
+        function openSendMessageModal() { if (!checkAdminAccess()) return; const modal = document.getElementById(
+                'sendMessageModal'); const content = document.getElementById('sendMessageContent'); content.innerHTML = `
                     <div class="modal-title">📨 ${t('adminSendMsg')}</div>
                     <div class="form-group"><label>${t('recipient')}</label>
                         <select id="msgTarget">
@@ -4210,9 +5252,11 @@
                 `;
             modal.classList.add('show');
             document.getElementById('msgTarget').addEventListener('change', function() {
-                document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' : 'none';
+                document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' :
+                    'none';
             });
         }
+
         function closeSendMessageModal() { document.getElementById('sendMessageModal').classList.remove('show'); }
 
         async function sendSystemMessage() {
@@ -4223,8 +5267,10 @@
             if (!subject || !body) { showToast('لطفاً موضوع و متن را وارد کنید', 'warning'); return; }
             if (target === 'specific' && !userId) { showToast('لطفاً شناسه کاربر را وارد کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ target, userId, subject, body }) });
-                if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ target,
+                        userId, subject, body }) });
+                if (data.success) { showToast('✅ ' + t('messageSent'), 'success');
+                    closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
         }
 
@@ -4240,24 +5286,54 @@
             document.getElementById('app').style.display = 'none';
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('show'));
 
-            if (tab === 'home') { document.getElementById('app').style.display = 'block'; }
-            else if (tab === 'profile') { document.getElementById('profileTab').classList.add('show'); loadProfile(); fetchMyAds(); fetchMyReviews(); updateVerificationUI(); }
-            else if (tab === 'favorites') { document.getElementById('favoritesTab').classList.add('show'); fetchFavorites(); }
-            else if (tab === 'myads') { document.getElementById('myadsTab').classList.add('show'); fetchMyAds(); }
-            else if (tab === 'myreviews') { document.getElementById('myreviewsTab').classList.add('show'); fetchMyReviews(); }
-            else if (tab === 'inbox') { document.getElementById('inboxTab').classList.add('show'); fetchInbox(); }
-            else if (tab === 'rules') { document.getElementById('rulesTab').classList.add('show'); loadRules(); }
-            else if (tab === 'support') { document.getElementById('supportTab').classList.add('show'); loadSupport(); }
-            else if (tab === 'about') { document.getElementById('aboutTab').classList.add('show'); }
-            else if (tab === 'guide') { document.getElementById('guideTab').classList.add('show'); }
-            else if (tab === 'news') { document.getElementById('newsTab').classList.add('show'); }
-            else if (tab === 'tickets') { document.getElementById('ticketsTab').classList.add('show'); loadTickets(); }
-            else if (tab === 'chat') { document.getElementById('chatTab').classList.add('show'); loadChatThreads(); }
-            else if (tab === 'alerts') { document.getElementById('alertsTab').classList.add('show'); loadAlerts(); }
-            else if (tab === 'admin') {
+            if (tab === 'home') { document.getElementById('app').style.display = 'block'; } else if (tab === 'profile') {
+                document.getElementById('profileTab').classList.add('show');
+                loadProfile();
+                fetchMyAds();
+                fetchMyReviews();
+                updateVerificationUI();
+            } else if (tab === 'favorites') {
+                document.getElementById('favoritesTab').classList.add('show');
+                fetchFavorites();
+            } else if (tab === 'myads') {
+                document.getElementById('myadsTab').classList.add('show');
+                fetchMyAds();
+            } else if (tab === 'myreviews') {
+                document.getElementById('myreviewsTab').classList.add('show');
+                fetchMyReviews();
+            } else if (tab === 'inbox') {
+                document.getElementById('inboxTab').classList.add('show');
+                fetchInbox();
+            } else if (tab === 'rules') {
+                document.getElementById('rulesTab').classList.add('show');
+                loadRules();
+            } else if (tab === 'support') {
+                document.getElementById('supportTab').classList.add('show');
+                loadSupport();
+            } else if (tab === 'about') {
+                document.getElementById('aboutTab').classList.add('show');
+            } else if (tab === 'guide') {
+                document.getElementById('guideTab').classList.add('show');
+            } else if (tab === 'news') {
+                document.getElementById('newsTab').classList.add('show');
+            } else if (tab === 'tickets') {
+                document.getElementById('ticketsTab').classList.add('show');
+                loadTickets();
+            } else if (tab === 'chat') {
+                document.getElementById('chatTab').classList.add('show');
+                loadChatThreads();
+            } else if (tab === 'alerts') {
+                document.getElementById('alertsTab').classList.add('show');
+                loadAlerts();
+            } else if (tab === 'admin') {
                 document.getElementById('adminTab').classList.add('show');
-                if (isAdmin) { document.getElementById('adminResult').innerHTML = `<div class="text-secondary">${t('adminResult')}</div>`; }
-                else { showToast('⛔ ' + t('unauthorized'), 'error'); switchTab('home'); }
+                if (isAdmin) {
+                    document.getElementById('adminResult').innerHTML =
+                        `<div class="text-secondary">${t('adminResult')}</div>`;
+                } else {
+                    showToast('⛔ ' + t('unauthorized'), 'error');
+                    switchTab('home');
+                }
             }
             document.getElementById('supportDropdownMenu').classList.remove('show');
         }
@@ -4276,7 +5352,8 @@
 
         authCheck();
 
-        if (token && isUserVerified()) { loadApp(); } else { document.getElementById('authSection').classList.remove('hidden'); document.getElementById('app').classList.add('hidden'); }
+        if (token && isUserVerified()) { loadApp(); } else { document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden'); }
 
         async function loadApp() {
             try {
@@ -4303,9 +5380,10 @@
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
         console.log(`👑 ادمین: ${isAdmin ? '✅' : '❌'}`);
         console.log(`🌐 زبان: ${currentLang}`);
-        console.log('✅ چت‌ها به‌صورت پیام‌رسان با پولینگ ۳ ثانیه‌ای');
-        console.log('✅ تیکت‌ها با ارسال و دریافت فعال');
+        console.log('✅ چت به‌سبک واتساپ/روبیکا با پولینگ هوشمند');
+        console.log('✅ حذف کامل چت ناشناس و جایگزینی با چت داخلی');
+        console.log('✅ مدیریت چت‌ها با جستجو، حذف و بک‌آپ');
         console.log('✅ همه بخش‌ها با Worker هماهنگ شده‌اند.');
     </script>
 </body>
-    </html>
+                                                                                                                    </html>
