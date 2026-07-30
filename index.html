@@ -2053,6 +2053,48 @@
             gap: 4px;
         }
 
+        /* ===== IMAGE PREVIEW (اصلاح شده برای نمایش کوچک و مرتب) ===== */
+        .image-preview-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--input);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-preview-item img,
+        .image-preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-preview-item .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 5;
+        }
+        .image-preview-item .remove-img:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
         /* ===== اضافات خرید در صفحه ===== */
         .payment-modal .modal-box {
             max-width: 500px;
@@ -2200,14 +2242,20 @@
         <div class="categories-scroll" id="categoriesContainer"></div>
         <div id="bannerAdsContainer"></div>
 
-        <!-- بخش خرید VIP و ویژه (در صفحه) -->
+        <!-- بخش خرید VIP و ویژه (در صفحه) - نسخه اصلاح شده -->
         <div class="buy-section">
-            <div class="buy-title">👑 خرید اشتراک ویژه (VIP)</div>
+            <div class="buy-title">👑 خرید اشتراک ویژه (VIP) &amp; تبلیغات</div>
             <div class="buy-desc">با خرید اشتراک ویژه، آگهی‌های شما در بالای لیست نمایش داده می‌شوند و امتیاز بیشتری دریافت می‌کنید.</div>
             <div class="buy-row">
-                <button class="btn-vip" onclick="openVipPurchaseUI(1)">۱ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(3)">۳ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(6)">۶ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(1)">👑 ۱ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(3)">👑 ۳ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(6)">👑 ۶ ماهه</button>
+                <button class="btn-special" onclick="openSplashPurchaseUI()" style="background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;">📱 اسپلش</button>
+                <button class="btn-special" onclick="openBannerPurchaseUI()" style="background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;">📢 بنر</button>
+            </div>
+            <!-- وضعیت ظرفیت روزانه -->
+            <div id="dailySlotsInfo" style="font-size:11px;color:var(--text-secondary);margin-top:8px;text-align:center;padding:6px;border:1px solid var(--border);border-radius:var(--radius);">
+                ⏳ در حال دریافت اطلاعات ظرفیت روزانه...
             </div>
             <div class="buy-desc mt-10">⭐ برای ویژه کردن آگهی، پس از ثبت آگهی از دکمه "ویژه" استفاده کنید.</div>
         </div>
@@ -2275,13 +2323,19 @@
             </div>
         </div>
 
+        <!-- بخش خرید در پروفایل اصلاح شده -->
         <div class="buy-section">
-            <div class="buy-title">👑 خرید اشتراک ویژه</div>
+            <div class="buy-title">👑 خرید اشتراک ویژه (VIP) &amp; تبلیغات</div>
             <div class="buy-desc">با خرید اشتراک ویژه، آگهی‌های شما در بالای لیست نمایش داده می‌شوند.</div>
             <div class="buy-row">
-                <button class="btn-vip" onclick="openVipPurchaseUI(1)">۱ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(3)">۳ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(6)">۶ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(1)">👑 ۱ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(3)">👑 ۳ ماهه</button>
+                <button class="btn-vip" onclick="openVipPurchaseUI(6)">👑 ۶ ماهه</button>
+                <button class="btn-special" onclick="openSplashPurchaseUI()" style="background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;">📱 اسپلش</button>
+                <button class="btn-special" onclick="openBannerPurchaseUI()" style="background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;">📢 بنر</button>
+            </div>
+            <div id="dailySlotsInfoProfile" style="font-size:11px;color:var(--text-secondary);margin-top:8px;text-align:center;padding:6px;border:1px solid var(--border);border-radius:var(--radius);">
+                ⏳ در حال دریافت اطلاعات ظرفیت روزانه...
             </div>
         </div>
 
@@ -5911,6 +5965,10 @@
                         statusEl.innerHTML = `✅ ${t('paymentSuccess').replace('{refId}', order.ref_id || '—')}`;
                         statusEl.className = 'payment-status success';
                         showToast('✅ پرداخت با موفقیت انجام شد!', 'success');
+                        // بارگذاری مجدد اطلاعات کاربر و سفارشات
+                        await loadProfile();
+                        await loadOrders();
+                        await loadDailySlots(); // رفرش ظرفیت
                         setTimeout(() => { closePaymentModal();
                             loadOrders(); }, 2000);
                         return true;
@@ -6036,6 +6094,132 @@
         }
 
         // ============================================================
+        // TOOLS & UI - SLOT CHECKS & SPLASH/BANNER
+        // ============================================================
+        async function loadDailySlots() {
+            try {
+                const data = await apiCall('/api/stats');
+                const infoDiv = document.getElementById('dailySlotsInfo');
+                const infoDivProfile = document.getElementById('dailySlotsInfoProfile');
+                if ((infoDiv || infoDivProfile) && data.success) {
+                    const splashLeft = data.splashTotal - data.splashUsed;
+                    const bannerLeft = data.bannerTotal - data.bannerUsed;
+                    const html = `
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>📱 اسپلش امروز: <span style="font-weight:700;color:${splashLeft > 0 ? 'var(--green)' : 'var(--primary)'};">${data.splashUsed}/${data.splashTotal}</span></span>
+                            <span>📢 بنر امروز: <span style="font-weight:700;color:${bannerLeft > 0 ? 'var(--green)' : 'var(--primary)'};">${data.bannerUsed}/${data.bannerTotal}</span></span>
+                        </div>
+                    `;
+                    if (infoDiv) infoDiv.innerHTML = html;
+                    if (infoDivProfile) infoDivProfile.innerHTML = html;
+                }
+            } catch (e) {
+                const infoDiv = document.getElementById('dailySlotsInfo');
+                const infoDivProfile = document.getElementById('dailySlotsInfoProfile');
+                if (infoDiv) infoDiv.innerHTML = '❌ خطا در دریافت ظرفیت.';
+                if (infoDivProfile) infoDivProfile.innerHTML = '❌ خطا در دریافت ظرفیت.';
+            }
+        }
+
+        // باز کردن مودال پرداخت اسپلش
+        async function openSplashPurchaseUI() {
+            const data = await apiCall('/api/stats');
+            if (data.success && data.splashUsed >= data.splashTotal) {
+                showToast('❌ ظرفیت اسپلش امروز تکمیل شده است.', 'error');
+                return;
+            }
+            // استفاده از مودال موجود برای پرداخت (مشابه VIP)
+            const modal = document.getElementById('paymentModal');
+            const content = document.getElementById('paymentContent');
+            content.innerHTML = `
+                <div class="modal-title">📱 خرید اسپلش</div>
+                <div class="payment-info">
+                    <p>⏱ مدت زمان نمایش را انتخاب کنید:</p>
+                    <div class="buy-row">
+                        <button class="btn-vip" onclick="initiateGenericPayment('splash', 1)">۱ روز</button>
+                        <button class="btn-vip" onclick="initiateGenericPayment('splash', 3)">۳ روز</button>
+                        <button class="btn-vip" onclick="initiateGenericPayment('splash', 7)">۷ روز</button>
+                    </div>
+                </div>
+                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ انصراف</button>
+            `;
+            modal.classList.add('show');
+        }
+
+        // باز کردن مودال پرداخت بنر
+        async function openBannerPurchaseUI() {
+            const data = await apiCall('/api/stats');
+            if (data.success && data.bannerUsed >= data.bannerTotal) {
+                showToast('❌ ظرفیت بنر امروز تکمیل شده است.', 'error');
+                return;
+            }
+            const modal = document.getElementById('paymentModal');
+            const content = document.getElementById('paymentContent');
+            content.innerHTML = `
+                <div class="modal-title">📢 خرید بنر</div>
+                <div class="payment-info">
+                    <p>⏱ مدت زمان نمایش را انتخاب کنید:</p>
+                    <div class="buy-row">
+                        <button class="btn-vip" onclick="initiateGenericPayment('banner', 1)">۱ روز</button>
+                        <button class="btn-vip" onclick="initiateGenericPayment('banner', 3)">۳ روز</button>
+                        <button class="btn-vip" onclick="initiateGenericPayment('banner', 7)">۷ روز</button>
+                    </div>
+                </div>
+                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ انصراف</button>
+            `;
+            modal.classList.add('show');
+        }
+
+        // تابع عمومی پرداخت برای اسپلش و بنر (فراخوانی بک‌اند)
+        async function initiateGenericPayment(type, days) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ در حال ایجاد...';
+            const status = document.getElementById('paymentStatus');
+            if (status) {
+                status.textContent = t('paymentProcessing');
+                status.className = 'payment-status';
+            }
+            try {
+                const data = await apiCall('/api/order/create', {
+                    method: 'POST',
+                    body: JSON.stringify({ type: type, params: { days } })
+                });
+                if (data.success && data.paymentUrl) {
+                    currentOrderId = data.orderId;
+                    if (status) {
+                        status.innerHTML = `
+                            ${t('paymentPending')}<br>
+                            <a href="${data.paymentUrl}" target="_blank" class="payment-link">${t('paymentLink')}</a>
+                            <br>
+                            <small>🔑 شناسه: ${data.authority}</small>
+                            <br>
+                            <button class="btn btn-sm btn-outline mt-10" onclick="checkOrderStatus('${data.orderId}')">🔄 بررسی وضعیت</button>
+                        `;
+                        status.className = 'payment-status';
+                    }
+                    btn.style.display = 'none';
+                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                    paymentPollingInterval = setInterval(() => checkOrderStatus(data.orderId, true), 5000);
+                } else {
+                    if (status) {
+                        status.textContent = '❌ ' + (data.error || t('unknownError'));
+                        status.className = 'payment-status error';
+                    }
+                    btn.disabled = false;
+                    btn.textContent = type === 'splash' ? '📱 پرداخت اسپلش' : '📢 پرداخت بنر';
+                }
+            } catch (err) {
+                if (status) {
+                    status.textContent = '❌ ' + err.message;
+                    status.className = 'payment-status error';
+                }
+                btn.disabled = false;
+                btn.textContent = type === 'splash' ? '📱 پرداخت اسپلش' : '📢 پرداخت بنر';
+            }
+        }
+
+        // ============================================================
         // INIT
         // ============================================================
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -6057,6 +6241,7 @@
                 await checkAdminStatus();
                 renderCategories();
                 updateVerificationUI();
+                await loadDailySlots(); // بارگذاری ظرفیت روزانه
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
                 showToast('🎉 به جـدار بازار خوش آمدید!', 'success');
