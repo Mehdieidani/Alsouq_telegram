@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -661,6 +660,70 @@
             to {
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ===== FLOATING BUTTONS ===== */
+        .floating-add-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-size: 28px;
+            border: none;
+            box-shadow: 0 4px 20px rgba(255, 56, 92, 0.35);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 90;
+        }
+        .floating-add-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 28px rgba(255, 56, 92, 0.45);
+        }
+        .floating-support-btn {
+            position: fixed;
+            bottom: 90px;
+            left: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: #fff;
+            font-size: 20px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 90;
+        }
+        .floating-support-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(52, 152, 219, 0.4);
+        }
+        @media(max-width:480px) {
+            .floating-add-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+                bottom: 80px;
+                right: 10px;
+            }
+            .floating-support-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+                bottom: 80px;
+                left: 10px;
             }
         }
 
@@ -2120,6 +2183,7 @@
             <div class="header-actions">
                 <button onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
                 <button onclick="refreshAll()" id="refreshBtn"><i class="fa-solid fa-rotate"></i></button>
+                <button onclick="switchLanguage()" id="langBtn" style="font-size:12px;font-weight:700;">🇮🇷</button>
             </div>
         </div>
 
@@ -2161,7 +2225,6 @@
     <!-- ===== BOTTOM NAV ===== -->
     <div class="bottom-nav">
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span class="nav-label" id="navHome">خانه</span></button>
-        <button class="nav-item" data-tab="add" onclick="openAddModal()"><i class="fa-solid fa-circle-plus"></i><span class="nav-label" id="navAdd">ثبت</span></button>
         <button class="nav-item" data-tab="favorites" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i><span class="nav-label" id="navFav">نشان‌ها</span></button>
         <button class="nav-item" data-tab="profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span class="nav-label" id="navProfile">پروفایل</span></button>
         <button class="nav-item" data-tab="inbox" onclick="switchTab('inbox')"><i class="fa-solid fa-inbox"></i><span class="nav-label" id="navInbox">پیام‌ها</span></button>
@@ -2179,6 +2242,14 @@
             </div>
         </div>
     </div>
+
+    <!-- ===== FLOATING BUTTONS ===== -->
+    <button class="floating-add-btn" onclick="openAddModal()" id="floatingAddBtn" style="display:none;">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+    <button class="floating-support-btn" onclick="switchTab('tickets')" id="floatingSupportBtn">
+        <i class="fa-solid fa-headset"></i>
+    </button>
 
     <!-- ===== TABS ===== -->
 
@@ -2398,12 +2469,6 @@
                             <option value="تومان">تومان</option><option value="ریال">ریال</option><option value="دینار">دینار</option><option value="لیر">لیر</option><option value="درهم">درهم</option><option value="دلار">دلار</option><option value="یورو">یورو</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                            <input type="checkbox" id="adHidePhone" style="width:auto;accent-color:var(--primary);">
-                            <span id="adHidePhoneLabel">🔒 شماره تماس در آگهی نمایش داده نشود</span>
-                        </label>
-                    </div>
                     <button type="button" class="btn btn-block" onclick="wizardNext()" id="btnNext">بعدی</button>
                 </div>
                 <div class="wizard-step" id="wizardStep2" style="display:none;">
@@ -2524,7 +2589,7 @@
         // ============================================================
         // CONFIG
         // ============================================================
-        const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
+        const API_BASE = window.location.origin;
         const IMAGE_BASE = API_BASE + '/image/';
         const BOT_URL = 'https://t.me/AlsouqAlmaftuhiran_bot';
 
@@ -2554,12 +2619,10 @@
         let chatThreads = [];
         let paymentPollingInterval = null;
         let currentOrderId = null;
+        let currentLang = localStorage.getItem('jedar_lang') || 'fa';
 
-        // ============================================================
-        // UTILITY
-        // ============================================================
-        function t(key) {
-            const dict = {
+        const translations = {
+            fa: {
                 verifyStatus: '⚠️ شماره خود را تأیید کنید',
                 verified: '✅ شماره شما تأیید شده است: ',
                 noAds: 'آگهی‌ای یافت نشد',
@@ -2710,7 +2773,6 @@
                 btnNext: 'بعدی',
                 btnPrev: 'قبلی',
                 submit: 'ثبت آگهی',
-                adHidePhoneLabel: '🔒 شماره تماس در آگهی نمایش داده نشود',
                 phoneVerified: '✅ شماره شما تأیید شد',
                 shareAd: 'اشتراک',
                 call: 'تماس',
@@ -2726,7 +2788,6 @@
                 sendOtpBtn: '📤 دریافت کد تأیید',
                 verifyOtpBtn: '✅ تأیید کد و ورود',
                 navHome: 'خانه',
-                navAdd: 'ثبت',
                 navFav: 'نشان‌ها',
                 navProfile: 'پروفایل',
                 navInbox: 'پیام‌ها',
@@ -2852,7 +2913,6 @@
                 adRejectedMsg: '❌ آگهی شما رد شد. دلیل: {reason}',
                 adPendingMsg: '⏳ آگهی شما در انتظار بررسی است.',
                 refreshBtn: '🔄 بروزرسانی ... وتحدیث ...',
-                phoneHiddenLabel: '🔒 شماره مخفی',
                 chatManagementTitle: '📋 مدیریت چت‌ها',
                 vipActive: 'فعال تا {date}',
                 vipInactive: 'غیرفعال',
@@ -2876,10 +2936,332 @@
                 orderStatusFailed: 'ناموفق',
                 backToOrders: '🔙 بازگشت به سفارشات',
                 closePayment: '❌ بستن',
-            };
+            },
+            ar: {
+                verifyStatus: '⚠️ يرجى تأكيد رقم هاتفك',
+                verified: '✅ تم تأكيد رقم هاتفك: ',
+                noAds: 'لا توجد إعلانات',
+                noFavorites: 'لا توجد مفضلات',
+                noReviews: 'لم تقم بإضافة أي تعليقات.',
+                noInboxMessages: 'لا توجد رسائل نظامية.',
+                noTickets: 'لا توجد تذاكر',
+                chatThreadsEmpty: 'ليس لديك محادثات نشطة.',
+                alertEmpty: '📭 ليس لديك تنبيهات نشطة.',
+                adminResult: 'استخدم الأزرار أعلاه.',
+                networkError: '❌ خطأ في الاتصال بالخادم',
+                unknownError: 'خطأ غير معروف',
+                completeFields: 'يرجى ملء جميع الحقول الإلزامية',
+                selectImage: 'يرجى اختيار صورة واحدة على الأقل',
+                phoneRequired: '⚠️ يرجى إدخال رقم هاتف صحيح',
+                noPhone: 'رقم الهاتف المؤكد غير موجود في الملف الشخصي',
+                adSaved: '✅ تم حفظ الإعلان بنجاح!',
+                adError: '❌ خطأ في حفظ الإعلان',
+                adDeleted: 'تم حذف الإعلان',
+                adApproved: 'تمت الموافقة على الإعلان',
+                adRejected: 'تم رفض الإعلان',
+                adNotFound: 'الإعلان غير موجود',
+                oldAdsDeleted: 'تم حذف الإعلانات القديمة',
+                confirmDelete: 'هل أنت متأكد من الحذف؟',
+                confirmDeleteOld: 'هل أنت متأكد من حذف الإعلانات القديمة؟',
+                confirmSpecial: 'هل أنت متأكد من جعل هذا الإعلان مميزاً؟',
+                specialToggleSuccess: '⭐ تم جعل الإعلان مميزاً.',
+                specialToggleRemove: '❌ تم إلغاء التميز.',
+                editApproved: '✅ تمت الموافقة على تعديل الإعلان.',
+                editRejected: '❌ تم رفض تعديل الإعلان.',
+                noEditRequests: 'لا توجد طلبات تعديل.',
+                backupSuccess: '✅ تم النسخ الاحتياطي بنجاح.',
+                restoreSuccess: '✅ تم استعادة المحادثة بنجاح.',
+                chatDeleteConfirm: '⚠️ هل أنت متأكد من حذف هذه المحادثة وجميع رسائلها؟',
+                chatDeleted: '✅ تم حذف المحادثة بنجاح.',
+                noChatsFound: '📭 لا توجد محادثات.',
+                chatNotFound: '❌ المحادثة غير موجودة',
+                chatSearchPlaceholder: 'بحث برقم الهاتف أو معرف المستخدم',
+                chatSearchBtn: '🔍 بحث',
+                chatClearSearch: '🧹 مسح البحث',
+                chatDetails: '📋 تفاصيل المحادثة',
+                chatParticipants: '👥 المشاركون',
+                chatMessagesCount: '📨 عدد الرسائل',
+                chatCreatedAt: '📅 تاريخ الإنشاء',
+                chatLastMessage: '💬 آخر رسالة',
+                chatBackupAll: '💾 نسخ احتياطي لكل المحادثات',
+                chatRestorePrompt: '♻️ أدخل رمز النسخ الاحتياطي:',
+                chatView: '👁 عرض المحادثة',
+                backupChat: '💾 نسخ احتياطي للمحادثة',
+                restoreChat: '♻️ استعادة المحادثة',
+                chatNoMessages: 'لا توجد رسائل في هذه المحادثة.',
+                chatSent: '✅ تم إرسال الرسالة.',
+                chatStart: 'بدء المحادثة',
+                sendBtn: '📤 إرسال',
+                cancel: '❌ إلغاء',
+                save: '💾 حفظ',
+                close: 'إلغاء',
+                editAd: '✏️ تعديل الإعلان',
+                renewAd: '🔄 تمديد الإعلان',
+                adRenewed: '✅ تم تمديد الإعلان.',
+                adRenewFailed: '❌ لا يمكن التمديد.',
+                settingsSaved: '✅ تم حفظ الإعدادات.',
+                enabled: 'مفعل',
+                disabled: 'غير مفعل',
+                profileSaved: '✅ تم حفظ الملف الشخصي بنجاح.',
+                profileUpdateError: '❌ خطأ في حفظ الملف الشخصي',
+                statsTotalUsers: '👥 المستخدمين',
+                statsTotalAds: '📌 الإعلانات',
+                statsPending: '⏳ قيد الانتظار',
+                statsSpecial: '⭐ المميزة',
+                statsBanners: '📢 بانر نشط',
+                ticketReplySent: 'تم إرسال ردك',
+                ticketClosed: 'تم إغلاق التذكرة',
+                noTicketFound: 'التذكرة غير موجودة',
+                favoriteAdd: 'تمت الإضافة إلى المفضلة',
+                favoriteRemove: 'تمت الإزالة من المفضلة',
+                reviewSubmit: 'تم تسجيل تعليقك',
+                reviewError: 'خطأ في تسجيل التعليق',
+                imageUploadError: 'خطأ في رفع الصورة',
+                imageTooLarge: 'حجم الصورة يتجاوز 5 ميجابايت',
+                invalidFormat: 'صيغة الصورة غير مدعومة',
+                maxImages: 'الحد الأقصى 4 صور',
+                unauthorized: '⛔ غير مصرح',
+                operationCancelled: 'تم إلغاء العملية',
+                youAreBlocked: 'حسابك محظور',
+                sessionExpired: '⏳ انتهت جلستك، يرجى تسجيل الدخول مجدداً.',
+                messageSent: '✅ تم إرسال الرسالة بنجاح.',
+                messageSendError: '❌ خطأ في إرسال الرسالة',
+                chatBlockUser: '🚫 حظر المستخدم',
+                chatUnblockUser: '✅ إلغاء حظر المستخدم',
+                chatBlockSuccess: '✅ تم حظر المستخدم.',
+                chatUnblockSuccess: '✅ تم إلغاء حظر المستخدم.',
+                alertSaved: '✅ تم حفظ التنبيه بنجاح! 🎉',
+                alertDeleted: '🗑 تم حذف التنبيه.',
+                alertDeletedConfirm: 'هل أنت متأكد من حذف هذا التنبيه؟',
+                alertToggleActive: 'تفعيل/إلغاء',
+                alertDelete: '🗑 حذف',
+                alertStatusActive: '✅ مفعل',
+                alertStatusInactive: '❌ غير مفعل',
+                alertCategory: '📂 اختر التصنيف (أو اترك فارغاً):',
+                alertKeywords: '🔤 أدخل الكلمات المفتاحية (مفصولة بفواصل، أو اترك فارغاً):',
+                alertMinPrice: '💰 أدخل الحد الأدنى للسعر (أو اترك فارغاً):',
+                alertMaxPrice: '💰 أدخل الحد الأقصى للسعر (أو اترك فارغاً):',
+                alertCity: '🏙 أدخل المدينة (أو اترك فارغاً):',
+                alertFrequency: '⏱ كم مرة تريد تلقي التنبيهات؟',
+                frequencyImmediate: '⏱ فوري',
+                frequencyDaily: '📅 يومياً',
+                frequencyWeekly: '📆 أسبوعياً',
+                allCategories: 'كل التصنيفات',
+                catPilgrimage: 'زيارة',
+                catTourism: 'سياحة',
+                catMedical: 'طبي',
+                catBeauty: 'تجميل',
+                catServices: 'خدمات',
+                catJobs: 'توظيف',
+                catRealEstate: 'عقارات',
+                catVehicles: 'مركبات',
+                catAll: 'الكل',
+                statusPending: 'قيد الانتظار',
+                statusApproved: 'موافق عليه',
+                statusRejected: 'مرفوض',
+                adminPending: 'قيد الانتظار',
+                adminAll: 'كل الإعلانات',
+                adminUsers: 'المستخدمين',
+                adminAdmins: 'المشرفين',
+                adminStats: 'الإحصائيات',
+                adminDeleteOld: 'حذف القديمة',
+                adminEditRequests: 'طلبات التعديل',
+                adminChats: 'إدارة المحادثات',
+                adminBanners: 'البانر والسبلاش',
+                adminAnnounce: 'الأخبار والمعلومات',
+                adminSessions: 'الجلسات',
+                adminSettings: 'الإعدادات',
+                adminSendMsg: 'إرسال رسالة نظامية',
+                adminManage: 'الإدارة',
+                addAdTitle: '📌 إضافة إعلان جديد',
+                adTitleLabel: 'عنوان الإعلان',
+                adCategoryLabel: 'التصنيف',
+                adPriceLabel: 'السعر',
+                adCurrencyLabel: 'العملة',
+                adDescLabel: 'الوصف',
+                adLocationLabel: 'الموقع / المدينة',
+                adCountryLabel: 'الدولة',
+                adDurationLabel: '⏳ مدة العرض',
+                adImagesLabel: 'الصور/الفيديو (حد أقصى 4)',
+                adContactLabel: 'رقم الهاتف (مؤكد)',
+                uploadText: 'انقر للرفع (صورة أو فيديو)',
+                btnNext: 'التالي',
+                btnPrev: 'السابق',
+                submit: 'إضافة الإعلان',
+                phoneVerified: '✅ تم تأكيد رقم هاتفك',
+                shareAd: 'مشاركة',
+                call: 'اتصال',
+                whatsapp: 'واتساب',
+                chatWith: 'محادثة',
+                reportAd: 'الإبلاغ عن مخالفة',
+                favoriteRemove: 'تمت الإزالة من المفضلة',
+                favoriteAdd: 'تمت الإضافة إلى المفضلة',
+                authTitle: '🔑 تسجيل الدخول إلى جـدار بازار',
+                authSubText: 'أدخل رقم هاتفك لإرسال رمز التأكيد عبر البوت.',
+                authPhoneLabel: '📱 رقم الهاتف',
+                authCodeLabel: '🔑 الرمز المكون من 6 أرقام',
+                sendOtpBtn: '📤 طلب رمز التأكيد',
+                verifyOtpBtn: '✅ تأكيد الرمز وتسجيل الدخول',
+                navHome: 'الرئيسية',
+                navFav: 'المفضلة',
+                navProfile: 'الملف الشخصي',
+                navInbox: 'الرسائل',
+                navSupport: 'الدعم',
+                menuRules: 'القوانين',
+                menuAbout: 'معلومات عنا',
+                menuGuide: 'الدليل',
+                menuTickets: 'التذاكر',
+                menuChat: 'المحادثة',
+                menuAlerts: 'التنبيهات',
+                menuOrders: 'الطلبات',
+                menuAdmin: 'الإدارة',
+                verifyText: '✅ قم بتأكيد رقم هاتفك للاستفادة من جميع الميزات',
+                verifyBtn: '📱 طلب الرمز',
+                searchPlaceholder: 'ابحث في الإعلانات...',
+                searchBtn: 'بحث',
+                profileUsernameLabel: '🆔 معرف المستخدم',
+                profileFullnameLabel: '👤 الاسم الكامل',
+                profilePhoneLabel: '📱 رقم الهاتف',
+                profileEmailLabel: '📧 البريد الإلكتروني',
+                profileCityLabel: '🏙 المدينة',
+                profileBioLabel: '📝 السيرة الذاتية',
+                profileSpecializationLabel: '🎯 التخصص',
+                saveProfileBtn: '💾 حفظ',
+                logoutBtnText: '🚪 خروج',
+                actionFavs: 'المفضلة',
+                actionMyAds: 'إعلاناتي',
+                actionReviews: 'تعليقاتي',
+                statAdsLabel: '📋 الإعلانات',
+                statFavsLabel: '❤️ المفضلة',
+                statReviewsLabel: '⭐ التعليقات',
+                statScoreLabel: '⭐ النقاط',
+                statVIPLabel: '👑 VIP',
+                getCode: '✈️ طلب الرمز من البوت',
+                enterCode: '🔑 أدخل الرمز المكون من 6 أرقام',
+                verifyCode: '✅ تأكيد الرمز',
+                cancelCode: '❌ إلغاء',
+                favTitle: '❤️ المفضلة',
+                myAdsTitle: '📋 إعلاناتي',
+                myReviewsTitle: '⭐ تعليقاتي',
+                inboxTitle: '📩 الرسائل النظامية',
+                rulesTitle: '📜 القوانين',
+                supportTitle: '🆘 الدعم',
+                aboutTitle: '🌟 معلومات عنا',
+                aboutText: '<b>جـدار بازار</b> منصة حديثة وذكية للبيع والشراء عبر الإنترنت.<br>نقدم لك تجربة آمنة وسريعة باستخدام أحدث التقنيات.',
+                guideTitle: '📖 الدليل',
+                guideStartTitle: '🚀 بداية سريعة',
+                guideStep1: '١. أدخل المعلومات في قسم <b>"إضافة إعلان"</b>.',
+                guideStep2: '٢. ارفع صوراً أو فيديو.',
+                guideStep3: '٣. سيتم عرض الإعلان بعد الموافقة عليه.',
+                guideSearchTitle: '🔍 البحث',
+                guideSearchText: 'استخدم الفلاتر المتقدمة للعثور على الإعلانات المناسبة.',
+                guideAlertTitle: '🔔 التنبيهات',
+                guideAlertText: 'عيّن تنبيهاً ليتم إعلامك عند نشر إعلانات جديدة تطابق اهتماماتك.',
+                ticketsTitle: '🎫 تذاكر الدعم',
+                newTicket: 'إضافة تذكرة جديدة',
+                chatTitle: '💬 المحادثة',
+                alertsTitle: '🔔 التنبيهات',
+                alertAdd: '➕ إضافة تنبيه جديد',
+                adminTitle: '🔧 لوحة الإدارة',
+                adminManageTitle: '📋 الإدارة',
+                adminResultText: 'استخدم الأزرار أعلاه.',
+                verifyStatus: '⚠️ يرجى تأكيد رقم هاتفك',
+                verified: '✅ تم تأكيد رقم هاتفك: ',
+                noAdsFound: 'لا توجد إعلانات',
+                userNotFound: 'المستخدم غير موجود',
+                adminAdded: 'تمت إضافة مشرف',
+                adminRemoved: 'تمت إزالة مشرف',
+                announcementSent: 'تم إرسال الإشعار',
+                special: 'مميز',
+                normal: 'عادي',
+                viewAd: 'عرض',
+                delete: 'حذف',
+                edit: 'تعديل',
+                renew: 'تمديد',
+                updateMessage: 'تحديث ... وتحديث ...',
+                blockUser: '🚫 حظر',
+                unblockUser: '✅ إلغاء الحظر',
+                deleteUser: '🗑 حذف المستخدم',
+                sendPrivateMsg: '📨 إرسال رسالة خاصة',
+                setRole: '👑 تغيير الدور',
+                userBlocked: 'تم حظر المستخدم',
+                userUnblocked: 'تم إلغاء حظر المستخدم',
+                userDeleted: 'تم حذف المستخدم',
+                roleChanged: 'تم تغيير دور المستخدم',
+                enterUserId: 'أدخل معرف المستخدم:',
+                enterRole: 'أدخل الدور الجديد (super_admin, admin, admin_ads, admin_tickets, admin_monitor, user):',
+                enterBlockReason: 'أدخل سبب الحظر:',
+                unblockConfirm: 'هل أنت متأكد من إلغاء حظر هذا المستخدم؟',
+                deleteUserConfirm: 'هل أنت متأكد من حذف هذا المستخدم نهائياً؟ هذا الإجراء لا يمكن التراجع عنه!',
+                userDeletedSuccess: '✅ تم حذف المستخدم بنجاح.',
+                userBlockedSuccess: '✅ تم حظر المستخدم.',
+                userUnblockedSuccess: '✅ تم إلغاء حظر المستخدم.',
+                roleChangedSuccess: '✅ تم تغيير دور المستخدم.',
+                chatBackupSuccess: '✅ تم النسخ الاحتياطي للمحادثة بنجاح.',
+                chatRestoreSuccess: '✅ تم استعادة المحادثة بنجاح.',
+                bannerAddSuccess: '✅ تمت إضافة البانر بنجاح.',
+                bannerDeleteSuccess: '✅ تم حذف البانر.',
+                bannerToggleSuccess: '✅ تم تغيير حالة البانر.',
+                splashAddSuccess: '✅ تمت إضافة السبلاش بنجاح.',
+                enterBannerTitle: 'أدخل عنوان البانر:',
+                enterBannerLink: 'أدخل رابط البانر:',
+                selectBannerImage: 'اختر صورة البانر:',
+                announceTitle: 'عنوان الإشعار',
+                announceMessage: 'نص الإشعار',
+                announceSend: 'إرسال الإشعار',
+                announceSent: '✅ تم إرسال الإشعار بنجاح.',
+                toggleSupport: '🔧 الدعم',
+                toggleWhatsapp: '💬 واتساب',
+                togglePhone: '📞 اتصال هاتفي',
+                toggleTelegram: '✈️ تلغرام',
+                toggleEmail: '📧 البريد الإلكتروني',
+                toggleAds: '📌 الإعلانات',
+                toggleBanners: '📢 البانر',
+                toggleSplash: '📱 السبلاش',
+                sessionRevoke: '🚫 إلغاء الجلسة',
+                sessionRevoked: '✅ تم إلغاء الجلسة.',
+                noSessions: 'لا توجد جلسات.',
+                chatWithSeller: '💬 محادثة مع البائع',
+                chatPhoneHidden: 'رقم الهاتف مخفي. تواصل عبر المحادثة.',
+                welcomeMessage: 'مرحباً بك في جـدار بازار! 🎉\nلتتمكن من البدء، قم بتأكيد رقم هاتفك.',
+                adPublished: '✅ تم نشر إعلانك بنجاح! 🎉',
+                adRejectedMsg: '❌ تم رفض إعلانك. السبب: {reason}',
+                adPendingMsg: '⏳ إعلانك قيد المراجعة.',
+                refreshBtn: '🔄 تحديث ... وتحديث ...',
+                chatManagementTitle: '📋 إدارة المحادثات',
+                vipActive: 'نشط حتى {date}',
+                vipInactive: 'غير نشط',
+                buyVipTitle: '👑 شراء اشتراك VIP',
+                buyVipDesc: 'عند شراء اشتراك VIP، ستظهر إعلاناتك في أعلى القائمة وستحصل على نقاط إضافية.',
+                buyVipBtn: 'شراء من البوت',
+                specialAdNotice: '⭐ لجعل الإعلان مميزاً، استخدم البوت.',
+                specialAdBtn: '✨ جعل مميزاً في البوت',
+                alertTitle: '🔔 إعداد تنبيه جديد',
+                vipPurchaseTitle: '👑 شراء اشتراك VIP',
+                specialPurchaseTitle: '⭐ شراء إعلان مميز',
+                paymentProcessing: '⏳ جاري إنشاء الدفع...',
+                paymentSuccess: '✅ تم الدفع بنجاح! رقم المتابعة: {refId}',
+                paymentFailed: '❌ فشل الدفع. رمز الخطأ: {code}',
+                paymentPending: '⏳ في انتظار تأكيد الدفع...',
+                paymentLink: '🔗 اضغط للدفع:',
+                orderNotFound: 'الطلب غير موجود.',
+                ordersEmpty: 'لا توجد طلبات.',
+                orderStatusPending: 'في انتظار الدفع',
+                orderStatusPaid: 'تم الدفع',
+                orderStatusFailed: 'فشل',
+                backToOrders: '🔙 العودة إلى الطلبات',
+                closePayment: '❌ إغلاق',
+            }
+        };
+
+        function t(key) {
+            const dict = translations[currentLang] || translations.fa;
             return dict[key] || key;
         }
 
+        // ============================================================
+        // UTILITY
+        // ============================================================
         function normalizePhone(phone) {
             if (!phone) return '';
             let p = phone.replace(/[^0-9]/g, '');
@@ -2940,301 +3322,29 @@
             localStorage.setItem('jedar_theme', isDark ? 'light' : 'dark');
         }
 
-        // ============================================================
-        // توابع خرید در صفحه (VIP و ویژه)
-        // ============================================================
-        function openVipPurchaseUI(months) {
-            if (!isUserVerified()) {
-                showToast('⚠️ ' + t('verifyStatus'), 'warning');
-                return;
-            }
-            const modal = document.getElementById('paymentModal');
-            const content = document.getElementById('paymentContent');
-            content.innerHTML = `
-                <div class="modal-title">${t('vipPurchaseTitle')} (${months} ماه)</div>
-                <div class="payment-info">
-                    <p>💰 مبلغ: <span class="amount" id="vipAmount">در حال محاسبه...</span></p>
-                </div>
-                <div id="paymentStatus" class="payment-status">${t('paymentProcessing')}</div>
-                <button class="btn btn-block btn-success" id="payVipBtn" style="display:none;" onclick="initiateVipPayment(${months})">💳 پرداخت</button>
-                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
-            `;
-            modal.classList.add('show');
-            // دریافت قیمت
-            fetchPrices().then(prices => {
-                const priceKey = `vip_${months}month`;
-                const amount = prices[priceKey] || 50000;
-                document.getElementById('vipAmount').textContent = amount.toLocaleString() + ' ریال';
-                document.getElementById('payVipBtn').style.display = 'block';
-                document.getElementById('paymentStatus').textContent = '✅ برای پرداخت کلیک کنید.';
-                document.getElementById('paymentStatus').className = 'payment-status';
-            }).catch(() => {
-                document.getElementById('paymentStatus').textContent = '❌ خطا در دریافت قیمت';
-                document.getElementById('paymentStatus').className = 'payment-status error';
-            });
-        }
-
-        async function fetchPrices() {
-            const data = await apiCall('/api/prices');
-            if (data.success) return data.prices;
-            return {};
-        }
-
-        async function initiateVipPayment(months) {
-            const btn = document.getElementById('payVipBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ در حال ایجاد...';
-            const status = document.getElementById('paymentStatus');
-            status.textContent = t('paymentProcessing');
-            status.className = 'payment-status';
-
-            try {
-                const data = await apiCall('/api/order/create', {
-                    method: 'POST',
-                    body: JSON.stringify({ type: 'vip', params: { months } })
-                });
-                if (data.success && data.paymentUrl) {
-                    currentOrderId = data.orderId;
-                    status.innerHTML = `
-                        ${t('paymentPending')}<br>
-                        <a href="${data.paymentUrl}" target="_blank" class="payment-link">${t('paymentLink')}</a>
-                        <br>
-                        <small>🔑 شناسه: ${data.authority}</small>
-                        <br>
-                        <button class="btn btn-sm btn-outline mt-10" onclick="checkOrderStatus('${data.orderId}')">🔄 بررسی وضعیت</button>
-                    `;
-                    status.className = 'payment-status';
-                    btn.style.display = 'none';
-                    // شروع پالینگ
-                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-                    paymentPollingInterval = setInterval(() => checkOrderStatus(data.orderId, true), 5000);
-                } else {
-                    status.textContent = '❌ ' + (data.error || t('unknownError'));
-                    status.className = 'payment-status error';
-                    btn.disabled = false;
-                    btn.textContent = '💳 پرداخت';
-                }
-            } catch (err) {
-                status.textContent = '❌ ' + err.message;
-                status.className = 'payment-status error';
-                btn.disabled = false;
-                btn.textContent = '💳 پرداخت';
-            }
-        }
-
-        async function checkOrderStatus(orderId, silent = false) {
-            try {
-                const data = await apiCall(`/api/order/status/${orderId}`);
-                if (data.success && data.order) {
-                    const order = data.order;
-                    const statusEl = document.getElementById('paymentStatus');
-                    if (order.status === 'paid') {
-                        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-                        statusEl.innerHTML = `✅ ${t('paymentSuccess').replace('{refId}', order.ref_id || '—')}`;
-                        statusEl.className = 'payment-status success';
-                        showToast('✅ پرداخت با موفقیت انجام شد!', 'success');
-                        setTimeout(() => { closePaymentModal();
-                            loadOrders(); }, 2000);
-                        return true;
-                    } else if (order.status === 'failed') {
-                        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-                        statusEl.innerHTML = `❌ ${t('paymentFailed').replace('{code}', order.ref_id || '—')}`;
-                        statusEl.className = 'payment-status error';
-                        return false;
-                    } else {
-                        if (!silent) {
-                            statusEl.innerHTML = `⏳ ${t('paymentPending')}`;
-                            statusEl.className = 'payment-status';
-                        }
-                        return false;
-                    }
-                } else {
-                    if (!silent) {
-                        const statusEl = document.getElementById('paymentStatus');
-                        statusEl.textContent = '❌ ' + t('orderNotFound');
-                        statusEl.className = 'payment-status error';
-                    }
-                    return false;
-                }
-            } catch (err) {
-                if (!silent) {
-                    const statusEl = document.getElementById('paymentStatus');
-                    statusEl.textContent = '❌ ' + err.message;
-                    statusEl.className = 'payment-status error';
-                }
-                return false;
-            }
-        }
-
-        // خرید آگهی ویژه (از داخل دکمه‌های آگهی)
-        function openSpecialPurchaseUI(adId) {
-            if (!isUserVerified()) {
-                showToast('⚠️ ' + t('verifyStatus'), 'warning');
-                return;
-            }
-            const modal = document.getElementById('paymentModal');
-            const content = document.getElementById('paymentContent');
-            content.innerHTML = `
-                <div class="modal-title">${t('specialPurchaseTitle')}</div>
-                <div class="payment-info">
-                    <p>⏱ مدت زمان ویژه‌سازی:</p>
-                    <div class="buy-row">
-                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 1)">۱ روز</button>
-                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 3)">۳ روز</button>
-                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 7)">۷ روز</button>
-                    </div>
-                </div>
-                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
-            `;
-            modal.classList.add('show');
-        }
-
-        async function initiateSpecialPayment(adId, days) {
-            const modalContent = document.getElementById('paymentContent');
-            modalContent.innerHTML = `
-                <div class="modal-title">${t('specialPurchaseTitle')}</div>
-                <div class="payment-info">
-                    <p>💰 مبلغ: <span class="amount" id="specialAmount">در حال محاسبه...</span></p>
-                </div>
-                <div id="paymentStatus" class="payment-status">${t('paymentProcessing')}</div>
-                <button class="btn btn-block btn-success" id="paySpecialBtn" style="display:none;" onclick="initiateSpecialPayment2(${adId}, ${days})">💳 پرداخت</button>
-                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
-            `;
-            // دریافت قیمت
-            const prices = await fetchPrices();
-            const priceKey = `special_ad_${days}day`;
-            const amount = prices[priceKey] || 10000;
-            document.getElementById('specialAmount').textContent = amount.toLocaleString() + ' ریال';
-            document.getElementById('paySpecialBtn').style.display = 'block';
-            document.getElementById('paymentStatus').textContent = '✅ برای پرداخت کلیک کنید.';
-            document.getElementById('paymentStatus').className = 'payment-status';
-        }
-
-        async function initiateSpecialPayment2(adId, days) {
-            const btn = document.getElementById('paySpecialBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ در حال ایجاد...';
-            const status = document.getElementById('paymentStatus');
-            status.textContent = t('paymentProcessing');
-            status.className = 'payment-status';
-
-            try {
-                const data = await apiCall('/api/order/create', {
-                    method: 'POST',
-                    body: JSON.stringify({ type: 'special_ad', params: { days, adId } })
-                });
-                if (data.success && data.paymentUrl) {
-                    currentOrderId = data.orderId;
-                    status.innerHTML = `
-                        ${t('paymentPending')}<br>
-                        <a href="${data.paymentUrl}" target="_blank" class="payment-link">${t('paymentLink')}</a>
-                        <br>
-                        <small>🔑 شناسه: ${data.authority}</small>
-                        <br>
-                        <button class="btn btn-sm btn-outline mt-10" onclick="checkOrderStatus('${data.orderId}')">🔄 بررسی وضعیت</button>
-                    `;
-                    status.className = 'payment-status';
-                    btn.style.display = 'none';
-                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-                    paymentPollingInterval = setInterval(() => checkOrderStatus(data.orderId, true), 5000);
-                } else {
-                    status.textContent = '❌ ' + (data.error || t('unknownError'));
-                    status.className = 'payment-status error';
-                    btn.disabled = false;
-                    btn.textContent = '💳 پرداخت';
-                }
-            } catch (err) {
-                status.textContent = '❌ ' + err.message;
-                status.className = 'payment-status error';
-                btn.disabled = false;
-                btn.textContent = '💳 پرداخت';
-            }
-        }
-
-        function closePaymentModal() {
-            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-            document.getElementById('paymentModal').classList.remove('show');
-            document.getElementById('paymentContent').innerHTML = '';
-            currentOrderId = null;
+        function switchLanguage() {
+            currentLang = currentLang === 'fa' ? 'ar' : 'fa';
+            localStorage.setItem('jedar_lang', currentLang);
+            document.getElementById('langBtn').textContent = currentLang === 'fa' ? '🇮🇷' : '🇸🇦';
+            updateUI();
+            refreshAll();
         }
 
         // ============================================================
-        // بارگذاری سفارشات
+        // TOAST WRAPPER
         // ============================================================
-        async function loadOrders() {
-            const container = document.getElementById('ordersList');
-            if (!isUserVerified()) {
-                container.innerHTML = `<div class="text-secondary">⚠️ ${t('verifyStatus')}</div>`;
-                return;
-            }
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/orders');
-                if (data.success && data.orders && data.orders.length > 0) {
-                    container.innerHTML = '';
-                    data.orders.forEach(order => {
-                        const statusMap = {
-                            pending: t('orderStatusPending'),
-                            paid: t('orderStatusPaid'),
-                            failed: t('orderStatusFailed')
-                        };
-                        const statusClass = order.status || 'pending';
-                        const div = document.createElement('div');
-                        div.className = 'order-item';
-                        const orderData = order.data ? JSON.parse(order.data) : {};
-                        let detail = '';
-                        if (order.type === 'vip') detail = `👑 VIP ${orderData.months || '?'} ماه`;
-                        else if (order.type === 'special_ad') detail = `⭐ ویژه ${orderData.days || '?'} روز`;
-                        else if (order.type === 'splash') detail = `📱 اسپلش ${orderData.days || '?'} روز`;
-                        else if (order.type === 'banner') detail = `📢 بنر ${orderData.days || '?'} روز`;
-                        else detail = order.type;
-                        div.innerHTML = `
-                            <div class="order-header">
-                                <span class="order-id">#${order.id.substring(0,8)}</span>
-                                <span class="order-status ${statusClass}">${statusMap[statusClass] || statusClass}</span>
-                            </div>
-                            <div class="order-detail">${detail}</div>
-                            <div class="order-detail">💰 ${(order.amount || 0).toLocaleString()} ریال</div>
-                            <div class="order-detail">📅 ${new Date(order.created_at * 1000).toLocaleDateString('fa-IR')}</div>
-                            ${order.ref_id ? `<div class="order-detail">🔑 شماره پیگیری: ${order.ref_id}</div>` : ''}
-                            ${order.status === 'pending' ? `<button class="btn btn-sm btn-success mt-10" onclick="retryPayment('${order.id}')">🔄 تلاش مجدد پرداخت</button>` : ''}
-                        `;
-                        container.appendChild(div);
-                    });
-                } else {
-                    container.innerHTML = `<div class="text-secondary">${t('ordersEmpty')}</div>`;
-                }
-            } catch (err) {
-                container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`;
-            }
-        }
-
-        async function retryPayment(orderId) {
-            // ایجاد مجدد پرداخت برای سفارش
-            try {
-                const data = await apiCall(`/api/order/status/${orderId}`);
-                if (data.success && data.order) {
-                    const order = data.order;
-                    const amount = order.amount;
-                    const type = order.type;
-                    const params = JSON.parse(order.data || '{}');
-                    const result = await apiCall('/api/order/create', {
-                        method: 'POST',
-                        body: JSON.stringify({ type, params })
-                    });
-                    if (result.success && result.paymentUrl) {
-                        showToast('✅ لینک پرداخت جدید ایجاد شد.', 'success');
-                        window.open(result.paymentUrl, '_blank');
-                        loadOrders();
-                    } else {
-                        showToast('❌ ' + (result.error || t('unknownError')), 'error');
-                    }
-                } else {
-                    showToast('❌ ' + t('orderNotFound'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ ' + err.message, 'error');
-            }
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info' };
+            toast.innerHTML =
+                `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${msg}</span><button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 30);
+            setTimeout(() => { toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400); }, 4500);
         }
 
         // ============================================================
@@ -3337,7 +3447,7 @@
                     currentUser = data.user || {};
                     isAdmin = data.isAdmin || false;
                     isSuperAdmin = data.isSuperAdmin || false;
-                    showToast('✅ ' + t('verifiedSuccess'), 'success');
+                    showToast('✅ ' + t('verified'), 'success');
                     authCheck();
                     loadApp();
                 } else {
@@ -3371,6 +3481,7 @@
             if (token && isUserVerified()) {
                 authSection.classList.add('hidden');
                 app.classList.remove('hidden');
+                document.getElementById('floatingAddBtn').style.display = 'flex';
                 const adminBtn = document.getElementById('adminMenuBtn');
                 if (isAdmin) adminBtn.style.display = 'flex';
                 else adminBtn.style.display = 'none';
@@ -3378,6 +3489,7 @@
             } else {
                 authSection.classList.remove('hidden');
                 app.classList.add('hidden');
+                document.getElementById('floatingAddBtn').style.display = 'none';
                 document.getElementById('adminMenuBtn').style.display = 'none';
             }
         }
@@ -3489,7 +3601,7 @@
                     currentUser = data.user || {};
                     isAdmin = data.isAdmin || false;
                     isSuperAdmin = data.isSuperAdmin || false;
-                    showToast('✅ ' + t('verifiedSuccess'), 'success');
+                    showToast('✅ ' + t('verified'), 'success');
                     document.getElementById('codeSection').classList.remove('show');
                     updateVerificationUI();
                     loadProfile();
@@ -3653,7 +3765,6 @@
                         if (ad.image_ids && Array.isArray(ad.image_ids)) { ad.image_ids = ad.image_ids.map(img =>
                             normalizeImageUrl(img)).filter(url => url !== null); }
                         ad.media_type = ad.media_type || 'image';
-                        if (ad.hide_phone === undefined) ad.hide_phone = false;
                         return ad;
                     });
                     newAds.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
@@ -3691,7 +3802,6 @@
                     rejected: t('statusRejected') };
                 const statusText = statusLabels[ad.status] || ad.status;
                 const likes = ad.views || 0;
-                const hidePhone = ad.hide_phone || false;
                 card.innerHTML = `
                         <div class="ad-image" onclick="event.stopPropagation();${mediaUrl ? `openMediaZoom('${mediaUrl}','${isVideo?'video':'image'}')` : ''}">
                             ${mediaHtml}
@@ -3706,7 +3816,6 @@
                                 ${specialBadge}
                                 <span class="rating"><i class="fa-solid fa-star"></i> ${ratingAvg}</span>
                                 <span class="status-badge">${statusText}</span>
-                                ${hidePhone ? '<span class="status-badge" style="background:rgba(52,152,219,0.08);color:var(--blue);">🔒 ناشناس</span>' : ''}
                             </div>
                         </div>
                         <div class="ad-actions">
@@ -3718,10 +3827,9 @@
                             ${ad.user_id === getUserId() ? `<button onclick="event.stopPropagation();editAd(${ad.id})" style="color:var(--blue);font-size:14px;"><i class="fa-solid fa-pen"></i></button>` : ''}
                             ${ad.user_id === getUserId() && ad.status === 'approved' ? `<button onclick="event.stopPropagation();renewAd(${ad.id})" style="color:var(--gold);font-size:14px;"><i class="fa-solid fa-rotate"></i></button>` : ''}
                             ${ad.user_id !== getUserId() && isUserVerified() ? `<button onclick="event.stopPropagation();openChatFromAd(${ad.id})" style="color:var(--green);font-size:14px;"><i class="fa-solid fa-comment"></i></button>` : ''}
-                            ${!hidePhone && ad.phone ? `<a href="tel:${ad.phone}" onclick="event.stopPropagation();" style="color:var(--green);font-size:14px;text-decoration:none;"><i class="fa-solid fa-phone"></i></a>` : ''}
-                            ${!hidePhone && ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g, '')}" target="_blank" onclick="event.stopPropagation();" style="color:#25D366;font-size:14px;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
+                            ${ad.phone ? `<a href="tel:${ad.phone}" onclick="event.stopPropagation();" style="color:var(--green);font-size:14px;text-decoration:none;"><i class="fa-solid fa-phone"></i></a>` : ''}
+                            ${ad.phone ? `<a href="https://wa.me/${ad.phone.replace(/\s/g, '')}" target="_blank" onclick="event.stopPropagation();" style="color:#25D366;font-size:14px;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i></a>` : ''}
                             ${ad.user_id === getUserId() && ad.status === 'pending' ? `<button onclick="event.stopPropagation();openSpecialPurchaseUI(${ad.id})" class="btn-special" style="font-size:10px;padding:4px 10px;"><i class="fa-solid fa-star"></i> ویژه</button>` : ''}
-                            ${ad.user_id !== getUserId() && ad.status === 'pending' ? '' : ''}
                         </div>
                     `;
                 grid.appendChild(card);
@@ -3956,7 +4064,6 @@
             document.getElementById('adDescription').value = ad.description;
             document.getElementById('adLocation').value = ad.city || '';
             document.getElementById('adCountry').value = ad.country || 'ایران';
-            document.getElementById('adHidePhone').checked = ad.hide_phone || false;
             const phone = getVerifiedPhone();
             document.getElementById('adContact').value = phone || '';
             document.getElementById('addAdModal').classList.add('show');
@@ -4003,7 +4110,6 @@
             const location = document.getElementById('adLocation').value.trim();
             const country = document.getElementById('adCountry').value;
             const durationDays = parseInt(document.getElementById('adDuration').value) || 30;
-            const hidePhone = document.getElementById('adHidePhone').checked;
             if (!title || !price || !desc || !location) { showToast('⚠️ ' + t('completeFields'), 'warning'); return; }
             const contact = getVerifiedPhone();
             if (!contact) { showToast('⚠️ ' + t('noPhone'), 'error'); return; }
@@ -4098,7 +4204,6 @@
                     duration_days: durationDays,
                     media_type: mediaType,
                     currency: currency,
-                    hide_phone: hidePhone
                 };
                 let endpoint = '/api/ad/submit';
                 if (editId) {
@@ -4177,7 +4282,6 @@
             const phone = getVerifiedPhone();
             contactField.value = phone || '';
             contactField.readOnly = true;
-            document.getElementById('adHidePhone').checked = false;
         }
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
@@ -4194,14 +4298,13 @@
             const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'),
                 rejected: t('statusRejected') };
             const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—';
-            const hidePhone = ad.hide_phone || false;
-            const phone = hidePhone ? null : (ad.phone || '');
-            renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone);
+            const phone = ad.phone || '';
+            renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone);
             document.getElementById('adDetailsModal').classList.add('show');
             loadDetailReviews(ad.id);
         }
 
-        function renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone) {
+        function renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone) {
             const content = document.getElementById('adDetailContent');
             let galleryHtml = '';
             if (adDetailGallery.length > 0) {
@@ -4227,13 +4330,12 @@
                         <span><i class="fa-solid fa-star" style="color:var(--gold);"></i> ${ratingAvg}</span>
                         ${ad.media_type === 'video' ? '<span><i class="fa-solid fa-video"></i></span>' : ''}
                         ${ad.is_special ? '<span>⭐ ویژه</span>' : ''}
-                        ${hidePhone ? '<span style="color:var(--blue);">🔒 ناشناس</span>' : ''}
                         <span class="status-badge" style="padding:1px 8px;border-radius:var(--radius-full);font-size:9px;font-weight:700;background:rgba(255,56,92,0.06);color:var(--primary);">${statusLabels[ad.status] || ad.status}</span>
                     </div>
                     <div class="ad-description">${ad.description || 'توضیحاتی وجود ندارد'}</div>
                     <div class="action-buttons">
-                        ${phone && !hidePhone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
-                        ${phone && !hidePhone ? `<a href="https://wa.me/${phone.replace(/\s/g, '')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
+                        ${phone ? `<a href="tel:${phone}" class="btn-call"><i class="fa-solid fa-phone"></i> ${t('call')}</a>` : ''}
+                        ${phone ? `<a href="https://wa.me/${phone.replace(/\s/g, '')}" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> ${t('whatsapp')}</a>` : ''}
                         <button onclick="openChatFromAd(${ad.id})" class="btn-chat"><i class="fa-solid fa-comment"></i> ${t('chatWith')}</button>
                         <button class="btn-share" onclick="shareAd(${ad.id},'${ad.title}')"><i class="fa-solid fa-share-nodes"></i> ${t('shareAd')}</button>
                         ${ad.user_id !== getUserId() ? `<button onclick="reportAdViaTicket(${ad.id})" style="background:rgba(255,56,92,0.06);color:var(--primary);border:1px solid rgba(255,56,92,0.1);"><i class="fa-solid fa-flag"></i> ${t('reportAd')}</button>` : ''}
@@ -4306,9 +4408,8 @@
         async function toggleFavoriteAndUpdateDetail(adId) { await toggleFavorite(adId); const ad = allAds.find(item => item
                 .id == adId); if (ad) { const isFav = favorites.includes(ad.id); const statusLabels = { pending: t(
                     'statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
-                const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const hidePhone = ad.hide_phone ||
-                    false; const phone = hidePhone ? null : (ad.phone || '');
-                renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone, hidePhone); } }
+                const ratingAvg = ad.rating_avg ? Number(ad.rating_avg).toFixed(1) : '—'; const phone = ad.phone || '';
+                renderAdDetail(ad, isFav, statusLabels, ratingAvg, phone); } }
 
         // ============================================================
         // REVIEW
@@ -5083,10 +5184,10 @@
                     '❌ ' + t('unknownError'), 'error'); } }
 
         async function adminSendPrivateMsg(userId) {
-            const subject = prompt('📝 ' + t('messageSubject') + ':');
+            const subject = prompt('📝 موضوع:');
             if (subject === null) return;
             if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; }
-            const body = prompt('📝 ' + t('messageBody') + ':');
+            const body = prompt('📝 متن:');
             if (body === null) return;
             if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; }
             try {
@@ -5098,9 +5199,8 @@
         }
 
         async function adminSetRole(userId) { if (!checkAdminAccess()) return;
-            const role = prompt(t('enterRole') + '\n( super_admin, admin, admin_ads, admin_tickets, admin_monitor, user )');
-            if (role === null) return; const validRoles = ['super_admin', 'admin', 'admin_ads', 'admin_tickets',
-                'admin_monitor', 'user'
+            const role = prompt(t('enterRole')); if (role === null) return; const validRoles = ['super_admin', 'admin',
+                'admin_ads', 'admin_tickets', 'admin_monitor', 'user'
             ]; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data =
                     await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId,
                             role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'),
@@ -5641,6 +5741,301 @@
         }
 
         // ============================================================
+        // ORDERS
+        // ============================================================
+        async function loadOrders() {
+            const container = document.getElementById('ordersList');
+            if (!isUserVerified()) {
+                container.innerHTML = `<div class="text-secondary">⚠️ ${t('verifyStatus')}</div>`;
+                return;
+            }
+            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
+            try {
+                const data = await apiCall('/api/orders');
+                if (data.success && data.orders && data.orders.length > 0) {
+                    container.innerHTML = '';
+                    data.orders.forEach(order => {
+                        const statusMap = {
+                            pending: t('orderStatusPending'),
+                            paid: t('orderStatusPaid'),
+                            failed: t('orderStatusFailed')
+                        };
+                        const statusClass = order.status || 'pending';
+                        const div = document.createElement('div');
+                        div.className = 'order-item';
+                        const orderData = order.data ? JSON.parse(order.data) : {};
+                        let detail = '';
+                        if (order.type === 'vip') detail = `👑 VIP ${orderData.months || '?'} ماه`;
+                        else if (order.type === 'special_ad') detail = `⭐ ویژه ${orderData.days || '?'} روز`;
+                        else if (order.type === 'splash') detail = `📱 اسپلش ${orderData.days || '?'} روز`;
+                        else if (order.type === 'banner') detail = `📢 بنر ${orderData.days || '?'} روز`;
+                        else detail = order.type;
+                        div.innerHTML = `
+                            <div class="order-header">
+                                <span class="order-id">#${order.id.substring(0,8)}</span>
+                                <span class="order-status ${statusClass}">${statusMap[statusClass] || statusClass}</span>
+                            </div>
+                            <div class="order-detail">${detail}</div>
+                            <div class="order-detail">💰 ${(order.amount || 0).toLocaleString()} ریال</div>
+                            <div class="order-detail">📅 ${new Date(order.created_at * 1000).toLocaleDateString('fa-IR')}</div>
+                            ${order.ref_id ? `<div class="order-detail">🔑 شماره پیگیری: ${order.ref_id}</div>` : ''}
+                            ${order.status === 'pending' ? `<button class="btn btn-sm btn-success mt-10" onclick="retryPayment('${order.id}')">🔄 تلاش مجدد پرداخت</button>` : ''}
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    container.innerHTML = `<div class="text-secondary">${t('ordersEmpty')}</div>`;
+                }
+            } catch (err) {
+                container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`;
+            }
+        }
+
+        async function retryPayment(orderId) {
+            try {
+                const data = await apiCall(`/api/order/status/${orderId}`);
+                if (data.success && data.order) {
+                    const order = data.order;
+                    const amount = order.amount;
+                    const type = order.type;
+                    const params = JSON.parse(order.data || '{}');
+                    const result = await apiCall('/api/order/create', {
+                        method: 'POST',
+                        body: JSON.stringify({ type, params })
+                    });
+                    if (result.success && result.paymentUrl) {
+                        showToast('✅ لینک پرداخت جدید ایجاد شد.', 'success');
+                        window.open(result.paymentUrl, '_blank');
+                        loadOrders();
+                    } else {
+                        showToast('❌ ' + (result.error || t('unknownError')), 'error');
+                    }
+                } else {
+                    showToast('❌ ' + t('orderNotFound'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ ' + err.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // VIP & SPECIAL PURCHASE
+        // ============================================================
+        function openVipPurchaseUI(months) {
+            if (!isUserVerified()) {
+                showToast('⚠️ ' + t('verifyStatus'), 'warning');
+                return;
+            }
+            const modal = document.getElementById('paymentModal');
+            const content = document.getElementById('paymentContent');
+            content.innerHTML = `
+                <div class="modal-title">${t('vipPurchaseTitle')} (${months} ماه)</div>
+                <div class="payment-info">
+                    <p>💰 مبلغ: <span class="amount" id="vipAmount">در حال محاسبه...</span></p>
+                </div>
+                <div id="paymentStatus" class="payment-status">${t('paymentProcessing')}</div>
+                <button class="btn btn-block btn-success" id="payVipBtn" style="display:none;" onclick="initiateVipPayment(${months})">💳 پرداخت</button>
+                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
+            `;
+            modal.classList.add('show');
+            // دریافت قیمت
+            fetchPrices().then(prices => {
+                const priceKey = `vip_${months}month`;
+                const amount = prices[priceKey] || 50000;
+                document.getElementById('vipAmount').textContent = amount.toLocaleString() + ' ریال';
+                document.getElementById('payVipBtn').style.display = 'block';
+                document.getElementById('paymentStatus').textContent = '✅ برای پرداخت کلیک کنید.';
+                document.getElementById('paymentStatus').className = 'payment-status';
+            }).catch(() => {
+                document.getElementById('paymentStatus').textContent = '❌ خطا در دریافت قیمت';
+                document.getElementById('paymentStatus').className = 'payment-status error';
+            });
+        }
+
+        async function fetchPrices() {
+            const data = await apiCall('/api/prices');
+            if (data.success) return data.prices;
+            return {};
+        }
+
+        async function initiateVipPayment(months) {
+            const btn = document.getElementById('payVipBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ در حال ایجاد...';
+            const status = document.getElementById('paymentStatus');
+            status.textContent = t('paymentProcessing');
+            status.className = 'payment-status';
+
+            try {
+                const data = await apiCall('/api/order/create', {
+                    method: 'POST',
+                    body: JSON.stringify({ type: 'vip', params: { months } })
+                });
+                if (data.success && data.paymentUrl) {
+                    currentOrderId = data.orderId;
+                    status.innerHTML = `
+                        ${t('paymentPending')}<br>
+                        <a href="${data.paymentUrl}" target="_blank" class="payment-link">${t('paymentLink')}</a>
+                        <br>
+                        <small>🔑 شناسه: ${data.authority}</small>
+                        <br>
+                        <button class="btn btn-sm btn-outline mt-10" onclick="checkOrderStatus('${data.orderId}')">🔄 بررسی وضعیت</button>
+                    `;
+                    status.className = 'payment-status';
+                    btn.style.display = 'none';
+                    // شروع پالینگ
+                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                    paymentPollingInterval = setInterval(() => checkOrderStatus(data.orderId, true), 5000);
+                } else {
+                    status.textContent = '❌ ' + (data.error || t('unknownError'));
+                    status.className = 'payment-status error';
+                    btn.disabled = false;
+                    btn.textContent = '💳 پرداخت';
+                }
+            } catch (err) {
+                status.textContent = '❌ ' + err.message;
+                status.className = 'payment-status error';
+                btn.disabled = false;
+                btn.textContent = '💳 پرداخت';
+            }
+        }
+
+        async function checkOrderStatus(orderId, silent = false) {
+            try {
+                const data = await apiCall(`/api/order/status/${orderId}`);
+                if (data.success && data.order) {
+                    const order = data.order;
+                    const statusEl = document.getElementById('paymentStatus');
+                    if (order.status === 'paid') {
+                        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                        statusEl.innerHTML = `✅ ${t('paymentSuccess').replace('{refId}', order.ref_id || '—')}`;
+                        statusEl.className = 'payment-status success';
+                        showToast('✅ پرداخت با موفقیت انجام شد!', 'success');
+                        setTimeout(() => { closePaymentModal();
+                            loadOrders(); }, 2000);
+                        return true;
+                    } else if (order.status === 'failed') {
+                        if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                        statusEl.innerHTML = `❌ ${t('paymentFailed').replace('{code}', order.ref_id || '—')}`;
+                        statusEl.className = 'payment-status error';
+                        return false;
+                    } else {
+                        if (!silent) {
+                            statusEl.innerHTML = `⏳ ${t('paymentPending')}`;
+                            statusEl.className = 'payment-status';
+                        }
+                        return false;
+                    }
+                } else {
+                    if (!silent) {
+                        const statusEl = document.getElementById('paymentStatus');
+                        statusEl.textContent = '❌ ' + t('orderNotFound');
+                        statusEl.className = 'payment-status error';
+                    }
+                    return false;
+                }
+            } catch (err) {
+                if (!silent) {
+                    const statusEl = document.getElementById('paymentStatus');
+                    statusEl.textContent = '❌ ' + err.message;
+                    statusEl.className = 'payment-status error';
+                }
+                return false;
+            }
+        }
+
+        function openSpecialPurchaseUI(adId) {
+            if (!isUserVerified()) {
+                showToast('⚠️ ' + t('verifyStatus'), 'warning');
+                return;
+            }
+            const modal = document.getElementById('paymentModal');
+            const content = document.getElementById('paymentContent');
+            content.innerHTML = `
+                <div class="modal-title">${t('specialPurchaseTitle')}</div>
+                <div class="payment-info">
+                    <p>⏱ مدت زمان ویژه‌سازی:</p>
+                    <div class="buy-row">
+                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 1)">۱ روز</button>
+                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 3)">۳ روز</button>
+                        <button class="btn-vip" onclick="initiateSpecialPayment(${adId}, 7)">۷ روز</button>
+                    </div>
+                </div>
+                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
+            `;
+            modal.classList.add('show');
+        }
+
+        async function initiateSpecialPayment(adId, days) {
+            const modalContent = document.getElementById('paymentContent');
+            modalContent.innerHTML = `
+                <div class="modal-title">${t('specialPurchaseTitle')}</div>
+                <div class="payment-info">
+                    <p>💰 مبلغ: <span class="amount" id="specialAmount">در حال محاسبه...</span></p>
+                </div>
+                <div id="paymentStatus" class="payment-status">${t('paymentProcessing')}</div>
+                <button class="btn btn-block btn-success" id="paySpecialBtn" style="display:none;" onclick="initiateSpecialPayment2(${adId}, ${days})">💳 پرداخت</button>
+                <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
+            `;
+            // دریافت قیمت
+            const prices = await fetchPrices();
+            const priceKey = `special_ad_${days}day`;
+            const amount = prices[priceKey] || 10000;
+            document.getElementById('specialAmount').textContent = amount.toLocaleString() + ' ریال';
+            document.getElementById('paySpecialBtn').style.display = 'block';
+            document.getElementById('paymentStatus').textContent = '✅ برای پرداخت کلیک کنید.';
+            document.getElementById('paymentStatus').className = 'payment-status';
+        }
+
+        async function initiateSpecialPayment2(adId, days) {
+            const btn = document.getElementById('paySpecialBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ در حال ایجاد...';
+            const status = document.getElementById('paymentStatus');
+            status.textContent = t('paymentProcessing');
+            status.className = 'payment-status';
+
+            try {
+                const data = await apiCall('/api/order/create', {
+                    method: 'POST',
+                    body: JSON.stringify({ type: 'special_ad', params: { days, adId } })
+                });
+                if (data.success && data.paymentUrl) {
+                    currentOrderId = data.orderId;
+                    status.innerHTML = `
+                        ${t('paymentPending')}<br>
+                        <a href="${data.paymentUrl}" target="_blank" class="payment-link">${t('paymentLink')}</a>
+                        <br>
+                        <small>🔑 شناسه: ${data.authority}</small>
+                        <br>
+                        <button class="btn btn-sm btn-outline mt-10" onclick="checkOrderStatus('${data.orderId}')">🔄 بررسی وضعیت</button>
+                    `;
+                    status.className = 'payment-status';
+                    btn.style.display = 'none';
+                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                    paymentPollingInterval = setInterval(() => checkOrderStatus(data.orderId, true), 5000);
+                } else {
+                    status.textContent = '❌ ' + (data.error || t('unknownError'));
+                    status.className = 'payment-status error';
+                    btn.disabled = false;
+                    btn.textContent = '💳 پرداخت';
+                }
+            } catch (err) {
+                status.textContent = '❌ ' + err.message;
+                status.className = 'payment-status error';
+                btn.disabled = false;
+                btn.textContent = '💳 پرداخت';
+            }
+        }
+
+        function closePaymentModal() {
+            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+            document.getElementById('paymentModal').classList.remove('show');
+            document.getElementById('paymentContent').innerHTML = '';
+            currentOrderId = null;
+        }
+
+        // ============================================================
         // INIT
         // ============================================================
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -5679,6 +6074,7 @@
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
         console.log(`👑 ادمین: ${isAdmin ? '✅' : '❌'}`);
         console.log('✅ تمام بخش‌ها با Worker هماهنگ شده‌اند.');
+        console.log(`🌍 زبان: ${currentLang}`);
     </script>
 </body>
 </html>
