@@ -976,11 +976,45 @@
         const API_BASE = 'https://souq-bot.mehdi11eidani.workers.dev';
         const IMAGE_BASE = API_BASE + '/image/';
         const BOT_URL = 'https://t.me/AlsouqAlmaftuhiran_bot';
+async function apiCall(endpoint, options = {}) {
+    const url = API_BASE + endpoint;
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const session = localStorage.getItem('jedar_session_id');
+    const query = (endpoint.includes('?') ? '&' : '?') + (session ? `sessionId=${session}` : '');
 
+    const response = await fetch(url + query, {
+        ...options,
+        headers: { ...headers, ...(options.headers || {}) },
+    });
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || `HTTP ${response.status}`);
+    }
+    return response.json();
+}
         // ============================================================
         // STATE
         // ============================================================
         let token = localStorage.getItem('jedar_token') || null;
+        // ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+function getSessionId() {
+    return localStorage.getItem('jedar_session_id') || null;
+}
+function getUserId() {
+    return localStorage.getItem('jedar_user_id') || null;
+}
+function isUserVerified() {
+    return localStorage.getItem('jedar_phone_verified') === 'true';
+}
+function getVerifiedPhone() {
+    return localStorage.getItem('jedar_verified_phone') || null;
+}
         let currentUser = null;
         let isAdmin = false;
         let isSuperAdmin = false;
