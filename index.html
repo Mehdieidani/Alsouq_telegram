@@ -189,20 +189,21 @@
         .tab-pane { display:none; max-width:500px; margin:0 auto; padding:12px 10px 80px; animation:fadeIn 0.25s ease; }
         .tab-pane.show { display:block; }
         @keyframes fadeIn { from { opacity:0; transform:scale(0.96); } to { opacity:1; transform:scale(1); } }
-        .profile-header { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 16px; margin-bottom:14px; box-shadow:var(--shadow); }
-        .profile-header .avatar { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); display:flex; align-items:center; justify-content:center; font-size:28px; color:#fff; margin-bottom:8px; position:relative; }
-        .profile-header .avatar .badge { position:absolute; bottom:0; right:0; width:22px; height:22px; border-radius:50%; background:var(--green); border:3px solid var(--card); display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; }
-        .profile-header .profile-name { font-size:18px; font-weight:800; }
-        .profile-header .profile-username { font-size:12px; color:var(--text-muted); }
-        .profile-header .profile-phone { font-size:12px; color:var(--text-secondary); margin-top:3px; display:flex; align-items:center; gap:4px; }
+        .profile-header { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 16px; margin-bottom:14px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+        .profile-header .cover { position:absolute; top:0; left:0; right:0; height:100px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); opacity:0.1; }
+        .profile-header .avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; margin-bottom:8px; position:relative; border:3px solid var(--card); }
+        .profile-header .avatar .badge { position:absolute; bottom:0; right:0; width:24px; height:24px; border-radius:50%; background:var(--green); border:3px solid var(--card); display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; }
+        .profile-header .profile-name { font-size:20px; font-weight:800; }
+        .profile-header .profile-username { font-size:13px; color:var(--text-muted); }
+        .profile-header .profile-phone { font-size:13px; color:var(--text-secondary); margin-top:3px; display:flex; align-items:center; gap:4px; }
         .profile-header .profile-status { margin-top:6px; display:inline-flex; align-items:center; gap:4px; padding:2px 12px; border-radius:var(--radius-full); font-size:10px; font-weight:600; }
         .profile-header .profile-status.verified { background:rgba(39,174,96,0.08); color:var(--green); }
         .profile-header .profile-status.unverified { background:rgba(255,56,92,0.08); color:var(--primary); }
-        .profile-header .profile-stats { display:flex; gap:12px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+        .profile-header .profile-stats { display:flex; gap:12px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
         .profile-header .profile-stats .stat { text-align:center; flex:1; }
-        .profile-header .profile-stats .stat .num { font-size:16px; font-weight:800; }
-        .profile-header .profile-stats .stat .label { font-size:9px; color:var(--text-muted); }
-        .profile-actions-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+        .profile-header .profile-stats .stat .num { font-size:18px; font-weight:800; }
+        .profile-header .profile-stats .stat .label { font-size:10px; color:var(--text-muted); }
+        .profile-actions-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; margin-top:12px; }
         .profile-actions-grid .action-btn { padding:10px 6px; border:1px solid var(--border); border-radius:var(--radius); background:var(--card); color:var(--text); font-weight:600; font-size:11px; cursor:pointer; transition:var(--transition); text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px; font-family:var(--font); }
         .profile-actions-grid .action-btn:hover { border-color:var(--primary); color:var(--primary); background:rgba(255,56,92,0.04); }
         .profile-actions-grid .action-btn i { font-size:18px; color:var(--primary); }
@@ -392,9 +393,81 @@
         /* زبان - دکمه */
         #langBtn { font-size:12px; font-weight:700; background:var(--input); border:1px solid var(--border); border-radius:var(--radius-full); padding:4px 12px; cursor:pointer; transition:var(--transition); color:var(--text); }
         #langBtn:hover { border-color:var(--primary); color:var(--primary); }
+
+        /* ===== SPLASH OVERLAY ===== */
+        .splash-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+            animation: splashFade 0.5s ease;
+        }
+        .splash-overlay.hidden { display:none; }
+        .splash-overlay .splash-box {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            animation: splashZoom 0.5s ease;
+        }
+        .splash-overlay .splash-box img {
+            width: 100%;
+            display: block;
+        }
+        .splash-overlay .splash-box .splash-content {
+            padding: 20px 24px 24px;
+            text-align: center;
+        }
+        .splash-overlay .splash-box .splash-content h2 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--primary);
+        }
+        .splash-overlay .splash-box .splash-content p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .splash-overlay .splash-box .splash-content .btn {
+            margin: 4px 6px;
+        }
+        .splash-overlay .splash-box .splash-content .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .splash-overlay .splash-box .splash-content .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        @keyframes splashFade { from { opacity:0; } to { opacity:1; } }
+        @keyframes splashZoom { from { transform:scale(0.9); opacity:0; } to { transform:scale(1); opacity:1; } }
     </style>
 </head>
 <body>
+
+    <!-- ===== SPLASH OVERLAY ===== -->
+    <div id="splashOverlay" class="splash-overlay hidden">
+        <div class="splash-box">
+            <div id="splashImageContainer"></div>
+            <div class="splash-content">
+                <h2 id="splashTitle">✨ جـدار بازار</h2>
+                <p id="splashDesc">بهترین پلتفرم خرید و فروش</p>
+                <div>
+                    <button class="btn" onclick="closeSplash()" id="splashBtn">ورود به بازار</button>
+                    <button class="btn btn-outline" onclick="closeSplash()" id="splashSkip">رد کردن</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
@@ -509,6 +582,7 @@
     <!-- PROFILE -->
     <div id="profileTab" class="tab-pane">
         <div class="profile-header">
+            <div class="cover"></div>
             <div class="avatar"><span id="avatarText">👤</span><div class="badge" id="verifiedBadge" style="display:none;"><i class="fa-solid fa-check"></i></div></div>
             <div class="profile-name" id="profileDisplayName">کاربر مهمان</div>
             <div class="profile-username" id="profileDisplayUsername">🆔 مهمان</div>
@@ -617,34 +691,34 @@
         <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="guideTitle">📖 راهنما</h2>
         <div class="guide-section">
             <div class="guide-item">
-                <h4>🚀 شروع سریع</h4>
-                <p>۱. در بخش <b>"ثبت آگهی"</b> اطلاعات را وارد کنید. در مرحله آخر، بین آگهی عادی و ویژه یکی را انتخاب کنید. آگهی ویژه نیاز به پرداخت دارد و با برچسب ⭐ مشخص می‌شود.</p>
-                <p>۲. تصاویر یا ویدیو آپلود کنید (حداکثر ۴).</p>
-                <p>۳. آگهی پس از تایید ادمین نمایش داده می‌شود. آگهی‌های ویژه در بالای لیست قرار می‌گیرند.</p>
+                <h4 id="guideStartTitle">🚀 شروع سریع</h4>
+                <p id="guideStep1">۱. در بخش <b>"ثبت آگهی"</b> اطلاعات را وارد کنید. در مرحله آخر، بین آگهی عادی و ویژه یکی را انتخاب کنید. آگهی ویژه نیاز به پرداخت دارد و با برچسب ⭐ مشخص می‌شود.</p>
+                <p id="guideStep2">۲. تصاویر یا ویدیو آپلود کنید (حداکثر ۴).</p>
+                <p id="guideStep3">۳. آگهی پس از تایید ادمین نمایش داده می‌شود. آگهی‌های ویژه در بالای لیست قرار می‌گیرند.</p>
             </div>
             <div class="guide-item">
-                <h4>⭐ ویژگی‌های آگهی ویژه</h4>
-                <p>• نمایش در بالای لیست آگهی‌ها با برچسب ویژه<br>• امکان ویژه‌سازی دستی توسط ادمین<br>• دریافت امتیاز بیشتر (۲۰ امتیاز به جای ۱۰)<br>• آیکون ⭐ در کنار عنوان</p>
+                <h4 id="guideSpecialTitle">⭐ ویژگی‌های آگهی ویژه</h4>
+                <p id="guideSpecialDesc">• نمایش در بالای لیست آگهی‌ها با برچسب ویژه<br>• امکان ویژه‌سازی دستی توسط ادمین<br>• دریافت امتیاز بیشتر (۲۰ امتیاز به جای ۱۰)<br>• آیکون ⭐ در کنار عنوان</p>
             </div>
             <div class="guide-item">
-                <h4>📱 اسپلش و بنر</h4>
-                <p>اسپلش و بنر تبلیغاتی با محدودیت روزانه (۲ اسپلش و ۳ بنر در روز) قابل خرید هستند. پس از پرداخت، به‌صورت خودکار فعال می‌شوند.</p>
+                <h4 id="guideSplashTitle">📱 اسپلش و بنر</h4>
+                <p id="guideSplashDesc">اسپلش و بنر تبلیغاتی با محدودیت روزانه (۲ اسپلش و ۳ بنر در روز) قابل خرید هستند. پس از پرداخت، به‌صورت خودکار فعال می‌شوند.</p>
             </div>
             <div class="guide-item">
-                <h4>🔍 جستجو</h4>
-                <p>از فیلترهای دسته‌بندی و جستجوی پیشرفته برای یافتن آگهی‌های مورد نظر استفاده کنید.</p>
+                <h4 id="guideSearchTitle">🔍 جستجو</h4>
+                <p id="guideSearchText">از فیلترهای دسته‌بندی و جستجوی پیشرفته برای یافتن آگهی‌های مورد نظر استفاده کنید.</p>
             </div>
             <div class="guide-item">
-                <h4>🔔 چشم‌بهراه</h4>
-                <p>با تنظیم چشم‌بهراه، هر زمان آگهی جدید مطابق با علاقه‌مندی‌های شما منتشر شد، مطلع شوید.</p>
+                <h4 id="guideAlertTitle">🔔 چشم‌بهراه</h4>
+                <p id="guideAlertText">با تنظیم چشم‌بهراه، هر زمان آگهی جدید مطابق با علاقه‌مندی‌های شما منتشر شد، مطلع شوید.</p>
             </div>
             <div class="guide-item">
-                <h4>📩 پیام‌های سیستمی</h4>
-                <p>پیام‌های مربوط به تایید، رد، ویژه‌سازی و سایر رویدادهای سیستم در بخش "پیام‌ها" قابل مشاهده است.</p>
+                <h4 id="guideInboxTitle">📩 پیام‌های سیستمی</h4>
+                <p id="guideInboxText">پیام‌های مربوط به تایید، رد، ویژه‌سازی و سایر رویدادهای سیستم در بخش "پیام‌ها" قابل مشاهده است.</p>
             </div>
             <div class="guide-item">
-                <h4>📞 ارتباط با پشتیبانی</h4>
-                <p>از طریق تیکت‌ها یا چت داخلی با پشتیبانی در ارتباط باشید. تمام چت‌ها به مدت ۶ ماه ذخیره می‌شوند.</p>
+                <h4 id="guideSupportTitle">📞 ارتباط با پشتیبانی</h4>
+                <p id="guideSupportText">از طریق تیکت‌ها یا چت داخلی با پشتیبانی در ارتباط باشید. تمام چت‌ها به مدت ۶ ماه ذخیره می‌شوند.</p>
             </div>
         </div>
     </div>
@@ -931,11 +1005,10 @@
         let vipStatus = null;
 
         // ============================================================
-        // TRANSLATIONS (فارسی و انگلیسی)
+        // TRANSLATIONS (فارسی، انگلیسی، عربی)
         // ============================================================
         const translations = {
             fa: {
-                // عمومی
                 verifyStatus: '⚠️ شماره خود را تأیید کنید',
                 verified: '✅ شماره شما تأیید شده است: ',
                 noAds: 'آگهی‌ای یافت نشد',
@@ -1177,10 +1250,18 @@
                 guideStep1: '۱. در بخش <b>"ثبت آگهی"</b> اطلاعات را وارد کنید.',
                 guideStep2: '۲. تصاویر یا ویدیو آپلود کنید.',
                 guideStep3: '۳. آگهی پس از تایید نمایش داده می‌شود.',
+                guideSpecialTitle: '⭐ ویژگی‌های آگهی ویژه',
+                guideSpecialDesc: '• نمایش در بالای لیست آگهی‌ها با برچسب ویژه<br>• امکان ویژه‌سازی دستی توسط ادمین<br>• دریافت امتیاز بیشتر (۲۰ امتیاز به جای ۱۰)<br>• آیکون ⭐ در کنار عنوان',
+                guideSplashTitle: '📱 اسپلش و بنر',
+                guideSplashDesc: 'اسپلش و بنر تبلیغاتی با محدودیت روزانه (۲ اسپلش و ۳ بنر در روز) قابل خرید هستند. پس از پرداخت، به‌صورت خودکار فعال می‌شوند.',
                 guideSearchTitle: '🔍 جستجو',
-                guideSearchText: 'از فیلترهای پیشرفته برای یافتن آگهی‌های مورد نظر استفاده کنید.',
+                guideSearchText: 'از فیلترهای دسته‌بندی و جستجوی پیشرفته برای یافتن آگهی‌های مورد نظر استفاده کنید.',
                 guideAlertTitle: '🔔 چشم‌بهراه',
                 guideAlertText: 'با تنظیم چشم‌بهراه، هر زمان آگهی جدید مطابق با علاقه‌مندی‌های شما منتشر شد، مطلع شوید.',
+                guideInboxTitle: '📩 پیام‌های سیستمی',
+                guideInboxText: 'پیام‌های مربوط به تایید، رد، ویژه‌سازی و سایر رویدادهای سیستم در بخش "پیام‌ها" قابل مشاهده است.',
+                guideSupportTitle: '📞 ارتباط با پشتیبانی',
+                guideSupportText: 'از طریق تیکت‌ها یا چت داخلی با پشتیبانی در ارتباط باشید. تمام چت‌ها به مدت ۶ ماه ذخیره می‌شوند.',
                 ticketsTitle: '🎫 تیکت‌های پشتیبانی',
                 newTicket: 'ثبت تیکت جدید',
                 chatTitle: '💬 چت',
@@ -1276,9 +1357,18 @@
                 backToOrders: '🔙 بازگشت به سفارشات',
                 closePayment: '❌ بستن',
                 persianMonths: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
-                // ویژگی‌های ویژه
                 specialFeatures: '✨ ویژگی‌های آگهی ویژه: نمایش برتر، امتیاز بیشتر، آیکون ⭐',
                 vipFeature: '👑 کاربر VIP: آگهی‌های شما همیشه در بالای لیست قرار می‌گیرند.',
+                loadMore: 'بارگذاری بیشتر',
+                reply: 'پاسخ',
+                subject: 'موضوع',
+                message: 'متن',
+                ticketSent: 'تیکت شما ثبت شد.',
+                report: 'گزارش',
+                splashTitle: '✨ جـدار بازار',
+                splashDesc: 'بهترین پلتفرم خرید و فروش',
+                splashBtn: 'ورود به بازار',
+                splashSkip: 'رد کردن',
             },
             en: {
                 verifyStatus: '⚠️ Please verify your phone number',
@@ -1522,10 +1612,18 @@
                 guideStep1: '1. Enter information in <b>"Post ad"</b> section.',
                 guideStep2: '2. Upload images or video.',
                 guideStep3: '3. Ad will be displayed after approval.',
+                guideSpecialTitle: '⭐ Special ad features',
+                guideSpecialDesc: '• Top display with special badge<br>• Manual special activation by admin<br>• More points (20 instead of 10)<br>• ⭐ icon next to title',
+                guideSplashTitle: '📱 Splash & Banner',
+                guideSplashDesc: 'Splash and banner ads with daily limits (2 splash, 3 banners per day) can be purchased. They activate automatically after payment.',
                 guideSearchTitle: '🔍 Search',
-                guideSearchText: 'Use advanced filters to find the ads you need.',
+                guideSearchText: 'Use category filters and advanced search to find the ads you need.',
                 guideAlertTitle: '🔔 Alerts',
                 guideAlertText: 'Set an alert to be notified when new ads matching your interests are published.',
+                guideInboxTitle: '📩 System messages',
+                guideInboxText: 'Messages about approval, rejection, special activation, and other system events are visible in the "Messages" section.',
+                guideSupportTitle: '📞 Contact support',
+                guideSupportText: 'Contact support via tickets or internal chat. All chats are stored for 6 months.',
                 ticketsTitle: '🎫 Support tickets',
                 newTicket: 'New ticket',
                 chatTitle: '💬 Chat',
@@ -1623,21 +1721,397 @@
                 persianMonths: ['Farvardin', 'Ordibehesht', 'Khordad', 'Tir', 'Mordad', 'Shahrivar', 'Mehr', 'Aban', 'Azar', 'Dey', 'Bahman', 'Esfand'],
                 specialFeatures: '✨ Special ad features: Top display, more points, ⭐ icon',
                 vipFeature: '👑 VIP user: Your ads always appear at the top.',
+                loadMore: 'Load more',
+                reply: 'Reply',
+                subject: 'Subject',
+                message: 'Message',
+                ticketSent: 'Your ticket has been submitted.',
+                report: 'Report',
+                splashTitle: '✨ J-Dar Bazaar',
+                splashDesc: 'The best platform for buying and selling',
+                splashBtn: 'Enter Bazaar',
+                splashSkip: 'Skip',
+            },
+            ar: {
+                verifyStatus: '⚠️ يرجى تأكيد رقم هاتفك',
+                verified: '✅ تم تأكيد رقم هاتفك: ',
+                noAds: 'لا توجد إعلانات',
+                noFavorites: 'لا توجد مفضلات',
+                noReviews: 'لم تقم بإضافة أي تعليقات.',
+                noInboxMessages: 'لا توجد رسائل نظامية.',
+                noTickets: 'لا توجد تذاكر',
+                chatThreadsEmpty: 'ليس لديك محادثات نشطة.',
+                alertEmpty: '📭 ليس لديك تنبيهات نشطة.',
+                adminResult: 'استخدم الأزرار أعلاه.',
+                networkError: '❌ خطأ في الاتصال بالخادم',
+                unknownError: 'خطأ غير معروف',
+                completeFields: 'يرجى ملء جميع الحقول الإلزامية',
+                selectImage: 'يرجى اختيار صورة واحدة على الأقل',
+                phoneRequired: '⚠️ يرجى إدخال رقم هاتف صحيح',
+                noPhone: 'رقم الهاتف المؤكد غير موجود في الملف الشخصي',
+                adSaved: '✅ تم حفظ الإعلان بنجاح!',
+                adError: '❌ خطأ في حفظ الإعلان',
+                adDeleted: 'تم حذف الإعلان',
+                adApproved: 'تمت الموافقة على الإعلان',
+                adRejected: 'تم رفض الإعلان',
+                adNotFound: 'الإعلان غير موجود',
+                oldAdsDeleted: 'تم حذف الإعلانات القديمة',
+                confirmDelete: 'هل أنت متأكد من الحذف؟',
+                confirmDeleteOld: 'هل أنت متأكد من حذف الإعلانات القديمة؟',
+                confirmSpecial: 'هل أنت متأكد من جعل هذا الإعلان مميزاً؟',
+                specialToggleSuccess: '⭐ تم جعل الإعلان مميزاً.',
+                specialToggleRemove: '❌ تم إلغاء التميز.',
+                editApproved: '✅ تمت الموافقة على تعديل الإعلان.',
+                editRejected: '❌ تم رفض تعديل الإعلان.',
+                noEditRequests: 'لا توجد طلبات تعديل.',
+                backupSuccess: '✅ تم النسخ الاحتياطي بنجاح.',
+                restoreSuccess: '✅ تم استعادة المحادثة بنجاح.',
+                chatDeleteConfirm: '⚠️ هل أنت متأكد من حذف هذه المحادثة وجميع رسائلها؟',
+                chatDeleted: '✅ تم حذف المحادثة بنجاح.',
+                noChatsFound: '📭 لا توجد محادثات.',
+                chatNotFound: '❌ المحادثة غير موجودة',
+                chatSearchPlaceholder: 'بحث برقم الهاتف أو معرف المستخدم',
+                chatSearchBtn: '🔍 بحث',
+                chatClearSearch: '🧹 مسح البحث',
+                chatDetails: '📋 تفاصيل المحادثة',
+                chatParticipants: '👥 المشاركون',
+                chatMessagesCount: '📨 عدد الرسائل',
+                chatCreatedAt: '📅 تاريخ الإنشاء',
+                chatLastMessage: '💬 آخر رسالة',
+                chatBackupAll: '💾 نسخ احتياطي لكل المحادثات',
+                chatRestorePrompt: '♻️ أدخل رمز النسخ الاحتياطي:',
+                chatView: '👁 عرض المحادثة',
+                backupChat: '💾 نسخ احتياطي للمحادثة',
+                restoreChat: '♻️ استعادة المحادثة',
+                chatNoMessages: 'لا توجد رسائل في هذه المحادثة.',
+                chatSent: '✅ تم إرسال الرسالة.',
+                chatStart: 'بدء المحادثة',
+                sendBtn: '📤 إرسال',
+                cancel: '❌ إلغاء',
+                save: '💾 حفظ',
+                close: 'إلغاء',
+                editAd: '✏️ تعديل الإعلان',
+                renewAd: '🔄 تمديد الإعلان',
+                adRenewed: '✅ تم تمديد الإعلان.',
+                adRenewFailed: '❌ لا يمكن التمديد.',
+                settingsSaved: '✅ تم حفظ الإعدادات.',
+                enabled: 'مفعل',
+                disabled: 'غير مفعل',
+                profileSaved: '✅ تم حفظ الملف الشخصي بنجاح.',
+                profileUpdateError: '❌ خطأ في حفظ الملف الشخصي',
+                statsTotalUsers: '👥 المستخدمين',
+                statsTotalAds: '📌 الإعلانات',
+                statsPending: '⏳ قيد الانتظار',
+                statsSpecial: '⭐ المميزة',
+                statsBanners: '📢 بانر نشط',
+                ticketReplySent: 'تم إرسال ردك',
+                ticketClosed: 'تم إغلاق التذكرة',
+                noTicketFound: 'التذكرة غير موجودة',
+                favoriteAdd: 'تمت الإضافة إلى المفضلة',
+                favoriteRemove: 'تمت الإزالة من المفضلة',
+                reviewSubmit: 'تم تسجيل تعليقك',
+                reviewError: 'خطأ في تسجيل التعليق',
+                imageUploadError: 'خطأ في رفع الصورة',
+                imageTooLarge: 'حجم الصورة يتجاوز 5 ميجابايت',
+                invalidFormat: 'صيغة الصورة غير مدعومة',
+                maxImages: 'الحد الأقصى 4 صور',
+                unauthorized: '⛔ غير مصرح',
+                operationCancelled: 'تم إلغاء العملية',
+                youAreBlocked: 'حسابك محظور',
+                sessionExpired: '⏳ انتهت جلستك، يرجى تسجيل الدخول مجدداً.',
+                messageSent: '✅ تم إرسال الرسالة بنجاح.',
+                messageSendError: '❌ خطأ في إرسال الرسالة',
+                chatBlockUser: '🚫 حظر المستخدم',
+                chatUnblockUser: '✅ إلغاء حظر المستخدم',
+                chatBlockSuccess: '✅ تم حظر المستخدم.',
+                chatUnblockSuccess: '✅ تم إلغاء حظر المستخدم.',
+                alertSaved: '✅ تم حفظ التنبيه بنجاح! 🎉',
+                alertDeleted: '🗑 تم حذف التنبيه.',
+                alertDeletedConfirm: 'هل أنت متأكد من حذف هذا التنبيه؟',
+                alertToggleActive: 'تفعيل/إلغاء',
+                alertDelete: '🗑 حذف',
+                alertStatusActive: '✅ مفعل',
+                alertStatusInactive: '❌ غير مفعل',
+                alertCategory: '📂 اختر التصنيف (أو اترك فارغاً):',
+                alertKeywords: '🔤 أدخل الكلمات المفتاحية (مفصولة بفواصل، أو اترك فارغاً):',
+                alertMinPrice: '💰 أدخل الحد الأدنى للسعر (أو اترك فارغاً):',
+                alertMaxPrice: '💰 أدخل الحد الأقصى للسعر (أو اترك فارغاً):',
+                alertCity: '🏙 أدخل المدينة (أو اترك فارغاً):',
+                alertFrequency: '⏱ كم مرة تريد تلقي التنبيهات؟',
+                frequencyImmediate: '⏱ فوري',
+                frequencyDaily: '📅 يومياً',
+                frequencyWeekly: '📆 أسبوعياً',
+                allCategories: 'كل التصنيفات',
+                catPilgrimage: 'زيارة',
+                catTourism: 'سياحة',
+                catMedical: 'طبي',
+                catBeauty: 'تجميل',
+                catServices: 'خدمات',
+                catJobs: 'توظيف',
+                catRealEstate: 'عقارات',
+                catVehicles: 'مركبات',
+                catAll: 'الكل',
+                statusPending: 'قيد الانتظار',
+                statusApproved: 'موافق عليه',
+                statusRejected: 'مرفوض',
+                adminPending: 'قيد الانتظار',
+                adminAll: 'كل الإعلانات',
+                adminUsers: 'المستخدمين',
+                adminAdmins: 'المشرفين',
+                adminStats: 'الإحصائيات',
+                adminDeleteOld: 'حذف القديمة',
+                adminEditRequests: 'طلبات التعديل',
+                adminChats: 'إدارة المحادثات',
+                adminBanners: 'البانر والسبلاش',
+                adminAnnounce: 'الأخبار والمعلومات',
+                adminSessions: 'الجلسات',
+                adminSettings: 'الإعدادات',
+                adminSendMsg: 'إرسال رسالة نظامية',
+                adminManage: 'الإدارة',
+                addAdTitle: '📌 إضافة إعلان جديد',
+                adTitleLabel: 'عنوان الإعلان',
+                adCategoryLabel: 'التصنيف',
+                adPriceLabel: 'السعر',
+                adCurrencyLabel: 'العملة',
+                adDescLabel: 'الوصف',
+                adLocationLabel: 'الموقع / المدينة',
+                adCountryLabel: 'الدولة',
+                adDurationLabel: '⏳ مدة العرض',
+                adImagesLabel: 'الصور/الفيديو (حد أقصى 4)',
+                adContactLabel: 'رقم الهاتف (مؤكد)',
+                adTypeLabel: 'نوع الإعلان',
+                uploadText: 'انقر للرفع (صورة أو فيديو)',
+                btnNext: 'التالي',
+                btnPrev: 'السابق',
+                submit: 'إضافة الإعلان',
+                phoneVerified: '✅ تم تأكيد رقم هاتفك',
+                shareAd: 'مشاركة',
+                call: 'اتصال',
+                whatsapp: 'واتساب',
+                chatWith: 'محادثة',
+                reportAd: 'الإبلاغ عن مخالفة',
+                reportTitle: '📢 الإبلاغ عن مخالفة',
+                reportReason: 'اختر السبب:',
+                reportReasons: ['احتيال', 'انتحال', 'محتوى غير لائق', 'معلومات خاطئة', 'أخرى'],
+                reportSubmit: 'إرسال التقرير',
+                reportSuccess: '✅ تم إرسال تقريرك للمراجعة.',
+                favoriteRemove: 'تمت الإزالة من المفضلة',
+                favoriteAdd: 'تمت الإضافة إلى المفضلة',
+                authTitle: '🔑 تسجيل الدخول إلى جـدار بازار',
+                authSubText: 'أدخل رقم هاتفك لإرسال رمز التأكيد عبر البوت.',
+                authPhoneLabel: '📱 رقم الهاتف',
+                authCodeLabel: '🔑 الرمز المكون من 6 أرقام',
+                sendOtpBtn: '📤 طلب رمز التأكيد',
+                verifyOtpBtn: '✅ تأكيد الرمز وتسجيل الدخول',
+                navHome: 'الرئيسية',
+                navFav: 'المفضلة',
+                navProfile: 'الملف الشخصي',
+                navTrans: 'المعاملات',
+                navSupport: 'الدعم',
+                menuRules: 'القوانين',
+                menuAbout: 'معلومات عنا',
+                menuGuide: 'الدليل',
+                menuTickets: 'التذاكر',
+                menuChat: 'المحادثة',
+                menuAlerts: 'التنبيهات',
+                menuOrders: 'الطلبات',
+                menuAdmin: 'الإدارة',
+                verifyText: '✅ قم بتأكيد رقم هاتفك للاستفادة من جميع الميزات',
+                verifyBtn: '📱 طلب الرمز',
+                searchPlaceholder: 'ابحث في الإعلانات...',
+                searchBtn: 'بحث',
+                profileUsernameLabel: '🆔 معرف المستخدم',
+                profileFullnameLabel: '👤 الاسم الكامل',
+                profilePhoneLabel: '📱 رقم الهاتف',
+                profileEmailLabel: '📧 البريد الإلكتروني',
+                profileCityLabel: '🏙 المدينة',
+                profileBioLabel: '📝 السيرة الذاتية',
+                profileSpecializationLabel: '🎯 التخصص',
+                saveProfileBtn: '💾 حفظ',
+                logoutBtnText: '🚪 خروج',
+                actionFavs: 'المفضلة',
+                actionMyAds: 'إعلاناتي',
+                actionReviews: 'تعليقاتي',
+                actionTrans: 'المعاملات',
+                statAdsLabel: '📋 الإعلانات',
+                statFavsLabel: '❤️ المفضلة',
+                statReviewsLabel: '⭐ التعليقات',
+                statScoreLabel: '⭐ النقاط',
+                statVIPLabel: '👑 VIP',
+                statTransLabel: '💳 المعاملات',
+                getCode: '✈️ طلب الرمز من البوت',
+                enterCode: '🔑 أدخل الرمز المكون من 6 أرقام',
+                verifyCode: '✅ تأكيد الرمز',
+                cancelCode: '❌ إلغاء',
+                favTitle: '❤️ المفضلة',
+                myAdsTitle: '📋 إعلاناتي',
+                myReviewsTitle: '⭐ تعليقاتي',
+                transTitle: '💳 معاملاتي',
+                transId: '🆔 رقم: {id}',
+                transType: '📌 النوع: {type}',
+                transAmount: '💰 المبلغ: {amount} ريال',
+                transStatus: '📊 الحالة: {status}',
+                transDate: '📅 التاريخ: {date}',
+                transDesc: '📝 الوصف: {desc}',
+                transNo: '📭 لا توجد معاملات.',
+                transPending: '⏳ قيد الانتظار',
+                transPaid: '✅ مدفوع',
+                transFailed: '❌ فاشل',
+                transTypes: {
+                    'vip': '👑 اشتراك VIP',
+                    'special_ad': '⭐ إعلان مميز',
+                    'splash': '📱 شاشة ترحيب',
+                    'banner': '📢 بانر',
+                    'balance': '💰 شحن المحفظة'
+                },
+                inboxTitle: '📩 الرسائل النظامية',
+                rulesTitle: '📜 القوانين',
+                supportTitle: '🆘 الدعم',
+                aboutTitle: '🌟 معلومات عنا',
+                aboutText: '<b>جـدار بازار</b> منصة حديثة وذكية للبيع والشراء عبر الإنترنت.<br>نقدم لك تجربة آمنة وسريعة باستخدام أحدث التقنيات.',
+                guideTitle: '📖 الدليل',
+                guideStartTitle: '🚀 بداية سريعة',
+                guideStep1: '١. أدخل المعلومات في قسم <b>"إضافة إعلان"</b>.',
+                guideStep2: '٢. ارفع صوراً أو فيديو.',
+                guideStep3: '٣. سيتم عرض الإعلان بعد الموافقة عليه.',
+                guideSpecialTitle: '⭐ ميزات الإعلان المميز',
+                guideSpecialDesc: '• عرض في أعلى القائمة مع شارة مميز<br>• تفعيل مميز يدوياً من قبل المشرف<br>• نقاط أكثر (۲۰ بدلاً من ۱۰)<br>• أيقونة ⭐ بجانب العنوان',
+                guideSplashTitle: '📱 شاشة الترحيب والبانر',
+                guideSplashDesc: 'يمكن شراء إعلانات شاشة الترحيب والبانر بحدود يومية (۲ شاشة ترحيب، ۳ بانرات في اليوم). يتم تفعيلها تلقائياً بعد الدفع.',
+                guideSearchTitle: '🔍 البحث',
+                guideSearchText: 'استخدم فلاتر التصنيف والبحث المتقدم للعثور على الإعلانات المناسبة.',
+                guideAlertTitle: '🔔 التنبيهات',
+                guideAlertText: 'عيّن تنبيهاً ليتم إعلامك عند نشر إعلانات جديدة تطابق اهتماماتك.',
+                guideInboxTitle: '📩 الرسائل النظامية',
+                guideInboxText: 'رسائل الموافقة، الرفض، التفعيل المميز، وغيرها من أحداث النظام متاحة في قسم "الرسائل".',
+                guideSupportTitle: '📞 الاتصال بالدعم',
+                guideSupportText: 'تواصل مع الدعم عبر التذاكر أو المحادثة الداخلية. يتم تخزين جميع المحادثات لمدة ۶ أشهر.',
+                ticketsTitle: '🎫 تذاكر الدعم',
+                newTicket: 'تذكرة جديدة',
+                chatTitle: '💬 المحادثة',
+                alertsTitle: '🔔 التنبيهات',
+                alertAdd: '➕ تنبيه جديد',
+                adminTitle: '🔧 لوحة الإدارة',
+                adminManageTitle: '📋 الإدارة',
+                adminResultText: 'استخدم الأزرار أعلاه.',
+                verifyStatus: '⚠️ يرجى تأكيد رقم هاتفك',
+                verified: '✅ تم تأكيد رقم هاتفك: ',
+                noAdsFound: 'لا توجد إعلانات',
+                userNotFound: 'المستخدم غير موجود',
+                adminAdded: 'تمت إضافة مشرف',
+                adminRemoved: 'تمت إزالة مشرف',
+                announcementSent: 'تم إرسال الإشعار',
+                special: 'مميز',
+                normal: 'عادي',
+                viewAd: 'عرض',
+                delete: 'حذف',
+                edit: 'تعديل',
+                renew: 'تمديد',
+                updateMessage: 'تحديث ...',
+                blockUser: '🚫 حظر',
+                unblockUser: '✅ إلغاء الحظر',
+                deleteUser: '🗑 حذف المستخدم',
+                sendPrivateMsg: '📨 إرسال رسالة خاصة',
+                setRole: '👑 تغيير الدور',
+                userBlocked: 'تم حظر المستخدم',
+                userUnblocked: 'تم إلغاء حظر المستخدم',
+                userDeleted: 'تم حذف المستخدم',
+                roleChanged: 'تم تغيير دور المستخدم',
+                enterUserId: 'أدخل معرف المستخدم:',
+                enterRole: 'أدخل الدور الجديد (super_admin, admin, admin_ads, admin_tickets, admin_monitor, user):',
+                enterBlockReason: 'أدخل سبب الحظر:',
+                unblockConfirm: 'هل أنت متأكد من إلغاء حظر هذا المستخدم؟',
+                deleteUserConfirm: 'هل أنت متأكد من حذف هذا المستخدم نهائياً؟ هذا الإجراء لا يمكن التراجع عنه!',
+                userDeletedSuccess: '✅ تم حذف المستخدم بنجاح.',
+                userBlockedSuccess: '✅ تم حظر المستخدم.',
+                userUnblockedSuccess: '✅ تم إلغاء حظر المستخدم.',
+                roleChangedSuccess: '✅ تم تغيير دور المستخدم.',
+                chatBackupSuccess: '✅ تم النسخ الاحتياطي للمحادثة بنجاح.',
+                chatRestoreSuccess: '✅ تم استعادة المحادثة بنجاح.',
+                bannerAddSuccess: '✅ تمت إضافة البانر بنجاح.',
+                bannerDeleteSuccess: '✅ تم حذف البانر.',
+                bannerToggleSuccess: '✅ تم تغيير حالة البانر.',
+                splashAddSuccess: '✅ تمت إضافة شاشة الترحيب بنجاح.',
+                enterBannerTitle: 'أدخل عنوان البانر:',
+                enterBannerLink: 'أدخل رابط البانر:',
+                selectBannerImage: 'اختر صورة البانر:',
+                announceTitle: 'عنوان الإشعار',
+                announceMessage: 'نص الإشعار',
+                announceSend: 'إرسال الإشعار',
+                announceSent: '✅ تم إرسال الإشعار بنجاح.',
+                toggleSupport: '🔧 الدعم',
+                toggleWhatsapp: '💬 واتساب',
+                togglePhone: '📞 اتصال هاتفي',
+                toggleTelegram: '✈️ تلغرام',
+                toggleEmail: '📧 البريد الإلكتروني',
+                toggleAds: '📌 الإعلانات',
+                toggleBanners: '📢 البانر',
+                toggleSplash: '📱 شاشة الترحيب',
+                sessionRevoke: '🚫 إلغاء الجلسة',
+                sessionRevoked: '✅ تم إلغاء الجلسة.',
+                noSessions: 'لا توجد جلسات.',
+                chatWithSeller: '💬 محادثة مع البائع',
+                chatPhoneHidden: 'رقم الهاتف مخفي. تواصل عبر المحادثة.',
+                welcomeMessage: 'مرحباً بك في جـدار بازار! 🎉\nلتتمكن من البدء، قم بتأكيد رقم هاتفك.',
+                adPublished: '✅ تم نشر إعلانك بنجاح! 🎉',
+                adRejectedMsg: '❌ تم رفض إعلانك. السبب: {reason}',
+                adPendingMsg: '⏳ إعلانك قيد المراجعة.',
+                refreshBtn: '🔄 تحديث ...',
+                chatManagementTitle: '📋 إدارة المحادثات',
+                vipActive: 'نشط حتى {date}',
+                vipInactive: 'غير نشط',
+                buyVipTitle: '👑 شراء اشتراك VIP',
+                buyVipDesc: 'عند شراء اشتراك VIP، ستظهر إعلاناتك في أعلى القائمة وستحصل على نقاط إضافية.',
+                buyVipBtn: 'شراء من البوت',
+                specialAdNotice: '⭐ لجعل الإعلان مميزاً، استخدم البوت.',
+                specialAdBtn: '✨ جعل مميزاً في البوت',
+                alertTitle: '🔔 تنبيه جديد',
+                vipPurchaseTitle: '👑 شراء اشتراك VIP',
+                specialPurchaseTitle: '⭐ شراء إعلان مميز',
+                paymentProcessing: '⏳ جاري إنشاء الدفع...',
+                paymentSuccess: '✅ تم الدفع بنجاح! رقم المتابعة: {refId}',
+                paymentFailed: '❌ فشل الدفع. رمز الخطأ: {code}',
+                paymentPending: '⏳ في انتظار تأكيد الدفع...',
+                paymentLink: '🔗 اضغط للدفع:',
+                orderNotFound: 'الطلب غير موجود.',
+                ordersEmpty: 'لا توجد طلبات.',
+                orderStatusPending: 'في انتظار الدفع',
+                orderStatusPaid: 'تم الدفع',
+                orderStatusFailed: 'فشل',
+                backToOrders: '🔙 العودة إلى الطلبات',
+                closePayment: '❌ إغلاق',
+                persianMonths: ['فاروردين', 'أورديبهشت', 'خرداد', 'تير', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دي', 'بهمن', 'اسفند'],
+                specialFeatures: '✨ ميزات الإعلان المميز: عرض مميز، نقاط أكثر، أيقونة ⭐',
+                vipFeature: '👑 مستخدم VIP: تظهر إعلاناتك دائماً في الأعلى.',
+                loadMore: 'تحميل المزيد',
+                reply: 'رد',
+                subject: 'الموضوع',
+                message: 'النص',
+                ticketSent: 'تم تسجيل تذكرتك.',
+                report: 'تبليغ',
+                splashTitle: '✨ جـدار بازار',
+                splashDesc: 'أفضل منصة للبيع والشراء',
+                splashBtn: 'دخول إلى السوق',
+                splashSkip: 'تخطي',
             }
         };
 
+        // ============================================================
+        // UTILITY
+        // ============================================================
         function t(key) {
             const dict = translations[currentLang] || translations.fa;
             return dict[key] || key;
         }
 
-        // ============================================================
-        // UTILITY
-        // ============================================================
         function normalizePhone(phone) {
             if (!phone) return '';
             let p = phone.replace(/[^0-9]/g, '');
-            if (p.startsWith('98') && p.length === 11) { p = '0' + p.substring(2); } else if (p.startsWith('98') && p.length === 10) { p = '0' + p.substring(2); } else if (p.startsWith('0') && p.length === 11) { return p; } else if (p.length === 10) { p = '0' + p; } else if (p.length === 11 && p.startsWith('09')) { return p; }
+            if (p.startsWith('98') && p.length === 11) p = '0' + p.substring(2);
+            else if (p.startsWith('98') && p.length === 10) p = '0' + p.substring(2);
+            else if (p.startsWith('0') && p.length === 11) return p;
+            else if (p.length === 10) p = '0' + p;
+            else if (p.length === 11 && p.startsWith('09')) return p;
             return p;
         }
 
@@ -1663,22 +2137,50 @@
             return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // تبدیل تاریخ به شمسی (ساده)
+        // ============================================================
+        // توابع دقیق تبدیل تاریخ میلادی به شمسی
+        // ============================================================
+        function gregorianToJalali(gy, gm, gd) {
+            var g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+            var jy = (gy <= 1600) ? 0 : 979;
+            gy -= (gy <= 1600) ? 621 : 1600;
+            var gy2 = (gm > 2) ? (gy + 1) : gy;
+            var days = (gy * 365) + Math.floor((gy + 3) / 4) - Math.floor((gy + 99) / 100) + Math.floor((gy + 399) / 400) - 80 +
+                gd + g_d_m[gm - 1] + ((gm > 2 && ((gy % 4 === 0 && gy % 100 !== 0) || gy % 400 === 0)) ? 1 : 0);
+            jy = jy + 33 * Math.floor(days / 12053);
+            days %= 12053;
+            jy += 4 * Math.floor(days / 1461);
+            days %= 1461;
+            jy += Math.floor((days - 1) / 365);
+            if (days > 365) days = (days - 1) % 365;
+            var jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+            var jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+            return [jy, jm, jd];
+        }
+
         function toPersianDate(ts) {
             if (!ts) return 'نامشخص';
             const d = new Date(ts * 1000);
-            const persianMonths = t('persianMonths');
-            const year = d.getFullYear() - 622;
-            const month = d.getMonth();
-            const day = d.getDate();
-            const monthName = persianMonths[month] || '';
-            return `${day} ${monthName} ${year}`;
+            const [jy, jm, jd] = gregorianToJalali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+            const monthNames = t('persianMonths');
+            if (Array.isArray(monthNames)) {
+                return `${jd} ${monthNames[jm - 1] || ''} ${jy}`;
+            }
+            const fallback = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+            return `${jd} ${fallback[jm - 1] || ''} ${jy}`;
         }
 
         function formatDatePersian(ts) {
             if (!ts) return 'نامشخص';
             const d = new Date(ts * 1000);
-            return toPersianDate(ts) + ' ' + d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            const [jy, jm, jd] = gregorianToJalali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+            const monthNames = t('persianMonths');
+            const time = d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            if (Array.isArray(monthNames)) {
+                return `${jd} ${monthNames[jm - 1] || ''} ${jy} ${time}`;
+            }
+            const fallback = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+            return `${jd} ${fallback[jm - 1] || ''} ${jy} ${time}`;
         }
 
         function normalizeImageUrl(img) {
@@ -1696,8 +2198,7 @@
             toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${msg}</span><button class="close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 30);
-            setTimeout(() => { toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 400); }, 4500);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4500);
         }
 
         function toggleTheme() {
@@ -1708,68 +2209,241 @@
         }
 
         function switchLanguage() {
-            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            if (currentLang === 'fa') currentLang = 'en';
+            else if (currentLang === 'en') currentLang = 'ar';
+            else currentLang = 'fa';
             localStorage.setItem('jedar_lang', currentLang);
-            document.getElementById('langBtn').textContent = currentLang === 'fa' ? '🇮🇷' : '🇬🇧';
+            document.getElementById('langBtn').textContent = currentLang === 'fa' ? '🇮🇷' : currentLang === 'en' ? '🇬🇧' : '🇸🇦';
             updateAllTexts();
             refreshAll();
         }
 
         function updateAllTexts() {
-            // به‌روزرسانی تمام المان‌هایی که از ترجمه استفاده می‌کنند
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
-                const key = el.dataset.i18n;
-                el.textContent = t(key);
-            });
-            // همچنین دکمه‌ها و المان‌های دیگر
-            document.querySelectorAll('.i18n').forEach(el => {
-                const key = el.dataset.i18nKey || el.textContent.trim();
-                el.textContent = t(key);
-            });
-        }
-
-        function isUserVerified() {
-            const phone = getVerifiedPhone();
-            const verified = localStorage.getItem('jedar_phone_verified') === 'true';
-            return verified && phone && phone.length >= 10 && token;
-        }
-
-        function getVerifiedPhone() { return localStorage.getItem('jedar_verified_phone') || ''; }
-
-        function getUserId() { return localStorage.getItem('jedar_user_id') || 'guest'; }
-
-        function getSessionId() {
-            if (!sessionId) {
-                sessionId = 'session_' + Math.random().toString(36).substring(2, 15);
-                localStorage.setItem('jedar_session_id', sessionId);
-            }
-            return sessionId;
-        }
-
-        async function apiCall(endpoint, options = {}) {
-            const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-            let url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
-            if (url.includes('/profile/me') && !url.includes('sessionId')) {
-                url += (url.includes('?') ? '&' : '?') + `sessionId=${getSessionId()}`;
-            }
-            try {
-                const res = await fetch(url, { ...options, headers, mode: 'cors' });
-                const text = await res.text();
-                let data;
-                try { data = JSON.parse(text); } catch (e) { throw new Error('پاسخ سرور معتبر نیست'); }
-                if (res.status === 401) {
-                    clearPhoneVerification();
-                    showToast(t('sessionExpired'), 'warning');
-                    authCheck();
-                    return { success: false, error: 'Unauthorized' };
+            const idMap = {
+                'authTitle': 'authTitle',
+                'authSubText': 'authSubText',
+                'authPhoneLabel': 'authPhoneLabel',
+                'authCodeLabel': 'authCodeLabel',
+                'sendOtpBtn': 'sendOtpBtn',
+                'verifyOtpBtn': 'verifyOtpBtn',
+                'verifyBannerText': 'verifyText',
+                'verifyBannerBtnText': 'verifyBtn',
+                'searchInput': 'searchPlaceholder',
+                'navHome': 'navHome',
+                'navFav': 'navFav',
+                'navProfile': 'navProfile',
+                'navTrans': 'navTrans',
+                'navSupport': 'navSupport',
+                'menuRules': 'menuRules',
+                'menuAbout': 'menuAbout',
+                'menuGuide': 'menuGuide',
+                'menuTickets': 'menuTickets',
+                'menuChat': 'menuChat',
+                'menuAlerts': 'menuAlerts',
+                'menuOrders': 'menuOrders',
+                'menuAdmin': 'menuAdmin',
+                'profileDisplayName': 'profileDisplayName',
+                'profileDisplayUsername': 'profileDisplayUsername',
+                'profileDisplayPhone': 'profileDisplayPhone',
+                'profileStatus': 'profileStatus',
+                'statAdsLabel': 'statAdsLabel',
+                'statFavsLabel': 'statFavsLabel',
+                'statReviewsLabel': 'statReviewsLabel',
+                'statScoreLabel': 'statScoreLabel',
+                'statVIPLabel': 'statVIPLabel',
+                'statTransLabel': 'statTransLabel',
+                'actionFavs': 'actionFavs',
+                'actionMyAds': 'actionMyAds',
+                'actionReviews': 'actionReviews',
+                'actionTrans': 'actionTrans',
+                'profileUsernameLabel': 'profileUsernameLabel',
+                'profileFullnameLabel': 'profileFullnameLabel',
+                'profilePhoneLabel': 'profilePhoneLabel',
+                'profileEmailLabel': 'profileEmailLabel',
+                'profileCityLabel': 'profileCityLabel',
+                'profileBioLabel': 'profileBioLabel',
+                'profileSpecializationLabel': 'profileSpecializationLabel',
+                'saveProfileBtn': 'saveProfileBtn',
+                'logoutBtn': 'logoutBtnText',
+                'codeInputLabel': 'enterCode',
+                'verifyCodeBtn': 'verifyCode',
+                'cancelCodeBtn': 'cancelCode',
+                'favTitle': 'favTitle',
+                'myAdsTitle': 'myAdsTitle',
+                'myReviewsTitle': 'myReviewsTitle',
+                'transTitle': 'transTitle',
+                'inboxTitle': 'inboxTitle',
+                'rulesTitle': 'rulesTitle',
+                'supportTitle': 'supportTitle',
+                'aboutTitle': 'aboutTitle',
+                'aboutText': 'aboutText',
+                'guideTitle': 'guideTitle',
+                'guideStartTitle': 'guideStartTitle',
+                'guideStep1': 'guideStep1',
+                'guideStep2': 'guideStep2',
+                'guideStep3': 'guideStep3',
+                'guideSpecialTitle': 'guideSpecialTitle',
+                'guideSpecialDesc': 'guideSpecialDesc',
+                'guideSplashTitle': 'guideSplashTitle',
+                'guideSplashDesc': 'guideSplashDesc',
+                'guideSearchTitle': 'guideSearchTitle',
+                'guideSearchText': 'guideSearchText',
+                'guideAlertTitle': 'guideAlertTitle',
+                'guideAlertText': 'guideAlertText',
+                'guideInboxTitle': 'guideInboxTitle',
+                'guideInboxText': 'guideInboxText',
+                'guideSupportTitle': 'guideSupportTitle',
+                'guideSupportText': 'guideSupportText',
+                'ticketsTitle': 'ticketsTitle',
+                'newTicketBtn': 'newTicket',
+                'chatTitle': 'chatTitle',
+                'alertsTitle': 'alertsTitle',
+                'alertAddBtn': 'alertAdd',
+                'adminTitle': 'adminTitle',
+                'adminManageTitle': 'adminManageTitle',
+                'adminResultText': 'adminResultText',
+                'addAdTitle': 'addAdTitle',
+                'adTitleLabel': 'adTitleLabel',
+                'adCategoryLabel': 'adCategoryLabel',
+                'adPriceLabel': 'adPriceLabel',
+                'adCurrencyLabel': 'adCurrencyLabel',
+                'btnNext': 'btnNext',
+                'btnNext2': 'btnNext',
+                'btnNext3': 'btnNext',
+                'adDescLabel': 'adDescLabel',
+                'adLocationLabel': 'adLocationLabel',
+                'adCountryLabel': 'adCountryLabel',
+                'adDurationLabel': 'adDurationLabel',
+                'btnPrev': 'btnPrev',
+                'btnPrev2': 'btnPrev',
+                'btnPrev3': 'btnPrev',
+                'adImagesLabel': 'adImagesLabel',
+                'uploadText': 'uploadText',
+                'adContactLabel': 'adContactLabel',
+                'adTypeLabel': 'adTypeLabel',
+                'submitAdBtn': 'submit',
+                'splashTitle': 'splashTitle',
+                'splashDesc': 'splashDesc',
+                'splashBtn': 'splashBtn',
+                'splashSkip': 'splashSkip',
+            };
+            for (const [id, key] of Object.entries(idMap)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        if (el.placeholder !== undefined) el.placeholder = t(key);
+                    } else if (el.tagName === 'BUTTON') {
+                        const icon = el.querySelector('i');
+                        if (icon) {
+                            el.innerHTML = icon.outerHTML + ' ' + t(key);
+                        } else {
+                            el.textContent = t(key);
+                        }
+                    } else {
+                        el.textContent = t(key);
+                    }
                 }
-                return data;
-            } catch (err) {
-                console.error('API Error:', err);
-                return { success: false, error: err.message || t('networkError') };
             }
+            const searchBtn = document.querySelector('.search-box .search-btn');
+            if (searchBtn) searchBtn.textContent = t('searchBtn');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (loadMoreBtn) {
+                const btn = loadMoreBtn.querySelector('button');
+                if (btn) btn.textContent = t('loadMore');
+            }
+            const adminBtnMap = {
+                'adminPendingBtn': 'adminPending',
+                'adminAllBtn': 'adminAll',
+                'adminUsersBtn': 'adminUsers',
+                'adminAdminsBtn': 'adminAdmins',
+                'adminStatsBtn': 'adminStats',
+                'adminDeleteOldBtn': 'adminDeleteOld',
+                'adminEditRequestsBtn': 'adminEditRequests',
+                'adminChatsBtn': 'adminChats',
+                'adminBannersBtn': 'adminBanners',
+                'adminAnnounceBtn': 'adminAnnounce',
+                'adminSessionsBtn': 'adminSessions',
+                'adminSettingsBtn': 'adminSettings',
+                'adminSendMsgBtn': 'adminSendMsg',
+            };
+            for (const [id, key] of Object.entries(adminBtnMap)) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const icon = el.querySelector('i');
+                    if (icon) {
+                        el.innerHTML = icon.outerHTML + ' ' + t(key);
+                    } else {
+                        el.textContent = t(key);
+                    }
+                }
+            }
+            const langBtn = document.getElementById('langBtn');
+            if (langBtn) {
+                langBtn.textContent = currentLang === 'fa' ? '🇮🇷' : currentLang === 'en' ? '🇬🇧' : '🇸🇦';
+            }
+            // categories
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                const cat = chip.dataset.cat;
+                if (cat) {
+                    const map = {
+                        'all': t('catAll'),
+                        'pilgrimage': t('catPilgrimage'),
+                        'tourism': t('catTourism'),
+                        'medical': t('catMedical'),
+                        'beauty': t('catBeauty'),
+                        'services': t('catServices'),
+                        'jobs': t('catJobs'),
+                        'real_estate': t('catRealEstate'),
+                        'vehicles': t('catVehicles')
+                    };
+                    chip.textContent = map[cat] || cat;
+                }
+            });
+        }
+
+        // ============================================================
+        // SPLASH
+        // ============================================================
+        async function loadSplash() {
+            try {
+                const data = await apiCall('/api/banner/splash');
+                if (data.success && data.splash) {
+                    const splash = data.splash;
+                    const overlay = document.getElementById('splashOverlay');
+                    const imgContainer = document.getElementById('splashImageContainer');
+                    const titleEl = document.getElementById('splashTitle');
+                    const descEl = document.getElementById('splashDesc');
+                    const btn = document.getElementById('splashBtn');
+                    const skipBtn = document.getElementById('splashSkip');
+
+                    titleEl.textContent = t('splashTitle');
+                    descEl.textContent = t('splashDesc');
+                    btn.textContent = t('splashBtn');
+                    skipBtn.textContent = t('splashSkip');
+
+                    const imgUrl = normalizeImageUrl(splash.image_id) || '';
+                    if (imgUrl) {
+                        imgContainer.innerHTML = `<img src="${imgUrl}" alt="splash" />`;
+                    } else {
+                        imgContainer.innerHTML = `<div style="height:200px;background:var(--input);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:20px;">✨</div>`;
+                    }
+
+                    btn.onclick = function() {
+                        if (splash.link) window.open(splash.link, '_blank');
+                        closeSplash();
+                    };
+                    skipBtn.onclick = closeSplash;
+
+                    overlay.classList.remove('hidden');
+                    sessionStorage.setItem('splash_shown', 'true');
+                }
+            } catch (e) {
+                console.error('Splash load error:', e);
+            }
+        }
+
+        function closeSplash() {
+            document.getElementById('splashOverlay').classList.add('hidden');
         }
 
         // ============================================================
@@ -1778,8 +2452,7 @@
         async function sendOTP() {
             const phone = document.getElementById('loginPhone').value.trim();
             const status = document.getElementById('otpStatus');
-            if (!phone) { status.textContent = '❌ شماره را وارد کنید';
-                status.className = 'auth-status error'; return; }
+            if (!phone) { status.textContent = '❌ شماره را وارد کنید'; status.className = 'auth-status error'; return; }
             status.textContent = '⏳ در حال ارسال...';
             status.className = 'auth-status';
             try {
@@ -1809,8 +2482,7 @@
             const phone = document.getElementById('loginPhone').value.trim();
             const code = document.getElementById('loginOtp').value.trim();
             const status = document.getElementById('verifyStatus');
-            if (!phone || !code) { status.textContent = '❌ شماره و کد را وارد کنید';
-                status.className = 'auth-status error'; return; }
+            if (!phone || !code) { status.textContent = '❌ شماره و کد را وارد کنید'; status.className = 'auth-status error'; return; }
             status.textContent = '⏳ در حال تأیید...';
             status.className = 'auth-status';
             try {
@@ -1885,9 +2557,6 @@
             switchTab('home');
         }
 
-        // ============================================================
-        // VERIFICATION UI
-        // ============================================================
         function updateVerificationUI() {
             const phone = getVerifiedPhone();
             const verified = isUserVerified();
@@ -1898,7 +2567,6 @@
             const profileStatus = document.getElementById('profileStatus');
             const verifiedBadge = document.getElementById('verifiedBadge');
             const displayPhone = document.querySelector('#profileDisplayPhone span');
-
             if (verified && phone && token) {
                 if (banner) banner.classList.add('hidden');
                 if (statusEl) {
@@ -1913,8 +2581,7 @@
                 document.getElementById('profileUsername').value = getUserId();
                 document.getElementById('verifyBannerBtn').innerHTML = '✅ ' + t('verified');
                 document.getElementById('verifyBannerBtn').className = 'verify-btn verified';
-                if (profileStatus) { profileStatus.className = 'profile-status verified';
-                    profileStatus.innerHTML = '✅ ' + t('verified'); }
+                if (profileStatus) { profileStatus.className = 'profile-status verified'; profileStatus.innerHTML = '✅ ' + t('verified'); }
                 if (verifiedBadge) verifiedBadge.style.display = 'flex';
                 if (displayPhone) displayPhone.textContent = phone;
             } else {
@@ -1929,8 +2596,7 @@
                 if (codeSection) codeSection.classList.remove('show');
                 document.getElementById('verifyBannerBtn').innerHTML = '📱 ' + t('verifyBtn');
                 document.getElementById('verifyBannerBtn').className = 'verify-btn';
-                if (profileStatus) { profileStatus.className = 'profile-status unverified';
-                    profileStatus.innerHTML = '❌ ' + t('verifyStatus'); }
+                if (profileStatus) { profileStatus.className = 'profile-status unverified'; profileStatus.innerHTML = '❌ ' + t('verifyStatus'); }
                 if (verifiedBadge) verifiedBadge.style.display = 'none';
                 if (displayPhone) displayPhone.textContent = 'ثبت نشده';
                 document.getElementById('profilePhone').value = '';
@@ -2078,21 +2744,15 @@
         }
 
         async function checkAdminStatus() {
-            if (!token) { isAdmin = false;
-                isSuperAdmin = false;
-                document.getElementById('adminMenuBtn').style.display = 'none'; return; }
+            if (!token) { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; return; }
             try {
                 const data = await apiCall('/api/profile/me?sessionId=' + getSessionId());
                 if (data.success && data.user) {
                     isAdmin = data.user.is_admin || data.user.is_super_admin || false;
                     isSuperAdmin = data.user.is_super_admin || false;
                     document.getElementById('adminMenuBtn').style.display = isAdmin ? 'flex' : 'none';
-                } else { isAdmin = false;
-                    isSuperAdmin = false;
-                    document.getElementById('adminMenuBtn').style.display = 'none'; }
-            } catch (e) { isAdmin = false;
-                isSuperAdmin = false;
-                document.getElementById('adminMenuBtn').style.display = 'none'; }
+                } else { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; }
+            } catch (e) { isAdmin = false; isSuperAdmin = false; document.getElementById('adminMenuBtn').style.display = 'none'; }
         }
 
         // ============================================================
@@ -2137,8 +2797,7 @@
         // ADS
         // ============================================================
         async function fetchAds(showLoading = true, reset = true) {
-            if (reset) { page = 1;
-                filteredAds = []; }
+            if (reset) { page = 1; filteredAds = []; }
             const grid = document.getElementById('adsGrid');
             if (showLoading && reset) grid.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
@@ -2149,22 +2808,18 @@
                         if (!ad.image_ids) ad.image_ids = [];
                         if (ad.image_ids && Array.isArray(ad.image_ids)) { ad.image_ids = ad.image_ids.map(img => normalizeImageUrl(img)).filter(url => url !== null); }
                         ad.media_type = ad.media_type || 'image';
-                        // ویژگی‌های ویژه
                         ad.is_special = ad.is_special || 0;
                         ad.is_vip = ad.is_vip || 0;
                         return ad;
                     });
                     newAds.sort((a, b) => {
-                        // ویژه و VIP در بالا
                         if (a.is_special && !b.is_special) return -1;
                         if (!a.is_special && b.is_special) return 1;
                         if (a.is_vip && !b.is_vip) return -1;
                         if (!a.is_vip && b.is_vip) return 1;
                         return (b.created_at || 0) - (a.created_at || 0);
                     });
-                    if (reset) { allAds = newAds;
-                        filteredAds = [...allAds]; } else { allAds = allAds.concat(newAds);
-                        filteredAds = filteredAds.concat(newAds); }
+                    if (reset) { allAds = newAds; filteredAds = [...allAds]; } else { allAds = allAds.concat(newAds); filteredAds = filteredAds.concat(newAds); }
                     totalAds = data.total || allAds.length;
                     renderAds(filteredAds);
                     document.getElementById('loadMoreBtn').style.display = (allAds.length < totalAds) ? 'block' : 'none';
@@ -2194,8 +2849,6 @@
                 const statusLabels = { pending: t('statusPending'), approved: t('statusApproved'), rejected: t('statusRejected') };
                 const statusText = statusLabels[ad.status] || ad.status;
                 const likes = ad.views || 0;
-
-                // ویژگی‌های ویژه
                 let specialBadge = '';
                 if (ad.is_special) {
                     specialBadge = `<span class="special-badge"><i class="fa-solid fa-star"></i> ${t('special')}</span>`;
@@ -2208,7 +2861,6 @@
                 if (ad.is_special) {
                     specialFeatures = `<div class="special-features"><span>⭐ نمایش برتر</span><span>✨ +۲۰ امتیاز</span></div>`;
                 }
-
                 card.innerHTML = `
                     <div class="ad-image" onclick="event.stopPropagation();${mediaUrl ? `openMediaZoom('${mediaUrl}','${isVideo?'video':'image'}')` : ''}">
                         ${mediaHtml}
@@ -2252,8 +2904,7 @@
             });
         }
 
-        function loadMoreAds() { page++;
-            fetchAds(true, false); }
+        function loadMoreAds() { page++; fetchAds(true, false); }
 
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
@@ -2274,6 +2925,7 @@
                 const chip = document.createElement('span');
                 chip.className = 'category-chip' + (i === 0 ? ' active' : '');
                 chip.textContent = catMap[cat] || cat;
+                chip.dataset.cat = cat;
                 chip.onclick = () => filterAds(cat);
                 container.appendChild(chip);
             });
@@ -2305,9 +2957,7 @@
             setTimeout(async () => {
                 try {
                     await fetchAds(true, true);
-                    if (currentTab === 'profile') { await loadProfile();
-                        await fetchMyAds();
-                        await fetchMyReviews(); }
+                    if (currentTab === 'profile') { await loadProfile(); await fetchMyAds(); await fetchMyReviews(); }
                     if (currentTab === 'favorites') await fetchFavorites();
                     if (currentTab === 'transactions') await fetchTransactions();
                     if (currentTab === 'inbox') await fetchInbox();
@@ -2331,8 +2981,7 @@
         async function loadFavorites() {
             try {
                 const data = await apiCall('/api/favorites');
-                if (data.success) { favorites = data.data.map(ad => ad.id);
-                    localStorage.setItem('jedar_favorites', JSON.stringify(favorites)); }
+                if (data.success) { favorites = data.data.map(ad => ad.id); localStorage.setItem('jedar_favorites', JSON.stringify(favorites)); }
             } catch (e) { console.error(e); }
         }
 
@@ -2370,9 +3019,7 @@
             try {
                 const data = await apiCall('/api/favorite/toggle', { method: 'POST', body: JSON.stringify({ adId }) });
                 if (data.success) {
-                    if (data.isFavorite) { favorites.push(adId);
-                        showToast('❤️ ' + t('favoriteAdd'), 'success'); } else { favorites = favorites.filter(id => id !== adId);
-                        showToast('💔 ' + t('favoriteRemove'), 'info'); }
+                    if (data.isFavorite) { favorites.push(adId); showToast('❤️ ' + t('favoriteAdd'), 'success'); } else { favorites = favorites.filter(id => id !== adId); showToast('💔 ' + t('favoriteRemove'), 'info'); }
                     localStorage.setItem('jedar_favorites', JSON.stringify(favorites));
                     if (currentTab === 'favorites') fetchFavorites();
                     fetchAds(false);
@@ -2385,8 +3032,7 @@
             if (navigator.share) { navigator.share({ title, text: `🔥 ${title} - جـدار`, url }).catch(() => {}); } else { navigator.clipboard.writeText(url).then(() => showToast('🔗 لینک کپی شد', 'success')).catch(() => showToast('🔗 ' + url, 'info')); }
         }
 
-        function showReviewQuick(adId) { openAdDetail(adId);
-            setTimeout(() => { const section = document.querySelector('.review-section'); if (section) section.scrollIntoView({ behavior: 'smooth' }); }, 300); }
+        function showReviewQuick(adId) { openAdDetail(adId); setTimeout(() => { const section = document.querySelector('.review-section'); if (section) section.scrollIntoView({ behavior: 'smooth' }); }, 300); }
 
         // ============================================================
         // MY ADS
@@ -2431,9 +3077,7 @@
             if (!confirm(t('confirmDelete'))) return;
             try {
                 const data = await apiCall('/api/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) });
-                if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success');
-                    fetchMyAds();
-                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); fetchMyAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -2441,9 +3085,7 @@
             if (!confirm(t('renewAd'))) return;
             try {
                 const data = await apiCall('/api/ad/renew', { method: 'POST', body: JSON.stringify({ adId }) });
-                if (data.success) { showToast('✅ ' + t('adRenewed'), 'success');
-                    fetchMyAds();
-                    fetchAds(false); } else { showToast('❌ ' + t('adRenewFailed'), 'error'); }
+                if (data.success) { showToast('✅ ' + t('adRenewed'), 'success'); fetchMyAds(); fetchAds(false); } else { showToast('❌ ' + t('adRenewFailed'), 'error'); }
             } catch (err) { showToast('❌ ' + t('adRenewFailed'), 'error'); }
         }
 
@@ -2466,7 +3108,6 @@
             document.getElementById('uploadStatus').textContent = '';
             updateWizard();
             document.getElementById('addAdForm').dataset.editId = adId;
-            // انتخاب نوع آگهی
             const normalRadio = document.querySelector('input[name="adType"][value="normal"]');
             const specialRadio = document.querySelector('input[name="adType"][value="special"]');
             if (ad.is_special) {
@@ -2482,12 +3123,8 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() { if (wizardStep < 4) { wizardStep++;
-                updateWizard(); } }
-
-        function wizardPrev() { if (wizardStep > 1) { wizardStep--;
-                updateWizard(); } }
-
+        function wizardNext() { if (wizardStep < 4) { wizardStep++; updateWizard(); } }
+        function wizardPrev() { if (wizardStep > 1) { wizardStep--; updateWizard(); } }
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
             document.getElementById(`wizardStep${wizardStep}`).style.display = 'block';
@@ -2504,7 +3141,6 @@
             const info = document.getElementById('specialInfo');
             if (type === 'special') {
                 info.style.display = 'block';
-                // دریافت قیمت ویژه
                 fetchPrices().then(prices => {
                     const amount = prices['special_ad_1day'] || 10000;
                     document.getElementById('specialPriceDisplay').textContent = amount.toLocaleString() + ' ریال';
@@ -2533,13 +3169,11 @@
             if (!title || !price || !desc || !location) { showToast('⚠️ ' + t('completeFields'), 'warning'); return; }
             const contact = getVerifiedPhone();
             if (!contact) { showToast('⚠️ ' + t('noPhone'), 'error'); return; }
-
             const fileInput = document.getElementById('adImagesInput');
             const files = fileInput.files;
             const editId = document.getElementById('addAdForm').dataset.editId;
             let imageIds = [];
             let mediaType = 'image';
-
             if (files && files.length > 0) {
                 const btn = document.getElementById('submitAdBtn');
                 btn.disabled = true;
@@ -2554,10 +3188,7 @@
                         statusEl.textContent = `در حال آپلود ${file.name}...`;
                         const formData = new FormData();
                         formData.append('photo', file);
-                        const uploadRes = await fetch(`${API_BASE}/api/upload`, {
-                            method: 'POST',
-                            body: formData
-                        });
+                        const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData });
                         const uploadResult = await uploadRes.json();
                         if (uploadResult.success && uploadResult.file_id) {
                             imageIds.push(uploadResult.file_id);
@@ -2601,13 +3232,11 @@
                 showToast('⚠️ ' + t('selectImage'), 'warning');
                 return;
             }
-
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ در حال ثبت...';
             const statusEl = document.getElementById('uploadStatus');
             statusEl.textContent = '⏳ در حال ثبت...';
-
             try {
                 const payload = {
                     title,
@@ -2629,10 +3258,8 @@
                     payload.adId = parseInt(editId);
                 }
                 const data = await apiCall(endpoint, { method: 'POST', body: JSON.stringify(payload) });
-
                 if (data.success) {
                     if (adType === 'special') {
-                        // پرداخت برای ویژه
                         const priceKey = 'special_ad_1day';
                         const amount = await getPrice(priceKey) || 10000;
                         const orderData = await apiCall('/api/order/create', {
@@ -2642,7 +3269,6 @@
                         if (orderData.success && orderData.paymentUrl) {
                             showToast('💰 برای ویژه‌سازی، پرداخت را تکمیل کنید.', 'info');
                             window.open(orderData.paymentUrl, '_blank');
-                            // پیگیری خودکار
                             setTimeout(() => {
                                 apiCall(`/api/order/status/${orderData.orderId}`).then(res => {
                                     if (res.success && res.order && res.order.status === 'paid') {
@@ -2690,8 +3316,7 @@
             const files = Array.from(e.target.files);
             const grid = document.getElementById('adImagePreview');
             grid.innerHTML = '';
-            if (files.length > 4) { showToast(t('maxImages'), 'warning');
-                this.value = ''; return; }
+            if (files.length > 4) { showToast(t('maxImages'), 'warning'); this.value = ''; return; }
             files.forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function(ev) {
@@ -2732,7 +3357,6 @@
             const phone = getVerifiedPhone();
             contactField.value = phone || '';
             contactField.readOnly = true;
-            // تنظیم پیش‌فرض نوع آگهی
             document.querySelector('input[name="adType"][value="normal"]').checked = true;
             updateAdTypeUI('normal');
         }
@@ -2770,10 +3394,8 @@
                 }
             } else { galleryHtml =
                     `<div class="ad-gallery"><div class="no-image"><i class="fa-solid fa-image" style="font-size:28px;opacity:0.3;"></i></div></div>`; }
-
             const specialBadge = ad.is_special ? `<span class="special-badge"><i class="fa-solid fa-star"></i> ${t('special')}</span>` : '';
             const vipBadge = ad.is_vip ? `<span class="vip-label"><i class="fa-solid fa-crown"></i> VIP</span>` : '';
-
             content.innerHTML = `
                     <div class="modal-title">${ad.title || 'بدون عنوان'} ${specialBadge} ${vipBadge}</div>
                     ${galleryHtml}
@@ -2919,11 +3541,7 @@
         // ============================================================
         // REVIEW
         // ============================================================
-        function setDetailRating(val) { reviewRating = val;
-            document.getElementById('detailReviewRating').value = val;
-            document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => { el.className = idx < val ? 'active' : '';
-                el.textContent = idx < val ? '★' : '☆'; }); }
-
+        function setDetailRating(val) { reviewRating = val; document.getElementById('detailReviewRating').value = val; document.querySelectorAll('#detailReviewStars span').forEach((el, idx) => { el.className = idx < val ? 'active' : ''; el.textContent = idx < val ? '★' : '☆'; }); }
         async function submitDetailReview() {
             if (!isUserVerified()) return;
             const adId = document.getElementById('detailReviewAdId').value;
@@ -2931,15 +3549,13 @@
             const comment = document.getElementById('detailReviewComment').value.trim();
             if (!rating || rating < 1) { showToast('لطفاً امتیاز را انتخاب کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/review', { method: 'POST', body: JSON.stringify({ adId: parseInt(adId),
-                        rating, comment }) });
+                const data = await apiCall('/api/review', { method: 'POST', body: JSON.stringify({ adId: parseInt(adId), rating, comment }) });
                 if (data.success) {
                     showToast('✅ ' + t('reviewSubmit'), 'success');
                     loadDetailReviews(adId);
                     document.getElementById('detailReviewRating').value = 0;
                     document.getElementById('detailReviewComment').value = '';
-                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = '';
-                        el.textContent = '☆'; });
+                    document.querySelectorAll('#detailReviewStars span').forEach(el => { el.className = ''; el.textContent = '☆'; });
                     reviewRating = 0;
                     fetchAds(false);
                     fetchMyReviews();
@@ -3055,32 +3671,25 @@
 
         async function openChatThread(threadId) {
             if (!isUserVerified()) return;
-            if (chatPollingInterval) { clearInterval(chatPollingInterval);
-                chatPollingInterval = null; }
+            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
             activeChatThreadId = threadId;
             lastMessagesHash = '';
-
             const modal = document.getElementById('chatModal');
             const titleEl = document.getElementById('chatModalTitle');
             const messagesArea = document.getElementById('chatMessagesArea');
             const input = document.getElementById('chatInput');
             const sendBtn = document.getElementById('chatSendBtn');
-
             const thread = chatThreads.find(t => t.id === threadId);
             const other = thread?.other_user || {};
             const displayName = other?.first_name || other?.phone || other?.username || 'کاربر ناشناس';
             if (titleEl) titleEl.textContent = `💬 ${displayName}`;
-
             modal.classList.add('show');
             if (messagesArea) messagesArea.innerHTML =
                 `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:30px;">در حال بارگذاری...</div>`;
-
             await loadChatMessages(threadId);
-
             chatPollingInterval = setInterval(() => {
                 loadChatMessages(threadId, true);
             }, 3000);
-
             if (input) {
                 input.focus();
                 input.onkeyup = function(e) {
@@ -3101,16 +3710,13 @@
                 }
                 const messages = data.data || [];
                 const thread = data.thread || {};
-
                 const currentHash = messages.map(m => m.id + m.message + m.timestamp).join('|');
                 if (silent && currentHash === lastMessagesHash) {
                     return;
                 }
                 lastMessagesHash = currentHash;
-
                 const messagesArea = document.getElementById('chatMessagesArea');
                 if (!messagesArea) return;
-
                 if (messages.length === 0) {
                     messagesArea.innerHTML =
                         `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:30px;">${t('chatNoMessages')}</div>`;
@@ -3132,9 +3738,7 @@
                     });
                     messagesArea.innerHTML = html;
                 }
-
                 messagesArea.scrollTop = messagesArea.scrollHeight;
-
                 if (!silent) {
                     loadChatThreads();
                 }
@@ -3149,7 +3753,6 @@
             if (!message || !activeChatThreadId) return;
             const sendBtn = document.getElementById('chatSendBtn');
             if (sendBtn) sendBtn.disabled = true;
-
             try {
                 const data = await apiCall('/api/chat/send', {
                     method: 'POST',
@@ -3171,8 +3774,7 @@
         }
 
         function closeChatModal() {
-            if (chatPollingInterval) { clearInterval(chatPollingInterval);
-                chatPollingInterval = null; }
+            if (chatPollingInterval) { clearInterval(chatPollingInterval); chatPollingInterval = null; }
             activeChatThreadId = null;
             lastMessagesHash = '';
             document.getElementById('chatModal').classList.remove('show');
@@ -3233,8 +3835,7 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function closeImageZoom() { document.getElementById('imageZoomOverlay').classList.remove('show');
-            document.body.style.overflow = ''; }
+        function closeImageZoom() { document.getElementById('imageZoomOverlay').classList.remove('show'); document.body.style.overflow = ''; }
 
         // ============================================================
         // BANNER
@@ -3262,20 +3863,13 @@
         // ============================================================
         // SUPPORT DROPDOWN
         // ============================================================
-        function toggleSupportMenu(event) { event.stopPropagation();
-            document.getElementById('supportDropdownMenu').classList.toggle('show'); }
-        document.addEventListener('click', function(e) { if (!e.target.closest('.support-dropdown')) { document
-                    .getElementById('supportDropdownMenu').classList.remove('show'); } });
+        function toggleSupportMenu(event) { event.stopPropagation(); document.getElementById('supportDropdownMenu').classList.toggle('show'); }
+        document.addEventListener('click', function(e) { if (!e.target.closest('.support-dropdown')) { document.getElementById('supportDropdownMenu').classList.remove('show'); } });
 
         // ============================================================
         // RULES
         // ============================================================
-        async function loadRules() { const container = document.getElementById('rulesContent');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
-                    await apiCall('/api/rules');
-                container.innerHTML = (data.success && data.rules) ? data.rules :
-                    `<div class="text-secondary">قوانینی ثبت نشده است.</div>`; } catch (err) { container.innerHTML =
-                        `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function loadRules() { const container = document.getElementById('rulesContent'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/rules'); container.innerHTML = (data.success && data.rules) ? data.rules : `<div class="text-secondary">قوانینی ثبت نشده است.</div>`; } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
 
         // ============================================================
         // TICKETS
@@ -3311,8 +3905,7 @@
                     `<div style="text-align:center;padding:30px 20px;color:var(--text-muted);">${t('noTickets')}</div>`; }
         }
 
-        function openNewTicket() { if (!isUserVerified()) return;
-            openNewTicketWithSubject(''); }
+        function openNewTicket() { if (!isUserVerified()) return; openNewTicketWithSubject(''); }
 
         function openNewTicketWithSubject(subject) {
             const modal = document.getElementById('ticketModal');
@@ -3332,11 +3925,8 @@
             const message = document.getElementById('ticketMessage').value.trim();
             if (!subject || !message) { showToast('لطفاً همه فیلدها را پر کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/tickets', { method: 'POST', body: JSON.stringify({ subject, message,
-                        category: 'general' }) });
-                if (data.success) { showToast('✅ ' + t('ticketSent'), 'success');
-                    closeTicketModal();
-                    loadTickets(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                const data = await apiCall('/api/tickets', { method: 'POST', body: JSON.stringify({ subject, message, category: 'general' }) });
+                if (data.success) { showToast('✅ ' + t('ticketSent'), 'success'); closeTicketModal(); loadTickets(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3397,8 +3987,7 @@
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        function closeTicketModal() { document.getElementById('ticketModal').classList.remove('show');
-            document.getElementById('ticketContent').innerHTML = ''; }
+        function closeTicketModal() { document.getElementById('ticketModal').classList.remove('show'); document.getElementById('ticketContent').innerHTML = ''; }
 
         // ============================================================
         // INBOX
@@ -3529,18 +4118,13 @@
         async function submitAlert() {
             const category = document.getElementById('alertCategoryInput').value || null;
             const keywords = document.getElementById('alertKeywordsInput').value.trim() || null;
-            const min_price = document.getElementById('alertMinPriceInput').value ? parseInt(document.getElementById(
-                'alertMinPriceInput').value) : null;
-            const max_price = document.getElementById('alertMaxPriceInput').value ? parseInt(document.getElementById(
-                'alertMaxPriceInput').value) : null;
+            const min_price = document.getElementById('alertMinPriceInput').value ? parseInt(document.getElementById('alertMinPriceInput').value) : null;
+            const max_price = document.getElementById('alertMaxPriceInput').value ? parseInt(document.getElementById('alertMaxPriceInput').value) : null;
             const city = document.getElementById('alertCityInput').value.trim() || null;
             const frequency = document.getElementById('alertFrequencyInput').value || 'immediate';
             try {
-                const data = await apiCall('/api/alerts', { method: 'POST', body: JSON.stringify({ category, keywords,
-                        min_price, max_price, city, frequency }) });
-                if (data.success) { showToast('✅ ' + t('alertSaved'), 'success');
-                    closeAlertModal();
-                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                const data = await apiCall('/api/alerts', { method: 'POST', body: JSON.stringify({ category, keywords, min_price, max_price, city, frequency }) });
+                if (data.success) { showToast('✅ ' + t('alertSaved'), 'success'); closeAlertModal(); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3548,21 +4132,18 @@
             if (!confirm(t('alertDeletedConfirm'))) return;
             try {
                 const data = await apiCall(`/api/alerts/${alertId}`, { method: 'DELETE' });
-                if (data.success) { showToast('🗑 ' + t('alertDeleted'), 'success');
-                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('🗑 ' + t('alertDeleted'), 'success'); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
         async function toggleAlert(alertId) {
             try {
                 const data = await apiCall(`/api/alerts/toggle/${alertId}`, { method: 'POST' });
-                if (data.success) { showToast(data.is_active ? '✅ فعال شد' : '❌ غیرفعال شد', 'success');
-                    loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast(data.is_active ? '✅ فعال شد' : '❌ غیرفعال شد', 'success'); loadAlerts(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
-        function closeAlertModal() { document.getElementById('alertModal').classList.remove('show');
-            document.getElementById('alertContent').innerHTML = ''; }
+        function closeAlertModal() { document.getElementById('alertModal').classList.remove('show'); document.getElementById('alertContent').innerHTML = ''; }
 
         // ============================================================
         // ADMIN FUNCTIONS
@@ -3586,35 +4167,13 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return;
-            try { const data = await apiCall('/api/admin/ad/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (
-                    data.success) { showToast('✅ ' + t('adApproved'), 'success');
-                    adminPendingAds();
-                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminApproveAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('adApproved'), 'success'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminRejectAd(adId) { if (!checkAdminAccess()) return;
-            const reason = prompt('📝 دلیل رد:'); if (reason === null) return; if (!reason.trim()) { showToast(
-                    'لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall(
-                    '/api/admin/ad/reject', { method: 'POST', body: JSON.stringify({ adId, reason }) }); if (data
-                    .success) { showToast('❌ ' + t('adRejected'), 'warning');
-                    adminPendingAds();
-                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminRejectAd(adId) { if (!checkAdminAccess()) return; const reason = prompt('📝 دلیل رد:'); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/ad/reject', { method: 'POST', body: JSON.stringify({ adId, reason }) }); if (data.success) { showToast('❌ ' + t('adRejected'), 'warning'); adminPendingAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return;
-            try { const data = await apiCall('/api/admin/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) }); if (
-                    data.success) { showToast('🗑 ' + t('adDeleted'), 'success');
-                    adminAllAds();
-                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/ad/delete', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('🗑 ' + t('adDeleted'), 'success'); adminAllAds(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return;
-            try { const data = await apiCall('/api/admin/ad/special', { method: 'POST', body: JSON.stringify({ adId }) }); if (
-                    data.success) { showToast(data.data.is_special ? t('specialToggleSuccess') : t(
-                        'specialToggleRemove'), 'success');
-                    adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminSpecialAd(adId) { if (!checkAdminAccess()) return; if (!confirm(t('confirmSpecial'))) return; try { const data = await apiCall('/api/admin/ad/special', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(data.data.is_special ? t('specialToggleSuccess') : t('specialToggleRemove'), 'success'); adminPendingAds(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
         async function adminAllAds() {
             if (!checkAdminAccess()) return;
@@ -3625,8 +4184,7 @@
                 if (data.success && data.data && data.data.length > 0) {
                     let html = `<h4 style="margin-bottom:6px;font-size:13px;">${t('adminAll')} (${data.data.length})</h4>`;
                     data.data.forEach(ad => {
-                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ?
-                            '⏳' : '❌';
+                        const statusEmoji = ad.status === 'approved' ? '✅' : ad.status === 'pending' ? '⏳' : '❌';
                         const specialEmoji = ad.is_special ? '⭐ ' : '';
                         html +=
                             `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:3px;"><div style="display:flex;gap:8px;align-items:center;"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:11px;">${statusEmoji} ${specialEmoji}#${ad.id} - ${ad.title}</div><div style="font-size:9px;color:var(--text-secondary);">👤 ${ad.user_id} • 💰 ${ad.price?.toLocaleString()} ${ad.currency||'تومان'} • 📊 ${ad.status}</div></div><div style="display:flex;gap:2px;"><button onclick="adminViewAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;">👁</button><button onclick="adminDeleteAd(${ad.id})" style="background:none;border:none;font-size:12px;cursor:pointer;color:var(--primary);">🗑</button></div></div></div>`;
@@ -3675,50 +4233,22 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminBlockUser(userId) { if (!checkAdminAccess()) return;
-            const reason = prompt(t('enterBlockReason')); if (reason === null) return; if (!reason.trim()) { showToast(
-                    'لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall(
-                    '/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data
-                    .success) { showToast('✅ ' + t('userBlockedSuccess'), 'success');
-                    adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminBlockUser(userId) { if (!checkAdminAccess()) return; const reason = prompt(t('enterBlockReason')); if (reason === null) return; if (!reason.trim()) { showToast('لطفاً دلیل را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/block', { method: 'POST', body: JSON.stringify({ userId, reason }) }); if (data.success) { showToast('✅ ' + t('userBlockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminUnblockUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('unblockConfirm')))
-            return; try { const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) });
-            if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success');
-                adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminUnblockUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('unblockConfirm'))) return; try { const data = await apiCall('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ userId }) }); if (data.success) { showToast('✅ ' + t('userUnblockedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm')))
-            return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) });
-            if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success');
-                adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteUser(userId) { if (!checkAdminAccess()) return; if (!confirm(t('deleteUserConfirm'))) return; try { const data = await apiCall('/api/admin/delete-user', { method: 'POST', body: JSON.stringify({ targetId: userId }) }); if (data.success) { showToast('✅ ' + t('userDeletedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
         async function adminSendPrivateMsg(userId) {
-            const subject = prompt('📝 موضوع:');
-            if (subject === null) return;
-            if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; }
-            const body = prompt('📝 متن:');
-            if (body === null) return;
-            if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; }
+            const subject = prompt('📝 موضوع:'); if (subject === null) return; if (!subject.trim()) { showToast('لطفاً موضوع را وارد کنید', 'warning'); return; }
+            const body = prompt('📝 متن:'); if (body === null) return; if (!body.trim()) { showToast('لطفاً متن را وارد کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId,
-                        message: `${subject}\n\n${body}` }) });
-                if (data.success) { showToast('✅ ' + t('messageSent'), 'success');
-                    adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ targetId: userId, message: `${subject}\n\n${body}` }) });
+                if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); adminUsers(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
         }
 
-        async function adminSetRole(userId) { if (!checkAdminAccess()) return;
-            const role = prompt(t('enterRole')); if (role === null) return; const validRoles = ['super_admin', 'admin',
-                'admin_ads', 'admin_tickets', 'admin_monitor', 'user'
-            ]; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data =
-                    await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId,
-                            role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'),
-                        'success');
-                    adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminSetRole(userId) { if (!checkAdminAccess()) return; const role = prompt(t('enterRole')); if (role === null) return; const validRoles = ['super_admin', 'admin', 'admin_ads', 'admin_tickets', 'admin_monitor', 'user']; if (!validRoles.includes(role.trim())) { showToast('نقش نامعتبر است', 'error'); return; } try { const data = await apiCall('/api/admin/set-role', { method: 'POST', body: JSON.stringify({ userId, role: role.trim() }) }); if (data.success) { showToast('✅ ' + t('roleChangedSuccess'), 'success'); adminUsers(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
         async function adminAdmins() {
             if (!checkAdminAccess()) return;
@@ -3766,8 +4296,7 @@
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
                 const data = await apiCall('/api/admin/delete-old-ads', { method: 'POST', body: JSON.stringify({ days: 30 }) });
-                if (data.success) { showToast('✅ ' + t('oldAdsDeleted'), 'success');
-                    adminStats(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
+                if (data.success) { showToast('✅ ' + t('oldAdsDeleted'), 'success'); adminStats(); } else { showToast('❌ ' + t('unknownError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -3788,21 +4317,12 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(
-                    '/api/admin/edit/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(
-                        '✅ ' + t('editApproved'), 'success');
-                    adminEditRequests();
-                    fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminApproveEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/approve', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('✅ ' + t('editApproved'), 'success'); adminEditRequests(); fetchAds(false); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall(
-                    '/api/admin/edit/reject', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast(
-                        '❌ ' + t('editRejected'), 'success');
-                    adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminRejectEdit(adId) { if (!checkAdminAccess()) return; try { const data = await apiCall('/api/admin/edit/reject', { method: 'POST', body: JSON.stringify({ adId }) }); if (data.success) { showToast('❌ ' + t('editRejected'), 'success'); adminEditRequests(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
         // ============================================================
-        // ADMIN: مدیریت چت‌ها
+        // ADMIN: CHAT MANAGEMENT
         // ============================================================
         async function adminChats() {
             if (!checkAdminAccess()) return;
@@ -3928,14 +4448,12 @@
                 const user2 = await getUser(thread.user2);
                 const name1 = user1?.first_name || user1?.phone || thread.user1;
                 const name2 = user2?.first_name || user2?.phone || thread.user2;
-
                 let msgText = `📋 ${t('chatDetails')}\n\n`;
                 msgText += `👥 ${t('chatParticipants')}: ${name1} ↔ ${name2}\n`;
                 msgText += `🆔 ${thread.id}\n`;
                 msgText += `📅 ${t('chatCreatedAt')}: ${formatDatePersian(thread.created_at)}\n`;
                 msgText += `📨 ${t('chatMessagesCount')}: ${messages.length}\n\n`;
                 msgText += `📝 ${t('chatLastMessage')}: ${thread.last_message || 'هیچ پیامی وجود ندارد'}\n\n`;
-
                 if (messages.length > 0) {
                     msgText += '💬 پیام‌ها:\n\n';
                     const last20 = messages.slice(-20);
@@ -3948,7 +4466,6 @@
                 } else {
                     msgText += '📭 هیچ پیامی در این چت وجود ندارد.';
                 }
-
                 const container = document.getElementById('adminResult');
                 container.innerHTML = `
                     <div style="background:var(--input);border:1px solid var(--border);border-radius:var(--radius);padding:12px;max-height:60vh;overflow-y:auto;white-space:pre-wrap;font-size:12px;direction:ltr;text-align:left;font-family:monospace;">
@@ -3966,8 +4483,7 @@
             if (!confirm(t('chatDeleteConfirm'))) return;
             try {
                 const data = await apiCall(`/api/admin/chat/delete?threadId=${threadId}`, { method: 'DELETE' });
-                if (data.success) { showToast('✅ ' + t('chatDeleted'), 'success');
-                    adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+                if (data.success) { showToast('✅ ' + t('chatDeleted'), 'success'); adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
@@ -4002,13 +4518,12 @@
             if (!checkAdminAccess()) return;
             try {
                 const data = await apiCall('/api/admin/chat/restore', { method: 'POST', body: JSON.stringify({ backupKey }) });
-                if (data.success) { showToast('✅ ' + t('restoreSuccess'), 'success');
-                    adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
+                if (data.success) { showToast('✅ ' + t('restoreSuccess'), 'success'); adminChatsLoad(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
             } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); }
         }
 
         // ============================================================
-        // ADMIN: سایر توابع (بنر، اطلاعیه، نشست، تنظیمات)
+        // ADMIN: BANNERS, ANNOUNCE, SESSIONS, SETTINGS
         // ============================================================
         async function adminBanners() {
             if (!checkAdminAccess()) return;
@@ -4057,80 +4572,28 @@
             } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; }
         }
 
-        async function adminAddBanner() { const title = document.getElementById('bannerTitle').value.trim(); const link =
-                document.getElementById('bannerLink').value.trim(); if (!title) { showToast('لطفاً عنوان را وارد کنید',
-                'warning'); return; } try { const data = await apiCall('/api/admin/banner/add', { method: 'POST',
-                    body: JSON.stringify({ title, link, type: 'inline' }) }); if (data.success) { showToast('✅ ' + t(
-                        'bannerAddSuccess'), 'success');
-                    adminBanners();
-                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminAddBanner() { const title = document.getElementById('bannerTitle').value.trim(); const link = document.getElementById('bannerLink').value.trim(); if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, type: 'inline' }) }); if (data.success) { showToast('✅ ' + t('bannerAddSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminAddSplash() { const title = document.getElementById('bannerTitle').value.trim() || 'اسپلش';
-            const link = document.getElementById('bannerLink').value.trim() || ''; const fileInput = document.getElementById(
-                'bannerImageInput'); if (!fileInput.files || fileInput.files.length === 0) { showToast(
-                    'لطفاً تصویر را انتخاب کنید', 'warning'); return; } const file = fileInput.files[0]; if (file.size > 5 *
-                1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; } try { const formData =
-                    new FormData();
-                formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST',
-                        body: formData }); const uploadResult = await uploadRes.json(); if (!uploadResult.success || !
-                    uploadResult.file_id) { showToast('خطا در آپلود تصویر', 'error'); return; } const data = await apiCall(
-                    '/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link,
-                        image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t(
-                        'splashAddSuccess'), 'success');
-                    adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminAddSplash() { const title = document.getElementById('bannerTitle').value.trim() || 'اسپلش'; const link = document.getElementById('bannerLink').value.trim() || ''; const fileInput = document.getElementById('bannerImageInput'); if (!fileInput.files || fileInput.files.length === 0) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; } const file = fileInput.files[0]; if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; } try { const formData = new FormData(); formData.append('photo', file); const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData }); const uploadResult = await uploadRes.json(); if (!uploadResult.success || !uploadResult.file_id) { showToast('خطا در آپلود تصویر', 'error'); return; } const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify({ title, link, image_id: uploadResult.file_id, type: 'splash' }) }); if (data.success) { showToast('✅ ' + t('splashAddSuccess'), 'success'); adminBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminToggleBanner(bannerId) { try { const data = await apiCall('/api/admin/banner/toggle', { method: 'POST',
-                    body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'),
-                        'success');
-                    adminBanners();
-                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminToggleBanner(bannerId) { try { const data = await apiCall('/api/admin/banner/toggle', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('✅ ' + t('bannerToggleSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminDeleteBanner(bannerId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(
-                    '/api/admin/banner/delete', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) {
-                    showToast('🗑 ' + t('bannerDeleteSuccess'), 'success');
-                    adminBanners();
-                    loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminDeleteBanner(bannerId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/banner/delete', { method: 'POST', body: JSON.stringify({ bannerId }) }); if (data.success) { showToast('🗑 ' + t('bannerDeleteSuccess'), 'success'); adminBanners(); loadInlineBanners(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        function adminAnnounce() { if (!checkAdminAccess()) return;
-            document.getElementById('adminResult').innerHTML = `
+        function adminAnnounce() { if (!checkAdminAccess()) return; document.getElementById('adminResult').innerHTML = `
                 <h4 style="font-size:13px;">📢 ${t('adminAnnounce')}</h4>
                 <div class="admin-row"><input type="text" id="announceTitle" placeholder="${t('announceTitle')}"></div>
                 <div class="admin-row"><textarea id="announceMessage" rows="2" placeholder="${t('announceMessage')}"></textarea></div>
                 <button onclick="adminSendAnnounce()" class="btn btn-sm">${t('announceSend')}</button>
             `; }
 
-        async function adminSendAnnounce() { const title = document.getElementById('announceTitle').value.trim(); const message =
-                document.getElementById('announceMessage').value.trim(); if (!title || !message) { showToast(
-                    'لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall(
-                    '/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message, target: 'all' }) }); if (
-                    data.success) { showToast('✅ ' + t('announceSent'), 'success'); } else { showToast('❌ ' + t(
-                        'unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
+        async function adminSendAnnounce() { const title = document.getElementById('announceTitle').value.trim(); const message = document.getElementById('announceMessage').value.trim(); if (!title || !message) { showToast('لطفاً عنوان و متن را وارد کنید', 'warning'); return; } try { const data = await apiCall('/api/admin/announce', { method: 'POST', body: JSON.stringify({ title, message, target: 'all' }) }); if (data.success) { showToast('✅ ' + t('announceSent'), 'success'); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById(
-                'adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
-                    await apiCall('/api/admin/sessions'); if (data.success && data.data && data.data.length > 0) { let html =
-                        `<h4 style="font-size:13px;">💻 ${t('adminSessions')}</h4>`; data.data.forEach(sess => { html +=
-                            `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${sess.userId}</strong> - ${sess.device || 'نامشخص'}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(sess.created_at)}</div><button onclick="adminRevokeSession('${sess.id}')" class="btn btn-sm btn-danger">${t('sessionRevoke')}</button></div>`; });
-                    container.innerHTML = html; } else { container.innerHTML =
-                        `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML =
-                        `<div class="text-secondary">${t('networkError')}</div>`; } }
+        async function adminSessions() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/sessions'); if (data.success && data.data && data.data.length > 0) { let html = `<h4 style="font-size:13px;">💻 ${t('adminSessions')}</h4>`; data.data.forEach(sess => { html += `<div class="feed-item" style="flex-direction:column;align-items:stretch;gap:4px;"><div><strong>${sess.userId}</strong> - ${sess.device || 'نامشخص'}</div><div style="font-size:10px;color:var(--text-secondary);">📅 ${formatTime(sess.created_at)}</div><button onclick="adminRevokeSession('${sess.id}')" class="btn btn-sm btn-danger">${t('sessionRevoke')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('noSessions')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
 
-        async function adminRevokeSession(sessionId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall(
-                    '/api/admin/session/revoke', { method: 'POST', body: JSON.stringify({ sessionId }) }); if (data.success) {
-                    showToast('✅ ' + t('sessionRevoked'), 'success');
-                    adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminRevokeSession(sessionId) { if (!confirm(t('confirmDelete'))) return; try { const data = await apiCall('/api/admin/session/revoke', { method: 'POST', body: JSON.stringify({ sessionId }) }); if (data.success) { showToast('✅ ' + t('sessionRevoked'), 'success'); adminSessions(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById(
-                'adminResult');
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data =
-                    await apiCall('/api/admin/settings'); if (data.success) { const s = data.data || {}; let html =
-                        `<h4 style="font-size:13px;">⚙️ ${t('adminSettings')}</h4>`; const toggles = [
+        async function adminSettings() { if (!checkAdminAccess()) return; const container = document.getElementById('adminResult'); container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`; try { const data = await apiCall('/api/admin/settings'); if (data.success) { const s = data.data || {}; let html = `<h4 style="font-size:13px;">⚙️ ${t('adminSettings')}</h4>`; const toggles = [
                         { key: 'support', label: t('toggleSupport') },
                         { key: 'whatsapp', label: t('toggleWhatsapp') },
                         { key: 'phone', label: t('togglePhone') },
@@ -4139,19 +4602,11 @@
                         { key: 'ads', label: t('toggleAds') },
                         { key: 'banners', label: t('toggleBanners') },
                         { key: 'splash', label: t('toggleSplash') }
-                    ]; toggles.forEach(toggle => { const isEnabled = s[toggle.key] !== false; html +=
-                            `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span>${toggle.label}</span><button onclick="adminToggleSetting('${toggle.key}')" class="btn btn-sm ${isEnabled ? 'btn-success' : 'btn-danger'}">${isEnabled ? t('enabled') : t('disabled')}</button></div>`; });
-                    container.innerHTML = html; } else { container.innerHTML =
-                        `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML =
-                        `<div class="text-secondary">${t('networkError')}</div>`; } }
+                    ]; toggles.forEach(toggle => { const isEnabled = s[toggle.key] !== false; html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span>${toggle.label}</span><button onclick="adminToggleSetting('${toggle.key}')" class="btn btn-sm ${isEnabled ? 'btn-success' : 'btn-danger'}">${isEnabled ? t('enabled') : t('disabled')}</button></div>`; }); container.innerHTML = html; } else { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } } catch (err) { container.innerHTML = `<div class="text-secondary">${t('networkError')}</div>`; } }
 
-        async function adminToggleSetting(key) { try { const data = await apiCall('/api/admin/toggle', { method: 'POST',
-                    body: JSON.stringify({ key }) }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success');
-                    adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast(
-                    '❌ ' + t('unknownError'), 'error'); } }
+        async function adminToggleSetting(key) { try { const data = await apiCall('/api/admin/toggle', { method: 'POST', body: JSON.stringify({ key }) }); if (data.success) { showToast('✅ ' + t('settingsSaved'), 'success'); adminSettings(); } else { showToast('❌ ' + t('unknownError'), 'error'); } } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } }
 
-        function openSendMessageModal() { if (!checkAdminAccess()) return; const modal = document.getElementById(
-                'sendMessageModal'); const content = document.getElementById('sendMessageContent'); content.innerHTML = `
+        function openSendMessageModal() { if (!checkAdminAccess()) return; const modal = document.getElementById('sendMessageModal'); const content = document.getElementById('sendMessageContent'); content.innerHTML = `
                     <div class="modal-title">📨 ${t('adminSendMsg')}</div>
                     <div class="form-group"><label>گیرنده</label>
                         <select id="msgTarget">
@@ -4168,8 +4623,7 @@
                 `;
             modal.classList.add('show');
             document.getElementById('msgTarget').addEventListener('change', function() {
-                document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' :
-                    'none';
+                document.getElementById('specificUserGroup').style.display = this.value === 'specific' ? 'block' : 'none';
             });
         }
 
@@ -4183,10 +4637,8 @@
             if (!subject || !body) { showToast('لطفاً موضوع و متن را وارد کنید', 'warning'); return; }
             if (target === 'specific' && !userId) { showToast('لطفاً شناسه کاربر را وارد کنید', 'warning'); return; }
             try {
-                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ target,
-                        userId, subject, body }) });
-                if (data.success) { showToast('✅ ' + t('messageSent'), 'success');
-                    closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
+                const data = await apiCall('/api/admin/send-message', { method: 'POST', body: JSON.stringify({ target, userId, subject, body }) });
+                if (data.success) { showToast('✅ ' + t('messageSent'), 'success'); closeSendMessageModal(); } else { showToast('❌ ' + t('messageSendError'), 'error'); }
             } catch (err) { showToast('❌ ' + t('messageSendError'), 'error'); }
         }
 
@@ -4198,10 +4650,8 @@
             document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
             const navItem = document.querySelector(`.bottom-nav .nav-item[data-tab="${tab}"]`);
             if (navItem) navItem.classList.add('active');
-
             document.getElementById('app').style.display = 'none';
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('show'));
-
             if (tab === 'home') { document.getElementById('app').style.display = 'block'; } else if (tab === 'profile') {
                 document.getElementById('profileTab').classList.add('show');
                 loadProfile();
@@ -4246,8 +4696,7 @@
             } else if (tab === 'admin') {
                 document.getElementById('adminTab').classList.add('show');
                 if (isAdmin) {
-                    document.getElementById('adminResult').innerHTML =
-                        `<div class="text-secondary">${t('adminResult')}</div>`;
+                    document.getElementById('adminResult').innerHTML = `<div class="text-secondary">${t('adminResult')}</div>`;
                 } else {
                     showToast('⛔ ' + t('unauthorized'), 'error');
                     switchTab('home');
@@ -4354,7 +4803,6 @@
                 <button class="btn btn-block btn-outline" onclick="closePaymentModal()">❌ ${t('close')}</button>
             `;
             modal.classList.add('show');
-            // دریافت قیمت
             fetchPrices().then(prices => {
                 const priceKey = `vip_${months}month`;
                 const amount = prices[priceKey] || 50000;
@@ -4381,7 +4829,6 @@
             const status = document.getElementById('paymentStatus');
             status.textContent = t('paymentProcessing');
             status.className = 'payment-status';
-
             try {
                 const data = await apiCall('/api/order/create', {
                     method: 'POST',
@@ -4436,8 +4883,7 @@
                                 showToast('👑 اشتراک VIP شما فعال شد!', 'success');
                             }
                         }
-                        setTimeout(() => { closePaymentModal();
-                            loadOrders(); }, 2000);
+                        setTimeout(() => { closePaymentModal(); loadOrders(); }, 2000);
                         return true;
                     } else if (order.status === 'failed') {
                         if (paymentPollingInterval) clearInterval(paymentPollingInterval);
@@ -4518,7 +4964,6 @@
             const status = document.getElementById('paymentStatus');
             status.textContent = t('paymentProcessing');
             status.className = 'payment-status';
-
             try {
                 const data = await apiCall('/api/order/create', {
                     method: 'POST',
@@ -4560,7 +5005,7 @@
         }
 
         // ============================================================
-        // TOOLS & UI - SLOT CHECKS & SPLASH/BANNER
+        // DAILY SLOTS
         // ============================================================
         async function loadDailySlots() {
             try {
@@ -4593,7 +5038,6 @@
                 showToast('❌ ظرفیت اسپلش امروز تکمیل شده است.', 'error');
                 return;
             }
-            // ثبت اسپلش با ویزارد مشابه آگهی
             openAddModalForBanner('splash');
         }
 
@@ -4620,14 +5064,11 @@
             const phone = getVerifiedPhone();
             contactField.value = phone || '';
             contactField.readOnly = true;
-            // مخفی کردن بخش نوع آگهی
             document.getElementById('wizardStep4').style.display = 'none';
             document.getElementById('wStep4').style.display = 'none';
-            // تغییر دکمه ثبت
             const submitBtn = document.getElementById('submitAdBtn');
             submitBtn.textContent = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر';
             submitBtn.onclick = () => submitBanner(type);
-            // تنظیم مراحل ویزارد برای ۳ مرحله
             document.getElementById('wizardBar').style.width = '0%';
             document.getElementById('wStep4').style.display = 'none';
             modal.classList.add('show');
@@ -4636,19 +5077,17 @@
         async function submitBanner(type) {
             const title = document.getElementById('adTitle').value.trim();
             const desc = document.getElementById('adDescription').value.trim();
-            const link = document.getElementById('adLocation').value.trim(); // استفاده از فیلد موقعیت برای لینک
+            const link = document.getElementById('adLocation').value.trim();
             const fileInput = document.getElementById('adImagesInput');
             const files = fileInput.files;
             if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; }
             if (!files || files.length === 0) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; }
             const file = files[0];
             if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; }
-
             const btn = document.getElementById('submitAdBtn');
             btn.disabled = true;
             btn.innerHTML = '⏳ در حال آپلود...';
             const statusEl = document.getElementById('uploadStatus');
-
             try {
                 const formData = new FormData();
                 formData.append('photo', file);
@@ -4660,23 +5099,19 @@
                     btn.innerHTML = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر';
                     return;
                 }
-
                 const payload = {
                     title: title,
                     description: desc || '',
                     link: link || '',
                     image_id: uploadResult.file_id,
                     type: type,
-                    days: 1 // پیش‌فرض یک روز
+                    days: 1
                 };
-
                 const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify(payload) });
                 if (data.success) {
                     showToast('✅ ' + (type === 'splash' ? t('splashAddSuccess') : t('bannerAddSuccess')), 'success');
                     closeModal('addAdModal');
-                    // اگر اسپلش یا بنر خریداری شده باشد، پرداخت
                     if (type === 'splash' || type === 'banner') {
-                        // ایجاد سفارش پرداخت
                         const priceKey = type === 'splash' ? 'splash_ad' : 'banner_ad';
                         const amount = await getPrice(priceKey) || (type === 'splash' ? 50000 : 30000);
                         const orderData = await apiCall('/api/order/create', {
@@ -4718,15 +5153,22 @@
         // ============================================================
         document.documentElement.setAttribute('data-theme', 'dark');
         document.getElementById('themeBtn').innerHTML = '<i class="fa-solid fa-sun"></i>';
-        document.getElementById('langBtn').textContent = currentLang === 'fa' ? '🇮🇷' : '🇬🇧';
+        document.getElementById('langBtn').textContent = currentLang === 'fa' ? '🇮🇷' : currentLang === 'en' ? '🇬🇧' : '🇸🇦';
 
         const storedFavs = localStorage.getItem('jedar_favorites');
         if (storedFavs) { try { favorites = JSON.parse(storedFavs); } catch (e) { favorites = []; } }
 
         authCheck();
 
-        if (token && isUserVerified()) { loadApp(); } else { document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('app').classList.add('hidden'); }
+        if (token && isUserVerified()) {
+            loadApp();
+            if (!sessionStorage.getItem('splash_shown')) {
+                loadSplash();
+            }
+        } else {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+        }
 
         async function loadApp() {
             try {
@@ -4748,13 +5190,12 @@
         document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') searchAds(); });
         document.getElementById('loginOtp').addEventListener('keyup', function(e) { if (e.key === 'Enter') verifyOTP(); });
 
-        console.log('🚀 جـدار بازار - پنل کامل نهایی نسخه ۱۴.۵');
+        console.log('🚀 جـدار بازار - نسخه کامل نهایی با پشتیبانی سه زبانه، اسپلش، تاریخ دقیق و تمام قابلیت‌ها');
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🔑 Token: ${token ? '✅ موجود' : '❌ ندارد'}`);
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
         console.log(`👑 ادمین: ${isAdmin ? '✅' : '❌'}`);
         console.log(`🌍 زبان: ${currentLang}`);
-        console.log('✅ تمام قابلیت‌ها: ثبت آگهی عادی/ویژه، اسپلش/بنر، تراکنش، گزارش تخلف، راهنما، پیام‌های سیستمی');
     </script>
 </body>
 </html>
