@@ -846,6 +846,7 @@
         let paymentPollingInterval = null;
         let currentOrderId = null;
         let currentLang = localStorage.getItem('jedar_lang') || 'fa';
+        let vipStatus = null; // برای ذخیره وضعیت VIP
 
         // ============================================================
         // TRANSLATIONS (خلاصه شده - برای کامل‌تر به بک‌اند مراجعه کنید)
@@ -1165,6 +1166,10 @@
                 orderStatusFailed: 'ناموفق',
                 backToOrders: '🔙 بازگشت به سفارشات',
                 closePayment: '❌ بستن',
+                // عربی
+                ar: {
+                    // ... (همانند بک‌اند)
+                }
             }
         };
 
@@ -1551,11 +1556,14 @@
             document.getElementById('statFavs').textContent = (user.favorites || []).length;
             document.getElementById('statReviews').textContent = user.reviews_count || 0;
             document.getElementById('statScore').textContent = user.score || 0;
-            if (user.vip_status === 'active' && user.vip_expiry) {
-                const expiryDate = new Date(user.vip_expiry * 1000).toLocaleDateString('fa-IR');
+            // به‌روزرسانی وضعیت VIP از پاسخ سرور
+            if (user.subscription_end && user.subscription_end > Math.floor(Date.now()/1000)) {
+                const expiryDate = new Date(user.subscription_end * 1000).toLocaleDateString('fa-IR');
                 document.getElementById('statVIP').textContent = t('vipActive').replace('{date}', expiryDate);
+                vipStatus = 'active';
             } else {
                 document.getElementById('statVIP').textContent = t('vipInactive');
+                vipStatus = 'inactive';
             }
             document.getElementById('profileFullname').value = user.fullname || '';
             document.getElementById('profilePhone').value = user.phone || '';
@@ -3797,6 +3805,15 @@
                         await loadProfile();
                         await loadOrders();
                         await loadDailySlots(); // رفرش ظرفیت
+                        // بررسی وضعیت VIP در پروفایل
+                        if (order.type === 'vip') {
+                            // وضعیت VIP به‌روز می‌شود
+                            const profileData = await apiCall('/api/profile/me?sessionId=' + getSessionId());
+                            if (profileData.success && profileData.user) {
+                                updateProfileUI(profileData.user);
+                                showToast('👑 اشتراک VIP شما فعال شد!', 'success');
+                            }
+                        }
                         setTimeout(() => { closePaymentModal();
                             loadOrders(); }, 2000);
                         return true;
@@ -4081,7 +4098,7 @@
         document.getElementById('searchInput').addEventListener('keyup', function(e) { if (e.key === 'Enter') searchAds(); });
         document.getElementById('loginOtp').addEventListener('keyup', function(e) { if (e.key === 'Enter') verifyOTP(); });
 
-        console.log('🚀 جـدار بازار - پنل کامل متصل به Worker نسخه ۱۴.۳');
+        console.log('🚀 جـدار بازار - پنل کامل متصل به Worker نسخه ۱۴.۴');
         console.log(`📡 API Base: ${API_BASE}`);
         console.log(`🔑 Token: ${token ? '✅ موجود' : '❌ ندارد'}`);
         console.log(`👤 کاربر: ${currentUser ? currentUser.phone || 'مهمان' : 'مهمان'}`);
