@@ -3453,6 +3453,9 @@
         let splashIndex = 0;
         let splashInterval = null;
 
+        // MODIFIED: added bannerMode flag
+        let bannerMode = false;
+
         // ============================================================
         // TRANSLATIONS (COMPLETE THREE LANGUAGES)
         // ============================================================
@@ -4801,17 +4804,10 @@
                     btn.textContent = t('splashBtn');
                     skipBtn.textContent = t('splashSkip');
 
-                    // Build 2 splash items (if only one, duplicate it)
                     const splashItems = [];
                     const baseUrl = normalizeImageUrl(splash.image_id) || '';
                     if (baseUrl) {
                         splashItems.push({ image: baseUrl, link: splash.link || '#' });
-                        // Create a second one with a different visual (use a variation or same)
-                        // For rotation, we use the same but we could add a second one from another source
-                        // In production you'd have 2 distinct splashes from the API
-                        // Here we simulate a second by using a different style if available
-                        const secondUrl = normalizeImageUrl(splash.image_id) ?
-                            normalizeImageUrl(splash.image_id).replace(/\.[^.]+$/, '_2$&') : baseUrl;
                         splashItems.push({ image: baseUrl, link: splash.link || '#' });
                     } else {
                         splashItems.push({ image: '', link: '#' });
@@ -4842,7 +4838,6 @@
                         skipBtn.onclick = closeSplash;
                     }
 
-                    // Auto rotate every 4 seconds
                     if (splashInterval) clearInterval(splashInterval);
                     showSplash(0);
                     splashInterval = setInterval(() => {
@@ -4850,7 +4845,6 @@
                         showSplash(splashIndex);
                     }, 4000);
 
-                    // Manual dot clicks
                     dots.forEach((dot, idx) => {
                         dot.onclick = function() {
                             splashIndex = idx;
@@ -5549,19 +5543,34 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        function wizardNext() { if (wizardStep < 4) { wizardStep++;
-                updateWizard(); } }
+        // MODIFIED: wizardNext now respects bannerMode (max step 3)
+        function wizardNext() {
+            if (bannerMode && wizardStep >= 3) return;
+            if (wizardStep < 4) { wizardStep++;
+                updateWizard(); }
+        }
 
         function wizardPrev() { if (wizardStep > 1) { wizardStep--;
                 updateWizard(); } }
 
+        // MODIFIED: updateWizard hides step 4 when bannerMode is true
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
+            // In banner mode, only steps 1-3 are available
+            if (bannerMode) {
+                document.getElementById('wizardStep4').style.display = 'none';
+                document.getElementById('wStep4').style.display = 'none';
+                if (wizardStep > 3) wizardStep = 3;
+            }
             document.getElementById(`wizardStep${wizardStep}`).style.display = 'block';
-            document.getElementById('wizardBar').style.width = `${(wizardStep - 1) * 33.33}%`;
+            const maxStep = bannerMode ? 3 : 4;
+            const progress = (wizardStep - 1) / (maxStep - 1) * 100;
+            document.getElementById('wizardBar').style.width = `${Math.min(progress, 100)}%`;
             for (let i = 1; i <= 4; i++) {
                 const step = document.getElementById(`wStep${i}`);
+                if (!step) continue;
                 step.classList.remove('active', 'completed');
+                if (bannerMode && i === 4) { step.style.display = 'none'; continue; }
                 if (i < wizardStep) step.classList.add('completed');
                 if (i === wizardStep) step.classList.add('active');
             }
@@ -5733,9 +5742,12 @@
             input.dispatchEvent(event);
         }
 
+        // MODIFIED: openAddModal sets bannerMode = false
         function openAddModal() {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
+            bannerMode = false;
             document.getElementById('addAdModal').classList.add('show');
+            document.getElementById('addAdTitle').textContent = t('addAdTitle');
             document.getElementById('addAdForm').dataset.editId = '';
             document.getElementById('addAdForm').reset();
             document.getElementById('adImagePreview').innerHTML = '';
@@ -5749,6 +5761,10 @@
             contactField.readOnly = true;
             document.querySelector('input[name="adType"][value="normal"]').checked = true;
             updateAdTypeUI('normal');
+            // Restore submit button
+            const submitBtn = document.getElementById('submitAdBtn');
+            submitBtn.textContent = t('submit');
+            submitBtn.onclick = submitAd;
         }
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
@@ -5828,6 +5844,22 @@
                     <div id="detailReviews" style="margin-top:6px;"><div style="text-align:center;color:var(--text-muted);font-size:11px;">در حال بارگذاری...</div></div>
                 </div>
             `;
+        }
+
+        // MODIFIED: added closeAdDetail function – closes detail modal and refreshes lists
+        function closeAdDetail() {
+            document.getElementById('adDetailsModal').classList.remove('show');
+            document.getElementById('adDetailContent').innerHTML = '';
+            // Refresh the appropriate list based on current tab
+            if (currentTab === 'home' || currentTab === 'favorites' || currentTab === 'myads') {
+                fetchAds(true, true);
+            }
+            if (currentTab === 'favorites') {
+                fetchFavorites();
+            }
+            if (currentTab === 'myads') {
+                fetchMyAds();
+            }
         }
 
         // ============================================================
@@ -7063,8 +7095,10 @@
                     '❌ ظرفیت بنر امروز تکمیل شده است.', 'error'); return; }
             openAddModalForBanner('banner'); }
 
+        // MODIFIED: openAddModalForBanner sets bannerMode = true and hides step 4
         function openAddModalForBanner(type) {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
+            bannerMode = true;
             const modal = document.getElementById('addAdModal');
             document.getElementById('addAdTitle').textContent = type === 'splash' ? '📱 ثبت اسپلش جدید' :
                 '📢 ثبت بنر جدید';
@@ -7078,13 +7112,9 @@
             const phone = getVerifiedPhone();
             contactField.value = phone || '';
             contactField.readOnly = true;
-            document.getElementById('wizardStep4').style.display = 'none';
-            document.getElementById('wStep4').style.display = 'none';
             const submitBtn = document.getElementById('submitAdBtn');
             submitBtn.textContent = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر';
             submitBtn.onclick = () => submitBanner(type);
-            document.getElementById('wizardBar').style.width = '0%';
-            document.getElementById('wStep4').style.display = 'none';
             modal.classList.add('show');
         }
 
