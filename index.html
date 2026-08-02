@@ -482,7 +482,7 @@
         }
 
         /* ============================================================
-           BANNER ADS (LARGER & MORE VISIBLE)
+           BANNER ADS
            ============================================================ */
         #bannerAdsContainer {
             padding: 0 10px 14px;
@@ -581,84 +581,6 @@
             border-radius: var(--radius-full);
             z-index: 2;
             opacity: 0.8;
-        }
-
-        /* ============================================================
-           BUY SECTION
-           ============================================================ */
-        .buy-section {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            padding: 16px 18px;
-            margin: 0 10px 14px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-        }
-        .buy-section .buy-title {
-            font-weight: 800;
-            font-size: 16px;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-        .buy-section .buy-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-        .buy-section .buy-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .buy-section .buy-row .price-tag {
-            background: var(--input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 4px 14px;
-            font-size: 11px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-vip {
-            background: linear-gradient(135deg, #f1c40f, #f39c12);
-            color: #1a1a2e;
-            border: none;
-            padding: 8px 18px;
-            border-radius: var(--radius-full);
-            font-weight: 800;
-            font-size: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 4px 16px rgba(243, 156, 18, 0.25);
-        }
-        .btn-vip:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 28px rgba(243, 156, 18, 0.35);
-        }
-        .btn-special {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.25);
-        }
-        .btn-special:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 28px rgba(231, 76, 60, 0.35);
         }
 
         /* ============================================================
@@ -1011,8 +933,19 @@
         }
 
         /* ============================================================
-           FLOATING BUTTONS
+           FLOATING BUTTONS & FAB MENU
            ============================================================ */
+        .fab-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 89;
+            display: none;
+            background: transparent;
+        }
+        .fab-overlay.active {
+            display: block;
+        }
+
         .floating-add-btn {
             position: fixed;
             bottom: 90px;
@@ -1034,8 +967,55 @@
         }
         .floating-add-btn:hover {
             transform: scale(1.08);
-            box-shadow: 0 12px 48px var(--primary-glow);
         }
+        .floating-add-btn.open {
+            transform: rotate(45deg) scale(1.08);
+        }
+
+        .fab-menu {
+            position: fixed;
+            bottom: 170px;
+            right: 16px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 8px 0;
+            display: none;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            z-index: 90;
+            min-width: 180px;
+            backdrop-filter: blur(30px);
+        }
+        .fab-menu.show {
+            display: flex;
+        }
+        .fab-menu button {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            text-align: right;
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .fab-menu button:hover {
+            background: rgba(255, 56, 92, 0.06);
+            color: var(--primary);
+        }
+        .fab-menu button i {
+            font-size: 18px;
+            color: var(--primary);
+            width: 24px;
+            text-align: center;
+        }
+
         .floating-support-btn {
             position: fixed;
             bottom: 90px;
@@ -1241,6 +1221,61 @@
         .modal-box .btn-fav:hover {
             background: rgba(255, 56, 92, 0.06);
             border-color: var(--primary);
+        }
+
+        /* ============================================================
+           BANNER/SPLASH MODAL
+           ============================================================ */
+        #bannerModal .modal-box {
+            padding: 24px 22px 28px;
+        }
+        #bannerModal .image-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--input);
+        }
+        #bannerModal .image-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(255, 56, 92, 0.02);
+        }
+        #bannerModal .image-upload-area i {
+            font-size: 28px;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        #bannerModal .image-upload-area p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        #bannerModal .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+        #bannerModal .image-preview-grid .image-preview-item {
+            aspect-ratio: 1/1;
+            width: 100%;
+            background: var(--input);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #bannerModal .image-preview-grid .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #bannerModal .image-preview-grid .image-preview-item button {
+            display: none; /* We don't need remove for single banner image */
         }
 
         /* ============================================================
@@ -2512,50 +2547,6 @@
         }
 
         /* ============================================================
-           IMAGE PREVIEW
-           ============================================================ */
-        .image-preview-item {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: var(--input);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .image-preview-item img,
-        .image-preview-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .image-preview-item .remove-img {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, 0.6);
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            color: #fff;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            z-index: 5;
-        }
-        .image-preview-item .remove-img:hover {
-            background: var(--primary);
-            transform: scale(1.1);
-        }
-
-        /* ============================================================
            GUIDE
            ============================================================ */
         .guide-section .guide-item {
@@ -2615,6 +2606,15 @@
                 bottom: 80px;
                 right: 10px;
             }
+            .fab-menu {
+                bottom: 150px;
+                right: 10px;
+                min-width: 150px;
+            }
+            .fab-menu button {
+                font-size: 12px;
+                padding: 10px 14px;
+            }
             .floating-support-btn {
                 width: 44px;
                 height: 44px;
@@ -2642,7 +2642,6 @@
         @media (min-width: 768px) {
             .ads-grid,
             #bannerAdsContainer,
-            .buy-section,
             .search-box,
             .verify-banner {
                 max-width: 600px;
@@ -2942,23 +2941,6 @@
         <!-- BANNER ADS (LARGER & MORE VISIBLE) -->
         <div id="bannerAdsContainer"></div>
 
-        <!-- BUY SECTION -->
-        <div class="buy-section">
-            <div class="buy-title">👑 خرید اشتراک ویژه (VIP) &amp; تبلیغات</div>
-            <div class="buy-desc">با خرید اشتراک ویژه، آگهی‌های شما در بالای لیست نمایش داده می‌شوند و امتیاز بیشتری دریافت می‌کنید.</div>
-            <div class="buy-row">
-                <button class="btn-vip" onclick="openVipPurchaseUI(1)">👑 ۱ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(3)">👑 ۳ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(6)">👑 ۶ ماهه</button>
-                <button class="btn-special" onclick="openSplashPurchaseUI()" style="background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 16px rgba(52,152,219,0.25);">📱 اسپلش</button>
-                <button class="btn-special" onclick="openBannerPurchaseUI()" style="background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 16px rgba(230,126,34,0.25);">📢 بنر</button>
-            </div>
-            <div id="dailySlotsInfo" style="font-size:11px;color:var(--text-secondary);margin-top:8px;text-align:center;padding:8px;border:1px solid var(--border);border-radius:var(--radius);">
-                ⏳ در حال دریافت اطلاعات ظرفیت روزانه...
-            </div>
-            <div class="buy-desc mt-10">⭐ برای ویژه کردن آگهی، در مرحله آخر ثبت آگهی گزینه ویژه را انتخاب کنید.</div>
-        </div>
-
         <!-- ADS GRID -->
         <div class="ads-grid" id="adsGrid"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
         <div id="loadMoreBtn"><button class="btn btn-outline btn-sm" onclick="loadMoreAds()">بارگذاری بیشتر</button></div>
@@ -2978,7 +2960,7 @@
         <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span class="nav-label" id="navHome">خانه</span></button>
         <button class="nav-item" data-tab="favorites" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i><span class="nav-label" id="navFav">نشان‌ها</span></button>
         <button class="nav-item" data-tab="profile" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i><span class="nav-label" id="navProfile">پروفایل</span></button>
-        <button class="nav-item" data-tab="transactions" onclick="switchTab('transactions')"><i class="fa-solid fa-receipt"></i><span class="nav-label" id="navTrans">تراکنش‌ها</span></button>
+        <button class="nav-item" data-tab="orders" onclick="switchTab('orders')"><i class="fa-solid fa-clipboard-list"></i><span class="nav-label" id="navOrders">سفارشات</span></button>
         <div class="nav-item support-dropdown">
             <button onclick="toggleSupportMenu(event)" style="background:none;border:none;display:flex;flex-direction:column;align-items:center;color:var(--text-muted);cursor:pointer;font-family:var(--font);padding:0;min-width:44px;"><i class="fa-solid fa-headset"></i><span class="nav-label" id="navSupport">پشتیبانی</span></button>
             <div class="dropdown-menu" id="supportDropdownMenu">
@@ -2995,11 +2977,22 @@
     </div>
 
     <!-- ============================================================
-    FLOATING BUTTONS
+    FLOATING BUTTONS & OVERLAY
     ============================================================ -->
-    <button class="floating-add-btn" onclick="openAddModal()" id="floatingAddBtn" style="display:none;">
+    <div class="fab-overlay" id="fabOverlay" onclick="toggleFabMenu()"></div>
+    
+    <!-- Fab Menu -->
+    <div class="fab-menu" id="fabMenu">
+        <button onclick="openAddModal(); toggleFabMenu();"><i class="fa-solid fa-pen-to-square"></i> ثبت آگهی</button>
+        <button onclick="openAddModalForBanner('splash'); toggleFabMenu();"><i class="fa-solid fa-mobile-screen-button"></i> ثبت اسپلش</button>
+        <button onclick="openAddModalForBanner('banner'); toggleFabMenu();"><i class="fa-solid fa-flag"></i> ثبت بنر</button>
+        <button onclick="openVipPurchaseUI(1); toggleFabMenu();"><i class="fa-solid fa-crown"></i> خرید ویژه</button>
+    </div>
+
+    <button class="floating-add-btn" onclick="toggleFabMenu()" id="floatingAddBtn" style="display:none;">
         <i class="fa-solid fa-plus"></i>
     </button>
+    
     <button class="floating-support-btn" onclick="switchTab('tickets')" id="floatingSupportBtn">
         <i class="fa-solid fa-headset"></i>
     </button>
@@ -3029,21 +3022,8 @@
                 <button class="action-btn" onclick="switchTab('favorites')"><i class="fa-solid fa-heart"></i> <span id="actionFavs">نشان‌ها</span></button>
                 <button class="action-btn" onclick="switchTab('myads')"><i class="fa-solid fa-list"></i> <span id="actionMyAds">آگهی‌های من</span></button>
                 <button class="action-btn" onclick="switchTab('myreviews')"><i class="fa-solid fa-star"></i> <span id="actionReviews">نظرات من</span></button>
-                <button class="action-btn" onclick="switchTab('transactions')"><i class="fa-solid fa-receipt"></i> <span id="actionTrans">تراکنش‌ها</span></button>
+                <button class="action-btn" onclick="switchTab('orders')"><i class="fa-solid fa-clipboard-list"></i> <span id="actionTrans">سفارشات</span></button>
             </div>
-        </div>
-
-        <div class="buy-section">
-            <div class="buy-title">👑 خرید اشتراک ویژه (VIP) &amp; تبلیغات</div>
-            <div class="buy-desc">با خرید اشتراک ویژه، آگهی‌های شما در بالای لیست نمایش داده می‌شوند.</div>
-            <div class="buy-row">
-                <button class="btn-vip" onclick="openVipPurchaseUI(1)">👑 ۱ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(3)">👑 ۳ ماهه</button>
-                <button class="btn-vip" onclick="openVipPurchaseUI(6)">👑 ۶ ماهه</button>
-                <button class="btn-special" onclick="openSplashPurchaseUI()" style="background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 16px rgba(52,152,219,0.25);">📱 اسپلش</button>
-                <button class="btn-special" onclick="openBannerPurchaseUI()" style="background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-full);font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 4px 16px rgba(230,126,34,0.25);">📢 بنر</button>
-            </div>
-            <div id="dailySlotsInfoProfile" style="font-size:11px;color:var(--text-secondary);margin-top:8px;text-align:center;padding:8px;border:1px solid var(--border);border-radius:var(--radius);">⏳ در حال دریافت اطلاعات ظرفیت روزانه...</div>
         </div>
 
         <div class="profile-section">
@@ -3091,10 +3071,10 @@
         <div id="myReviewsList"><div class="text-secondary" id="noReviewsText">هیچ نظری ثبت نکرده‌اید.</div></div>
     </div>
 
-    <!-- TRANSACTIONS -->
-    <div id="transactionsTab" class="tab-pane">
-        <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="transTitle">💳 تراکنش‌های من</h2>
-        <div id="transactionsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
+    <!-- ORDERS (REPLACED TRANSACTIONS) -->
+    <div id="ordersTab" class="tab-pane">
+        <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="transTitle">📦 سفارشات من</h2>
+        <div id="ordersList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <!-- RULES -->
@@ -3179,12 +3159,6 @@
         <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="alertsTitle">🔔 چشم‌بهراه</h2>
         <button onclick="openAddAlert()" id="alertAddBtn" style="width:100%;padding:10px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:var(--radius);font-weight:700;font-size:13px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 16px var(--primary-glow);"><i class="fa-solid fa-plus"></i> افزودن چشم‌بهراه جدید</button>
         <div id="alertsList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
-    </div>
-
-    <!-- ORDERS -->
-    <div id="ordersTab" class="tab-pane">
-        <h2 style="margin-bottom:10px;font-size:17px;font-weight:800;" id="ordersTitle">📋 سفارشات من</h2>
-        <div id="ordersList"><div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div></div>
     </div>
 
     <!-- ADMIN -->
@@ -3305,6 +3279,39 @@
                         <button type="button" class="btn btn-success" style="flex:1;" id="submitAdBtn" onclick="submitAd()">ثبت آگهی</button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BANNER / SPLASH MODAL -->
+    <div class="modal-overlay" id="bannerModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('bannerModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title" id="bannerModalTitle">ثبت بنر / اسپلش</div>
+            <form id="bannerForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label>عنوان <span class="required">*</span></label>
+                    <input type="text" id="bannerTitleInput" placeholder="عنوان تبلیغ را وارد کنید" />
+                </div>
+                <div class="form-group">
+                    <label>لینک (اختیاری)</label>
+                    <input type="text" id="bannerLinkInput" placeholder="https://example.com" />
+                </div>
+                <div class="form-group">
+                    <label>توضیحات (اختیاری)</label>
+                    <textarea id="bannerDescInput" rows="2" placeholder="توضیحات بنر..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>تصویر <span class="required">*</span></label>
+                    <div class="image-upload-area" onclick="document.getElementById('bannerFileInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p id="bannerUploadText">برای آپلود تصویر کلیک کنید</p>
+                        <input type="file" id="bannerFileInput" accept="image/*" style="display:none;" />
+                    </div>
+                    <div class="image-preview-grid" id="bannerImagePreview"></div>
+                    <span id="bannerUploadStatus" style="font-size:10px;color:var(--text-muted);display:block;margin-top:3px;"></span>
+                </div>
+                <button type="button" class="btn btn-block btn-success" id="submitBannerFinalBtn" onclick="submitBannerFinal()">ثبت و پرداخت</button>
             </form>
         </div>
     </div>
@@ -3452,8 +3459,6 @@
         let splashData = [];
         let splashIndex = 0;
         let splashInterval = null;
-
-        // MODIFIED: added bannerMode flag
         let bannerMode = false;
 
         // ============================================================
@@ -3631,7 +3636,7 @@
                 navHome: 'خانه',
                 navFav: 'نشان‌ها',
                 navProfile: 'پروفایل',
-                navTrans: 'تراکنش‌ها',
+                navOrders: 'سفارشات',
                 navSupport: 'پشتیبانی',
                 menuRules: 'قوانین',
                 menuAbout: 'درباره ما',
@@ -3657,13 +3662,13 @@
                 actionFavs: 'نشان‌ها',
                 actionMyAds: 'آگهی‌های من',
                 actionReviews: 'نظرات من',
-                actionTrans: 'تراکنش‌ها',
+                actionTrans: 'سفارشات',
                 statAdsLabel: '📋 آگهی‌ها',
                 statFavsLabel: '❤️ نشان‌ها',
                 statReviewsLabel: '⭐ نظرات',
                 statScoreLabel: '⭐ امتیاز',
                 statVIPLabel: '👑 VIP',
-                statTransLabel: '💳 تراکنش‌ها',
+                statTransLabel: '💳 سفارشات',
                 getCode: '✈️ دریافت کد از ربات',
                 enterCode: '🔑 کد ۶ رقمی را وارد کنید',
                 verifyCode: '✅ تأیید کد',
@@ -3671,14 +3676,14 @@
                 favTitle: '❤️ نشان‌ها',
                 myAdsTitle: '📋 آگهی‌های من',
                 myReviewsTitle: '⭐ نظرات من',
-                transTitle: '💳 تراکنش‌های من',
+                transTitle: '📦 سفارشات من',
                 transId: '🆔 شماره: {id}',
                 transType: '📌 نوع: {type}',
                 transAmount: '💰 مبلغ: {amount} ریال',
                 transStatus: '📊 وضعیت: {status}',
                 transDate: '📅 تاریخ: {date}',
                 transDesc: '📝 توضیحات: {desc}',
-                transNo: '📭 هیچ تراکنشی یافت نشد.',
+                transNo: '📭 هیچ سفارشی یافت نشد.',
                 transPending: '⏳ در انتظار',
                 transPaid: '✅ پرداخت‌شده',
                 transFailed: '❌ ناموفق',
@@ -3966,7 +3971,7 @@
                 navHome: 'Home',
                 navFav: 'Favorites',
                 navProfile: 'Profile',
-                navTrans: 'Transactions',
+                navOrders: 'Orders',
                 navSupport: 'Support',
                 menuRules: 'Rules',
                 menuAbout: 'About',
@@ -3992,13 +3997,13 @@
                 actionFavs: 'Favorites',
                 actionMyAds: 'My ads',
                 actionReviews: 'My reviews',
-                actionTrans: 'Transactions',
+                actionTrans: 'Orders',
                 statAdsLabel: '📋 Ads',
                 statFavsLabel: '❤️ Favorites',
                 statReviewsLabel: '⭐ Reviews',
                 statScoreLabel: '⭐ Score',
                 statVIPLabel: '👑 VIP',
-                statTransLabel: '💳 Transactions',
+                statTransLabel: '💳 Orders',
                 getCode: '✈️ Get code from bot',
                 enterCode: '🔑 Enter 6-digit code',
                 verifyCode: '✅ Verify code',
@@ -4006,14 +4011,14 @@
                 favTitle: '❤️ Favorites',
                 myAdsTitle: '📋 My ads',
                 myReviewsTitle: '⭐ My reviews',
-                transTitle: '💳 My transactions',
+                transTitle: '📦 My Orders',
                 transId: '🆔 ID: {id}',
                 transType: '📌 Type: {type}',
                 transAmount: '💰 Amount: {amount} IRR',
                 transStatus: '📊 Status: {status}',
                 transDate: '📅 Date: {date}',
                 transDesc: '📝 Description: {desc}',
-                transNo: '📭 No transactions found.',
+                transNo: '📭 No orders found.',
                 transPending: '⏳ Pending',
                 transPaid: '✅ Paid',
                 transFailed: '❌ Failed',
@@ -4301,7 +4306,7 @@
                 navHome: 'الرئيسية',
                 navFav: 'المفضلة',
                 navProfile: 'الملف الشخصي',
-                navTrans: 'المعاملات',
+                navOrders: 'الطلبات',
                 navSupport: 'الدعم',
                 menuRules: 'القوانين',
                 menuAbout: 'معلومات عنا',
@@ -4327,13 +4332,13 @@
                 actionFavs: 'المفضلة',
                 actionMyAds: 'إعلاناتي',
                 actionReviews: 'تعليقاتي',
-                actionTrans: 'المعاملات',
+                actionTrans: 'الطلبات',
                 statAdsLabel: '📋 الإعلانات',
                 statFavsLabel: '❤️ المفضلة',
                 statReviewsLabel: '⭐ التعليقات',
                 statScoreLabel: '⭐ النقاط',
                 statVIPLabel: '👑 VIP',
-                statTransLabel: '💳 المعاملات',
+                statTransLabel: '💳 الطلبات',
                 getCode: '✈️ طلب الرمز من البوت',
                 enterCode: '🔑 أدخل الرمز المكون من 6 أرقام',
                 verifyCode: '✅ تأكيد الرمز',
@@ -4341,14 +4346,14 @@
                 favTitle: '❤️ المفضلة',
                 myAdsTitle: '📋 إعلاناتي',
                 myReviewsTitle: '⭐ تعليقاتي',
-                transTitle: '💳 معاملاتي',
+                transTitle: '📦 طلباتي',
                 transId: '🆔 رقم: {id}',
                 transType: '📌 النوع: {type}',
                 transAmount: '💰 المبلغ: {amount} ريال',
                 transStatus: '📊 الحالة: {status}',
                 transDate: '📅 التاريخ: {date}',
                 transDesc: '📝 الوصف: {desc}',
-                transNo: '📭 لا توجد معاملات.',
+                transNo: '📭 لا توجد طلبات.',
                 transPending: '⏳ قيد الانتظار',
                 transPaid: '✅ مدفوع',
                 transFailed: '❌ فاشل',
@@ -4617,7 +4622,7 @@
                 'navHome': 'navHome',
                 'navFav': 'navFav',
                 'navProfile': 'navProfile',
-                'navTrans': 'navTrans',
+                'navOrders': 'navOrders',
                 'navSupport': 'navSupport',
                 'menuRules': 'menuRules',
                 'menuAbout': 'menuAbout',
@@ -5083,7 +5088,7 @@
                     fetchAds(false);
                     fetchMyAds();
                     fetchMyReviews();
-                    fetchTransactions();
+                    loadOrders();
                 } else {
                     status.innerHTML = '❌ ' + (data.error || 'کد نامعتبر');
                     status.style.color = '#e74c3c';
@@ -5115,7 +5120,7 @@
                     fetchMyAds();
                     loadFavorites();
                     fetchMyReviews();
-                    fetchTransactions();
+                    loadOrders();
                 }
             } catch (e) { console.error(e); }
         }
@@ -5388,12 +5393,11 @@
                         await fetchMyAds();
                         await fetchMyReviews(); }
                     if (currentTab === 'favorites') await fetchFavorites();
-                    if (currentTab === 'transactions') await fetchTransactions();
+                    if (currentTab === 'orders') await loadOrders();
                     if (currentTab === 'rules') await loadRules();
                     if (currentTab === 'tickets') await loadTickets();
                     if (currentTab === 'chat') await loadChatThreads();
                     if (currentTab === 'alerts') await loadAlerts();
-                    if (currentTab === 'orders') await loadOrders();
                     await checkAdminStatus();
                     await loadInlineBanners();
                     updateVerificationUI();
@@ -5543,7 +5547,6 @@
         // ============================================================
         // WIZARD
         // ============================================================
-        // MODIFIED: wizardNext now respects bannerMode (max step 3)
         function wizardNext() {
             if (bannerMode && wizardStep >= 3) return;
             if (wizardStep < 4) { wizardStep++;
@@ -5553,10 +5556,8 @@
         function wizardPrev() { if (wizardStep > 1) { wizardStep--;
                 updateWizard(); } }
 
-        // MODIFIED: updateWizard hides step 4 when bannerMode is true
         function updateWizard() {
             document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
-            // In banner mode, only steps 1-3 are available
             if (bannerMode) {
                 document.getElementById('wizardStep4').style.display = 'none';
                 document.getElementById('wStep4').style.display = 'none';
@@ -5742,7 +5743,6 @@
             input.dispatchEvent(event);
         }
 
-        // MODIFIED: openAddModal sets bannerMode = false
         function openAddModal() {
             if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
             bannerMode = false;
@@ -5761,13 +5761,146 @@
             contactField.readOnly = true;
             document.querySelector('input[name="adType"][value="normal"]').checked = true;
             updateAdTypeUI('normal');
-            // Restore submit button
             const submitBtn = document.getElementById('submitAdBtn');
             submitBtn.textContent = t('submit');
             submitBtn.onclick = submitAd;
         }
 
-        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        // ============================================================
+        // BANNER/SPLASH MODAL HANDLERS
+        // ============================================================
+        async function openAddModalForBanner(type) {
+            if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
+            bannerMode = true;
+            const modal = document.getElementById('bannerModal');
+            const titleEl = document.getElementById('bannerModalTitle');
+            const submitBtn = document.getElementById('submitBannerFinalBtn');
+            
+            // Reset modal fields
+            document.getElementById('bannerTitleInput').value = '';
+            document.getElementById('bannerLinkInput').value = '';
+            document.getElementById('bannerDescInput').value = '';
+            document.getElementById('bannerFileInput').value = '';
+            document.getElementById('bannerImagePreview').innerHTML = '';
+            document.getElementById('bannerUploadStatus').textContent = '';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ثبت و پرداخت';
+
+            if (type === 'splash') {
+                titleEl.textContent = '📱 ثبت اسپلش جدید';
+            } else {
+                titleEl.textContent = '📢 ثبت بنر جدید';
+            }
+            modal.classList.add('show');
+
+            // Preview image
+            document.getElementById('bannerFileInput').onchange = function(e) {
+                const file = e.target.files[0];
+                const previewGrid = document.getElementById('bannerImagePreview');
+                previewGrid.innerHTML = '';
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        showToast(t('imageTooLarge'), 'error');
+                        this.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const item = document.createElement('div');
+                        item.className = 'image-preview-item';
+                        item.innerHTML = `<img src="${ev.target.result}" style="object-fit:cover;width:100%;height:100%;" />`;
+                        previewGrid.appendChild(item);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        }
+
+        async function submitBannerFinal() {
+            const title = document.getElementById('bannerTitleInput').value.trim();
+            const link = document.getElementById('bannerLinkInput').value.trim();
+            const desc = document.getElementById('bannerDescInput').value.trim();
+            const fileInput = document.getElementById('bannerFileInput');
+            const file = fileInput.files[0];
+
+            if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; }
+            if (!file) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; }
+            if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; }
+
+            const btn = document.getElementById('submitBannerFinalBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ در حال آپلود...';
+            const statusEl = document.getElementById('bannerUploadStatus');
+            statusEl.textContent = 'در حال آپلود عکس...';
+
+            try {
+                // 1. Upload Image
+                const formData = new FormData();
+                formData.append('photo', file);
+                const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData });
+                const uploadResult = await uploadRes.json();
+                if (!uploadResult.success || !uploadResult.file_id) {
+                    showToast('خطا در آپلود تصویر: ' + (uploadResult.error || ''), 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'ثبت و پرداخت';
+                    statusEl.textContent = '';
+                    return;
+                }
+
+                statusEl.textContent = 'در حال ثبت اطلاعات...';
+                const type = document.getElementById('bannerModalTitle').textContent.includes('اسپلش') ? 'splash' : 'banner';
+
+                // 2. Create Banner Record
+                const payload = { title: title, description: desc || '', link: link || '', image_id: uploadResult.file_id, type: type, days: 1 };
+                const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify(payload) });
+                if (!data.success) {
+                    showToast('❌ خطا در ثبت: ' + (data.error || t('unknownError')), 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'ثبت و پرداخت';
+                    statusEl.textContent = '';
+                    return;
+                }
+
+                statusEl.textContent = 'در حال ایجاد فاکتور...';
+                
+                // 3. Create Order (Payment)
+                const priceKey = type === 'splash' ? 'splash_ad' : 'banner_ad';
+                const amount = await getPrice(priceKey) || (type === 'splash' ? 50000 : 30000);
+                const orderData = await apiCall('/api/order/create', { method: 'POST', body: JSON.stringify({ type: type, params: { days: 1, bannerId: data.banner.id } }) });
+
+                if (orderData.success && orderData.paymentUrl) {
+                    showToast('💰 برای فعال‌سازی، پرداخت را تکمیل کنید.', 'info');
+                    window.open(orderData.paymentUrl, '_blank');
+                    closeModal('bannerModal');
+                    loadInlineBanners();
+                    loadDailySlots();
+                } else {
+                    showToast('❌ خطا در ایجاد پرداخت: ' + (orderData.error || t('unknownError')), 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'ثبت و پرداخت';
+                    statusEl.textContent = '';
+                }
+            } catch (err) {
+                showToast('❌ خطا در ارتباط: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'ثبت و پرداخت';
+                statusEl.textContent = '';
+            }
+        }
+
+        // ============================================================
+        // FAB MENU
+        // ============================================================
+        function toggleFabMenu() {
+            const menu = document.getElementById('fabMenu');
+            const btn = document.getElementById('floatingAddBtn');
+            const overlay = document.getElementById('fabOverlay');
+            const isOpen = menu.classList.contains('show');
+            
+            menu.classList.toggle('show');
+            btn.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
 
         // ============================================================
         // AD DETAIL
@@ -5794,7 +5927,7 @@
                 const firstItem = adDetailGallery[0];
                 const isVideo = ad.media_type === 'video' || (firstItem && firstItem.match(/\.(mp4|webm|mov)$/i));
                 galleryHtml =
-                    `<div class="ad-gallery" onclick="event.stopPropagation();openMediaZoom('${adDetailGallery[0]}','${isVideo?'video':'image'}')">${isVideo?`<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${adDetailGallery[0]}" type="video/mp4"></video>`:`<img id="detailGalleryImg" src="${adDetailGallery[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'" />`}</div>`;
+                    `<div class="ad-gallery" onclick="event.stopPropagation();openMediaZoom('${adDetailGallery[0]}','${isVideo?'video':'image'}')">${isVideo?`<video id="detailGalleryVideo" autoplay muted loop playsinline><source src="${adDetailGallery[0]}" type="video/mp4"></video>`:`<img id="detailGalleryImg" src="${adDetailGallery[0]}" onerror="this.parentElement.innerHTML='<div class=\\'no-image\\'><i class=\\'fa-solid fa-image\\'></i></div>'"/>`}</div>`;
                 if (adDetailGallery.length > 1) {
                     galleryHtml +=
                         `<div class="gallery-controls"><button onclick="detailGalleryPrev()">‹</button><span style="color:var(--text-muted);font-size:12px;display:flex;align-items:center;"><span id="detailGalleryIndex">1</span> / ${adDetailGallery.length}</span><button onclick="detailGalleryNext()">›</button></div>`;
@@ -5846,11 +5979,9 @@
             `;
         }
 
-        // MODIFIED: added closeAdDetail function – closes detail modal and refreshes lists
         function closeAdDetail() {
             document.getElementById('adDetailsModal').classList.remove('show');
             document.getElementById('adDetailContent').innerHTML = '';
-            // Refresh the appropriate list based on current tab
             if (currentTab === 'home' || currentTab === 'favorites' || currentTab === 'myads') {
                 fetchAds(true, true);
             }
@@ -5891,36 +6022,51 @@
         function closeReportModal() { document.getElementById('reportModal').classList.remove('show'); }
 
         // ============================================================
-        // TRANSACTIONS
+        // ORDERS (REPLACED TRANSACTIONS)
         // ============================================================
-        async function fetchTransactions() {
-            const container = document.getElementById('transactionsList');
+        async function loadOrders() {
+            const container = document.getElementById('ordersList');
             if (!isUserVerified()) { container.innerHTML =
                     `<div class="text-secondary">⚠️ ${t('verifyStatus')}</div>`; return; }
             container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
             try {
-                const data = await apiCall('/api/transactions');
-                if (data.success && data.data && data.data.length > 0) {
+                const data = await apiCall('/api/orders');
+                if (data.success && data.orders && data.orders.length > 0) {
                     container.innerHTML = '';
-                    data.data.forEach(tx => {
-                        const statusMap = { 'pending': t('transPending'), 'paid': t('transPaid'),
-                            'failed': t('transFailed') };
-                        const typeMap = t('transTypes');
-                        const typeName = typeMap[tx.type] || tx.type;
-                        const statusText = statusMap[tx.status] || tx.status;
-                        const statusEmoji = tx.status === 'paid' ? '✅' : tx.status === 'pending' ? '⏳' :
-                            '❌';
+                    data.orders.forEach(order => {
+                        const statusMap = { pending: t('orderStatusPending'), paid: t('orderStatusPaid'),
+                            failed: t('orderStatusFailed') };
+                        const statusClass = order.status || 'pending';
                         const div = document.createElement('div');
                         div.className = 'order-item';
+                        const orderData = order.data ? JSON.parse(order.data) : {};
+                        let detail = '';
+                        if (order.type === 'vip') detail = `👑 VIP ${orderData.months || '?'} ماه`;
+                        else if (order.type === 'special_ad') detail = `⭐ ویژه ${orderData.days || '?'} روز`;
+                        else if (order.type === 'splash') detail = `📱 اسپلش ${orderData.days || '?'} روز`;
+                        else if (order.type === 'banner') detail = `📢 بنر ${orderData.days || '?'} روز`;
+                        else detail = order.type;
                         div.innerHTML =
-                            `<div class="order-header"><span class="order-id">${t('transId').replace('{id}', tx.id.substring(0,12))}</span><span class="order-status ${tx.status}">${statusEmoji} ${statusText}</span></div><div class="order-detail">${t('transType').replace('{type}', typeName)}</div><div class="order-detail">${t('transAmount').replace('{amount}', (tx.amount || 0).toLocaleString())}</div><div class="order-detail">${t('transDate').replace('{date}', formatDatePersian(tx.created_at))}</div>${tx.description ? `<div class="order-detail">${t('transDesc').replace('{desc}', tx.description)}</div>` : ''}${tx.ref_id ? `<div class="order-detail">🔑 شماره پیگیری: ${tx.ref_id}</div>` : ''}`;
+                            `<div class="order-header"><span class="order-id">#${order.id.substring(0,8)}</span><span class="order-status ${statusClass}">${statusMap[statusClass] || statusClass}</span></div><div class="order-detail">${detail}</div><div class="order-detail">💰 ${(order.amount || 0).toLocaleString()} ریال</div><div class="order-detail">📅 ${formatDatePersian(order.created_at)}</div>${order.ref_id ? `<div class="order-detail">🔑 شماره پیگیری: ${order.ref_id}</div>` : ''}${order.status === 'pending' ? `<button class="btn btn-sm btn-success mt-10" onclick="retryPayment('${order.id}')">🔄 تلاش مجدد پرداخت</button>` : ''}`;
                         container.appendChild(div);
                     });
                 } else { container.innerHTML =
-                        `<div class="text-secondary">${t('transNo')}</div>`; }
+                    `<div class="text-secondary">${t('ordersEmpty')}</div>`; }
             } catch (err) { container.innerHTML =
-                    `<div class="text-secondary">${t('networkError')}</div>`; }
+                `<div class="text-secondary">${t('networkError')}</div>`; }
         }
+
+        async function retryPayment(orderId) { try { const data = await apiCall(`/api/order/status/${orderId}`); if (data
+                    .success && data.order) { const order = data.order; const amount = order.amount; const type = order
+                    .type; const params = JSON.parse(order.data || '{}'); const result = await apiCall('/api/order/create', {
+                        method: 'POST',
+                        body: JSON.stringify({ type, params })
+                    }); if (result.success && result.paymentUrl) { showToast('✅ لینک پرداخت جدید ایجاد شد.',
+                        'success');
+                    window.open(result.paymentUrl, '_blank');
+                    loadOrders(); } else { showToast('❌ ' + (result.error || t('unknownError')), 'error'); } } else {
+                    showToast('❌ ' + t('orderNotFound'), 'error'); } } catch (err) { showToast('❌ ' + err.message,
+                    'error'); } }
 
         // ============================================================
         // REVIEW
@@ -6151,7 +6297,7 @@
             document.body.style.overflow = ''; }
 
         // ============================================================
-        // BANNER (LARGER & MORE VISIBLE)
+        // BANNER
         // ============================================================
         async function loadInlineBanners() {
             const container = document.getElementById('bannerAdsContainer');
@@ -6861,74 +7007,26 @@
                 loadProfile();
                 fetchMyAds();
                 fetchMyReviews();
-                fetchTransactions();
+                loadOrders();
                 updateVerificationUI();
             } else if (tab === 'favorites') { document.getElementById('favoritesTab').classList.add('show');
                 fetchFavorites(); } else if (tab === 'myads') { document.getElementById('myadsTab').classList.add('show');
                 fetchMyAds(); } else if (tab === 'myreviews') { document.getElementById('myreviewsTab').classList.add('show');
-                fetchMyReviews(); } else if (tab === 'transactions') { document.getElementById('transactionsTab').classList
+                fetchMyReviews(); } else if (tab === 'orders') { document.getElementById('ordersTab').classList
                     .add('show');
-                fetchTransactions(); } else if (tab === 'rules') { document.getElementById('rulesTab').classList.add('show');
+                loadOrders(); } else if (tab === 'rules') { document.getElementById('rulesTab').classList.add('show');
                 loadRules(); } else if (tab === 'about') { document.getElementById('aboutTab').classList.add('show'); } else if (
                 tab === 'guide') { document.getElementById('guideTab').classList.add('show'); } else if (tab === 'tickets') {
                 document.getElementById('ticketsTab').classList.add('show');
                 loadTickets(); } else if (tab === 'chat') { document.getElementById('chatTab').classList.add('show');
                 loadChatThreads(); } else if (tab === 'alerts') { document.getElementById('alertsTab').classList.add('show');
-                loadAlerts(); } else if (tab === 'orders') { document.getElementById('ordersTab').classList.add('show');
-                loadOrders(); } else if (tab === 'admin') { document.getElementById('adminTab').classList.add('show'); if (
+                loadAlerts(); } else if (tab === 'admin') { document.getElementById('adminTab').classList.add('show'); if (
                     isAdmin) { document.getElementById('adminResult').innerHTML =
                         `<div class="text-secondary">${t('adminResult')}</div>`; } else { showToast('⛔ ' + t(
                         'unauthorized'), 'error');
                     switchTab('home'); } }
             document.getElementById('supportDropdownMenu').classList.remove('show');
         }
-
-        // ============================================================
-        // ORDERS
-        // ============================================================
-        async function loadOrders() {
-            const container = document.getElementById('ordersList');
-            if (!isUserVerified()) { container.innerHTML =
-                    `<div class="text-secondary">⚠️ ${t('verifyStatus')}</div>`; return; }
-            container.innerHTML = `<div class="loading-spinner"><i class="fa-solid fa-spinner"></i></div>`;
-            try {
-                const data = await apiCall('/api/orders');
-                if (data.success && data.orders && data.orders.length > 0) {
-                    container.innerHTML = '';
-                    data.orders.forEach(order => {
-                        const statusMap = { pending: t('orderStatusPending'), paid: t('orderStatusPaid'),
-                            failed: t('orderStatusFailed') };
-                        const statusClass = order.status || 'pending';
-                        const div = document.createElement('div');
-                        div.className = 'order-item';
-                        const orderData = order.data ? JSON.parse(order.data) : {};
-                        let detail = '';
-                        if (order.type === 'vip') detail = `👑 VIP ${orderData.months || '?'} ماه`;
-                        else if (order.type === 'special_ad') detail = `⭐ ویژه ${orderData.days || '?'} روز`;
-                        else if (order.type === 'splash') detail = `📱 اسپلش ${orderData.days || '?'} روز`;
-                        else if (order.type === 'banner') detail = `📢 بنر ${orderData.days || '?'} روز`;
-                        else detail = order.type;
-                        div.innerHTML =
-                            `<div class="order-header"><span class="order-id">#${order.id.substring(0,8)}</span><span class="order-status ${statusClass}">${statusMap[statusClass] || statusClass}</span></div><div class="order-detail">${detail}</div><div class="order-detail">💰 ${(order.amount || 0).toLocaleString()} ریال</div><div class="order-detail">📅 ${formatDatePersian(order.created_at)}</div>${order.ref_id ? `<div class="order-detail">🔑 شماره پیگیری: ${order.ref_id}</div>` : ''}${order.status === 'pending' ? `<button class="btn btn-sm btn-success mt-10" onclick="retryPayment('${order.id}')">🔄 تلاش مجدد پرداخت</button>` : ''}`;
-                        container.appendChild(div);
-                    });
-                } else { container.innerHTML =
-                    `<div class="text-secondary">${t('ordersEmpty')}</div>`; }
-            } catch (err) { container.innerHTML =
-                `<div class="text-secondary">${t('networkError')}</div>`; }
-        }
-
-        async function retryPayment(orderId) { try { const data = await apiCall(`/api/order/status/${orderId}`); if (data
-                    .success && data.order) { const order = data.order; const amount = order.amount; const type = order
-                    .type; const params = JSON.parse(order.data || '{}'); const result = await apiCall('/api/order/create', {
-                        method: 'POST',
-                        body: JSON.stringify({ type, params })
-                    }); if (result.success && result.paymentUrl) { showToast('✅ لینک پرداخت جدید ایجاد شد.',
-                        'success');
-                    window.open(result.paymentUrl, '_blank');
-                    loadOrders(); } else { showToast('❌ ' + (result.error || t('unknownError')), 'error'); } } else {
-                    showToast('❌ ' + t('orderNotFound'), 'error'); } } catch (err) { showToast('❌ ' + err.message,
-                    'error'); } }
 
         // ============================================================
         // VIP & SPECIAL PURCHASE
@@ -7095,76 +7193,6 @@
                     '❌ ظرفیت بنر امروز تکمیل شده است.', 'error'); return; }
             openAddModalForBanner('banner'); }
 
-        // MODIFIED: openAddModalForBanner sets bannerMode = true and hides step 4
-        function openAddModalForBanner(type) {
-            if (!isUserVerified()) { showToast('⚠️ ' + t('verifyStatus'), 'warning'); return; }
-            bannerMode = true;
-            const modal = document.getElementById('addAdModal');
-            document.getElementById('addAdTitle').textContent = type === 'splash' ? '📱 ثبت اسپلش جدید' :
-                '📢 ثبت بنر جدید';
-            document.getElementById('addAdForm').reset();
-            document.getElementById('adImagePreview').innerHTML = '';
-            document.getElementById('adImagesInput').value = '';
-            document.getElementById('uploadStatus').textContent = '';
-            wizardStep = 1;
-            updateWizard();
-            const contactField = document.getElementById('adContact');
-            const phone = getVerifiedPhone();
-            contactField.value = phone || '';
-            contactField.readOnly = true;
-            const submitBtn = document.getElementById('submitAdBtn');
-            submitBtn.textContent = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر';
-            submitBtn.onclick = () => submitBanner(type);
-            modal.classList.add('show');
-        }
-
-        async function submitBanner(type) {
-            const title = document.getElementById('adTitle').value.trim();
-            const desc = document.getElementById('adDescription').value.trim();
-            const link = document.getElementById('adLocation').value.trim();
-            const fileInput = document.getElementById('adImagesInput');
-            const files = fileInput.files;
-            if (!title) { showToast('لطفاً عنوان را وارد کنید', 'warning'); return; }
-            if (!files || files.length === 0) { showToast('لطفاً تصویر را انتخاب کنید', 'warning'); return; }
-            const file = files[0];
-            if (file.size > 5 * 1024 * 1024) { showToast('حجم تصویر بیش از ۵ مگابایت است', 'error'); return; }
-            const btn = document.getElementById('submitAdBtn');
-            btn.disabled = true;
-            btn.innerHTML = '⏳ در حال آپلود...';
-            const statusEl = document.getElementById('uploadStatus');
-            try {
-                const formData = new FormData();
-                formData.append('photo', file);
-                const uploadRes = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: formData });
-                const uploadResult = await uploadRes.json(); if (!uploadResult.success || !uploadResult.file_id) { showToast(
-                        'خطا در آپلود تصویر', 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر'; return; }
-                const payload = { title: title, description: desc || '', link: link || '', image_id: uploadResult
-                        .file_id, type: type, days: 1 };
-                const data = await apiCall('/api/admin/banner/add', { method: 'POST', body: JSON.stringify(payload) });
-                if (data.success) { showToast('✅ ' + (type === 'splash' ? t('splashAddSuccess') : t('bannerAddSuccess')),
-                        'success');
-                    closeModal('addAdModal'); if (type === 'splash' || type === 'banner') { const priceKey = type ===
-                        'splash' ? 'splash_ad' : 'banner_ad'; const amount = await getPrice(priceKey) || (type ===
-                            'splash' ? 50000 : 30000); const orderData = await apiCall('/api/order/create', { method: 'POST',
-                            body: JSON.stringify({ type: type, params: { days: 1, bannerId: data.banner.id } }) }); if (
-                            orderData.success && orderData.paymentUrl) { showToast(
-                                '💰 برای فعال‌سازی، پرداخت را تکمیل کنید.', 'info');
-                            window.open(orderData.paymentUrl, '_blank');
-                            setTimeout(() => { apiCall(`/api/order/status/${orderData.orderId}`).then(res => { if (res
-                                        .success && res.order && res.order.status === 'paid') { showToast('✅ ' + (
-                                            type === 'splash' ? 'اسپلش' : 'بنر') + ' فعال شد!', 'success');
-                                        loadInlineBanners();
-                                        loadDailySlots(); } }); }, 5000); } else { showToast('❌ خطا در ایجاد پرداخت',
-                            'error'); } }
-                    loadInlineBanners();
-                    loadDailySlots(); } else { showToast('❌ ' + (data.error || t('unknownError')), 'error'); }
-            } catch (err) { showToast('❌ ' + t('unknownError'), 'error'); } finally { btn.disabled = false;
-                btn.innerHTML = type === 'splash' ? '📱 ثبت اسپلش' : '📢 ثبت بنر';
-                statusEl.textContent = ''; }
-        }
-
         // ============================================================
         // INIT
         // ============================================================
@@ -7214,4 +7242,4 @@
         console.log(`🌍 زبان: ${currentLang}`);
     </script>
 </body>
-</html>
+    </html>
